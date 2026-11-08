@@ -1,0 +1,5 @@
+name = "spectec-wp"
+defaultTargets = ["SpecTecWP"]
+
+[[lean_lib]]
+name = "SpecTecWP"
