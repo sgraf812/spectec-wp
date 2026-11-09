@@ -41,6 +41,112 @@ def option_zipWith {α β γ : Type} (f : α → β → γ) : Option α → Opti
 def option_map3 {α β γ δ : Type} (f : α → β → γ → δ) : Option α → Option β → Option γ → Option δ
   | some a, some b, some c => some (f a b c)
   | _, _, _ => none
+
+/- Integer built-ins of WebAssembly 3.0, chapter 4.3 "Numerics", on `BitVec`.
+   Adapted from factoidal-core (https://github.com/danbri/factoidal-core), file
+   formal/lean4/L4Factoidal/WasmVM/Spec/Builtins.lean, Apache License 2.0. -/
+namespace Builtins
+
+/-- `signed_N(i) = i` if `0 ≤ i < 2^(N-1)`, else `i - 2^N`. -/
+def signed_ (N : Nat) (i : Nat) : Int :=
+  if i < 2 ^ (N - 1) then (i : Int) else (i : Int) - 2 ^ N
+
+/-- The inverse of `signed_N`. -/
+def inv_signed_ (N : Nat) (i : Int) : Nat :=
+  if 0 ≤ i then i.toNat else (i + 2 ^ N).toNat
+
+/-- `sat_u_N(i)` clamps `i` to between `0` and `2^N-1`. -/
+def sat_u_ (N : Nat) (i : Int) : Nat :=
+  if i < 0 then 0 else if i > 2 ^ N - 1 then 2 ^ N - 1 else i.toNat
+
+/-- `sat_s_N(i)` clamps `i` to between `-2^(N-1)` and `2^(N-1)-1`. -/
+def sat_s_ (N : Nat) (i : Int) : Int :=
+  if i < -2 ^ (N - 1) then -2 ^ (N - 1)
+  else if i > 2 ^ (N - 1) - 1 then 2 ^ (N - 1) - 1 else i
+
+/-- `$bool(b)`: `1` for true, `0` for false. -/
+def bool (b : Bool) : Nat := if b then 1 else 0
+
+/-- `$truncz(q)`: `q` rounded towards zero. -/
+def truncz (q : Rat) : Int := if 0 ≤ q then q.floor else q.ceil
+
+/-- `ibits_N(i)`: the `N` bits of `i`, most significant first. -/
+def ibits_ {n : Nat} (i : BitVec n) : List Bool := (List.range n).map fun k => i.getMsbD k
+
+/-- The inverse of `ibits_N`. -/
+def inv_ibits_ (n : Nat) (ds : List Bool) : BitVec n :=
+  BitVec.ofNat n (ds.foldl (fun acc d => 2 * acc + (if d then 1 else 0)) 0)
+
+/-- `ibytes_N(i)`: the `N/8` bytes of `i`, least significant first (little endian). -/
+def ibytes_ {n : Nat} (i : BitVec n) : List (BitVec 8) :=
+  (List.range (n / 8)).map fun k => i.extractLsb' (8 * k) 8
+
+/-- The inverse of `ibytes_N`. -/
+def inv_ibytes_ (n : Nat) (bs : List (BitVec 8)) : BitVec n :=
+  BitVec.ofNat n (bs.foldr (fun b acc => b.toNat + 256 * acc) 0)
+
+def inot_ {n : Nat} (i : BitVec n) : BitVec n := ~~~i
+def iand_ {n : Nat} (i₁ i₂ : BitVec n) : BitVec n := i₁ &&& i₂
+def iandnot_ {n : Nat} (i₁ i₂ : BitVec n) : BitVec n := iand_ i₁ (inot_ i₂)
+def ior_ {n : Nat} (i₁ i₂ : BitVec n) : BitVec n := i₁ ||| i₂
+def ixor_ {n : Nat} (i₁ i₂ : BitVec n) : BitVec n := i₁ ^^^ i₂
+def irev_ {n : Nat} (i : BitVec n) : BitVec n := i.reverse
+/-- `ibitselect_N(i_1, i_2, i_3) = ior_N(iand_N(i_1, i_3), iand_N(i_2, inot_N(i_3)))`. -/
+def ibitselect_ {n : Nat} (i₁ i₂ i₃ : BitVec n) : BitVec n := ior_ (iand_ i₁ i₃) (iand_ i₂ (inot_ i₃))
+
+/-- Shifts and rotations count modulo `N`. A signed right shift extends the sign bit. -/
+def ishl_ {n : Nat} (i₁ : BitVec n) (i₂ : Nat) : BitVec n := i₁ <<< (i₂ % n)
+def ishr_ {n : Nat} (signed : Bool) (i₁ : BitVec n) (i₂ : Nat) : BitVec n :=
+  if signed then i₁.sshiftRight (i₂ % n) else i₁ >>> (i₂ % n)
+def irotl_ {n : Nat} (i₁ : BitVec n) (i₂ : Nat) : BitVec n := i₁.rotateLeft (i₂ % n)
+def irotr_ {n : Nat} (i₁ : BitVec n) (i₂ : Nat) : BitVec n := i₁.rotateRight (i₂ % n)
+
+/-- Leading and trailing zero bits (`N` for `0`), and the count of one bits. -/
+def iclz_ {n : Nat} (i : BitVec n) : BitVec n := i.clz
+def ictz_ {n : Nat} (i : BitVec n) : BitVec n := i.ctz
+def ipopcnt_ {n : Nat} (i : BitVec n) : BitVec n := i.cpop
+
+/-- `$iavgr_(N, U, i_1, i_2) = truncz((i_1 + i_2 + 1) / 2)`. -/
+def iavgr_ {n : Nat} (i₁ i₂ : BitVec n) : BitVec n := BitVec.ofNat n ((i₁.toNat + i₂.toNat + 1) / 2)
+
+/-- `$iq15mulr_sat_(N, S, i_1, i_2) = inv_signed_N(sat_s_N((signed_N(i_1) · signed_N(i_2) + 2^14) >> 15))`,
+    with an arithmetic shift. -/
+def iq15mulr_sat_ {n : Nat} (i₁ i₂ : BitVec n) : BitVec n :=
+  BitVec.ofNat n (inv_signed_ n (sat_s_ n ((signed_ n i₁.toNat * signed_ n i₂.toNat + 2 ^ 14) >>> 15)))
+
+/-- `wrap_(M,N)(i) = i mod 2^N`; `extend_u_(M,N)(i) = i`;
+    `extend_s_(M,N)(i) = inv_signed_N(signed_M(i))`;
+    `narrow_u_(M,N)(i) = sat_u_N(signed_M(i))`;
+    `narrow_s_(M,N)(i) = inv_signed_N(sat_s_N(signed_M(i)))`. -/
+def wrap_ {m : Nat} (n : Nat) (i : BitVec m) : BitVec n := i.setWidth n
+def extend_ {m : Nat} (n : Nat) (signed : Bool) (i : BitVec m) : BitVec n :=
+  if signed then i.signExtend n else i.setWidth n
+def narrow_ {m : Nat} (n : Nat) (signed : Bool) (i : BitVec m) : BitVec n :=
+  if signed then BitVec.ofNat n (inv_signed_ n (sat_s_ n (signed_ m i.toNat)))
+  else BitVec.ofNat n (sat_u_ n (signed_ m i.toNat))
+
+/- The operations on `Nat`, the representation of `iN` in the generated file: an argument is
+   read as `BitVec.ofNat N`, and a result is returned as `toNat`. -/
+namespace OnNat
+def un (f : ∀ {n : Nat}, BitVec n → BitVec n) (N i : Nat) : Nat := (f (BitVec.ofNat N i)).toNat
+def bin (f : ∀ {n : Nat}, BitVec n → BitVec n → BitVec n) (N i₁ i₂ : Nat) : Nat :=
+  (f (BitVec.ofNat N i₁) (BitVec.ofNat N i₂)).toNat
+def ibitselect_ (N i₁ i₂ i₃ : Nat) : Nat :=
+  (Builtins.ibitselect_ (BitVec.ofNat N i₁) (BitVec.ofNat N i₂) (BitVec.ofNat N i₃)).toNat
+def ishl_ (N i₁ i₂ : Nat) : Nat := (Builtins.ishl_ (BitVec.ofNat N i₁) i₂).toNat
+def ishr_ (N : Nat) (signed : Bool) (i₁ i₂ : Nat) : Nat := (Builtins.ishr_ signed (BitVec.ofNat N i₁) i₂).toNat
+def irotl_ (N i₁ i₂ : Nat) : Nat := (Builtins.irotl_ (BitVec.ofNat N i₁) i₂).toNat
+def irotr_ (N i₁ i₂ : Nat) : Nat := (Builtins.irotr_ (BitVec.ofNat N i₁) i₂).toNat
+def wrap_ (M N i : Nat) : Nat := (Builtins.wrap_ N (BitVec.ofNat M i)).toNat
+def extend_ (M N : Nat) (signed : Bool) (i : Nat) : Nat := (Builtins.extend_ N signed (BitVec.ofNat M i)).toNat
+def narrow_ (M N : Nat) (signed : Bool) (i : Nat) : Nat := (Builtins.narrow_ N signed (BitVec.ofNat M i)).toNat
+def ibits_ (N i : Nat) : List Nat := (Builtins.ibits_ (BitVec.ofNat N i)).map bool
+def inv_ibits_ (N : Nat) (ds : List Nat) : Nat := (Builtins.inv_ibits_ N (ds.map fun d => d != 0)).toNat
+def ibytes_ (N i : Nat) : List Nat := (Builtins.ibytes_ (BitVec.ofNat N i)).map BitVec.toNat
+def inv_ibytes_ (N : Nat) (bs : List Nat) : Nat := (Builtins.inv_ibytes_ N (bs.map (BitVec.ofNat 8))).toNat
+end OnNat
+
+end Builtins
 /- Generated Code -/
 
 /- Type Alias Definition at: ../../specification/wasm-3.0/0.1-aux.vars.spectec:5.1-5.32 -/
@@ -8778,7 +8884,9 @@ inductive s33_to_u32_is_wf : s33 -> u32 -> Prop where
     s33_to_u32_is_wf v_s33 ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:12.1-12.107 -/
-opaque ibits_ : forall (v_N : N) (v_iN : iN), (List bit) := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def ibits_ : forall (v_N : N) (v_iN : iN), (List bit) :=
+  fun v_N i => (Builtins.OnNat.ibits_ v_N (proj_uN_0 i)).map .mk_bit
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:12.6-12.13 -/
 inductive ibits__is_wf : N -> iN -> (List bit) -> Prop where
@@ -8800,7 +8908,9 @@ inductive fbits__is_wf : N -> fN -> (List bit) -> Prop where
     fbits__is_wf v_N v_fN ret_val_lst
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:14.1-14.109 -/
-opaque ibytes_ : forall (v_N : N) (v_iN : iN), (List byte) := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def ibytes_ : forall (v_N : N) (v_iN : iN), (List byte) :=
+  fun v_N i => (Builtins.OnNat.ibytes_ v_N (proj_uN_0 i)).map .mk_byte
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:14.6-14.14 -/
 inductive ibytes__is_wf : N -> iN -> (List byte) -> Prop where
@@ -8822,7 +8932,11 @@ inductive fbytes__is_wf : N -> fN -> (List byte) -> Prop where
     fbytes__is_wf v_N v_fN ret_val_lst
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:16.1-16.104 -/
-opaque nbytes_ : forall (v_numtype : numtype) (v_num_ : num_), (List byte) := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def nbytes_ : forall (v_numtype : numtype) (v_num_ : num_), (List byte) :=
+  fun nt c => match c with
+    | .mk_num__0 _ i => ibytes_ (size nt) i
+    | .mk_num__1 _ f => fbytes_ (size nt) f
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:16.6-16.14 -/
 inductive nbytes__is_wf : numtype -> num_ -> (List byte) -> Prop where
@@ -8867,7 +8981,9 @@ inductive cbytes__is_wf : Cnn -> lit_ -> (List byte) -> Prop where
     cbytes__is_wf v_Cnn v_lit_ ret_val_lst
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:21.1-21.91 -/
-opaque inv_ibits_ : forall (v_N : N) (var_0_lst : (List bit)), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def inv_ibits_ : forall (v_N : N) (var_0_lst : (List bit)), iN :=
+  fun v_N ds => .mk_uN (Builtins.OnNat.inv_ibits_ v_N (ds.map fun | .mk_bit d => d))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:21.6-21.17 -/
 inductive inv_ibits__is_wf : N -> (List bit) -> iN -> Prop where
@@ -8889,7 +9005,9 @@ inductive inv_fbits__is_wf : N -> (List bit) -> fN -> Prop where
     inv_fbits__is_wf v_N var_0_lst ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:23.1-23.92 -/
-opaque inv_ibytes_ : forall (v_N : N) (var_0_lst : (List byte)), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def inv_ibytes_ : forall (v_N : N) (var_0_lst : (List byte)), iN :=
+  fun v_N bs => .mk_uN (Builtins.OnNat.inv_ibytes_ v_N (bs.map proj_byte_0))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:23.6-23.18 -/
 inductive inv_ibytes__is_wf : N -> (List byte) -> iN -> Prop where
@@ -9029,10 +9147,14 @@ def nat_of_bool : ∀  (v_bool : Bool) , Nat
 
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:76.1-76.23 -/
-opaque truncz : forall (rat : Rat), Int := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def truncz : forall (rat : Rat), Int :=
+  fun q => Builtins.truncz q
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:80.1-80.59 -/
-opaque ceilz : forall (rat : Rat), Int := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def ceilz : forall (rat : Rat), Int :=
+  fun q => q.ceil
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:87.1-87.61 -/
 def sat_u_ : ∀  (v_N : N) (int : Int) , Nat
@@ -9061,7 +9183,9 @@ inductive ineg__is_wf : N -> iN -> iN -> Prop where
     ineg__is_wf v_N v_iN ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:101.1-101.29 -/
-opaque iabs_ : forall (v_N : N) (v_iN : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def iabs_ : forall (v_N : N) (v_iN : iN), iN :=
+  fun v_N i => if 0 ≤ Builtins.signed_ v_N (proj_uN_0 i) then i else .mk_uN ((2 ^ v_N - proj_uN_0 i) % 2 ^ v_N)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:101.6-101.12 -/
 inductive iabs__is_wf : N -> iN -> iN -> Prop where
@@ -9072,7 +9196,9 @@ inductive iabs__is_wf : N -> iN -> iN -> Prop where
     iabs__is_wf v_N v_iN ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:102.1-102.29 -/
-opaque iclz_ : forall (v_N : N) (v_iN : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def iclz_ : forall (v_N : N) (v_iN : iN), iN :=
+  fun v_N i => .mk_uN (Builtins.OnNat.un Builtins.iclz_ v_N (proj_uN_0 i))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:102.6-102.12 -/
 inductive iclz__is_wf : N -> iN -> iN -> Prop where
@@ -9083,7 +9209,9 @@ inductive iclz__is_wf : N -> iN -> iN -> Prop where
     iclz__is_wf v_N v_iN ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:103.1-103.29 -/
-opaque ictz_ : forall (v_N : N) (v_iN : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def ictz_ : forall (v_N : N) (v_iN : iN), iN :=
+  fun v_N i => .mk_uN (Builtins.OnNat.un Builtins.ictz_ v_N (proj_uN_0 i))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:103.6-103.12 -/
 inductive ictz__is_wf : N -> iN -> iN -> Prop where
@@ -9094,7 +9222,9 @@ inductive ictz__is_wf : N -> iN -> iN -> Prop where
     ictz__is_wf v_N v_iN ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:104.1-104.32 -/
-opaque ipopcnt_ : forall (v_N : N) (v_iN : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def ipopcnt_ : forall (v_N : N) (v_iN : iN), iN :=
+  fun v_N i => .mk_uN (Builtins.OnNat.un Builtins.ipopcnt_ v_N (proj_uN_0 i))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:104.6-104.15 -/
 inductive ipopcnt__is_wf : N -> iN -> iN -> Prop where
@@ -9219,7 +9349,11 @@ inductive irem__is_wf : N -> sx -> iN -> iN -> (Option iN) -> Prop where
     irem__is_wf v_N v_sx v_iN iN_0 ret_val_opt
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:112.1-112.83 -/
-opaque imin_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def imin_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), iN :=
+  fun v_N v_sx i j => match v_sx with
+    | .U => if proj_uN_0 i ≤ proj_uN_0 j then i else j
+    | .S => if Builtins.signed_ v_N (proj_uN_0 i) ≤ Builtins.signed_ v_N (proj_uN_0 j) then i else j
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:112.6-112.12 -/
 inductive imin__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
@@ -9231,7 +9365,11 @@ inductive imin__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
     imin__is_wf v_N v_sx v_iN iN_0 ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:113.1-113.83 -/
-opaque imax_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def imax_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), iN :=
+  fun v_N v_sx i j => match v_sx with
+    | .U => if proj_uN_0 i ≥ proj_uN_0 j then i else j
+    | .S => if Builtins.signed_ v_N (proj_uN_0 i) ≥ Builtins.signed_ v_N (proj_uN_0 j) then i else j
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:113.6-113.12 -/
 inductive imax__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
@@ -9243,7 +9381,11 @@ inductive imax__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
     imax__is_wf v_N v_sx v_iN iN_0 ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:114.1-114.88 -/
-opaque iadd_sat_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def iadd_sat_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), iN :=
+  fun v_N v_sx i j => match v_sx with
+    | .U => .mk_uN (Builtins.sat_u_ v_N (Int.ofNat (proj_uN_0 i + proj_uN_0 j)))
+    | .S => .mk_uN (Builtins.inv_signed_ v_N (Builtins.sat_s_ v_N (Builtins.signed_ v_N (proj_uN_0 i) + Builtins.signed_ v_N (proj_uN_0 j))))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:114.6-114.16 -/
 inductive iadd_sat__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
@@ -9255,7 +9397,11 @@ inductive iadd_sat__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
     iadd_sat__is_wf v_N v_sx v_iN iN_0 ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:115.1-115.88 -/
-opaque isub_sat_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def isub_sat_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), iN :=
+  fun v_N v_sx i j => match v_sx with
+    | .U => .mk_uN (Builtins.sat_u_ v_N (Int.ofNat (proj_uN_0 i) - Int.ofNat (proj_uN_0 j)))
+    | .S => .mk_uN (Builtins.inv_signed_ v_N (Builtins.sat_s_ v_N (Builtins.signed_ v_N (proj_uN_0 i) - Builtins.signed_ v_N (proj_uN_0 j))))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:115.6-115.16 -/
 inductive isub_sat__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
@@ -9267,7 +9413,9 @@ inductive isub_sat__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
     isub_sat__is_wf v_N v_sx v_iN iN_0 ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:116.1-116.92 -/
-opaque iq15mulr_sat_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def iq15mulr_sat_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), iN :=
+  fun v_N v_sx i j => .mk_uN (Builtins.OnNat.bin Builtins.iq15mulr_sat_ v_N (proj_uN_0 i) (proj_uN_0 j))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:116.6-116.20 -/
 inductive iq15mulr_sat__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
@@ -9291,7 +9439,9 @@ inductive irelaxed_q15mulr__is_wf : N -> sx -> iN -> iN -> (List iN) -> Prop whe
     irelaxed_q15mulr__is_wf v_N v_sx v_iN iN_0 ret_val_lst
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:118.1-118.84 -/
-opaque iavgr_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def iavgr_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), iN :=
+  fun v_N v_sx i j => .mk_uN (Builtins.OnNat.bin Builtins.iavgr_ v_N (proj_uN_0 i) (proj_uN_0 j))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:118.6-118.13 -/
 inductive iavgr__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
@@ -9303,7 +9453,9 @@ inductive iavgr__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
     iavgr__is_wf v_N v_sx v_iN iN_0 ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:120.1-120.29 -/
-opaque inot_ : forall (v_N : N) (v_iN : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def inot_ : forall (v_N : N) (v_iN : iN), iN :=
+  fun v_N i => .mk_uN (Builtins.OnNat.un Builtins.inot_ v_N (proj_uN_0 i))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:120.6-120.12 -/
 inductive inot__is_wf : N -> iN -> iN -> Prop where
@@ -9314,7 +9466,9 @@ inductive inot__is_wf : N -> iN -> iN -> Prop where
     inot__is_wf v_N v_iN ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:121.1-121.29 -/
-opaque irev_ : forall (v_N : N) (v_iN : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def irev_ : forall (v_N : N) (v_iN : iN), iN :=
+  fun v_N i => .mk_uN (Builtins.OnNat.un Builtins.irev_ v_N (proj_uN_0 i))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:121.6-121.12 -/
 inductive irev__is_wf : N -> iN -> iN -> Prop where
@@ -9325,7 +9479,9 @@ inductive irev__is_wf : N -> iN -> iN -> Prop where
     irev__is_wf v_N v_iN ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:122.1-122.36 -/
-opaque iand_ : forall (v_N : N) (v_iN : iN) (iN_0 : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def iand_ : forall (v_N : N) (v_iN : iN) (iN_0 : iN), iN :=
+  fun v_N i j => .mk_uN (Builtins.OnNat.bin Builtins.iand_ v_N (proj_uN_0 i) (proj_uN_0 j))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:122.6-122.12 -/
 inductive iand__is_wf : N -> iN -> iN -> iN -> Prop where
@@ -9337,7 +9493,9 @@ inductive iand__is_wf : N -> iN -> iN -> iN -> Prop where
     iand__is_wf v_N v_iN iN_0 ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:123.1-123.39 -/
-opaque iandnot_ : forall (v_N : N) (v_iN : iN) (iN_0 : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def iandnot_ : forall (v_N : N) (v_iN : iN) (iN_0 : iN), iN :=
+  fun v_N i j => .mk_uN (Builtins.OnNat.bin Builtins.iandnot_ v_N (proj_uN_0 i) (proj_uN_0 j))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:123.6-123.15 -/
 inductive iandnot__is_wf : N -> iN -> iN -> iN -> Prop where
@@ -9349,7 +9507,9 @@ inductive iandnot__is_wf : N -> iN -> iN -> iN -> Prop where
     iandnot__is_wf v_N v_iN iN_0 ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:124.1-124.35 -/
-opaque ior_ : forall (v_N : N) (v_iN : iN) (iN_0 : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def ior_ : forall (v_N : N) (v_iN : iN) (iN_0 : iN), iN :=
+  fun v_N i j => .mk_uN (Builtins.OnNat.bin Builtins.ior_ v_N (proj_uN_0 i) (proj_uN_0 j))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:124.6-124.11 -/
 inductive ior__is_wf : N -> iN -> iN -> iN -> Prop where
@@ -9361,7 +9521,9 @@ inductive ior__is_wf : N -> iN -> iN -> iN -> Prop where
     ior__is_wf v_N v_iN iN_0 ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:125.1-125.36 -/
-opaque ixor_ : forall (v_N : N) (v_iN : iN) (iN_0 : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def ixor_ : forall (v_N : N) (v_iN : iN) (iN_0 : iN), iN :=
+  fun v_N i j => .mk_uN (Builtins.OnNat.bin Builtins.ixor_ v_N (proj_uN_0 i) (proj_uN_0 j))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:125.6-125.12 -/
 inductive ixor__is_wf : N -> iN -> iN -> iN -> Prop where
@@ -9373,7 +9535,9 @@ inductive ixor__is_wf : N -> iN -> iN -> iN -> Prop where
     ixor__is_wf v_N v_iN iN_0 ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:126.1-126.36 -/
-opaque ishl_ : forall (v_N : N) (v_iN : iN) (iN_0 : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def ishl_ : forall (v_N : N) (v_iN : iN) (iN_0 : iN), iN :=
+  fun v_N i j => .mk_uN (Builtins.OnNat.ishl_ v_N (proj_uN_0 i) (proj_uN_0 j))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:126.6-126.12 -/
 inductive ishl__is_wf : N -> iN -> iN -> iN -> Prop where
@@ -9385,7 +9549,9 @@ inductive ishl__is_wf : N -> iN -> iN -> iN -> Prop where
     ishl__is_wf v_N v_iN iN_0 ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:127.1-127.78 -/
-opaque ishr_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def ishr_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), iN :=
+  fun v_N v_sx i j => .mk_uN (Builtins.OnNat.ishr_ v_N (decide (v_sx = .S)) (proj_uN_0 i) (proj_uN_0 j))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:127.6-127.12 -/
 inductive ishr__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
@@ -9397,7 +9563,9 @@ inductive ishr__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
     ishr__is_wf v_N v_sx v_iN iN_0 ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:128.1-128.37 -/
-opaque irotl_ : forall (v_N : N) (v_iN : iN) (iN_0 : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def irotl_ : forall (v_N : N) (v_iN : iN) (iN_0 : iN), iN :=
+  fun v_N i j => .mk_uN (Builtins.OnNat.irotl_ v_N (proj_uN_0 i) (proj_uN_0 j))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:128.6-128.13 -/
 inductive irotl__is_wf : N -> iN -> iN -> iN -> Prop where
@@ -9409,7 +9577,9 @@ inductive irotl__is_wf : N -> iN -> iN -> iN -> Prop where
     irotl__is_wf v_N v_iN iN_0 ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:129.1-129.37 -/
-opaque irotr_ : forall (v_N : N) (v_iN : iN) (iN_0 : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def irotr_ : forall (v_N : N) (v_iN : iN) (iN_0 : iN), iN :=
+  fun v_N i j => .mk_uN (Builtins.OnNat.irotr_ v_N (proj_uN_0 i) (proj_uN_0 j))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:129.6-129.13 -/
 inductive irotr__is_wf : N -> iN -> iN -> iN -> Prop where
@@ -9421,7 +9591,9 @@ inductive irotr__is_wf : N -> iN -> iN -> iN -> Prop where
     irotr__is_wf v_N v_iN iN_0 ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:131.1-131.49 -/
-opaque ibitselect_ : forall (v_N : N) (v_iN : iN) (iN_0 : iN) (iN_1 : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def ibitselect_ : forall (v_N : N) (v_iN : iN) (iN_0 : iN) (iN_1 : iN), iN :=
+  fun v_N i j k => .mk_uN (Builtins.OnNat.ibitselect_ v_N (proj_uN_0 i) (proj_uN_0 j) (proj_uN_0 k))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:131.6-131.18 -/
 inductive ibitselect__is_wf : N -> iN -> iN -> iN -> iN -> Prop where
@@ -9505,7 +9677,9 @@ inductive ine__is_wf : N -> iN -> iN -> u32 -> Prop where
     ine__is_wf v_N v_iN iN_0 ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:139.1-139.75 -/
-opaque ilt_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), u32 := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def ilt_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), u32 :=
+  fun v_N v_sx i j => .mk_uN (Builtins.bool (match v_sx with | .U => decide (proj_uN_0 i < proj_uN_0 j) | .S => decide (Builtins.signed_ v_N (proj_uN_0 i) < Builtins.signed_ v_N (proj_uN_0 j))))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:139.6-139.11 -/
 inductive ilt__is_wf : N -> sx -> iN -> iN -> u32 -> Prop where
@@ -9517,7 +9691,9 @@ inductive ilt__is_wf : N -> sx -> iN -> iN -> u32 -> Prop where
     ilt__is_wf v_N v_sx v_iN iN_0 ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:140.1-140.75 -/
-opaque igt_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), u32 := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def igt_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), u32 :=
+  fun v_N v_sx i j => .mk_uN (Builtins.bool (match v_sx with | .U => decide (proj_uN_0 i > proj_uN_0 j) | .S => decide (Builtins.signed_ v_N (proj_uN_0 i) > Builtins.signed_ v_N (proj_uN_0 j))))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:140.6-140.11 -/
 inductive igt__is_wf : N -> sx -> iN -> iN -> u32 -> Prop where
@@ -9529,7 +9705,9 @@ inductive igt__is_wf : N -> sx -> iN -> iN -> u32 -> Prop where
     igt__is_wf v_N v_sx v_iN iN_0 ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:141.1-141.75 -/
-opaque ile_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), u32 := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def ile_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), u32 :=
+  fun v_N v_sx i j => .mk_uN (Builtins.bool (match v_sx with | .U => decide (proj_uN_0 i ≤ proj_uN_0 j) | .S => decide (Builtins.signed_ v_N (proj_uN_0 i) ≤ Builtins.signed_ v_N (proj_uN_0 j))))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:141.6-141.11 -/
 inductive ile__is_wf : N -> sx -> iN -> iN -> u32 -> Prop where
@@ -9541,7 +9719,9 @@ inductive ile__is_wf : N -> sx -> iN -> iN -> u32 -> Prop where
     ile__is_wf v_N v_sx v_iN iN_0 ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:142.1-142.75 -/
-opaque ige_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), u32 := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def ige_ : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN), u32 :=
+  fun v_N v_sx i j => .mk_uN (Builtins.bool (match v_sx with | .U => decide (proj_uN_0 i ≥ proj_uN_0 j) | .S => decide (Builtins.signed_ v_N (proj_uN_0 i) ≥ Builtins.signed_ v_N (proj_uN_0 j))))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:142.6-142.11 -/
 inductive ige__is_wf : N -> sx -> iN -> iN -> u32 -> Prop where
@@ -9860,7 +10040,9 @@ inductive frelaxed_nmadd__is_wf : N -> fN -> fN -> fN -> (List fN) -> Prop where
     frelaxed_nmadd__is_wf v_N v_fN fN_0 fN_1 ret_val_lst
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:308.1-308.33 -/
-opaque wrap__ : forall (v_M : M) (v_N : N) (v_iN : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def wrap__ : forall (v_M : M) (v_N : N) (v_iN : iN), iN :=
+  fun v_M v_N i => .mk_uN (Builtins.OnNat.wrap_ v_M v_N (proj_uN_0 i))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:308.6-308.13 -/
 inductive wrap___is_wf : M -> N -> iN -> iN -> Prop where
@@ -9871,7 +10053,9 @@ inductive wrap___is_wf : M -> N -> iN -> iN -> Prop where
     wrap___is_wf v_M v_N v_iN ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:309.1-309.90 -/
-opaque extend__ : forall (v_M : M) (v_N : N) (v_sx : sx) (v_iN : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def extend__ : forall (v_M : M) (v_N : N) (v_sx : sx) (v_iN : iN), iN :=
+  fun v_M v_N v_sx i => .mk_uN (Builtins.OnNat.extend_ v_M v_N (decide (v_sx = .S)) (proj_uN_0 i))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:309.6-309.15 -/
 inductive extend___is_wf : M -> N -> sx -> iN -> iN -> Prop where
@@ -9948,7 +10132,9 @@ inductive convert___is_wf : M -> N -> sx -> iN -> fN -> Prop where
     convert___is_wf v_M v_N v_sx v_iN ret_val
 
 /- Axiom Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:316.1-316.88 -/
-opaque narrow__ : forall (v_M : M) (v_N : N) (v_sx : sx) (v_iN : iN), iN := opaqueDef
+/- Hand-written definition, see `Builtins` in the preamble -/
+def narrow__ : forall (v_M : M) (v_N : N) (v_sx : sx) (v_iN : iN), iN :=
+  fun v_M v_N v_sx i => .mk_uN (Builtins.OnNat.narrow_ v_M v_N (decide (v_sx = .S)) (proj_uN_0 i))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:316.6-316.15 -/
 inductive narrow___is_wf : M -> N -> sx -> iN -> iN -> Prop where

@@ -62,6 +62,19 @@ theorem not_funcsxa_skip : ¬ fun_funcsxa [.FUNC 5] [] := by
     obtain ⟨rfl, rfl⟩ := hx
     exact hneg (.fun_funcsxa_case_1 5 [] [])
 
+/-! The hand-written integer operations on concrete values (WebAssembly 3.0, 4.3). -/
+example : iclz_ 32 (.mk_uN 1) = .mk_uN 31 := by decide
+example : ishr_ 32 .S (.mk_uN 0xFFFFFFF0) (.mk_uN 4) = .mk_uN 0xFFFFFFFF := by decide
+example : ishr_ 32 .U (.mk_uN 0xFFFFFFF0) (.mk_uN 36) = .mk_uN 0x0FFFFFFF := by decide
+example : ilt_ 32 .S (.mk_uN 0xFFFFFFFF) (.mk_uN 0) = .mk_uN 1 := by decide
+example : ilt_ 32 .U (.mk_uN 0xFFFFFFFF) (.mk_uN 0) = .mk_uN 0 := by decide
+example : wrap__ 64 32 (.mk_uN 0x100000005) = .mk_uN 5 := by decide
+example : extend__ 8 32 .S (.mk_uN 0x80) = .mk_uN 0xFFFFFF80 := by decide
+example : iadd_sat_ 8 .S (.mk_uN 0x7F) (.mk_uN 1) = .mk_uN 0x7F := by decide
+example : truncz (-7/2) = -3 := by unfold truncz Builtins.truncz; decide +kernel
+example : ibytes_ 32 (.mk_uN 0x01020304) = [.mk_byte 4, .mk_byte 3, .mk_byte 2, .mk_byte 1] := by
+  decide
+
 /-- An unsigned remainder by zero has no result, so `i32.rem_u` traps: the second clause of
 `$irem_` divides by `i_2`, which is undefined at `0`. -/
 theorem not_irem_by_zero : ¬ fun_irem_ 32 .U (.mk_uN 5) (.mk_uN 0) (some (.mk_uN 5)) := by
