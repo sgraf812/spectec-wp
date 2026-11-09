@@ -45,4 +45,7 @@ example : ((valtype.I32 : valtype) == .I32) = true := by simp
 example : LawfulBEq instr := inferInstance
 example : LawfulBEq deftype := inferInstance
 
+/-- A partial function is defined on its domain: `$zsize(I32) = 32`. -/
+example : zsize .I32 = some 32 := rfl
+
 end SpecTecWP.Regression

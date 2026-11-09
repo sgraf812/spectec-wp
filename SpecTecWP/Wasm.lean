@@ -81,7 +81,14 @@ inductive fun_prod : (List Nat) -> Nat -> Prop where
     fun_prod (([v_n] : (List Nat)) ++ n'_lst) (v_n * var_0)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/0.3-aux.seq.spectec:7.1-7.58 -/
-opaque opt_ : forall (X : Type) [Inhabited X] (var_0_lst : (List X)), (Option (Option X)) := opaqueDef
+def opt_ : ∀  (X : Type) [Inhabited X] (var_0_lst : (List X)) , (Option (Option X))
+  | X, _, [] =>
+    (some none)
+  | X, _, [w] =>
+    (some (some w))
+  | X, _, x1 =>
+      none
+
 
 /- Recursive Definition at: ../../specification/wasm-3.0/0.3-aux.seq.spectec:14.1-14.82 -/
 /- Auxiliary Definition at: ../../specification/wasm-3.0/0.3-aux.seq.spectec:14.1-14.82 -/
@@ -249,10 +256,24 @@ abbrev i64 : Type := iN
 abbrev i128 : Type := iN
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:32.1-32.35 -/
-opaque signif : forall (v_N : N), (Option Nat) := opaqueDef
+def signif : ∀  (v_N : N) , (Option Nat)
+  | 32 =>
+    (some 23)
+  | 64 =>
+    (some 52)
+  | x0 =>
+      none
+
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:36.1-36.34 -/
-opaque expon : forall (v_N : N), (Option Nat) := opaqueDef
+def expon : ∀  (v_N : N) , (Option Nat)
+  | 32 =>
+    (some 8)
+  | 64 =>
+    (some 11)
+  | x0 =>
+      none
+
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:40.1-40.47 -/
 def fun_M : ∀  (v_N : N) , Nat
@@ -1699,13 +1720,38 @@ inductive wf_moduletype : moduletype -> Prop where
     wf_moduletype (.mk_moduletype externtype_lst externtype_lst_0_lst)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:179.1-179.65 -/
-opaque IN : forall (v_N : N), (Option Inn) := opaqueDef
+def IN : ∀  (v_N : N) , (Option Inn)
+  | 32 =>
+    (some .I32)
+  | 64 =>
+    (some .I64)
+  | x0 =>
+      none
+
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:183.1-183.65 -/
-opaque FN : forall (v_N : N), (Option Fnn) := opaqueDef
+def FN : ∀  (v_N : N) , (Option Fnn)
+  | 32 =>
+    (some .F32)
+  | 64 =>
+    (some .F64)
+  | x0 =>
+      none
+
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:187.1-187.65 -/
-opaque JN : forall (v_N : N), (Option Jnn) := opaqueDef
+def JN : ∀  (v_N : N) , (Option Jnn)
+  | 8 =>
+    (some .I8)
+  | 16 =>
+    (some .I16)
+  | 32 =>
+    (some .I32)
+  | 64 =>
+    (some .I64)
+  | x0 =>
+      none
+
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:196.1-196.46 -/
 def size : ∀  (v_numtype : numtype) , Nat
@@ -1750,7 +1796,24 @@ def lsize : ∀  (v_lanetype : lanetype) , Nat
 
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:200.1-200.60 -/
-opaque zsize : forall (v_storagetype : storagetype), (Option Nat) := opaqueDef
+def zsize : ∀  (v_storagetype : storagetype) , (Option Nat)
+  | .I32 =>
+    (some (size .I32))
+  | .I64 =>
+    (some (size .I64))
+  | .F32 =>
+    (some (size .F32))
+  | .F64 =>
+    (some (size .F64))
+  | .V128 =>
+    (some (vsize .V128))
+  | .I8 =>
+    (some (psize .I8))
+  | .I16 =>
+    (some (psize .I16))
+  | x0 =>
+      none
+
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:201.1-201.71 -/
 def isize : ∀  (v_Inn : Inn) , Nat
@@ -1771,7 +1834,14 @@ def fsize : ∀  (v_Fnn : Fnn) , Nat
 
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:226.1-226.40 -/
-opaque inv_isize : forall (nat : Nat), (Option Inn) := opaqueDef
+def inv_isize : ∀  (nat : Nat) , (Option Inn)
+  | 32 =>
+    (some .I32)
+  | 64 =>
+    (some .I64)
+  | x0 =>
+      none
+
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:227.1-227.40 -/
 def inv_jsize : ∀  (nat : Nat) , (Option Jnn)
@@ -1784,7 +1854,14 @@ def inv_jsize : ∀  (nat : Nat) , (Option Jnn)
 
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:228.1-228.40 -/
-opaque inv_fsize : forall (nat : Nat), (Option Fnn) := opaqueDef
+def inv_fsize : ∀  (nat : Nat) , (Option Fnn)
+  | 32 =>
+    (some .F32)
+  | 64 =>
+    (some .F64)
+  | x0 =>
+      none
+
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:239.1-239.63 -/
 def sizenn : ∀  (v_numtype : numtype) , Nat
@@ -1893,13 +1970,62 @@ inductive unpack_is_wf : storagetype -> valtype -> Prop where
     unpack_is_wf v_storagetype ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:276.1-276.73 -/
-opaque nunpack : forall (v_storagetype : storagetype), (Option numtype) := opaqueDef
+def nunpack : ∀  (v_storagetype : storagetype) , (Option numtype)
+  | .I32 =>
+    (some .I32)
+  | .I64 =>
+    (some .I64)
+  | .F32 =>
+    (some .F32)
+  | .F64 =>
+    (some .F64)
+  | .I8 =>
+    (some .I32)
+  | .I16 =>
+    (some .I32)
+  | x0 =>
+      none
+
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:280.1-280.73 -/
-opaque vunpack : forall (v_storagetype : storagetype), (Option vectype) := opaqueDef
+def vunpack : ∀  (v_storagetype : storagetype) , (Option vectype)
+  | .V128 =>
+    (some .V128)
+  | x0 =>
+      none
+
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:283.1-283.74 -/
-opaque cunpack : forall (v_storagetype : storagetype), (Option consttype) := opaqueDef
+def cunpack : ∀  (v_storagetype : storagetype) , (Option consttype)
+  | .I32 =>
+    (some .I32)
+  | .I64 =>
+    (some .I64)
+  | .F32 =>
+    (some .F32)
+  | .F64 =>
+    (some .F64)
+  | .V128 =>
+    (some .V128)
+  | .I8 =>
+    (some .I32)
+  | .I16 =>
+    (some .I32)
+  | .I32 =>
+    (some (consttype_numtype (lunpack .I32)))
+  | .I64 =>
+    (some (consttype_numtype (lunpack .I64)))
+  | .F32 =>
+    (some (consttype_numtype (lunpack .F32)))
+  | .F64 =>
+    (some (consttype_numtype (lunpack .F64)))
+  | .I8 =>
+    (some (consttype_numtype (lunpack .I8)))
+  | .I16 =>
+    (some (consttype_numtype (lunpack .I16)))
+  | x0 =>
+      none
+
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:291.1-291.90 -/
 def minat : ∀  (v_addrtype : addrtype) (addrtype_0 : addrtype) , addrtype
@@ -1925,7 +2051,12 @@ inductive diffrt_is_wf : reftype -> reftype -> reftype -> Prop where
     diffrt_is_wf v_reftype reftype_0 ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:300.1-300.63 -/
-opaque as_deftype : forall (v_typeuse : typeuse), (Option deftype) := opaqueDef
+def as_deftype : ∀  (v_typeuse : typeuse) , (Option deftype)
+  | (._DEF v_rectype v_n) =>
+    (some (._DEF v_rectype v_n))
+  | x0 =>
+      none
+
 
 /- Recursive Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:308.1-308.87 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:308.6-308.13 -/
@@ -5183,7 +5314,20 @@ inductive memarg0_is_wf : memarg -> Prop where
     memarg0_is_wf ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:415.1-415.69 -/
-opaque const : forall (v_consttype : consttype) (v_lit_ : lit_), (Option instr) := opaqueDef
+def const : ∀  (v_consttype : consttype) (v_lit_ : lit_) , (Option instr)
+  | .I32, (.mk_lit__0 .I32 c) =>
+    (some (.CONST .I32 c))
+  | .I64, (.mk_lit__0 .I64 c) =>
+    (some (.CONST .I64 c))
+  | .F32, (.mk_lit__0 .F32 c) =>
+    (some (.CONST .F32 c))
+  | .F64, (.mk_lit__0 .F64 c) =>
+    (some (.CONST .F64 c))
+  | .V128, (.mk_lit__1 .V128 c) =>
+    (some (.VCONST .V128 c))
+  | x0, x1 =>
+      none
+
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:415.6-415.12 -/
 inductive const_is_wf : consttype -> lit_ -> instr -> Prop where
@@ -8757,7 +8901,24 @@ inductive fun_inv_signed_ : N -> Int -> Nat -> Prop where
     fun_inv_signed_ v_N i (Int.toNat (i + (Int.ofNat (2 ^ v_N))))
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:61.1-61.60 -/
-opaque fun_sx : forall (v_storagetype : storagetype), (Option (Option sx)) := opaqueDef
+def fun_sx : ∀  (v_storagetype : storagetype) , (Option (Option sx))
+  | .I32 =>
+    (some none)
+  | .I64 =>
+    (some none)
+  | .F32 =>
+    (some none)
+  | .F64 =>
+    (some none)
+  | .V128 =>
+    (some none)
+  | .I8 =>
+    (some (some .S))
+  | .I16 =>
+    (some (some .S))
+  | x0 =>
+      none
+
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:68.6-68.11 -/
 inductive fun_zero : lanetype -> lane_ -> Prop where
@@ -9719,7 +9880,22 @@ inductive reinterpret___is_wf : numtype -> numtype -> num_ -> num_ -> Prop where
     reinterpret___is_wf numtype_1 numtype_2 v_num_ ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:338.1-339.49 -/
-opaque lpacknum_ : forall (v_lanetype : lanetype) (v_num_ : num_), (Option lane_) := opaqueDef
+def lpacknum_ : ∀  (v_lanetype : lanetype) (v_num_ : num_) , (Option lane_)
+  | .I32, (.mk_num__0 .I32 c) =>
+    (some (.mk_lane__0 (Jnn_addrtype .I32) c))
+  | .I64, (.mk_num__0 .I64 c) =>
+    (some (.mk_lane__0 (Jnn_addrtype .I64) c))
+  | .F32, (.mk_num__1 .F32 c) =>
+    (some (.mk_lane__1 .F32 c))
+  | .F64, (.mk_num__1 .F64 c) =>
+    (some (.mk_lane__1 .F64 c))
+  | .I8, (.mk_num__0 .I32 c) =>
+    (some (.mk_lane__0 (Jnn_packtype .I8) (wrap__ (size (lunpack (lanetype_packtype .I8))) (psize .I8) c)))
+  | .I16, (.mk_num__0 .I32 c) =>
+    (some (.mk_lane__0 (Jnn_packtype .I16) (wrap__ (size (lunpack (lanetype_packtype .I16))) (psize .I16) c)))
+  | x0, x1 =>
+      none
+
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:338.6-338.16 -/
 inductive lpacknum__is_wf : lanetype -> num_ -> lane_ -> Prop where
@@ -9731,7 +9907,24 @@ inductive lpacknum__is_wf : lanetype -> num_ -> lane_ -> Prop where
     lpacknum__is_wf v_lanetype v_num_ ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:340.1-341.49 -/
-opaque cpacknum_ : forall (v_storagetype : storagetype) (v_lit_ : lit_), (Option lit_) := opaqueDef
+def cpacknum_ : ∀  (v_storagetype : storagetype) (v_lit_ : lit_) , (Option lit_)
+  | .I32, c =>
+    (some c)
+  | .I64, c =>
+    (some c)
+  | .F32, c =>
+    (some c)
+  | .F64, c =>
+    (some c)
+  | .V128, c =>
+    (some c)
+  | .I8, (.mk_lit__0 .I32 (.mk_num__0 .I32 c)) =>
+    (some (.mk_lit__2 .I8 (wrap__ (size (lunpack (lanetype_packtype .I8))) (psize .I8) c)))
+  | .I16, (.mk_lit__0 .I32 (.mk_num__0 .I32 c)) =>
+    (some (.mk_lit__2 .I16 (wrap__ (size (lunpack (lanetype_packtype .I16))) (psize .I16) c)))
+  | x0, x1 =>
+      none
+
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:340.6-340.16 -/
 inductive cpacknum__is_wf : storagetype -> lit_ -> lit_ -> Prop where
@@ -9745,7 +9938,22 @@ inductive cpacknum__is_wf : storagetype -> lit_ -> lit_ -> Prop where
     cpacknum__is_wf v_storagetype v_lit_ ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:351.1-352.53 -/
-opaque lunpacknum_ : forall (v_lanetype : lanetype) (v_lane_ : lane_), (Option num_) := opaqueDef
+def lunpacknum_ : ∀  (v_lanetype : lanetype) (v_lane_ : lane_) , (Option num_)
+  | .I32, (.mk_lane__0 .I32 c) =>
+    (some (.mk_num__0 .I32 c))
+  | .I64, (.mk_lane__0 .I64 c) =>
+    (some (.mk_num__0 .I64 c))
+  | .F32, (.mk_lane__1 .F32 c) =>
+    (some (.mk_num__1 .F32 c))
+  | .F64, (.mk_lane__1 .F64 c) =>
+    (some (.mk_num__1 .F64 c))
+  | .I8, (.mk_lane__0 .I8 c) =>
+    (some (.mk_num__0 .I32 (extend__ (psize .I8) (size (lunpack (lanetype_packtype .I8))) .U c)))
+  | .I16, (.mk_lane__0 .I16 c) =>
+    (some (.mk_num__0 .I32 (extend__ (psize .I16) (size (lunpack (lanetype_packtype .I16))) .U c)))
+  | x0, x1 =>
+      none
+
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:351.6-351.18 -/
 inductive lunpacknum__is_wf : lanetype -> lane_ -> num_ -> Prop where
@@ -9757,7 +9965,24 @@ inductive lunpacknum__is_wf : lanetype -> lane_ -> num_ -> Prop where
     lunpacknum__is_wf v_lanetype v_lane_ ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:353.1-354.53 -/
-opaque cunpacknum_ : forall (v_storagetype : storagetype) (v_lit_ : lit_), (Option lit_) := opaqueDef
+def cunpacknum_ : ∀  (v_storagetype : storagetype) (v_lit_ : lit_) , (Option lit_)
+  | .I32, c =>
+    (some c)
+  | .I64, c =>
+    (some c)
+  | .F32, c =>
+    (some c)
+  | .F64, c =>
+    (some c)
+  | .V128, c =>
+    (some c)
+  | .I8, (.mk_lit__2 .I8 c) =>
+    (some (.mk_lit__0 .I32 (.mk_num__0 .I32 (extend__ (psize .I8) (size (lunpack (lanetype_packtype .I8))) .U c))))
+  | .I16, (.mk_lit__2 .I16 c) =>
+    (some (.mk_lit__0 .I32 (.mk_num__0 .I32 (extend__ (psize .I16) (size (lunpack (lanetype_packtype .I16))) .U c))))
+  | x0, x1 =>
+      none
+
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:353.6-353.18 -/
 inductive cunpacknum__is_wf : storagetype -> lit_ -> lit_ -> Prop where
@@ -10120,7 +10345,14 @@ inductive fun_binop_ : numtype -> binop_ -> num_ -> num_ -> (Option (List num_))
     fun_binop_ x0 x1 x2 x3 none
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:370.1-371.28 -/
-opaque fun_testop_ : forall (v_numtype : numtype) (v_testop_ : testop_) (v_num_ : num_), (Option u32) := opaqueDef
+def fun_testop_ : ∀  (v_numtype : numtype) (v_testop_ : testop_) (v_num_ : num_) , (Option u32)
+  | .I32, (.mk_testop__0 .I32 .EQZ), (.mk_num__0 .I32 i) =>
+    (some (ieqz_ (sizenn (numtype_addrtype .I32)) i))
+  | .I64, (.mk_testop__0 .I64 .EQZ), (.mk_num__0 .I64 i) =>
+    (some (ieqz_ (sizenn (numtype_addrtype .I64)) i))
+  | x0, x1, x2 =>
+      none
+
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:370.6-370.14 -/
 inductive testop__is_wf : numtype -> testop_ -> num_ -> u32 -> Prop where
@@ -10133,7 +10365,58 @@ inductive testop__is_wf : numtype -> testop_ -> num_ -> u32 -> Prop where
     testop__is_wf v_numtype v_testop_ v_num_ ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:372.1-373.32 -/
-opaque fun_relop_ : forall (v_numtype : numtype) (v_relop_ : relop_) (v_num_ : num_) (num__0 : num_), (Option u32) := opaqueDef
+def fun_relop_ : ∀  (v_numtype : numtype) (v_relop_ : relop_) (v_num_ : num_) (num__0 : num_) , (Option u32)
+  | .I32, (.mk_relop__0 .I32 .EQ), (.mk_num__0 .I32 i_1), (.mk_num__0 .I32 i_2) =>
+    (some (ieq_ (sizenn (numtype_addrtype .I32)) i_1 i_2))
+  | .I64, (.mk_relop__0 .I64 .EQ), (.mk_num__0 .I64 i_1), (.mk_num__0 .I64 i_2) =>
+    (some (ieq_ (sizenn (numtype_addrtype .I64)) i_1 i_2))
+  | .I32, (.mk_relop__0 .I32 .NE), (.mk_num__0 .I32 i_1), (.mk_num__0 .I32 i_2) =>
+    (some (ine_ (sizenn (numtype_addrtype .I32)) i_1 i_2))
+  | .I64, (.mk_relop__0 .I64 .NE), (.mk_num__0 .I64 i_1), (.mk_num__0 .I64 i_2) =>
+    (some (ine_ (sizenn (numtype_addrtype .I64)) i_1 i_2))
+  | .I32, (.mk_relop__0 .I32 (.LT v_sx)), (.mk_num__0 .I32 i_1), (.mk_num__0 .I32 i_2) =>
+    (some (ilt_ (sizenn (numtype_addrtype .I32)) v_sx i_1 i_2))
+  | .I64, (.mk_relop__0 .I64 (.LT v_sx)), (.mk_num__0 .I64 i_1), (.mk_num__0 .I64 i_2) =>
+    (some (ilt_ (sizenn (numtype_addrtype .I64)) v_sx i_1 i_2))
+  | .I32, (.mk_relop__0 .I32 (.GT v_sx)), (.mk_num__0 .I32 i_1), (.mk_num__0 .I32 i_2) =>
+    (some (igt_ (sizenn (numtype_addrtype .I32)) v_sx i_1 i_2))
+  | .I64, (.mk_relop__0 .I64 (.GT v_sx)), (.mk_num__0 .I64 i_1), (.mk_num__0 .I64 i_2) =>
+    (some (igt_ (sizenn (numtype_addrtype .I64)) v_sx i_1 i_2))
+  | .I32, (.mk_relop__0 .I32 (.LE v_sx)), (.mk_num__0 .I32 i_1), (.mk_num__0 .I32 i_2) =>
+    (some (ile_ (sizenn (numtype_addrtype .I32)) v_sx i_1 i_2))
+  | .I64, (.mk_relop__0 .I64 (.LE v_sx)), (.mk_num__0 .I64 i_1), (.mk_num__0 .I64 i_2) =>
+    (some (ile_ (sizenn (numtype_addrtype .I64)) v_sx i_1 i_2))
+  | .I32, (.mk_relop__0 .I32 (.GE v_sx)), (.mk_num__0 .I32 i_1), (.mk_num__0 .I32 i_2) =>
+    (some (ige_ (sizenn (numtype_addrtype .I32)) v_sx i_1 i_2))
+  | .I64, (.mk_relop__0 .I64 (.GE v_sx)), (.mk_num__0 .I64 i_1), (.mk_num__0 .I64 i_2) =>
+    (some (ige_ (sizenn (numtype_addrtype .I64)) v_sx i_1 i_2))
+  | .F32, (.mk_relop__1 .F32 .EQ), (.mk_num__1 .F32 f_1), (.mk_num__1 .F32 f_2) =>
+    (some (feq_ (sizenn (numtype_Fnn .F32)) f_1 f_2))
+  | .F64, (.mk_relop__1 .F64 .EQ), (.mk_num__1 .F64 f_1), (.mk_num__1 .F64 f_2) =>
+    (some (feq_ (sizenn (numtype_Fnn .F64)) f_1 f_2))
+  | .F32, (.mk_relop__1 .F32 .NE), (.mk_num__1 .F32 f_1), (.mk_num__1 .F32 f_2) =>
+    (some (fne_ (sizenn (numtype_Fnn .F32)) f_1 f_2))
+  | .F64, (.mk_relop__1 .F64 .NE), (.mk_num__1 .F64 f_1), (.mk_num__1 .F64 f_2) =>
+    (some (fne_ (sizenn (numtype_Fnn .F64)) f_1 f_2))
+  | .F32, (.mk_relop__1 .F32 .LT), (.mk_num__1 .F32 f_1), (.mk_num__1 .F32 f_2) =>
+    (some (flt_ (sizenn (numtype_Fnn .F32)) f_1 f_2))
+  | .F64, (.mk_relop__1 .F64 .LT), (.mk_num__1 .F64 f_1), (.mk_num__1 .F64 f_2) =>
+    (some (flt_ (sizenn (numtype_Fnn .F64)) f_1 f_2))
+  | .F32, (.mk_relop__1 .F32 .GT), (.mk_num__1 .F32 f_1), (.mk_num__1 .F32 f_2) =>
+    (some (fgt_ (sizenn (numtype_Fnn .F32)) f_1 f_2))
+  | .F64, (.mk_relop__1 .F64 .GT), (.mk_num__1 .F64 f_1), (.mk_num__1 .F64 f_2) =>
+    (some (fgt_ (sizenn (numtype_Fnn .F64)) f_1 f_2))
+  | .F32, (.mk_relop__1 .F32 .LE), (.mk_num__1 .F32 f_1), (.mk_num__1 .F32 f_2) =>
+    (some (fle_ (sizenn (numtype_Fnn .F32)) f_1 f_2))
+  | .F64, (.mk_relop__1 .F64 .LE), (.mk_num__1 .F64 f_1), (.mk_num__1 .F64 f_2) =>
+    (some (fle_ (sizenn (numtype_Fnn .F64)) f_1 f_2))
+  | .F32, (.mk_relop__1 .F32 .GE), (.mk_num__1 .F32 f_1), (.mk_num__1 .F32 f_2) =>
+    (some (fge_ (sizenn (numtype_Fnn .F32)) f_1 f_2))
+  | .F64, (.mk_relop__1 .F64 .GE), (.mk_num__1 .F64 f_1), (.mk_num__1 .F64 f_2) =>
+    (some (fge_ (sizenn (numtype_Fnn .F64)) f_1 f_2))
+  | x0, x1, x2, x3 =>
+      none
+
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:372.6-372.13 -/
 inductive relop__is_wf : numtype -> relop_ -> num_ -> num_ -> u32 -> Prop where
@@ -12796,7 +13079,12 @@ inductive vswizzlop__is_wf : bshape -> vswizzlop_ -> vec_ -> vec_ -> vec_ -> Pro
     vswizzlop__is_wf v_bshape v_vswizzlop_ v_vec_ vec__0 ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:192.1-193.40 -/
-opaque vshufflop_ : forall (v_bshape : bshape) (var_0_lst : (List laneidx)) (v_vec_ : vec_) (vec__0 : vec_), (Option vec_) := opaqueDef
+def vshufflop_ : ∀  (v_bshape : bshape) (var_0_lst : (List laneidx)) (v_vec_ : vec_) (vec__0 : vec_) , (Option vec_)
+  | (.mk_bshape (.X .I8 (.mk_dim v_M))), i_lst, v_1, v_2 =>
+    (ivshufflop_ (.X .I8 (.mk_dim v_M)) i_lst v_1 v_2)
+  | x0, x1, x2, x3 =>
+      none
+
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:192.6-192.17 -/
 inductive vshufflop__is_wf : bshape -> (List laneidx) -> vec_ -> vec_ -> vec_ -> Prop where
@@ -14729,7 +15017,28 @@ inductive wf_config : config -> Prop where
 def Ki : Nat := 1024
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:178.1-178.114 -/
-opaque packfield_ : forall (v_storagetype : storagetype) (v_val : val), (Option fieldval) := opaqueDef
+def packfield_ : ∀  (v_storagetype : storagetype) (v_val : val) , (Option fieldval)
+  | .BOT, v_val =>
+    (some (fieldval_val v_val))
+  | (.REF null_opt v_heaptype), v_val =>
+    (some (fieldval_val v_val))
+  | .V128, v_val =>
+    (some (fieldval_val v_val))
+  | .F64, v_val =>
+    (some (fieldval_val v_val))
+  | .F32, v_val =>
+    (some (fieldval_val v_val))
+  | .I64, v_val =>
+    (some (fieldval_val v_val))
+  | .I32, v_val =>
+    (some (fieldval_val v_val))
+  | .I8, (.CONST .I32 (.mk_num__0 .I32 i)) =>
+    (some (.PACK .I8 (wrap__ 32 (psize .I8) i)))
+  | .I16, (.CONST .I32 (.mk_num__0 .I32 i)) =>
+    (some (.PACK .I16 (wrap__ 32 (psize .I16) i)))
+  | x0, x1 =>
+      none
+
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:178.6-178.17 -/
 inductive packfield__is_wf : storagetype -> val -> fieldval -> Prop where
@@ -14742,7 +15051,154 @@ inductive packfield__is_wf : storagetype -> val -> fieldval -> Prop where
     packfield__is_wf v_storagetype v_val ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:179.1-179.126 -/
-opaque unpackfield_ : forall (v_storagetype : storagetype) (var_0_opt : (Option sx)) (v_fieldval : fieldval), (Option val) := opaqueDef
+def unpackfield_ : ∀  (v_storagetype : storagetype) (var_0_opt : (Option sx)) (v_fieldval : fieldval) , (Option val)
+  | .BOT, none, (.REF_EXTERN v_ref) =>
+    (some (.REF_EXTERN v_ref))
+  | (.REF null_opt v_heaptype), none, (.REF_EXTERN v_ref) =>
+    (some (.REF_EXTERN v_ref))
+  | .V128, none, (.REF_EXTERN v_ref) =>
+    (some (.REF_EXTERN v_ref))
+  | .F64, none, (.REF_EXTERN v_ref) =>
+    (some (.REF_EXTERN v_ref))
+  | .F32, none, (.REF_EXTERN v_ref) =>
+    (some (.REF_EXTERN v_ref))
+  | .I64, none, (.REF_EXTERN v_ref) =>
+    (some (.REF_EXTERN v_ref))
+  | .I32, none, (.REF_EXTERN v_ref) =>
+    (some (.REF_EXTERN v_ref))
+  | .BOT, none, (.REF_HOST_ADDR v_hostaddr) =>
+    (some (.REF_HOST_ADDR v_hostaddr))
+  | (.REF null_opt v_heaptype), none, (.REF_HOST_ADDR v_hostaddr) =>
+    (some (.REF_HOST_ADDR v_hostaddr))
+  | .V128, none, (.REF_HOST_ADDR v_hostaddr) =>
+    (some (.REF_HOST_ADDR v_hostaddr))
+  | .F64, none, (.REF_HOST_ADDR v_hostaddr) =>
+    (some (.REF_HOST_ADDR v_hostaddr))
+  | .F32, none, (.REF_HOST_ADDR v_hostaddr) =>
+    (some (.REF_HOST_ADDR v_hostaddr))
+  | .I64, none, (.REF_HOST_ADDR v_hostaddr) =>
+    (some (.REF_HOST_ADDR v_hostaddr))
+  | .I32, none, (.REF_HOST_ADDR v_hostaddr) =>
+    (some (.REF_HOST_ADDR v_hostaddr))
+  | .BOT, none, (.REF_EXN_ADDR v_exnaddr) =>
+    (some (.REF_EXN_ADDR v_exnaddr))
+  | (.REF null_opt v_heaptype), none, (.REF_EXN_ADDR v_exnaddr) =>
+    (some (.REF_EXN_ADDR v_exnaddr))
+  | .V128, none, (.REF_EXN_ADDR v_exnaddr) =>
+    (some (.REF_EXN_ADDR v_exnaddr))
+  | .F64, none, (.REF_EXN_ADDR v_exnaddr) =>
+    (some (.REF_EXN_ADDR v_exnaddr))
+  | .F32, none, (.REF_EXN_ADDR v_exnaddr) =>
+    (some (.REF_EXN_ADDR v_exnaddr))
+  | .I64, none, (.REF_EXN_ADDR v_exnaddr) =>
+    (some (.REF_EXN_ADDR v_exnaddr))
+  | .I32, none, (.REF_EXN_ADDR v_exnaddr) =>
+    (some (.REF_EXN_ADDR v_exnaddr))
+  | .BOT, none, (.REF_FUNC_ADDR v_funcaddr) =>
+    (some (.REF_FUNC_ADDR v_funcaddr))
+  | (.REF null_opt v_heaptype), none, (.REF_FUNC_ADDR v_funcaddr) =>
+    (some (.REF_FUNC_ADDR v_funcaddr))
+  | .V128, none, (.REF_FUNC_ADDR v_funcaddr) =>
+    (some (.REF_FUNC_ADDR v_funcaddr))
+  | .F64, none, (.REF_FUNC_ADDR v_funcaddr) =>
+    (some (.REF_FUNC_ADDR v_funcaddr))
+  | .F32, none, (.REF_FUNC_ADDR v_funcaddr) =>
+    (some (.REF_FUNC_ADDR v_funcaddr))
+  | .I64, none, (.REF_FUNC_ADDR v_funcaddr) =>
+    (some (.REF_FUNC_ADDR v_funcaddr))
+  | .I32, none, (.REF_FUNC_ADDR v_funcaddr) =>
+    (some (.REF_FUNC_ADDR v_funcaddr))
+  | .BOT, none, (.REF_ARRAY_ADDR v_arrayaddr) =>
+    (some (.REF_ARRAY_ADDR v_arrayaddr))
+  | (.REF null_opt v_heaptype), none, (.REF_ARRAY_ADDR v_arrayaddr) =>
+    (some (.REF_ARRAY_ADDR v_arrayaddr))
+  | .V128, none, (.REF_ARRAY_ADDR v_arrayaddr) =>
+    (some (.REF_ARRAY_ADDR v_arrayaddr))
+  | .F64, none, (.REF_ARRAY_ADDR v_arrayaddr) =>
+    (some (.REF_ARRAY_ADDR v_arrayaddr))
+  | .F32, none, (.REF_ARRAY_ADDR v_arrayaddr) =>
+    (some (.REF_ARRAY_ADDR v_arrayaddr))
+  | .I64, none, (.REF_ARRAY_ADDR v_arrayaddr) =>
+    (some (.REF_ARRAY_ADDR v_arrayaddr))
+  | .I32, none, (.REF_ARRAY_ADDR v_arrayaddr) =>
+    (some (.REF_ARRAY_ADDR v_arrayaddr))
+  | .BOT, none, (.REF_STRUCT_ADDR v_structaddr) =>
+    (some (.REF_STRUCT_ADDR v_structaddr))
+  | (.REF null_opt v_heaptype), none, (.REF_STRUCT_ADDR v_structaddr) =>
+    (some (.REF_STRUCT_ADDR v_structaddr))
+  | .V128, none, (.REF_STRUCT_ADDR v_structaddr) =>
+    (some (.REF_STRUCT_ADDR v_structaddr))
+  | .F64, none, (.REF_STRUCT_ADDR v_structaddr) =>
+    (some (.REF_STRUCT_ADDR v_structaddr))
+  | .F32, none, (.REF_STRUCT_ADDR v_structaddr) =>
+    (some (.REF_STRUCT_ADDR v_structaddr))
+  | .I64, none, (.REF_STRUCT_ADDR v_structaddr) =>
+    (some (.REF_STRUCT_ADDR v_structaddr))
+  | .I32, none, (.REF_STRUCT_ADDR v_structaddr) =>
+    (some (.REF_STRUCT_ADDR v_structaddr))
+  | .BOT, none, .REF_NULL_ADDR =>
+    (some .REF_NULL_ADDR)
+  | (.REF null_opt v_heaptype), none, .REF_NULL_ADDR =>
+    (some .REF_NULL_ADDR)
+  | .V128, none, .REF_NULL_ADDR =>
+    (some .REF_NULL_ADDR)
+  | .F64, none, .REF_NULL_ADDR =>
+    (some .REF_NULL_ADDR)
+  | .F32, none, .REF_NULL_ADDR =>
+    (some .REF_NULL_ADDR)
+  | .I64, none, .REF_NULL_ADDR =>
+    (some .REF_NULL_ADDR)
+  | .I32, none, .REF_NULL_ADDR =>
+    (some .REF_NULL_ADDR)
+  | .BOT, none, (.REF_I31_NUM v_u31) =>
+    (some (.REF_I31_NUM v_u31))
+  | (.REF null_opt v_heaptype), none, (.REF_I31_NUM v_u31) =>
+    (some (.REF_I31_NUM v_u31))
+  | .V128, none, (.REF_I31_NUM v_u31) =>
+    (some (.REF_I31_NUM v_u31))
+  | .F64, none, (.REF_I31_NUM v_u31) =>
+    (some (.REF_I31_NUM v_u31))
+  | .F32, none, (.REF_I31_NUM v_u31) =>
+    (some (.REF_I31_NUM v_u31))
+  | .I64, none, (.REF_I31_NUM v_u31) =>
+    (some (.REF_I31_NUM v_u31))
+  | .I32, none, (.REF_I31_NUM v_u31) =>
+    (some (.REF_I31_NUM v_u31))
+  | .BOT, none, (.VCONST v_vectype var_1) =>
+    (some (.VCONST v_vectype var_1))
+  | (.REF null_opt v_heaptype), none, (.VCONST v_vectype var_1) =>
+    (some (.VCONST v_vectype var_1))
+  | .V128, none, (.VCONST v_vectype var_1) =>
+    (some (.VCONST v_vectype var_1))
+  | .F64, none, (.VCONST v_vectype var_1) =>
+    (some (.VCONST v_vectype var_1))
+  | .F32, none, (.VCONST v_vectype var_1) =>
+    (some (.VCONST v_vectype var_1))
+  | .I64, none, (.VCONST v_vectype var_1) =>
+    (some (.VCONST v_vectype var_1))
+  | .I32, none, (.VCONST v_vectype var_1) =>
+    (some (.VCONST v_vectype var_1))
+  | .BOT, none, (.CONST v_numtype var_0) =>
+    (some (.CONST v_numtype var_0))
+  | (.REF null_opt v_heaptype), none, (.CONST v_numtype var_0) =>
+    (some (.CONST v_numtype var_0))
+  | .V128, none, (.CONST v_numtype var_0) =>
+    (some (.CONST v_numtype var_0))
+  | .F64, none, (.CONST v_numtype var_0) =>
+    (some (.CONST v_numtype var_0))
+  | .F32, none, (.CONST v_numtype var_0) =>
+    (some (.CONST v_numtype var_0))
+  | .I64, none, (.CONST v_numtype var_0) =>
+    (some (.CONST v_numtype var_0))
+  | .I32, none, (.CONST v_numtype var_0) =>
+    (some (.CONST v_numtype var_0))
+  | .I8, (some v_sx), (.PACK .I8 i) =>
+    (some (.CONST .I32 (.mk_num__0 .I32 (extend__ (psize .I8) 32 v_sx i))))
+  | .I16, (some v_sx), (.PACK .I16 i) =>
+    (some (.CONST .I32 (.mk_num__0 .I32 (extend__ (psize .I16) 32 v_sx i))))
+  | x0, x1, x2 =>
+      none
+
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:179.6-179.19 -/
 inductive unpackfield__is_wf : storagetype -> (Option sx) -> fieldval -> val -> Prop where
