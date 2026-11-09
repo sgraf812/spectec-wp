@@ -18,7 +18,8 @@ runs as the instruction prefix `[.CONST .I32 a, .CONST .I32 b]`.
 that `Q` or `E` accepts:
 
 * a configuration of values `vs` satisfies `Q z vs`;
-* an exit configuration (`br`, `return`, `throw_ref`, `trap`) with exit `e` satisfies `E e z`;
+* an exit configuration (`br`, `return`, `throw_ref`, `trap`, possibly followed by more
+  instructions) with exit `e` satisfies `E e z`;
 * any other configuration steps, and every successor is `Safe`.
 
 `Step` requires `wf_config` of its source and of its target. `wp` therefore assumes `wf_config`
@@ -53,15 +54,17 @@ abbrev Assn := state → Stack → Prop
 /-- Exception postconditions, one assertion on the state per exit. -/
 abbrev EAssn := Exit → state → Prop
 
-/-- `IsExit is e`: the instruction sequence `is` has left early with exit `e`. A `br` or a
-`return` ignores the instructions after it. -/
+/-- `IsExit is e`: the instruction sequence `is` has left early with exit `e`; the
+instructions after the exit do not run. A trap and an exception discard the values
+before them: the configuration reduces to `[TRAP]` or `[REF.EXN_ADDR a, THROW_REF]`. -/
 inductive IsExit : List instr → Exit → Prop where
   | br (vs : Stack) (l : labelidx) (rest : List instr) :
       IsExit (code vs (.BR l :: rest)) (.br l vs)
   | ret (vs : Stack) (rest : List instr) :
       IsExit (code vs (.RETURN :: rest)) (.ret vs)
-  | throw (a : addr) : IsExit [.REF_EXN_ADDR a, .THROW_REF] (.throw a)
-  | trap : IsExit [.TRAP] .trap
+  | throw (vs : Stack) (a : addr) (rest : List instr) :
+      IsExit (code vs (.REF_EXN_ADDR a :: .THROW_REF :: rest)) (.throw a)
+  | trap (vs : Stack) (rest : List instr) : IsExit (code vs (.TRAP :: rest)) .trap
 
 /-- Every maximal `Step` path from the configuration is finite, and its last configuration
 satisfies `Q` (values) or `E` (an exit). -/

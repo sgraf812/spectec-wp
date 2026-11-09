@@ -3,3 +3,14 @@ defaultTargets = ["SpecTecWP"]
 
 [[lean_lib]]
 name = "SpecTecWP"
+
+# The Talos interpreter and its `Std.WP` instance, linked from ~/code/lean/talos.
+[[lean_lib]]
+name = "Interpreter"
+
+[[lean_lib]]
+name = "WasmWP"
+roots = ["WasmWP.Basic", "WasmWP.Spec", "WasmWP.Call", "WasmWP.Block", "WasmWP.Loop"]
+
+[[lean_lib]]
+name = "Adequacy"

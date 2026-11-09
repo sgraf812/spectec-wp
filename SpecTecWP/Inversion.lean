@@ -133,7 +133,7 @@ def StepResult (z : state) (ws : List val) (i : instr) (t : List instr) (c' : co
       c' = .mk_config z' (L'' ++ t)) ∨
   ((i = .TRAP ∨ i = .THROW_REF) ∧ ∃ (ws' : List val) (t' : List instr), c' = .mk_config z (ws'.map instr_val ++ i :: t') ∧
       ws'.length + t'.length < ws.length + t.length ∧
-      (i = .THROW_REF → ws'.getLast? = ws.getLast?))
+      (i = .THROW_REF → ∃ a, ws.getLast? = some (.REF_EXN_ADDR a) ∧ ws'.getLast? = ws.getLast?))
 
 theorem StepResult.of_redex {z : state} {ws : List val} {i : instr} {t : List instr}
     {c c' : config} (hc : c = .mk_config z (ws.map instr_val ++ i :: t)) (hi : toVal i = none)
@@ -174,7 +174,8 @@ theorem Step.inv_aux {c c' : config} (h : Step c c') :
       have hL' : L = (vs ++ [val.REF_EXN_ADDR a]).map instr_val ++ .THROW_REF :: rest := by
         simp [hL, instr_val]
       obtain ⟨rfl, rfl, rfl⟩ := vals_cons_inj (hL'.symm.trans hc) rfl hi
-      refine .inr ⟨.inr rfl, [.REF_EXN_ADDR a], [], by simp [instr_val], ?_, by simp⟩
+      refine .inr ⟨.inr rfl, [.REF_EXN_ADDR a], [], by simp [instr_val], ?_,
+        fun _ => ⟨a, by simp, by simp⟩⟩
       rcases hne with h | h
       · cases vs with
         | nil => exact absurd rfl h
@@ -208,8 +209,8 @@ theorem Step.inv_aux {c c' : config} (h : Step c c') :
       refine .inr ⟨hb, vals ++ ws', t' ++ L₁, by simp, ?_, ?_⟩
       · simp only [List.length_append]; omega
       · intro hT
-        have := hlast hT
-        simp only [List.getLast?_append, this]
+        obtain ⟨a, ha, hl⟩ := hlast hT
+        exact ⟨a, by simp [List.getLast?_append, ha], by simp only [List.getLast?_append, hl]⟩
   all_goals
     intro hs z ws i t hc hi
     exact StepResult.of_redex hc hi hs (by simp only [instrsOf_mk]; redex)
