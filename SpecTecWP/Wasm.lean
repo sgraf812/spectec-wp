@@ -540,6 +540,10 @@ inductive wf_externidx : externidx -> Prop where
     (wf_uN 32 v_tagidx) ->
     wf_externidx (.TAG v_tagidx)
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:129.6-129.14 -/
+inductive fun_funcsxx_before_fun_funcsxx_case_2 : (List externidx) -> Prop where
+  | fun_funcsxx_case_1 : forall (x : uN) (xx_lst : (List externidx)) (var_0 : (List typeidx)), fun_funcsxx_before_fun_funcsxx_case_2 (([(.FUNC x)] : (List externidx)) ++ xx_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:129.1-129.86 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:129.6-129.14 -/
 inductive fun_funcsxx : (List externidx) -> (List typeidx) -> Prop where
@@ -548,6 +552,7 @@ inductive fun_funcsxx : (List externidx) -> (List typeidx) -> Prop where
     (fun_funcsxx xx_lst var_0) ->
     fun_funcsxx (([(.FUNC x)] : (List externidx)) ++ xx_lst) (([x] : (List typeidx)) ++ var_0)
   | fun_funcsxx_case_2 : forall (v_externidx : externidx) (xx_lst : (List externidx)) (var_0 : (List typeidx)), 
+    (¬(fun_funcsxx_before_fun_funcsxx_case_2 (([v_externidx] : (List externidx)) ++ xx_lst))) ->
     (fun_funcsxx xx_lst var_0) ->
     fun_funcsxx (([v_externidx] : (List externidx)) ++ xx_lst) var_0
 
@@ -561,6 +566,10 @@ inductive funcsxx_is_wf : (List externidx) -> (List typeidx) -> Prop where
     Forall (fun (ret_val : typeidx) => (wf_uN 32 ret_val)) ret_val_lst ->
     funcsxx_is_wf var_0_lst ret_val_lst
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:130.6-130.16 -/
+inductive fun_globalsxx_before_fun_globalsxx_case_2 : (List externidx) -> Prop where
+  | fun_globalsxx_case_1 : forall (x : uN) (xx_lst : (List externidx)) (var_0 : (List globalidx)), fun_globalsxx_before_fun_globalsxx_case_2 (([(.GLOBAL x)] : (List externidx)) ++ xx_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:130.1-130.88 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:130.6-130.16 -/
 inductive fun_globalsxx : (List externidx) -> (List globalidx) -> Prop where
@@ -569,6 +578,7 @@ inductive fun_globalsxx : (List externidx) -> (List globalidx) -> Prop where
     (fun_globalsxx xx_lst var_0) ->
     fun_globalsxx (([(.GLOBAL x)] : (List externidx)) ++ xx_lst) (([x] : (List globalidx)) ++ var_0)
   | fun_globalsxx_case_2 : forall (v_externidx : externidx) (xx_lst : (List externidx)) (var_0 : (List globalidx)), 
+    (¬(fun_globalsxx_before_fun_globalsxx_case_2 (([v_externidx] : (List externidx)) ++ xx_lst))) ->
     (fun_globalsxx xx_lst var_0) ->
     fun_globalsxx (([v_externidx] : (List externidx)) ++ xx_lst) var_0
 
@@ -582,6 +592,10 @@ inductive globalsxx_is_wf : (List externidx) -> (List globalidx) -> Prop where
     Forall (fun (ret_val : globalidx) => (wf_uN 32 ret_val)) ret_val_lst ->
     globalsxx_is_wf var_0_lst ret_val_lst
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:131.6-131.15 -/
+inductive fun_tablesxx_before_fun_tablesxx_case_2 : (List externidx) -> Prop where
+  | fun_tablesxx_case_1 : forall (x : uN) (xx_lst : (List externidx)) (var_0 : (List tableidx)), fun_tablesxx_before_fun_tablesxx_case_2 (([(.TABLE x)] : (List externidx)) ++ xx_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:131.1-131.87 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:131.6-131.15 -/
 inductive fun_tablesxx : (List externidx) -> (List tableidx) -> Prop where
@@ -590,6 +604,7 @@ inductive fun_tablesxx : (List externidx) -> (List tableidx) -> Prop where
     (fun_tablesxx xx_lst var_0) ->
     fun_tablesxx (([(.TABLE x)] : (List externidx)) ++ xx_lst) (([x] : (List tableidx)) ++ var_0)
   | fun_tablesxx_case_2 : forall (v_externidx : externidx) (xx_lst : (List externidx)) (var_0 : (List tableidx)), 
+    (¬(fun_tablesxx_before_fun_tablesxx_case_2 (([v_externidx] : (List externidx)) ++ xx_lst))) ->
     (fun_tablesxx xx_lst var_0) ->
     fun_tablesxx (([v_externidx] : (List externidx)) ++ xx_lst) var_0
 
@@ -603,6 +618,10 @@ inductive tablesxx_is_wf : (List externidx) -> (List tableidx) -> Prop where
     Forall (fun (ret_val : tableidx) => (wf_uN 32 ret_val)) ret_val_lst ->
     tablesxx_is_wf var_0_lst ret_val_lst
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:132.6-132.13 -/
+inductive fun_memsxx_before_fun_memsxx_case_2 : (List externidx) -> Prop where
+  | fun_memsxx_case_1 : forall (x : uN) (xx_lst : (List externidx)) (var_0 : (List memidx)), fun_memsxx_before_fun_memsxx_case_2 (([(.MEM x)] : (List externidx)) ++ xx_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:132.1-132.85 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:132.6-132.13 -/
 inductive fun_memsxx : (List externidx) -> (List memidx) -> Prop where
@@ -611,6 +630,7 @@ inductive fun_memsxx : (List externidx) -> (List memidx) -> Prop where
     (fun_memsxx xx_lst var_0) ->
     fun_memsxx (([(.MEM x)] : (List externidx)) ++ xx_lst) (([x] : (List memidx)) ++ var_0)
   | fun_memsxx_case_2 : forall (v_externidx : externidx) (xx_lst : (List externidx)) (var_0 : (List memidx)), 
+    (¬(fun_memsxx_before_fun_memsxx_case_2 (([v_externidx] : (List externidx)) ++ xx_lst))) ->
     (fun_memsxx xx_lst var_0) ->
     fun_memsxx (([v_externidx] : (List externidx)) ++ xx_lst) var_0
 
@@ -624,6 +644,10 @@ inductive memsxx_is_wf : (List externidx) -> (List memidx) -> Prop where
     Forall (fun (ret_val : memidx) => (wf_uN 32 ret_val)) ret_val_lst ->
     memsxx_is_wf var_0_lst ret_val_lst
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:133.6-133.13 -/
+inductive fun_tagsxx_before_fun_tagsxx_case_2 : (List externidx) -> Prop where
+  | fun_tagsxx_case_1 : forall (x : uN) (xx_lst : (List externidx)) (var_0 : (List tagidx)), fun_tagsxx_before_fun_tagsxx_case_2 (([(.TAG x)] : (List externidx)) ++ xx_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:133.1-133.85 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:133.6-133.13 -/
 inductive fun_tagsxx : (List externidx) -> (List tagidx) -> Prop where
@@ -632,6 +656,7 @@ inductive fun_tagsxx : (List externidx) -> (List tagidx) -> Prop where
     (fun_tagsxx xx_lst var_0) ->
     fun_tagsxx (([(.TAG x)] : (List externidx)) ++ xx_lst) (([x] : (List tagidx)) ++ var_0)
   | fun_tagsxx_case_2 : forall (v_externidx : externidx) (xx_lst : (List externidx)) (var_0 : (List tagidx)), 
+    (¬(fun_tagsxx_before_fun_tagsxx_case_2 (([v_externidx] : (List externidx)) ++ xx_lst))) ->
     (fun_tagsxx xx_lst var_0) ->
     fun_tagsxx (([v_externidx] : (List externidx)) ++ xx_lst) var_0
 
@@ -2058,6 +2083,10 @@ def as_deftype : ∀  (v_typeuse : typeuse) , (Option deftype)
       none
 
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:308.6-308.13 -/
+inductive fun_tagsxt_before_fun_tagsxt_case_2 : (List externtype) -> Prop where
+  | fun_tagsxt_case_1 : forall (jt : typeuse) (xt_lst : (List externtype)) (var_0 : (List tagtype)), fun_tagsxt_before_fun_tagsxt_case_2 (([(.TAG jt)] : (List externtype)) ++ xt_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:308.1-308.87 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:308.6-308.13 -/
 inductive fun_tagsxt : (List externtype) -> (List tagtype) -> Prop where
@@ -2066,6 +2095,7 @@ inductive fun_tagsxt : (List externtype) -> (List tagtype) -> Prop where
     (fun_tagsxt xt_lst var_0) ->
     fun_tagsxt (([(.TAG jt)] : (List externtype)) ++ xt_lst) (([jt] : (List tagtype)) ++ var_0)
   | fun_tagsxt_case_2 : forall (v_externtype : externtype) (xt_lst : (List externtype)) (var_0 : (List tagtype)), 
+    (¬(fun_tagsxt_before_fun_tagsxt_case_2 (([v_externtype] : (List externtype)) ++ xt_lst))) ->
     (fun_tagsxt xt_lst var_0) ->
     fun_tagsxt (([v_externtype] : (List externtype)) ++ xt_lst) var_0
 
@@ -2079,6 +2109,10 @@ inductive tagsxt_is_wf : (List externtype) -> (List tagtype) -> Prop where
     Forall (fun (ret_val : tagtype) => (wf_typeuse ret_val)) ret_val_lst ->
     tagsxt_is_wf var_0_lst ret_val_lst
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:309.6-309.16 -/
+inductive fun_globalsxt_before_fun_globalsxt_case_2 : (List externtype) -> Prop where
+  | fun_globalsxt_case_1 : forall (gt : globaltype) (xt_lst : (List externtype)) (var_0 : (List globaltype)), fun_globalsxt_before_fun_globalsxt_case_2 (([(.GLOBAL gt)] : (List externtype)) ++ xt_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:309.1-309.90 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:309.6-309.16 -/
 inductive fun_globalsxt : (List externtype) -> (List globaltype) -> Prop where
@@ -2087,6 +2121,7 @@ inductive fun_globalsxt : (List externtype) -> (List globaltype) -> Prop where
     (fun_globalsxt xt_lst var_0) ->
     fun_globalsxt (([(.GLOBAL gt)] : (List externtype)) ++ xt_lst) (([gt] : (List globaltype)) ++ var_0)
   | fun_globalsxt_case_2 : forall (v_externtype : externtype) (xt_lst : (List externtype)) (var_0 : (List globaltype)), 
+    (¬(fun_globalsxt_before_fun_globalsxt_case_2 (([v_externtype] : (List externtype)) ++ xt_lst))) ->
     (fun_globalsxt xt_lst var_0) ->
     fun_globalsxt (([v_externtype] : (List externtype)) ++ xt_lst) var_0
 
@@ -2100,6 +2135,10 @@ inductive globalsxt_is_wf : (List externtype) -> (List globaltype) -> Prop where
     Forall (fun (ret_val : globaltype) => (wf_globaltype ret_val)) ret_val_lst ->
     globalsxt_is_wf var_0_lst ret_val_lst
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:310.6-310.13 -/
+inductive fun_memsxt_before_fun_memsxt_case_2 : (List externtype) -> Prop where
+  | fun_memsxt_case_1 : forall (mt : memtype) (xt_lst : (List externtype)) (var_0 : (List memtype)), fun_memsxt_before_fun_memsxt_case_2 (([(.MEM mt)] : (List externtype)) ++ xt_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:310.1-310.87 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:310.6-310.13 -/
 inductive fun_memsxt : (List externtype) -> (List memtype) -> Prop where
@@ -2108,6 +2147,7 @@ inductive fun_memsxt : (List externtype) -> (List memtype) -> Prop where
     (fun_memsxt xt_lst var_0) ->
     fun_memsxt (([(.MEM mt)] : (List externtype)) ++ xt_lst) (([mt] : (List memtype)) ++ var_0)
   | fun_memsxt_case_2 : forall (v_externtype : externtype) (xt_lst : (List externtype)) (var_0 : (List memtype)), 
+    (¬(fun_memsxt_before_fun_memsxt_case_2 (([v_externtype] : (List externtype)) ++ xt_lst))) ->
     (fun_memsxt xt_lst var_0) ->
     fun_memsxt (([v_externtype] : (List externtype)) ++ xt_lst) var_0
 
@@ -2121,6 +2161,10 @@ inductive memsxt_is_wf : (List externtype) -> (List memtype) -> Prop where
     Forall (fun (ret_val : memtype) => (wf_memtype ret_val)) ret_val_lst ->
     memsxt_is_wf var_0_lst ret_val_lst
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:311.6-311.15 -/
+inductive fun_tablesxt_before_fun_tablesxt_case_2 : (List externtype) -> Prop where
+  | fun_tablesxt_case_1 : forall (tt : tabletype) (xt_lst : (List externtype)) (var_0 : (List tabletype)), fun_tablesxt_before_fun_tablesxt_case_2 (([(.TABLE tt)] : (List externtype)) ++ xt_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:311.1-311.89 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:311.6-311.15 -/
 inductive fun_tablesxt : (List externtype) -> (List tabletype) -> Prop where
@@ -2129,6 +2173,7 @@ inductive fun_tablesxt : (List externtype) -> (List tabletype) -> Prop where
     (fun_tablesxt xt_lst var_0) ->
     fun_tablesxt (([(.TABLE tt)] : (List externtype)) ++ xt_lst) (([tt] : (List tabletype)) ++ var_0)
   | fun_tablesxt_case_2 : forall (v_externtype : externtype) (xt_lst : (List externtype)) (var_0 : (List tabletype)), 
+    (¬(fun_tablesxt_before_fun_tablesxt_case_2 (([v_externtype] : (List externtype)) ++ xt_lst))) ->
     (fun_tablesxt xt_lst var_0) ->
     fun_tablesxt (([v_externtype] : (List externtype)) ++ xt_lst) var_0
 
@@ -2142,6 +2187,10 @@ inductive tablesxt_is_wf : (List externtype) -> (List tabletype) -> Prop where
     Forall (fun (ret_val : tabletype) => (wf_tabletype ret_val)) ret_val_lst ->
     tablesxt_is_wf var_0_lst ret_val_lst
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:312.6-312.14 -/
+inductive fun_funcsxt_before_fun_funcsxt_case_2 : (List externtype) -> Prop where
+  | fun_funcsxt_case_1 : forall (v_rectype : rectype) (v_n : n) (xt_lst : (List externtype)) (var_0 : (List deftype)), fun_funcsxt_before_fun_funcsxt_case_2 (([(.FUNC (._DEF v_rectype v_n))] : (List externtype)) ++ xt_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:312.1-312.88 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:312.6-312.14 -/
 inductive fun_funcsxt : (List externtype) -> (List deftype) -> Prop where
@@ -2150,6 +2199,7 @@ inductive fun_funcsxt : (List externtype) -> (List deftype) -> Prop where
     (fun_funcsxt xt_lst var_0) ->
     fun_funcsxt (([(.FUNC (._DEF v_rectype v_n))] : (List externtype)) ++ xt_lst) (([(._DEF v_rectype v_n)] : (List deftype)) ++ var_0)
   | fun_funcsxt_case_2 : forall (v_externtype : externtype) (xt_lst : (List externtype)) (var_0 : (List deftype)), 
+    (¬(fun_funcsxt_before_fun_funcsxt_case_2 (([v_externtype] : (List externtype)) ++ xt_lst))) ->
     (fun_funcsxt xt_lst var_0) ->
     fun_funcsxt (([v_externtype] : (List externtype)) ++ xt_lst) var_0
 
@@ -2216,6 +2266,12 @@ def subst_vectype : ∀  (v_vectype : vectype) (var_0_lst : (List typevar)) (var
     vt
 
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:343.6-343.21 -/
+inductive fun_subst_heaptype_before_fun_subst_heaptype_case_3 : heaptype -> (List typevar) -> (List typeuse) -> Prop where
+  | fun_subst_heaptype_case_2 : forall (v_rectype : rectype) (v_n : n) (tv_lst : (List typevar)) (tu_lst : (List typeuse)) (var_0 : deftype), fun_subst_heaptype_before_fun_subst_heaptype_case_3 (._DEF v_rectype v_n) tv_lst tu_lst
+  | fun_subst_heaptype_case_1 : forall (v_typeidx : typeidx) (tv_lst : (List typevar)) (tu_lst : (List typeuse)) (var_0 : (Option typeuse)), fun_subst_heaptype_before_fun_subst_heaptype_case_3 (._IDX v_typeidx) tv_lst tu_lst
+  | fun_subst_heaptype_case_0 : forall (v_n : n) (tv_lst : (List typevar)) (tu_lst : (List typeuse)) (var_0 : (Option typeuse)), fun_subst_heaptype_before_fun_subst_heaptype_case_3 (.REC v_n) tv_lst tu_lst
+
 /- Recursive Definitions at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:338.1-354.112 -/
 mutual
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:338.6-338.20 -/
@@ -2241,7 +2297,9 @@ inductive fun_subst_heaptype : heaptype -> (List typevar) -> (List typeuse) -> h
   | fun_subst_heaptype_case_2 : forall (v_rectype : rectype) (v_n : n) (tv_lst : (List typevar)) (tu_lst : (List typeuse)) (var_0 : deftype), 
     (fun_subst_deftype (._DEF v_rectype v_n) tv_lst tu_lst var_0) ->
     fun_subst_heaptype (._DEF v_rectype v_n) tv_lst tu_lst (heaptype_deftype var_0)
-  | fun_subst_heaptype_case_3 : forall (ht : heaptype) (tv_lst : (List typevar)) (tu_lst : (List typeuse)), fun_subst_heaptype ht tv_lst tu_lst ht
+  | fun_subst_heaptype_case_3 : forall (ht : heaptype) (tv_lst : (List typevar)) (tu_lst : (List typeuse)), 
+    (¬(fun_subst_heaptype_before_fun_subst_heaptype_case_3 ht tv_lst tu_lst)) ->
+    fun_subst_heaptype ht tv_lst tu_lst ht
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:344.6-344.20 -/
 inductive fun_subst_reftype : reftype -> (List typevar) -> (List typeuse) -> reftype -> Prop where
@@ -6350,7 +6408,7 @@ def before : ∀  (v_typeuse : typeuse) (nat : Nat) , Bool
   | (.REC j), i =>
     (j < i)
   | v_typeuse, i =>
-    true
+      true
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.1-validation.types.spectec:162.6-162.16 -/
@@ -15210,6 +15268,10 @@ inductive unpackfield__is_wf : storagetype -> (Option sx) -> fieldval -> val -> 
     (wf_val ret_val) ->
     unpackfield__is_wf v_storagetype var_0_opt v_fieldval ret_val
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:190.6-190.13 -/
+inductive fun_tagsxa_before_fun_tagsxa_case_2 : (List externaddr) -> Prop where
+  | fun_tagsxa_case_1 : forall (a : Nat) (xa_lst : (List externaddr)) (var_0 : (List tagaddr)), fun_tagsxa_before_fun_tagsxa_case_2 (([(.TAG a)] : (List externaddr)) ++ xa_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:190.1-190.86 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:190.6-190.13 -/
 inductive fun_tagsxa : (List externaddr) -> (List tagaddr) -> Prop where
@@ -15218,8 +15280,13 @@ inductive fun_tagsxa : (List externaddr) -> (List tagaddr) -> Prop where
     (fun_tagsxa xa_lst var_0) ->
     fun_tagsxa (([(.TAG a)] : (List externaddr)) ++ xa_lst) (([a] : (List tagaddr)) ++ var_0)
   | fun_tagsxa_case_2 : forall (v_externaddr : externaddr) (xa_lst : (List externaddr)) (var_0 : (List tagaddr)), 
+    (¬(fun_tagsxa_before_fun_tagsxa_case_2 (([v_externaddr] : (List externaddr)) ++ xa_lst))) ->
     (fun_tagsxa xa_lst var_0) ->
     fun_tagsxa (([v_externaddr] : (List externaddr)) ++ xa_lst) var_0
+
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:191.6-191.16 -/
+inductive fun_globalsxa_before_fun_globalsxa_case_2 : (List externaddr) -> Prop where
+  | fun_globalsxa_case_1 : forall (a : Nat) (xa_lst : (List externaddr)) (var_0 : (List globaladdr)), fun_globalsxa_before_fun_globalsxa_case_2 (([(.GLOBAL a)] : (List externaddr)) ++ xa_lst)
 
 /- Recursive Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:191.1-191.89 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:191.6-191.16 -/
@@ -15229,8 +15296,13 @@ inductive fun_globalsxa : (List externaddr) -> (List globaladdr) -> Prop where
     (fun_globalsxa xa_lst var_0) ->
     fun_globalsxa (([(.GLOBAL a)] : (List externaddr)) ++ xa_lst) (([a] : (List globaladdr)) ++ var_0)
   | fun_globalsxa_case_2 : forall (v_externaddr : externaddr) (xa_lst : (List externaddr)) (var_0 : (List globaladdr)), 
+    (¬(fun_globalsxa_before_fun_globalsxa_case_2 (([v_externaddr] : (List externaddr)) ++ xa_lst))) ->
     (fun_globalsxa xa_lst var_0) ->
     fun_globalsxa (([v_externaddr] : (List externaddr)) ++ xa_lst) var_0
+
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:192.6-192.13 -/
+inductive fun_memsxa_before_fun_memsxa_case_2 : (List externaddr) -> Prop where
+  | fun_memsxa_case_1 : forall (a : Nat) (xa_lst : (List externaddr)) (var_0 : (List memaddr)), fun_memsxa_before_fun_memsxa_case_2 (([(.MEM a)] : (List externaddr)) ++ xa_lst)
 
 /- Recursive Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:192.1-192.86 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:192.6-192.13 -/
@@ -15240,8 +15312,13 @@ inductive fun_memsxa : (List externaddr) -> (List memaddr) -> Prop where
     (fun_memsxa xa_lst var_0) ->
     fun_memsxa (([(.MEM a)] : (List externaddr)) ++ xa_lst) (([a] : (List memaddr)) ++ var_0)
   | fun_memsxa_case_2 : forall (v_externaddr : externaddr) (xa_lst : (List externaddr)) (var_0 : (List memaddr)), 
+    (¬(fun_memsxa_before_fun_memsxa_case_2 (([v_externaddr] : (List externaddr)) ++ xa_lst))) ->
     (fun_memsxa xa_lst var_0) ->
     fun_memsxa (([v_externaddr] : (List externaddr)) ++ xa_lst) var_0
+
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:193.6-193.15 -/
+inductive fun_tablesxa_before_fun_tablesxa_case_2 : (List externaddr) -> Prop where
+  | fun_tablesxa_case_1 : forall (a : Nat) (xa_lst : (List externaddr)) (var_0 : (List tableaddr)), fun_tablesxa_before_fun_tablesxa_case_2 (([(.TABLE a)] : (List externaddr)) ++ xa_lst)
 
 /- Recursive Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:193.1-193.88 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:193.6-193.15 -/
@@ -15251,8 +15328,13 @@ inductive fun_tablesxa : (List externaddr) -> (List tableaddr) -> Prop where
     (fun_tablesxa xa_lst var_0) ->
     fun_tablesxa (([(.TABLE a)] : (List externaddr)) ++ xa_lst) (([a] : (List tableaddr)) ++ var_0)
   | fun_tablesxa_case_2 : forall (v_externaddr : externaddr) (xa_lst : (List externaddr)) (var_0 : (List tableaddr)), 
+    (¬(fun_tablesxa_before_fun_tablesxa_case_2 (([v_externaddr] : (List externaddr)) ++ xa_lst))) ->
     (fun_tablesxa xa_lst var_0) ->
     fun_tablesxa (([v_externaddr] : (List externaddr)) ++ xa_lst) var_0
+
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:194.6-194.14 -/
+inductive fun_funcsxa_before_fun_funcsxa_case_2 : (List externaddr) -> Prop where
+  | fun_funcsxa_case_1 : forall (a : Nat) (xa_lst : (List externaddr)) (var_0 : (List funcaddr)), fun_funcsxa_before_fun_funcsxa_case_2 (([(.FUNC a)] : (List externaddr)) ++ xa_lst)
 
 /- Recursive Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:194.1-194.87 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:194.6-194.14 -/
@@ -15262,6 +15344,7 @@ inductive fun_funcsxa : (List externaddr) -> (List funcaddr) -> Prop where
     (fun_funcsxa xa_lst var_0) ->
     fun_funcsxa (([(.FUNC a)] : (List externaddr)) ++ xa_lst) (([a] : (List funcaddr)) ++ var_0)
   | fun_funcsxa_case_2 : forall (v_externaddr : externaddr) (xa_lst : (List externaddr)) (var_0 : (List funcaddr)), 
+    (¬(fun_funcsxa_before_fun_funcsxa_case_2 (([v_externaddr] : (List externaddr)) ++ xa_lst))) ->
     (fun_funcsxa xa_lst var_0) ->
     fun_funcsxa (([v_externaddr] : (List externaddr)) ++ xa_lst) var_0
 
@@ -19223,6 +19306,10 @@ inductive wf_decl : decl -> Prop where
     (wf_externidx v_externidx) ->
     wf_decl (.EXPORT v_name v_externidx)
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:258.6-258.13 -/
+inductive fun_typesd_before_fun_typesd_case_2 : (List decl) -> Prop where
+  | fun_typesd_case_1 : forall (v_rectype : rectype) (decl'_lst : (List decl)) (var_0 : (List type)), fun_typesd_before_fun_typesd_case_2 (([(.TYPE v_rectype)] : (List decl)) ++ decl'_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:258.1-258.76 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:258.6-258.13 -/
 inductive fun_typesd : (List decl) -> (List type) -> Prop where
@@ -19231,8 +19318,13 @@ inductive fun_typesd : (List decl) -> (List type) -> Prop where
     (fun_typesd decl'_lst var_0) ->
     fun_typesd (([(.TYPE v_rectype)] : (List decl)) ++ decl'_lst) (([(.TYPE v_rectype)] : (List type)) ++ var_0)
   | fun_typesd_case_2 : forall (v_decl : decl) (decl'_lst : (List decl)) (var_0 : (List type)), 
+    (¬(fun_typesd_before_fun_typesd_case_2 (([v_decl] : (List decl)) ++ decl'_lst))) ->
     (fun_typesd decl'_lst var_0) ->
     fun_typesd (([v_decl] : (List decl)) ++ decl'_lst) var_0
+
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:259.6-259.15 -/
+inductive fun_importsd_before_fun_importsd_case_2 : (List decl) -> Prop where
+  | fun_importsd_case_1 : forall (v_name : name) (name_0 : name) (v_externtype : externtype) (decl'_lst : (List decl)) (var_0 : (List «import»)), fun_importsd_before_fun_importsd_case_2 (([(.IMPORT v_name name_0 v_externtype)] : (List decl)) ++ decl'_lst)
 
 /- Recursive Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:259.1-259.78 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:259.6-259.15 -/
@@ -19242,6 +19334,7 @@ inductive fun_importsd : (List decl) -> (List «import») -> Prop where
     (fun_importsd decl'_lst var_0) ->
     fun_importsd (([(.IMPORT v_name name_0 v_externtype)] : (List decl)) ++ decl'_lst) (([(.IMPORT v_name name_0 v_externtype)] : (List «import»)) ++ var_0)
   | fun_importsd_case_2 : forall (v_decl : decl) (decl'_lst : (List decl)) (var_0 : (List «import»)), 
+    (¬(fun_importsd_before_fun_importsd_case_2 (([v_decl] : (List decl)) ++ decl'_lst))) ->
     (fun_importsd decl'_lst var_0) ->
     fun_importsd (([v_decl] : (List decl)) ++ decl'_lst) var_0
 
@@ -19255,6 +19348,10 @@ inductive importsd_is_wf : (List decl) -> (List «import») -> Prop where
     Forall (fun (ret_val : «import») => (wf_import ret_val)) ret_val_lst ->
     importsd_is_wf var_0_lst ret_val_lst
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:260.6-260.12 -/
+inductive fun_tagsd_before_fun_tagsd_case_2 : (List decl) -> Prop where
+  | fun_tagsd_case_1 : forall (v_tagtype : tagtype) (decl'_lst : (List decl)) (var_0 : (List tag)), fun_tagsd_before_fun_tagsd_case_2 (([(.TAG v_tagtype)] : (List decl)) ++ decl'_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:260.1-260.75 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:260.6-260.12 -/
 inductive fun_tagsd : (List decl) -> (List tag) -> Prop where
@@ -19263,6 +19360,7 @@ inductive fun_tagsd : (List decl) -> (List tag) -> Prop where
     (fun_tagsd decl'_lst var_0) ->
     fun_tagsd (([(.TAG v_tagtype)] : (List decl)) ++ decl'_lst) (([(.TAG v_tagtype)] : (List tag)) ++ var_0)
   | fun_tagsd_case_2 : forall (v_decl : decl) (decl'_lst : (List decl)) (var_0 : (List tag)), 
+    (¬(fun_tagsd_before_fun_tagsd_case_2 (([v_decl] : (List decl)) ++ decl'_lst))) ->
     (fun_tagsd decl'_lst var_0) ->
     fun_tagsd (([v_decl] : (List decl)) ++ decl'_lst) var_0
 
@@ -19276,6 +19374,10 @@ inductive tagsd_is_wf : (List decl) -> (List tag) -> Prop where
     Forall (fun (ret_val : tag) => (wf_tag ret_val)) ret_val_lst ->
     tagsd_is_wf var_0_lst ret_val_lst
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:261.6-261.15 -/
+inductive fun_globalsd_before_fun_globalsd_case_2 : (List decl) -> Prop where
+  | fun_globalsd_case_1 : forall (v_globaltype : globaltype) (v_expr : expr) (decl'_lst : (List decl)) (var_0 : (List global)), fun_globalsd_before_fun_globalsd_case_2 (([(.GLOBAL v_globaltype v_expr)] : (List decl)) ++ decl'_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:261.1-261.78 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:261.6-261.15 -/
 inductive fun_globalsd : (List decl) -> (List global) -> Prop where
@@ -19284,6 +19386,7 @@ inductive fun_globalsd : (List decl) -> (List global) -> Prop where
     (fun_globalsd decl'_lst var_0) ->
     fun_globalsd (([(.GLOBAL v_globaltype v_expr)] : (List decl)) ++ decl'_lst) (([(.GLOBAL v_globaltype v_expr)] : (List global)) ++ var_0)
   | fun_globalsd_case_2 : forall (v_decl : decl) (decl'_lst : (List decl)) (var_0 : (List global)), 
+    (¬(fun_globalsd_before_fun_globalsd_case_2 (([v_decl] : (List decl)) ++ decl'_lst))) ->
     (fun_globalsd decl'_lst var_0) ->
     fun_globalsd (([v_decl] : (List decl)) ++ decl'_lst) var_0
 
@@ -19297,6 +19400,10 @@ inductive globalsd_is_wf : (List decl) -> (List global) -> Prop where
     Forall (fun (ret_val : global) => (wf_global ret_val)) ret_val_lst ->
     globalsd_is_wf var_0_lst ret_val_lst
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:262.6-262.12 -/
+inductive fun_memsd_before_fun_memsd_case_2 : (List decl) -> Prop where
+  | fun_memsd_case_1 : forall (v_memtype : memtype) (decl'_lst : (List decl)) (var_0 : (List mem)), fun_memsd_before_fun_memsd_case_2 (([(.MEMORY v_memtype)] : (List decl)) ++ decl'_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:262.1-262.75 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:262.6-262.12 -/
 inductive fun_memsd : (List decl) -> (List mem) -> Prop where
@@ -19305,6 +19412,7 @@ inductive fun_memsd : (List decl) -> (List mem) -> Prop where
     (fun_memsd decl'_lst var_0) ->
     fun_memsd (([(.MEMORY v_memtype)] : (List decl)) ++ decl'_lst) (([(.MEMORY v_memtype)] : (List mem)) ++ var_0)
   | fun_memsd_case_2 : forall (v_decl : decl) (decl'_lst : (List decl)) (var_0 : (List mem)), 
+    (¬(fun_memsd_before_fun_memsd_case_2 (([v_decl] : (List decl)) ++ decl'_lst))) ->
     (fun_memsd decl'_lst var_0) ->
     fun_memsd (([v_decl] : (List decl)) ++ decl'_lst) var_0
 
@@ -19318,6 +19426,10 @@ inductive memsd_is_wf : (List decl) -> (List mem) -> Prop where
     Forall (fun (ret_val : mem) => (wf_mem ret_val)) ret_val_lst ->
     memsd_is_wf var_0_lst ret_val_lst
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:263.6-263.14 -/
+inductive fun_tablesd_before_fun_tablesd_case_2 : (List decl) -> Prop where
+  | fun_tablesd_case_1 : forall (v_tabletype : tabletype) (v_expr : expr) (decl'_lst : (List decl)) (var_0 : (List table)), fun_tablesd_before_fun_tablesd_case_2 (([(.TABLE v_tabletype v_expr)] : (List decl)) ++ decl'_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:263.1-263.77 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:263.6-263.14 -/
 inductive fun_tablesd : (List decl) -> (List table) -> Prop where
@@ -19326,6 +19438,7 @@ inductive fun_tablesd : (List decl) -> (List table) -> Prop where
     (fun_tablesd decl'_lst var_0) ->
     fun_tablesd (([(.TABLE v_tabletype v_expr)] : (List decl)) ++ decl'_lst) (([(.TABLE v_tabletype v_expr)] : (List table)) ++ var_0)
   | fun_tablesd_case_2 : forall (v_decl : decl) (decl'_lst : (List decl)) (var_0 : (List table)), 
+    (¬(fun_tablesd_before_fun_tablesd_case_2 (([v_decl] : (List decl)) ++ decl'_lst))) ->
     (fun_tablesd decl'_lst var_0) ->
     fun_tablesd (([v_decl] : (List decl)) ++ decl'_lst) var_0
 
@@ -19339,6 +19452,10 @@ inductive tablesd_is_wf : (List decl) -> (List table) -> Prop where
     Forall (fun (ret_val : table) => (wf_table ret_val)) ret_val_lst ->
     tablesd_is_wf var_0_lst ret_val_lst
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:264.6-264.13 -/
+inductive fun_funcsd_before_fun_funcsd_case_2 : (List decl) -> Prop where
+  | fun_funcsd_case_1 : forall (v_typeidx : typeidx) (local_lst : (List «local»)) (v_expr : expr) (decl'_lst : (List decl)) (var_0 : (List func)), fun_funcsd_before_fun_funcsd_case_2 (([(.FUNC v_typeidx local_lst v_expr)] : (List decl)) ++ decl'_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:264.1-264.76 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:264.6-264.13 -/
 inductive fun_funcsd : (List decl) -> (List func) -> Prop where
@@ -19347,6 +19464,7 @@ inductive fun_funcsd : (List decl) -> (List func) -> Prop where
     (fun_funcsd decl'_lst var_0) ->
     fun_funcsd (([(.FUNC v_typeidx local_lst v_expr)] : (List decl)) ++ decl'_lst) (([(.FUNC v_typeidx local_lst v_expr)] : (List func)) ++ var_0)
   | fun_funcsd_case_2 : forall (v_decl : decl) (decl'_lst : (List decl)) (var_0 : (List func)), 
+    (¬(fun_funcsd_before_fun_funcsd_case_2 (([v_decl] : (List decl)) ++ decl'_lst))) ->
     (fun_funcsd decl'_lst var_0) ->
     fun_funcsd (([v_decl] : (List decl)) ++ decl'_lst) var_0
 
@@ -19360,6 +19478,10 @@ inductive funcsd_is_wf : (List decl) -> (List func) -> Prop where
     Forall (fun (ret_val : func) => (wf_func ret_val)) ret_val_lst ->
     funcsd_is_wf var_0_lst ret_val_lst
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:265.6-265.13 -/
+inductive fun_datasd_before_fun_datasd_case_2 : (List decl) -> Prop where
+  | fun_datasd_case_1 : forall (byte_lst : (List byte)) (v_datamode : datamode) (decl'_lst : (List decl)) (var_0 : (List data)), fun_datasd_before_fun_datasd_case_2 (([(.DATA byte_lst v_datamode)] : (List decl)) ++ decl'_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:265.1-265.76 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:265.6-265.13 -/
 inductive fun_datasd : (List decl) -> (List data) -> Prop where
@@ -19368,6 +19490,7 @@ inductive fun_datasd : (List decl) -> (List data) -> Prop where
     (fun_datasd decl'_lst var_0) ->
     fun_datasd (([(.DATA byte_lst v_datamode)] : (List decl)) ++ decl'_lst) (([(.DATA byte_lst v_datamode)] : (List data)) ++ var_0)
   | fun_datasd_case_2 : forall (v_decl : decl) (decl'_lst : (List decl)) (var_0 : (List data)), 
+    (¬(fun_datasd_before_fun_datasd_case_2 (([v_decl] : (List decl)) ++ decl'_lst))) ->
     (fun_datasd decl'_lst var_0) ->
     fun_datasd (([v_decl] : (List decl)) ++ decl'_lst) var_0
 
@@ -19381,6 +19504,10 @@ inductive datasd_is_wf : (List decl) -> (List data) -> Prop where
     Forall (fun (ret_val : data) => (wf_data ret_val)) ret_val_lst ->
     datasd_is_wf var_0_lst ret_val_lst
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:266.6-266.13 -/
+inductive fun_elemsd_before_fun_elemsd_case_2 : (List decl) -> Prop where
+  | fun_elemsd_case_1 : forall (v_reftype : reftype) (expr_lst : (List expr)) (v_elemmode : elemmode) (decl'_lst : (List decl)) (var_0 : (List elem)), fun_elemsd_before_fun_elemsd_case_2 (([(.ELEM v_reftype expr_lst v_elemmode)] : (List decl)) ++ decl'_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:266.1-266.76 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:266.6-266.13 -/
 inductive fun_elemsd : (List decl) -> (List elem) -> Prop where
@@ -19389,6 +19516,7 @@ inductive fun_elemsd : (List decl) -> (List elem) -> Prop where
     (fun_elemsd decl'_lst var_0) ->
     fun_elemsd (([(.ELEM v_reftype expr_lst v_elemmode)] : (List decl)) ++ decl'_lst) (([(.ELEM v_reftype expr_lst v_elemmode)] : (List elem)) ++ var_0)
   | fun_elemsd_case_2 : forall (v_decl : decl) (decl'_lst : (List decl)) (var_0 : (List elem)), 
+    (¬(fun_elemsd_before_fun_elemsd_case_2 (([v_decl] : (List decl)) ++ decl'_lst))) ->
     (fun_elemsd decl'_lst var_0) ->
     fun_elemsd (([v_decl] : (List decl)) ++ decl'_lst) var_0
 
@@ -19402,6 +19530,10 @@ inductive elemsd_is_wf : (List decl) -> (List elem) -> Prop where
     Forall (fun (ret_val : elem) => (wf_elem ret_val)) ret_val_lst ->
     elemsd_is_wf var_0_lst ret_val_lst
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:267.6-267.14 -/
+inductive fun_startsd_before_fun_startsd_case_2 : (List decl) -> Prop where
+  | fun_startsd_case_1 : forall (v_funcidx : funcidx) (decl'_lst : (List decl)) (var_0 : (List start)), fun_startsd_before_fun_startsd_case_2 (([(.START v_funcidx)] : (List decl)) ++ decl'_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:267.1-267.77 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:267.6-267.14 -/
 inductive fun_startsd : (List decl) -> (List start) -> Prop where
@@ -19410,6 +19542,7 @@ inductive fun_startsd : (List decl) -> (List start) -> Prop where
     (fun_startsd decl'_lst var_0) ->
     fun_startsd (([(.START v_funcidx)] : (List decl)) ++ decl'_lst) (([(.START v_funcidx)] : (List start)) ++ var_0)
   | fun_startsd_case_2 : forall (v_decl : decl) (decl'_lst : (List decl)) (var_0 : (List start)), 
+    (¬(fun_startsd_before_fun_startsd_case_2 (([v_decl] : (List decl)) ++ decl'_lst))) ->
     (fun_startsd decl'_lst var_0) ->
     fun_startsd (([v_decl] : (List decl)) ++ decl'_lst) var_0
 
@@ -19423,6 +19556,10 @@ inductive startsd_is_wf : (List decl) -> (List start) -> Prop where
     Forall (fun (ret_val : start) => (wf_start ret_val)) ret_val_lst ->
     startsd_is_wf var_0_lst ret_val_lst
 
+/- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:268.6-268.15 -/
+inductive fun_exportsd_before_fun_exportsd_case_2 : (List decl) -> Prop where
+  | fun_exportsd_case_1 : forall (v_name : name) (v_externidx : externidx) (decl'_lst : (List decl)) (var_0 : (List «export»)), fun_exportsd_before_fun_exportsd_case_2 (([(.EXPORT v_name v_externidx)] : (List decl)) ++ decl'_lst)
+
 /- Recursive Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:268.1-268.78 -/
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/6.4-text.modules.spectec:268.6-268.15 -/
 inductive fun_exportsd : (List decl) -> (List «export») -> Prop where
@@ -19431,6 +19568,7 @@ inductive fun_exportsd : (List decl) -> (List «export») -> Prop where
     (fun_exportsd decl'_lst var_0) ->
     fun_exportsd (([(.EXPORT v_name v_externidx)] : (List decl)) ++ decl'_lst) (([(.EXPORT v_name v_externidx)] : (List «export»)) ++ var_0)
   | fun_exportsd_case_2 : forall (v_decl : decl) (decl'_lst : (List decl)) (var_0 : (List «export»)), 
+    (¬(fun_exportsd_before_fun_exportsd_case_2 (([v_decl] : (List decl)) ++ decl'_lst))) ->
     (fun_exportsd decl'_lst var_0) ->
     fun_exportsd (([v_decl] : (List decl)) ++ decl'_lst) var_0
 

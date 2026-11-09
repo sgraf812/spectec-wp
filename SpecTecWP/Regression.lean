@@ -48,4 +48,18 @@ example : LawfulBEq deftype := inferInstance
 /-- A partial function is defined on its domain: `$zsize(I32) = 32`. -/
 example : zsize .I32 = some 32 := rfl
 
+/-- `$funcsxa` keeps every function address: its `otherwise` clause applies only to an
+external address that is not a function. -/
+theorem not_funcsxa_skip : ¬ fun_funcsxa [.FUNC 5] [] := by
+  intro h
+  generalize hx : ([.FUNC 5] : List externaddr) = xs at h
+  generalize hy : ([] : List funcaddr) = ys at h
+  cases h with
+  | fun_funcsxa_case_0 => simp at hx
+  | fun_funcsxa_case_1 a xa var_0 _ => simp at hy
+  | fun_funcsxa_case_2 v xa var_0 hneg _ =>
+    simp only [List.singleton_append, List.cons.injEq] at hx
+    obtain ⟨rfl, rfl⟩ := hx
+    exact hneg (.fun_funcsxa_case_1 5 [] [])
+
 end SpecTecWP.Regression
