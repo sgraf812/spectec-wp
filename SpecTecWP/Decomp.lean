@@ -96,15 +96,6 @@ macro "redex" : tactic => `(tactic| first
   | (repeat redex_cons); exact Redex.single rfl
   | (refine Redex.map_append _ ?_; (repeat redex_cons); exact Redex.single rfl))
 
-theorem ne_nil_of_bne {α : Type} [BEq α] {l : List α} (h : (l != []) = true) : l ≠ [] := by
-  rintro rfl; contradiction
-
-theorem ne_nil_or_of_bne {α β : Type} [BEq α] [BEq β] {l : List α} {r : List β}
-    (h : ((l != []) || (r != [])) = true) : l ≠ [] ∨ r ≠ [] := by
-  rcases Bool.or_eq_true_iff.mp h with h | h
-  · exact .inl (ne_nil_of_bne h)
-  · exact .inr (ne_nil_of_bne h)
-
 /-- The left side of every `Step_pure` rule is a redex, except for `trap_instrs`. -/
 theorem Step_pure.lhs {L L' : List instr} (h : Step_pure L L') :
     Redex L ∨ ∃ ws rest, L = ws.map instr_val ++ .TRAP :: rest ∧ L' = [.TRAP] ∧
@@ -112,7 +103,7 @@ theorem Step_pure.lhs {L L' : List instr} (h : Step_pure L L') :
   cases h
   case trap_instrs val_lst instr_lst hne _ _ _ =>
     right
-    exact ⟨val_lst, instr_lst, by simp, rfl, ne_nil_or_of_bne hne⟩
+    exact ⟨val_lst, instr_lst, by simp, rfl, hne⟩
   all_goals (left; redex)
 
 /-- The instruction sequence of a configuration. -/
@@ -128,7 +119,7 @@ theorem Step_read.lhs {c : config} {L' : List instr} (h : Step_read c L') :
   cases h
   case throw_ref_instrs z val_lst a instr_lst hne _ _ _ =>
     right
-    exact ⟨val_lst, a, instr_lst, by simp, rfl, ne_nil_or_of_bne hne⟩
+    exact ⟨val_lst, a, instr_lst, by simp, rfl, hne⟩
   all_goals (left; simp only [instrsOf_mk]; redex)
 
 /-- The left side of every `Step` rule other than `pure`, `read` and `ctxt_instrs` is a redex. -/
@@ -143,7 +134,7 @@ theorem Step.lhs_base {c c' : config} (h : Step c c') :
   case pure z L L' hp _ _ => exact .inl ⟨z, L, L', rfl, rfl, hp⟩
   case read z L L' hr _ _ => exact .inr (.inl ⟨z, L', rfl, hr⟩)
   case ctxt_instrs z vals L₀ L₁ z' L₀' hs hne _ _ _ _ =>
-    exact .inr (.inr (.inl ⟨z, vals, L₀, L₁, z', L₀', rfl, rfl, hs, ne_nil_or_of_bne hne⟩))
+    exact .inr (.inr (.inl ⟨z, vals, L₀, L₁, z', L₀', rfl, rfl, hs, hne⟩))
   all_goals (right; right; right; simp only [instrsOf_mk]; redex)
 
 end SpecTecWP

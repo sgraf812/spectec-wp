@@ -1,6 +1,7 @@
 /- Preamble -/
 set_option autoImplicit false
 set_option linter.unusedVariables false
+noncomputable section
 set_option match.ignoreUnusedAlts true
 
 instance {a : Type} : Append (Option a) where
@@ -154,19 +155,19 @@ opaque ND : Bool := opaqueDef
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:7.1-7.37 -/
 inductive bit : Type where
   | mk_bit (i : Nat) : bit
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:7.8-7.11 -/
 inductive wf_bit : bit -> Prop where
   | bit_case_0 : forall (i : Nat), 
-    ((i == 0) || (i == 1)) ->
+    ((i = 0) ∨ (i = 1)) ->
     wf_bit (.mk_bit i)
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:8.1-8.50 -/
 inductive byte : Type where
   | mk_byte (i : Nat) : byte
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:8.1-8.50 -/
@@ -178,13 +179,13 @@ def proj_byte_0 : ∀  (x : byte) , (Nat)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:8.8-8.12 -/
 inductive wf_byte : byte -> Prop where
   | byte_case_0 : forall (i : Nat), 
-    ((i >= 0) && (i <= 255)) ->
+    ((i >= 0) ∧ (i <= 255)) ->
     wf_byte (.mk_byte i)
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:10.1-11.25 -/
 inductive uN : Type where
   | mk_uN (i : Nat) : uN
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:10.1-11.25 -/
@@ -196,13 +197,13 @@ def proj_uN_0 : ∀  (x : uN) , (Nat)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:10.8-10.11 -/
 inductive wf_uN : N -> uN -> Prop where
   | uN_case_0 : forall (v_N : N) (i : Nat), 
-    ((i >= 0) && (i <= (Int.toNat ((Int.ofNat (2 ^ v_N)) - (Int.ofNat 1))))) ->
+    ((i >= 0) ∧ (i <= (Int.toNat ((Int.ofNat (2 ^ v_N)) - (Int.ofNat 1))))) ->
     wf_uN v_N (.mk_uN i)
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:12.1-13.50 -/
 inductive sN : Type where
   | mk_sN (i : Int) : sN
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:12.1-13.50 -/
@@ -214,7 +215,7 @@ def proj_sN_0 : ∀  (x : sN) , (Int)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:12.8-12.11 -/
 inductive wf_sN : N -> sN -> Prop where
   | sN_case_0 : forall (v_N : N) (i : Int), 
-    ((((i >= (0 - (Int.ofNat (2 ^ (Int.toNat ((Int.ofNat v_N) - (Int.ofNat 1))))))) && (i <= (0 - (Int.ofNat 1)))) || (i == (Int.ofNat 0))) || ((i >= ((Int.ofNat 1))) && (i <= (((Int.ofNat (2 ^ (Int.toNat ((Int.ofNat v_N) - (Int.ofNat 1)))))) - (Int.ofNat 1))))) ->
+    ((((i >= (0 - (Int.ofNat (2 ^ (Int.toNat ((Int.ofNat v_N) - (Int.ofNat 1))))))) ∧ (i <= (0 - (Int.ofNat 1)))) ∨ (i = (Int.ofNat 0))) ∨ ((i >= ((Int.ofNat 1))) ∧ (i <= (((Int.ofNat (2 ^ (Int.toNat ((Int.ofNat v_N) - (Int.ofNat 1)))))) - (Int.ofNat 1))))) ->
     wf_sN v_N (.mk_sN i)
 
 /- Type Alias Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:14.1-15.8 -/
@@ -274,27 +275,27 @@ inductive fNmag : Type where
   | SUBNORM (v_m : m) : fNmag
   | INF : fNmag
   | NAN (v_m : m) : fNmag
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:51.8-51.14 -/
 inductive wf_fNmag : N -> fNmag -> Prop where
   | fNmag_case_0 : forall (v_N : N) (v_m : m) (v_exp : exp), 
-    ((v_m < (2 ^ (fun_M v_N))) && ((((Int.ofNat 2) - (Int.ofNat (2 ^ (Int.toNat ((Int.ofNat (E v_N)) - (Int.ofNat 1)))))) <= v_exp) && (v_exp <= ((Int.ofNat (2 ^ (Int.toNat ((Int.ofNat (E v_N)) - (Int.ofNat 1))))) - (Int.ofNat 1))))) ->
+    ((v_m < (2 ^ (fun_M v_N))) ∧ ((((Int.ofNat 2) - (Int.ofNat (2 ^ (Int.toNat ((Int.ofNat (E v_N)) - (Int.ofNat 1)))))) <= v_exp) ∧ (v_exp <= ((Int.ofNat (2 ^ (Int.toNat ((Int.ofNat (E v_N)) - (Int.ofNat 1))))) - (Int.ofNat 1))))) ->
     wf_fNmag v_N (.NORM v_m v_exp)
   | fNmag_case_1 : forall (v_N : N) (v_exp : exp) (v_m : m), 
-    ((v_m < (2 ^ (fun_M v_N))) && (((Int.ofNat 2) - (Int.ofNat (2 ^ (Int.toNat ((Int.ofNat (E v_N)) - (Int.ofNat 1)))))) == v_exp)) ->
+    ((v_m < (2 ^ (fun_M v_N))) ∧ (((Int.ofNat 2) - (Int.ofNat (2 ^ (Int.toNat ((Int.ofNat (E v_N)) - (Int.ofNat 1)))))) = v_exp)) ->
     wf_fNmag v_N (.SUBNORM v_m)
   | fNmag_case_2 : forall (v_N : N), wf_fNmag v_N .INF
   | fNmag_case_3 : forall (v_N : N) (v_m : m), 
-    ((1 <= v_m) && (v_m < (2 ^ (fun_M v_N)))) ->
+    ((1 <= v_m) ∧ (v_m < (2 ^ (fun_M v_N)))) ->
     wf_fNmag v_N (.NAN v_m)
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:46.1-48.35 -/
 inductive fN : Type where
   | POS (_ : fNmag) : fN
   | NEG (_ : fNmag) : fN
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:46.8-46.11 -/
@@ -327,7 +328,7 @@ def fnat : ∀  (v_N : N) (nat : Nat) , fN
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:63.6-63.11 -/
 inductive fnat_is_wf : N -> Nat -> fN -> Prop where
   | fnat_is_wf_0 : forall (v_N : N) (nat : Nat) (ret_val : fN), 
-    (ret_val == (fnat v_N nat)) ->
+    (ret_val = (fnat v_N nat)) ->
     (wf_fN v_N ret_val) ->
     fnat_is_wf v_N nat ret_val
 
@@ -352,7 +353,7 @@ abbrev v128 : Type := vN
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:84.1-84.49 -/
 inductive list (X : Type 0) : Type where
   | mk_list (X_lst : (List X)) : list X
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:84.1-84.49 -/
@@ -364,7 +365,7 @@ def proj_list_0 : ∀  (X : Type) [Inhabited X] (x : (list X)) , ((List X))
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:89.1-89.85 -/
 inductive char : Type where
   | mk_char (i : Nat) : char
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:89.1-89.85 -/
@@ -376,13 +377,13 @@ def proj_char_0 : ∀  (x : char) , (Nat)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:89.8-89.12 -/
 inductive wf_char : char -> Prop where
   | char_case_0 : forall (i : Nat), 
-    (((i >= 0) && (i <= 55295)) || ((i >= 57344) && (i <= 1114111))) ->
+    (((i >= 0) ∧ (i <= 55295)) ∨ ((i >= 57344) ∧ (i <= 1114111))) ->
     wf_char (.mk_char i)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/5.1-binary.values.spectec:48.6-48.11 -/
 inductive fun_cont : byte -> Nat -> Prop where
   | fun_cont_case_0 : forall (b : byte), 
-    ((128 < (proj_byte_0 b)) && ((proj_byte_0 b) < 192)) ->
+    ((128 < (proj_byte_0 b)) ∧ ((proj_byte_0 b) < 192)) ->
     fun_cont b (Int.toNat ((Int.ofNat (proj_byte_0 b)) - (Int.ofNat 128)))
 
 /- Recursive Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:91.1-91.25 -/
@@ -400,21 +401,21 @@ inductive fun_utf8 : (List char) -> (List byte) -> Prop where
     fun_utf8 ch_lst (concat_ byte var_0_lst)
   | fun_utf8_case_1 : forall (ch : char) (b : byte), 
     ((proj_char_0 ch) < 128) ->
-    (b == (.mk_byte (proj_char_0 ch))) ->
+    (b = (.mk_byte (proj_char_0 ch))) ->
     (wf_byte (.mk_byte (proj_char_0 ch))) ->
     fun_utf8 ([ch] : (List char)) ([b] : (List byte))
   | fun_utf8_case_2 : forall (ch : char) (b_1 : byte) (b_2 : byte) (var_0 : Nat), 
     (fun_cont b_2 var_0) ->
-    ((128 <= (proj_char_0 ch)) && ((proj_char_0 ch) < 2048)) ->
-    ((proj_char_0 ch) == (((2 ^ 6) * (Int.toNat ((Int.ofNat (proj_byte_0 b_1)) - (Int.ofNat 192)))) + var_0)) ->
+    ((128 <= (proj_char_0 ch)) ∧ ((proj_char_0 ch) < 2048)) ->
+    ((proj_char_0 ch) = (((2 ^ 6) * (Int.toNat ((Int.ofNat (proj_byte_0 b_1)) - (Int.ofNat 192)))) + var_0)) ->
     (wf_byte b_1) ->
     (wf_byte b_2) ->
     fun_utf8 ([ch] : (List char)) ([b_1, b_2] : (List byte))
   | fun_utf8_case_3 : forall (ch : char) (b_1 : byte) (b_2 : byte) (b_3 : byte) (var_1 : Nat) (var_0 : Nat), 
     (fun_cont b_3 var_1) ->
     (fun_cont b_2 var_0) ->
-    (((2048 <= (proj_char_0 ch)) && ((proj_char_0 ch) < 55296)) || ((57344 <= (proj_char_0 ch)) && ((proj_char_0 ch) < 65536))) ->
-    ((proj_char_0 ch) == ((((2 ^ 12) * (Int.toNat ((Int.ofNat (proj_byte_0 b_1)) - (Int.ofNat 224)))) + ((2 ^ 6) * var_0)) + var_1)) ->
+    (((2048 <= (proj_char_0 ch)) ∧ ((proj_char_0 ch) < 55296)) ∨ ((57344 <= (proj_char_0 ch)) ∧ ((proj_char_0 ch) < 65536))) ->
+    ((proj_char_0 ch) = ((((2 ^ 12) * (Int.toNat ((Int.ofNat (proj_byte_0 b_1)) - (Int.ofNat 224)))) + ((2 ^ 6) * var_0)) + var_1)) ->
     (wf_byte b_1) ->
     (wf_byte b_2) ->
     (wf_byte b_3) ->
@@ -423,8 +424,8 @@ inductive fun_utf8 : (List char) -> (List byte) -> Prop where
     (fun_cont b_4 var_2) ->
     (fun_cont b_3 var_1) ->
     (fun_cont b_2 var_0) ->
-    ((65536 <= (proj_char_0 ch)) && ((proj_char_0 ch) < 69632)) ->
-    ((proj_char_0 ch) == (((((2 ^ 18) * (Int.toNat ((Int.ofNat (proj_byte_0 b_1)) - (Int.ofNat 240)))) + ((2 ^ 12) * var_0)) + ((2 ^ 6) * var_1)) + var_2)) ->
+    ((65536 <= (proj_char_0 ch)) ∧ ((proj_char_0 ch) < 69632)) ->
+    ((proj_char_0 ch) = (((((2 ^ 18) * (Int.toNat ((Int.ofNat (proj_byte_0 b_1)) - (Int.ofNat 240)))) + ((2 ^ 12) * var_0)) + ((2 ^ 6) * var_1)) + var_2)) ->
     (wf_byte b_1) ->
     (wf_byte b_2) ->
     (wf_byte b_3) ->
@@ -434,7 +435,7 @@ inductive fun_utf8 : (List char) -> (List byte) -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:93.1-93.70 -/
 inductive name : Type where
   | mk_name (char_lst : (List char)) : name
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:93.1-93.70 -/
@@ -497,7 +498,7 @@ inductive externidx : Type where
   | TABLE (v_tableidx : tableidx) : externidx
   | MEM (v_memidx : memidx) : externidx
   | TAG (v_tagidx : tagidx) : externidx
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.1-syntax.values.spectec:115.8-115.17 -/
@@ -535,7 +536,7 @@ inductive funcsxx_is_wf : (List externidx) -> (List typeidx) -> Prop where
   | funcsxx_is_wf_0 : forall (var_0_lst : (List externidx)) (ret_val_lst : (List typeidx)) (var_0 : (List typeidx)), 
     (fun_funcsxx var_0_lst var_0) ->
     Forall (fun (var_0 : externidx) => (wf_externidx var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : typeidx) => (wf_uN 32 ret_val)) ret_val_lst ->
     funcsxx_is_wf var_0_lst ret_val_lst
 
@@ -556,7 +557,7 @@ inductive globalsxx_is_wf : (List externidx) -> (List globalidx) -> Prop where
   | globalsxx_is_wf_0 : forall (var_0_lst : (List externidx)) (ret_val_lst : (List globalidx)) (var_0 : (List globalidx)), 
     (fun_globalsxx var_0_lst var_0) ->
     Forall (fun (var_0 : externidx) => (wf_externidx var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : globalidx) => (wf_uN 32 ret_val)) ret_val_lst ->
     globalsxx_is_wf var_0_lst ret_val_lst
 
@@ -577,7 +578,7 @@ inductive tablesxx_is_wf : (List externidx) -> (List tableidx) -> Prop where
   | tablesxx_is_wf_0 : forall (var_0_lst : (List externidx)) (ret_val_lst : (List tableidx)) (var_0 : (List tableidx)), 
     (fun_tablesxx var_0_lst var_0) ->
     Forall (fun (var_0 : externidx) => (wf_externidx var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : tableidx) => (wf_uN 32 ret_val)) ret_val_lst ->
     tablesxx_is_wf var_0_lst ret_val_lst
 
@@ -598,7 +599,7 @@ inductive memsxx_is_wf : (List externidx) -> (List memidx) -> Prop where
   | memsxx_is_wf_0 : forall (var_0_lst : (List externidx)) (ret_val_lst : (List memidx)) (var_0 : (List memidx)), 
     (fun_memsxx var_0_lst var_0) ->
     Forall (fun (var_0 : externidx) => (wf_externidx var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : memidx) => (wf_uN 32 ret_val)) ret_val_lst ->
     memsxx_is_wf var_0_lst ret_val_lst
 
@@ -619,7 +620,7 @@ inductive tagsxx_is_wf : (List externidx) -> (List tagidx) -> Prop where
   | tagsxx_is_wf_0 : forall (var_0_lst : (List externidx)) (ret_val_lst : (List tagidx)) (var_0 : (List tagidx)), 
     (fun_tagsxx var_0_lst var_0) ->
     Forall (fun (var_0 : externidx) => (wf_externidx var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : tagidx) => (wf_uN 32 ret_val)) ret_val_lst ->
     tagsxx_is_wf var_0_lst ret_val_lst
 
@@ -635,7 +636,7 @@ structure free where MKfree ::
   LOCALS : (List localidx)
   LABELS : (List labelidx)
   TAGS : (List tagidx)
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_free (arg1 arg2 : (free)) : free where
   TYPES := arg1.TYPES ++ arg2.TYPES
@@ -680,7 +681,7 @@ def free_opt : ∀  (var_0_opt : (Option free)) , free
 inductive free_opt_is_wf : (Option free) -> free -> Prop where
   | free_opt_is_wf_0 : forall (var_0_opt : (Option free)) (ret_val : free), 
     Forall (fun (var_0 : free) => (wf_free var_0)) (Option.toList var_0_opt) ->
-    (ret_val == (free_opt var_0_opt)) ->
+    (ret_val = (free_opt var_0_opt)) ->
     (wf_free ret_val) ->
     free_opt_is_wf var_0_opt ret_val
 
@@ -698,7 +699,7 @@ inductive free_list_is_wf : (List free) -> free -> Prop where
   | free_list_is_wf_0 : forall (var_0_lst : (List free)) (ret_val : free) (var_0 : free), 
     (fun_free_list var_0_lst var_0) ->
     Forall (fun (var_0 : free) => (wf_free var_0)) var_0_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_list_is_wf var_0_lst ret_val
 
@@ -712,7 +713,7 @@ def free_typeidx : ∀  (v_typeidx : typeidx) , free
 inductive free_typeidx_is_wf : typeidx -> free -> Prop where
   | free_typeidx_is_wf_0 : forall (v_typeidx : typeidx) (ret_val : free), 
     (wf_uN 32 v_typeidx) ->
-    (ret_val == (free_typeidx v_typeidx)) ->
+    (ret_val = (free_typeidx v_typeidx)) ->
     (wf_free ret_val) ->
     free_typeidx_is_wf v_typeidx ret_val
 
@@ -726,7 +727,7 @@ def free_funcidx : ∀  (v_funcidx : funcidx) , free
 inductive free_funcidx_is_wf : funcidx -> free -> Prop where
   | free_funcidx_is_wf_0 : forall (v_funcidx : funcidx) (ret_val : free), 
     (wf_uN 32 v_funcidx) ->
-    (ret_val == (free_funcidx v_funcidx)) ->
+    (ret_val = (free_funcidx v_funcidx)) ->
     (wf_free ret_val) ->
     free_funcidx_is_wf v_funcidx ret_val
 
@@ -740,7 +741,7 @@ def free_globalidx : ∀  (v_globalidx : globalidx) , free
 inductive free_globalidx_is_wf : globalidx -> free -> Prop where
   | free_globalidx_is_wf_0 : forall (v_globalidx : globalidx) (ret_val : free), 
     (wf_uN 32 v_globalidx) ->
-    (ret_val == (free_globalidx v_globalidx)) ->
+    (ret_val = (free_globalidx v_globalidx)) ->
     (wf_free ret_val) ->
     free_globalidx_is_wf v_globalidx ret_val
 
@@ -754,7 +755,7 @@ def free_tableidx : ∀  (v_tableidx : tableidx) , free
 inductive free_tableidx_is_wf : tableidx -> free -> Prop where
   | free_tableidx_is_wf_0 : forall (v_tableidx : tableidx) (ret_val : free), 
     (wf_uN 32 v_tableidx) ->
-    (ret_val == (free_tableidx v_tableidx)) ->
+    (ret_val = (free_tableidx v_tableidx)) ->
     (wf_free ret_val) ->
     free_tableidx_is_wf v_tableidx ret_val
 
@@ -768,7 +769,7 @@ def free_memidx : ∀  (v_memidx : memidx) , free
 inductive free_memidx_is_wf : memidx -> free -> Prop where
   | free_memidx_is_wf_0 : forall (v_memidx : memidx) (ret_val : free), 
     (wf_uN 32 v_memidx) ->
-    (ret_val == (free_memidx v_memidx)) ->
+    (ret_val = (free_memidx v_memidx)) ->
     (wf_free ret_val) ->
     free_memidx_is_wf v_memidx ret_val
 
@@ -782,7 +783,7 @@ def free_elemidx : ∀  (v_elemidx : elemidx) , free
 inductive free_elemidx_is_wf : elemidx -> free -> Prop where
   | free_elemidx_is_wf_0 : forall (v_elemidx : elemidx) (ret_val : free), 
     (wf_uN 32 v_elemidx) ->
-    (ret_val == (free_elemidx v_elemidx)) ->
+    (ret_val = (free_elemidx v_elemidx)) ->
     (wf_free ret_val) ->
     free_elemidx_is_wf v_elemidx ret_val
 
@@ -796,7 +797,7 @@ def free_dataidx : ∀  (v_dataidx : dataidx) , free
 inductive free_dataidx_is_wf : dataidx -> free -> Prop where
   | free_dataidx_is_wf_0 : forall (v_dataidx : dataidx) (ret_val : free), 
     (wf_uN 32 v_dataidx) ->
-    (ret_val == (free_dataidx v_dataidx)) ->
+    (ret_val = (free_dataidx v_dataidx)) ->
     (wf_free ret_val) ->
     free_dataidx_is_wf v_dataidx ret_val
 
@@ -810,7 +811,7 @@ def free_localidx : ∀  (v_localidx : localidx) , free
 inductive free_localidx_is_wf : localidx -> free -> Prop where
   | free_localidx_is_wf_0 : forall (v_localidx : localidx) (ret_val : free), 
     (wf_uN 32 v_localidx) ->
-    (ret_val == (free_localidx v_localidx)) ->
+    (ret_val = (free_localidx v_localidx)) ->
     (wf_free ret_val) ->
     free_localidx_is_wf v_localidx ret_val
 
@@ -824,7 +825,7 @@ def free_labelidx : ∀  (v_labelidx : labelidx) , free
 inductive free_labelidx_is_wf : labelidx -> free -> Prop where
   | free_labelidx_is_wf_0 : forall (v_labelidx : labelidx) (ret_val : free), 
     (wf_uN 32 v_labelidx) ->
-    (ret_val == (free_labelidx v_labelidx)) ->
+    (ret_val = (free_labelidx v_labelidx)) ->
     (wf_free ret_val) ->
     free_labelidx_is_wf v_labelidx ret_val
 
@@ -838,7 +839,7 @@ def free_tagidx : ∀  (v_tagidx : tagidx) , free
 inductive free_tagidx_is_wf : tagidx -> free -> Prop where
   | free_tagidx_is_wf_0 : forall (v_tagidx : tagidx) (ret_val : free), 
     (wf_uN 32 v_tagidx) ->
-    (ret_val == (free_tagidx v_tagidx)) ->
+    (ret_val = (free_tagidx v_tagidx)) ->
     (wf_free ret_val) ->
     free_tagidx_is_wf v_tagidx ret_val
 
@@ -860,21 +861,21 @@ def free_externidx : ∀  (v_externidx : externidx) , free
 inductive free_externidx_is_wf : externidx -> free -> Prop where
   | free_externidx_is_wf_0 : forall (v_externidx : externidx) (ret_val : free), 
     (wf_externidx v_externidx) ->
-    (ret_val == (free_externidx v_externidx)) ->
+    (ret_val = (free_externidx v_externidx)) ->
     (wf_free ret_val) ->
     free_externidx_is_wf v_externidx ret_val
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:8.1-8.55 -/
 inductive null : Type where
   | NULL : null
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:10.1-11.14 -/
 inductive addrtype : Type where
   | I32 : addrtype
   | I64 : addrtype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:13.1-14.26 -/
@@ -883,7 +884,7 @@ inductive numtype : Type where
   | I64 : numtype
   | F32 : numtype
   | F64 : numtype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at:  -/
@@ -897,7 +898,7 @@ def numtype_addrtype : ∀  (var_0 : addrtype) , numtype
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:16.1-17.9 -/
 inductive vectype : Type where
   | V128 : vectype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:19.1-20.22 -/
@@ -907,7 +908,7 @@ inductive consttype : Type where
   | F32 : consttype
   | F64 : consttype
   | V128 : consttype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at:  -/
@@ -937,19 +938,19 @@ inductive absheaptype : Type where
   | EXTERN : absheaptype
   | NOEXTERN : absheaptype
   | BOT : absheaptype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:109.1-109.54 -/
 inductive «mut» : Type where
   | MUT : «mut»
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:110.1-110.60 -/
 inductive final : Type where
   | FINAL : final
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Recursive Definitions at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:37.1-123.22 -/
@@ -959,7 +960,7 @@ inductive typeuse : Type where
   | _IDX (v_typeidx : typeidx) : typeuse
   | _DEF (v_rectype : rectype) (v_n : n) : typeuse
   | REC (v_n : n) : typeuse
-deriving Inhabited, BEq
+deriving Inhabited
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:43.1-44.26 -/
@@ -980,7 +981,7 @@ inductive heaptype : Type where
   | _IDX (v_typeidx : typeidx) : heaptype
   | _DEF (v_rectype : rectype) (v_n : n) : heaptype
   | REC (v_n : n) : heaptype
-deriving Inhabited, BEq
+deriving Inhabited
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:51.1-52.14 -/
@@ -992,7 +993,7 @@ inductive valtype : Type where
   | V128 : valtype
   | REF (null_opt : (Option null)) (v_heaptype : heaptype) : valtype
   | BOT : valtype
-deriving Inhabited, BEq
+deriving Inhabited
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:92.1-92.66 -/
@@ -1006,13 +1007,13 @@ inductive storagetype : Type where
   | BOT : storagetype
   | I8 : storagetype
   | I16 : storagetype
-deriving Inhabited, BEq
+deriving Inhabited
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:112.1-112.61 -/
 inductive fieldtype : Type where
   | mk_fieldtype (mut_opt : (Option «mut»)) (v_storagetype : storagetype) : fieldtype
-deriving Inhabited, BEq
+deriving Inhabited
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:114.1-117.34 -/
@@ -1020,22 +1021,46 @@ inductive comptype : Type where
   | STRUCT (_ : (list fieldtype)) : comptype
   | ARRAY (v_fieldtype : fieldtype) : comptype
   | FUNC (v_resulttype : (list valtype)) (v_resulttype : (list valtype)) : comptype
-deriving Inhabited, BEq
+deriving Inhabited
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:119.1-120.33 -/
 inductive subtype : Type where
   | SUB (final_opt : (Option final)) (typeuse_lst : (List typeuse)) (v_comptype : comptype) : subtype
-deriving Inhabited, BEq
+deriving Inhabited
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:122.1-123.22 -/
 inductive rectype : Type where
   | REC (_ : (list subtype)) : rectype
-deriving Inhabited, BEq
+deriving Inhabited
 
 
 end
+
+noncomputable instance : DecidableEq (typeuse) :=
+  fun a b => Classical.propDecidable (a = b)
+
+noncomputable instance : DecidableEq (heaptype) :=
+  fun a b => Classical.propDecidable (a = b)
+
+noncomputable instance : DecidableEq (valtype) :=
+  fun a b => Classical.propDecidable (a = b)
+
+noncomputable instance : DecidableEq (storagetype) :=
+  fun a b => Classical.propDecidable (a = b)
+
+noncomputable instance : DecidableEq (fieldtype) :=
+  fun a b => Classical.propDecidable (a = b)
+
+noncomputable instance : DecidableEq (comptype) :=
+  fun a b => Classical.propDecidable (a = b)
+
+noncomputable instance : DecidableEq (subtype) :=
+  fun a b => Classical.propDecidable (a = b)
+
+noncomputable instance : DecidableEq (rectype) :=
+  fun a b => Classical.propDecidable (a = b)
 
 /- Type Alias Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:102.1-103.16 -/
 abbrev resulttype : Type := (list valtype)
@@ -1239,7 +1264,7 @@ end
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:32.1-33.34 -/
 inductive deftype : Type where
   | _DEF (v_rectype : rectype) (v_n : n) : deftype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at:  -/
@@ -1258,7 +1283,7 @@ def typeuse_deftype : ∀  (var_0 : deftype) , typeuse
 inductive typevar : Type where
   | _IDX (v_typeidx : typeidx) : typevar
   | REC (v_n : n) : typevar
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at:  -/
@@ -1279,7 +1304,7 @@ inductive wf_typevar : typevar -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:46.1-47.23 -/
 inductive reftype : Type where
   | REF (null_opt : (Option null)) (v_heaptype : heaptype) : reftype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at:  -/
@@ -1307,7 +1332,7 @@ abbrev Inn : Type := addrtype
 inductive Fnn : Type where
   | F32 : Fnn
   | F64 : Fnn
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at:  -/
@@ -1328,7 +1353,7 @@ inductive Cnn : Type where
   | F32 : Cnn
   | F64 : Cnn
   | V128 : Cnn
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at:  -/
@@ -1351,7 +1376,7 @@ def ANYREF : reftype := (.REF (some .NULL) .ANY)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:61.6-61.12 -/
 inductive ANYREF_is_wf : reftype -> Prop where
   | ANYREF_is_wf_0 : forall (ret_val : reftype), 
-    (ret_val == (ANYREF )) ->
+    (ret_val = (ANYREF )) ->
     (wf_reftype ret_val) ->
     ANYREF_is_wf ret_val
 
@@ -1361,7 +1386,7 @@ def EQREF : reftype := (.REF (some .NULL) .EQ)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:62.6-62.11 -/
 inductive EQREF_is_wf : reftype -> Prop where
   | EQREF_is_wf_0 : forall (ret_val : reftype), 
-    (ret_val == (EQREF )) ->
+    (ret_val = (EQREF )) ->
     (wf_reftype ret_val) ->
     EQREF_is_wf ret_val
 
@@ -1371,7 +1396,7 @@ def I31REF : reftype := (.REF (some .NULL) .I31)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:63.6-63.12 -/
 inductive I31REF_is_wf : reftype -> Prop where
   | I31REF_is_wf_0 : forall (ret_val : reftype), 
-    (ret_val == (I31REF )) ->
+    (ret_val = (I31REF )) ->
     (wf_reftype ret_val) ->
     I31REF_is_wf ret_val
 
@@ -1381,7 +1406,7 @@ def STRUCTREF : reftype := (.REF (some .NULL) .STRUCT)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:64.6-64.15 -/
 inductive STRUCTREF_is_wf : reftype -> Prop where
   | STRUCTREF_is_wf_0 : forall (ret_val : reftype), 
-    (ret_val == (STRUCTREF )) ->
+    (ret_val = (STRUCTREF )) ->
     (wf_reftype ret_val) ->
     STRUCTREF_is_wf ret_val
 
@@ -1391,7 +1416,7 @@ def ARRAYREF : reftype := (.REF (some .NULL) .ARRAY)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:65.6-65.14 -/
 inductive ARRAYREF_is_wf : reftype -> Prop where
   | ARRAYREF_is_wf_0 : forall (ret_val : reftype), 
-    (ret_val == (ARRAYREF )) ->
+    (ret_val = (ARRAYREF )) ->
     (wf_reftype ret_val) ->
     ARRAYREF_is_wf ret_val
 
@@ -1401,7 +1426,7 @@ def FUNCREF : reftype := (.REF (some .NULL) .FUNC)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:66.6-66.13 -/
 inductive FUNCREF_is_wf : reftype -> Prop where
   | FUNCREF_is_wf_0 : forall (ret_val : reftype), 
-    (ret_val == (FUNCREF )) ->
+    (ret_val = (FUNCREF )) ->
     (wf_reftype ret_val) ->
     FUNCREF_is_wf ret_val
 
@@ -1411,7 +1436,7 @@ def EXNREF : reftype := (.REF (some .NULL) .EXN)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:67.6-67.12 -/
 inductive EXNREF_is_wf : reftype -> Prop where
   | EXNREF_is_wf_0 : forall (ret_val : reftype), 
-    (ret_val == (EXNREF )) ->
+    (ret_val = (EXNREF )) ->
     (wf_reftype ret_val) ->
     EXNREF_is_wf ret_val
 
@@ -1421,7 +1446,7 @@ def EXTERNREF : reftype := (.REF (some .NULL) .EXTERN)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:68.6-68.15 -/
 inductive EXTERNREF_is_wf : reftype -> Prop where
   | EXTERNREF_is_wf_0 : forall (ret_val : reftype), 
-    (ret_val == (EXTERNREF )) ->
+    (ret_val = (EXTERNREF )) ->
     (wf_reftype ret_val) ->
     EXTERNREF_is_wf ret_val
 
@@ -1431,7 +1456,7 @@ def NULLREF : reftype := (.REF (some .NULL) .NONE)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:69.6-69.13 -/
 inductive NULLREF_is_wf : reftype -> Prop where
   | NULLREF_is_wf_0 : forall (ret_val : reftype), 
-    (ret_val == (NULLREF )) ->
+    (ret_val = (NULLREF )) ->
     (wf_reftype ret_val) ->
     NULLREF_is_wf ret_val
 
@@ -1441,7 +1466,7 @@ def NULLFUNCREF : reftype := (.REF (some .NULL) .NOFUNC)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:70.6-70.17 -/
 inductive NULLFUNCREF_is_wf : reftype -> Prop where
   | NULLFUNCREF_is_wf_0 : forall (ret_val : reftype), 
-    (ret_val == (NULLFUNCREF )) ->
+    (ret_val = (NULLFUNCREF )) ->
     (wf_reftype ret_val) ->
     NULLFUNCREF_is_wf ret_val
 
@@ -1451,7 +1476,7 @@ def NULLEXNREF : reftype := (.REF (some .NULL) .NOEXN)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:71.6-71.16 -/
 inductive NULLEXNREF_is_wf : reftype -> Prop where
   | NULLEXNREF_is_wf_0 : forall (ret_val : reftype), 
-    (ret_val == (NULLEXNREF )) ->
+    (ret_val = (NULLEXNREF )) ->
     (wf_reftype ret_val) ->
     NULLEXNREF_is_wf ret_val
 
@@ -1461,7 +1486,7 @@ def NULLEXTERNREF : reftype := (.REF (some .NULL) .NOEXTERN)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:72.6-72.19 -/
 inductive NULLEXTERNREF_is_wf : reftype -> Prop where
   | NULLEXTERNREF_is_wf_0 : forall (ret_val : reftype), 
-    (ret_val == (NULLEXTERNREF )) ->
+    (ret_val = (NULLEXTERNREF )) ->
     (wf_reftype ret_val) ->
     NULLEXTERNREF_is_wf ret_val
 
@@ -1469,7 +1494,7 @@ inductive NULLEXTERNREF_is_wf : reftype -> Prop where
 inductive packtype : Type where
   | I8 : packtype
   | I16 : packtype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at:  -/
@@ -1488,7 +1513,7 @@ inductive lanetype : Type where
   | F64 : lanetype
   | I8 : lanetype
   | I16 : lanetype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at:  -/
@@ -1536,7 +1561,7 @@ inductive Jnn : Type where
   | I64 : Jnn
   | I8 : Jnn
   | I16 : Jnn
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at:  -/
@@ -1573,7 +1598,7 @@ abbrev Lnn : Type := lanetype
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:128.1-128.74 -/
 inductive limits : Type where
   | mk_limits (v_u64 : u64) (u64_opt : (Option u64)) : limits
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:128.8-128.14 -/
@@ -1589,7 +1614,7 @@ abbrev tagtype : Type := typeuse
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:131.1-131.58 -/
 inductive globaltype : Type where
   | mk_globaltype (mut_opt : (Option «mut»)) (v_valtype : valtype) : globaltype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:131.8-131.18 -/
@@ -1601,7 +1626,7 @@ inductive wf_globaltype : globaltype -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:132.1-132.63 -/
 inductive memtype : Type where
   | PAGE (v_addrtype : addrtype) (v_limits : limits) : memtype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:132.8-132.15 -/
@@ -1613,7 +1638,7 @@ inductive wf_memtype : memtype -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:133.1-133.67 -/
 inductive tabletype : Type where
   | mk_tabletype (v_addrtype : addrtype) (v_limits : limits) (v_reftype : reftype) : tabletype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:133.8-133.17 -/
@@ -1626,7 +1651,7 @@ inductive wf_tabletype : tabletype -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:134.1-134.64 -/
 inductive datatype : Type where
   | OK : datatype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Type Alias Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:135.1-135.52 -/
@@ -1639,7 +1664,7 @@ inductive externtype : Type where
   | MEM (v_memtype : memtype) : externtype
   | TABLE (v_tabletype : tabletype) : externtype
   | FUNC (v_typeuse : typeuse) : externtype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:137.8-137.18 -/
@@ -1663,7 +1688,7 @@ inductive wf_externtype : externtype -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:140.1-141.47 -/
 inductive moduletype : Type where
   | mk_moduletype (externtype_lst : (List externtype)) (externtype_lst : (List externtype)) : moduletype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:140.8-140.18 -/
@@ -1863,7 +1888,7 @@ def unpack : ∀  (v_storagetype : storagetype) , valtype
 inductive unpack_is_wf : storagetype -> valtype -> Prop where
   | unpack_is_wf_0 : forall (v_storagetype : storagetype) (ret_val : valtype), 
     (wf_storagetype v_storagetype) ->
-    (ret_val == (unpack v_storagetype)) ->
+    (ret_val = (unpack v_storagetype)) ->
     (wf_valtype ret_val) ->
     unpack_is_wf v_storagetype ret_val
 
@@ -1895,7 +1920,7 @@ inductive diffrt_is_wf : reftype -> reftype -> reftype -> Prop where
   | diffrt_is_wf_0 : forall (v_reftype : reftype) (reftype_0 : reftype) (ret_val : reftype), 
     (wf_reftype v_reftype) ->
     (wf_reftype reftype_0) ->
-    (ret_val == (diffrt v_reftype reftype_0)) ->
+    (ret_val = (diffrt v_reftype reftype_0)) ->
     (wf_reftype ret_val) ->
     diffrt_is_wf v_reftype reftype_0 ret_val
 
@@ -1919,7 +1944,7 @@ inductive tagsxt_is_wf : (List externtype) -> (List tagtype) -> Prop where
   | tagsxt_is_wf_0 : forall (var_0_lst : (List externtype)) (ret_val_lst : (List tagtype)) (var_0 : (List tagtype)), 
     (fun_tagsxt var_0_lst var_0) ->
     Forall (fun (var_0 : externtype) => (wf_externtype var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : tagtype) => (wf_typeuse ret_val)) ret_val_lst ->
     tagsxt_is_wf var_0_lst ret_val_lst
 
@@ -1940,7 +1965,7 @@ inductive globalsxt_is_wf : (List externtype) -> (List globaltype) -> Prop where
   | globalsxt_is_wf_0 : forall (var_0_lst : (List externtype)) (ret_val_lst : (List globaltype)) (var_0 : (List globaltype)), 
     (fun_globalsxt var_0_lst var_0) ->
     Forall (fun (var_0 : externtype) => (wf_externtype var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : globaltype) => (wf_globaltype ret_val)) ret_val_lst ->
     globalsxt_is_wf var_0_lst ret_val_lst
 
@@ -1961,7 +1986,7 @@ inductive memsxt_is_wf : (List externtype) -> (List memtype) -> Prop where
   | memsxt_is_wf_0 : forall (var_0_lst : (List externtype)) (ret_val_lst : (List memtype)) (var_0 : (List memtype)), 
     (fun_memsxt var_0_lst var_0) ->
     Forall (fun (var_0 : externtype) => (wf_externtype var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : memtype) => (wf_memtype ret_val)) ret_val_lst ->
     memsxt_is_wf var_0_lst ret_val_lst
 
@@ -1982,7 +2007,7 @@ inductive tablesxt_is_wf : (List externtype) -> (List tabletype) -> Prop where
   | tablesxt_is_wf_0 : forall (var_0_lst : (List externtype)) (ret_val_lst : (List tabletype)) (var_0 : (List tabletype)), 
     (fun_tablesxt var_0_lst var_0) ->
     Forall (fun (var_0 : externtype) => (wf_externtype var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : tabletype) => (wf_tabletype ret_val)) ret_val_lst ->
     tablesxt_is_wf var_0_lst ret_val_lst
 
@@ -2021,8 +2046,8 @@ inductive subst_typevar_is_wf : typevar -> (List typevar) -> (List typeuse) -> t
     (wf_typevar v_typevar) ->
     Forall (fun (var_0 : typevar) => (wf_typevar var_0)) var_0_lst ->
     Forall (fun (var_1 : typeuse) => (wf_typeuse var_1)) var_1_lst ->
-    (var_0 != none) ->
-    (ret_val == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val = (Option.get! var_0)) ->
     (wf_typeuse ret_val) ->
     subst_typevar_is_wf v_typevar var_0_lst var_1_lst ret_val
 
@@ -2036,8 +2061,8 @@ inductive minus_recs_is_wf : (List typevar) -> (List typeuse) -> ((List typevar)
   | minus_recs_is_wf_0 : forall (var_0_lst : (List typevar)) (var_1_lst : (List typeuse)) (ret_val : ((List typevar) × (List typeuse))), 
     Forall (fun (var_0 : typevar) => (wf_typevar var_0)) var_0_lst ->
     Forall (fun (var_1 : typeuse) => (wf_typeuse var_1)) var_1_lst ->
-    ((minus_recs var_0_lst var_1_lst) != none) ->
-    (ret_val == (Option.get! (minus_recs var_0_lst var_1_lst))) ->
+    ((minus_recs var_0_lst var_1_lst) ≠ none) ->
+    (ret_val = (Option.get! (minus_recs var_0_lst var_1_lst))) ->
     Forall (fun (iter : typevar) => (wf_typevar iter)) (Prod.fst ret_val) ->
     Forall (fun (iter : typeuse) => (wf_typeuse iter)) (Prod.snd ret_val) ->
     minus_recs_is_wf var_0_lst var_1_lst ret_val
@@ -2165,7 +2190,7 @@ inductive fun_subst_subtype : subtype -> (List typevar) -> (List typeuse) -> sub
 inductive fun_subst_rectype : rectype -> (List typevar) -> (List typeuse) -> rectype -> Prop where
   | fun_subst_rectype_case_0 : forall (st_lst : (List subtype)) (tv_lst : (List typevar)) (tu_lst : (List typeuse)) (tv'_lst : (List typevar)) (tu'_lst : (List typeuse)) (var_0_lst : (List subtype)), 
     Forall₂ (fun (var_0 : subtype) (st : subtype) => (fun_subst_subtype st tv'_lst tu'_lst var_0)) var_0_lst st_lst ->
-    ((tv'_lst, tu'_lst) == (Option.get! (minus_recs tv_lst tu_lst))) ->
+    ((tv'_lst, tu'_lst) = (Option.get! (minus_recs tv_lst tu_lst))) ->
     Forall (fun (iter_3 : typevar) => (wf_typevar iter_3)) (Prod.fst (Option.get! (minus_recs tv_lst tu_lst))) ->
     Forall (fun (iter_4 : typeuse) => (wf_typeuse iter_4)) (Prod.snd (Option.get! (minus_recs tv_lst tu_lst))) ->
     ((List.length var_0_lst) = (List.length st_lst)) ->
@@ -2188,7 +2213,7 @@ inductive subst_typeuse_is_wf : typeuse -> (List typevar) -> (List typeuse) -> t
     (wf_typeuse v_typeuse) ->
     Forall (fun (var_0 : typevar) => (wf_typevar var_0)) var_0_lst ->
     Forall (fun (var_1 : typeuse) => (wf_typeuse var_1)) var_1_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_typeuse ret_val) ->
     subst_typeuse_is_wf v_typeuse var_0_lst var_1_lst ret_val
 
@@ -2199,7 +2224,7 @@ inductive subst_heaptype_is_wf : heaptype -> (List typevar) -> (List typeuse) ->
     (wf_heaptype v_heaptype) ->
     Forall (fun (var_0 : typevar) => (wf_typevar var_0)) var_0_lst ->
     Forall (fun (var_1 : typeuse) => (wf_typeuse var_1)) var_1_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_heaptype ret_val) ->
     subst_heaptype_is_wf v_heaptype var_0_lst var_1_lst ret_val
 
@@ -2210,7 +2235,7 @@ inductive subst_reftype_is_wf : reftype -> (List typevar) -> (List typeuse) -> r
     (wf_reftype v_reftype) ->
     Forall (fun (var_0 : typevar) => (wf_typevar var_0)) var_0_lst ->
     Forall (fun (var_1 : typeuse) => (wf_typeuse var_1)) var_1_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_reftype ret_val) ->
     subst_reftype_is_wf v_reftype var_0_lst var_1_lst ret_val
 
@@ -2221,7 +2246,7 @@ inductive subst_valtype_is_wf : valtype -> (List typevar) -> (List typeuse) -> v
     (wf_valtype v_valtype) ->
     Forall (fun (var_0 : typevar) => (wf_typevar var_0)) var_0_lst ->
     Forall (fun (var_1 : typeuse) => (wf_typeuse var_1)) var_1_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_valtype ret_val) ->
     subst_valtype_is_wf v_valtype var_0_lst var_1_lst ret_val
 
@@ -2232,7 +2257,7 @@ inductive subst_storagetype_is_wf : storagetype -> (List typevar) -> (List typeu
     (wf_storagetype v_storagetype) ->
     Forall (fun (var_0 : typevar) => (wf_typevar var_0)) var_0_lst ->
     Forall (fun (var_1 : typeuse) => (wf_typeuse var_1)) var_1_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_storagetype ret_val) ->
     subst_storagetype_is_wf v_storagetype var_0_lst var_1_lst ret_val
 
@@ -2243,7 +2268,7 @@ inductive subst_fieldtype_is_wf : fieldtype -> (List typevar) -> (List typeuse) 
     (wf_fieldtype v_fieldtype) ->
     Forall (fun (var_0 : typevar) => (wf_typevar var_0)) var_0_lst ->
     Forall (fun (var_1 : typeuse) => (wf_typeuse var_1)) var_1_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_fieldtype ret_val) ->
     subst_fieldtype_is_wf v_fieldtype var_0_lst var_1_lst ret_val
 
@@ -2254,7 +2279,7 @@ inductive subst_comptype_is_wf : comptype -> (List typevar) -> (List typeuse) ->
     (wf_comptype v_comptype) ->
     Forall (fun (var_0 : typevar) => (wf_typevar var_0)) var_0_lst ->
     Forall (fun (var_1 : typeuse) => (wf_typeuse var_1)) var_1_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_comptype ret_val) ->
     subst_comptype_is_wf v_comptype var_0_lst var_1_lst ret_val
 
@@ -2265,7 +2290,7 @@ inductive subst_subtype_is_wf : subtype -> (List typevar) -> (List typeuse) -> s
     (wf_subtype v_subtype) ->
     Forall (fun (var_0 : typevar) => (wf_typevar var_0)) var_0_lst ->
     Forall (fun (var_1 : typeuse) => (wf_typeuse var_1)) var_1_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_subtype ret_val) ->
     subst_subtype_is_wf v_subtype var_0_lst var_1_lst ret_val
 
@@ -2290,7 +2315,7 @@ inductive subst_tagtype_is_wf : tagtype -> (List typevar) -> (List typeuse) -> t
     (wf_typeuse v_tagtype) ->
     Forall (fun (var_0 : typevar) => (wf_typevar var_0)) var_0_lst ->
     Forall (fun (var_1 : typeuse) => (wf_typeuse var_1)) var_1_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_typeuse ret_val) ->
     subst_tagtype_is_wf v_tagtype var_0_lst var_1_lst ret_val
 
@@ -2307,7 +2332,7 @@ inductive subst_globaltype_is_wf : globaltype -> (List typevar) -> (List typeuse
     (wf_globaltype v_globaltype) ->
     Forall (fun (var_0 : typevar) => (wf_typevar var_0)) var_0_lst ->
     Forall (fun (var_1 : typeuse) => (wf_typeuse var_1)) var_1_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_globaltype ret_val) ->
     subst_globaltype_is_wf v_globaltype var_0_lst var_1_lst ret_val
 
@@ -2323,7 +2348,7 @@ inductive subst_memtype_is_wf : memtype -> (List typevar) -> (List typeuse) -> m
     (wf_memtype v_memtype) ->
     Forall (fun (var_0 : typevar) => (wf_typevar var_0)) var_0_lst ->
     Forall (fun (var_1 : typeuse) => (wf_typeuse var_1)) var_1_lst ->
-    (ret_val == (subst_memtype v_memtype var_0_lst var_1_lst)) ->
+    (ret_val = (subst_memtype v_memtype var_0_lst var_1_lst)) ->
     (wf_memtype ret_val) ->
     subst_memtype_is_wf v_memtype var_0_lst var_1_lst ret_val
 
@@ -2340,7 +2365,7 @@ inductive subst_tabletype_is_wf : tabletype -> (List typevar) -> (List typeuse) 
     (wf_tabletype v_tabletype) ->
     Forall (fun (var_0 : typevar) => (wf_typevar var_0)) var_0_lst ->
     Forall (fun (var_1 : typeuse) => (wf_typeuse var_1)) var_1_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_tabletype ret_val) ->
     subst_tabletype_is_wf v_tabletype var_0_lst var_1_lst ret_val
 
@@ -2367,7 +2392,7 @@ inductive subst_externtype_is_wf : externtype -> (List typevar) -> (List typeuse
     (wf_externtype v_externtype) ->
     Forall (fun (var_0 : typevar) => (wf_typevar var_0)) var_0_lst ->
     Forall (fun (var_1 : typeuse) => (wf_typeuse var_1)) var_1_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_externtype ret_val) ->
     subst_externtype_is_wf v_externtype var_0_lst var_1_lst ret_val
 
@@ -2387,7 +2412,7 @@ inductive subst_moduletype_is_wf : moduletype -> (List typevar) -> (List typeuse
     (wf_moduletype v_moduletype) ->
     Forall (fun (var_0 : typevar) => (wf_typevar var_0)) var_0_lst ->
     Forall (fun (var_1 : typeuse) => (wf_typeuse var_1)) var_1_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_moduletype ret_val) ->
     subst_moduletype_is_wf v_moduletype var_0_lst var_1_lst ret_val
 
@@ -2395,7 +2420,7 @@ inductive subst_moduletype_is_wf : moduletype -> (List typevar) -> (List typeuse
 inductive fun_subst_all_valtype : valtype -> (List typeuse) -> valtype -> Prop where
   | fun_subst_all_valtype_case_0 : forall (t : valtype) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat) (var_0 : valtype), 
     (fun_subst_valtype t ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst var_0) ->
-    (v_n == (List.length tu_lst)) ->
+    (v_n = (List.length tu_lst)) ->
     fun_subst_all_valtype t tu_lst var_0
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:431.6-431.24 -/
@@ -2404,7 +2429,7 @@ inductive subst_all_valtype_is_wf : valtype -> (List typeuse) -> valtype -> Prop
     (fun_subst_all_valtype v_valtype var_0_lst var_0) ->
     (wf_valtype v_valtype) ->
     Forall (fun (var_0 : typeuse) => (wf_typeuse var_0)) var_0_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_valtype ret_val) ->
     subst_all_valtype_is_wf v_valtype var_0_lst ret_val
 
@@ -2412,7 +2437,7 @@ inductive subst_all_valtype_is_wf : valtype -> (List typeuse) -> valtype -> Prop
 inductive fun_subst_all_reftype : reftype -> (List typeuse) -> reftype -> Prop where
   | fun_subst_all_reftype_case_0 : forall (rt : reftype) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat) (var_0 : reftype), 
     (fun_subst_reftype rt ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst var_0) ->
-    (v_n == (List.length tu_lst)) ->
+    (v_n = (List.length tu_lst)) ->
     fun_subst_all_reftype rt tu_lst var_0
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:432.6-432.24 -/
@@ -2421,7 +2446,7 @@ inductive subst_all_reftype_is_wf : reftype -> (List typeuse) -> reftype -> Prop
     (fun_subst_all_reftype v_reftype var_0_lst var_0) ->
     (wf_reftype v_reftype) ->
     Forall (fun (var_0 : typeuse) => (wf_typeuse var_0)) var_0_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_reftype ret_val) ->
     subst_all_reftype_is_wf v_reftype var_0_lst ret_val
 
@@ -2430,14 +2455,14 @@ inductive fun_subst_all_deftype : deftype -> (List typeuse) -> deftype -> Prop w
   | fun_subst_all_deftype_case_0 : forall (dt : deftype) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat) (var_0 : deftype), 
     (fun_subst_deftype dt ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst var_0) ->
     (∀ (i_138931 : Nat), i_138931 < v_n → (wf_typevar (._IDX (.mk_uN i_138931)))) ->
-    (v_n == (List.length tu_lst)) ->
+    (v_n = (List.length tu_lst)) ->
     fun_subst_all_deftype dt tu_lst var_0
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:434.6-434.24 -/
 inductive fun_subst_all_tagtype : tagtype -> (List typeuse) -> tagtype -> Prop where
   | fun_subst_all_tagtype_case_0 : forall (jt : typeuse) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat) (var_0 : tagtype), 
     (fun_subst_tagtype jt ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst var_0) ->
-    (v_n == (List.length tu_lst)) ->
+    (v_n = (List.length tu_lst)) ->
     fun_subst_all_tagtype jt tu_lst var_0
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:434.6-434.24 -/
@@ -2446,7 +2471,7 @@ inductive subst_all_tagtype_is_wf : tagtype -> (List typeuse) -> tagtype -> Prop
     (fun_subst_all_tagtype v_tagtype var_0_lst var_0) ->
     (wf_typeuse v_tagtype) ->
     Forall (fun (var_0 : typeuse) => (wf_typeuse var_0)) var_0_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_typeuse ret_val) ->
     subst_all_tagtype_is_wf v_tagtype var_0_lst ret_val
 
@@ -2454,7 +2479,7 @@ inductive subst_all_tagtype_is_wf : tagtype -> (List typeuse) -> tagtype -> Prop
 inductive fun_subst_all_globaltype : globaltype -> (List typeuse) -> globaltype -> Prop where
   | fun_subst_all_globaltype_case_0 : forall (gt : globaltype) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat) (var_0 : globaltype), 
     (fun_subst_globaltype gt ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst var_0) ->
-    (v_n == (List.length tu_lst)) ->
+    (v_n = (List.length tu_lst)) ->
     fun_subst_all_globaltype gt tu_lst var_0
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:435.6-435.27 -/
@@ -2463,14 +2488,14 @@ inductive subst_all_globaltype_is_wf : globaltype -> (List typeuse) -> globaltyp
     (fun_subst_all_globaltype v_globaltype var_0_lst var_0) ->
     (wf_globaltype v_globaltype) ->
     Forall (fun (var_0 : typeuse) => (wf_typeuse var_0)) var_0_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_globaltype ret_val) ->
     subst_all_globaltype_is_wf v_globaltype var_0_lst ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:436.6-436.24 -/
 inductive fun_subst_all_memtype : memtype -> (List typeuse) -> memtype -> Prop where
   | fun_subst_all_memtype_case_0 : forall (mt : memtype) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat), 
-    (v_n == (List.length tu_lst)) ->
+    (v_n = (List.length tu_lst)) ->
     fun_subst_all_memtype mt tu_lst (subst_memtype mt ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:436.6-436.24 -/
@@ -2479,7 +2504,7 @@ inductive subst_all_memtype_is_wf : memtype -> (List typeuse) -> memtype -> Prop
     (fun_subst_all_memtype v_memtype var_0_lst var_0) ->
     (wf_memtype v_memtype) ->
     Forall (fun (var_0 : typeuse) => (wf_typeuse var_0)) var_0_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_memtype ret_val) ->
     subst_all_memtype_is_wf v_memtype var_0_lst ret_val
 
@@ -2487,7 +2512,7 @@ inductive subst_all_memtype_is_wf : memtype -> (List typeuse) -> memtype -> Prop
 inductive fun_subst_all_tabletype : tabletype -> (List typeuse) -> tabletype -> Prop where
   | fun_subst_all_tabletype_case_0 : forall (tt : tabletype) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat) (var_0 : tabletype), 
     (fun_subst_tabletype tt ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst var_0) ->
-    (v_n == (List.length tu_lst)) ->
+    (v_n = (List.length tu_lst)) ->
     fun_subst_all_tabletype tt tu_lst var_0
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:437.6-437.26 -/
@@ -2496,7 +2521,7 @@ inductive subst_all_tabletype_is_wf : tabletype -> (List typeuse) -> tabletype -
     (fun_subst_all_tabletype v_tabletype var_0_lst var_0) ->
     (wf_tabletype v_tabletype) ->
     Forall (fun (var_0 : typeuse) => (wf_typeuse var_0)) var_0_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_tabletype ret_val) ->
     subst_all_tabletype_is_wf v_tabletype var_0_lst ret_val
 
@@ -2504,7 +2529,7 @@ inductive subst_all_tabletype_is_wf : tabletype -> (List typeuse) -> tabletype -
 inductive fun_subst_all_externtype : externtype -> (List typeuse) -> externtype -> Prop where
   | fun_subst_all_externtype_case_0 : forall (xt : externtype) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat) (var_0 : externtype), 
     (fun_subst_externtype xt ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst var_0) ->
-    (v_n == (List.length tu_lst)) ->
+    (v_n = (List.length tu_lst)) ->
     fun_subst_all_externtype xt tu_lst var_0
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:438.6-438.27 -/
@@ -2513,7 +2538,7 @@ inductive subst_all_externtype_is_wf : externtype -> (List typeuse) -> externtyp
     (fun_subst_all_externtype v_externtype var_0_lst var_0) ->
     (wf_externtype v_externtype) ->
     Forall (fun (var_0 : typeuse) => (wf_typeuse var_0)) var_0_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_externtype ret_val) ->
     subst_all_externtype_is_wf v_externtype var_0_lst ret_val
 
@@ -2521,7 +2546,7 @@ inductive subst_all_externtype_is_wf : externtype -> (List typeuse) -> externtyp
 inductive fun_subst_all_moduletype : moduletype -> (List typeuse) -> moduletype -> Prop where
   | fun_subst_all_moduletype_case_0 : forall (mmt : moduletype) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat) (var_0 : moduletype), 
     (fun_subst_moduletype mmt ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst var_0) ->
-    (v_n == (List.length tu_lst)) ->
+    (v_n = (List.length tu_lst)) ->
     fun_subst_all_moduletype mmt tu_lst var_0
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:439.6-439.27 -/
@@ -2530,7 +2555,7 @@ inductive subst_all_moduletype_is_wf : moduletype -> (List typeuse) -> moduletyp
     (fun_subst_all_moduletype v_moduletype var_0_lst var_0) ->
     (wf_moduletype v_moduletype) ->
     Forall (fun (var_0 : typeuse) => (wf_typeuse var_0)) var_0_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_moduletype ret_val) ->
     subst_all_moduletype_is_wf v_moduletype var_0_lst ret_val
 
@@ -2547,7 +2572,7 @@ inductive fun_subst_all_deftypes : (List deftype) -> (List typeuse) -> (List def
 inductive fun_rollrt : typeidx -> rectype -> rectype -> Prop where
   | fun_rollrt_case_0 : forall (x : uN) (v_rectype : rectype) (i : Nat) (v_n : Nat) (subtype_lst : (List subtype)) (var_0_lst : (List subtype)), 
     Forall₂ (fun (var_0 : subtype) (v_subtype : subtype) => (fun_subst_subtype v_subtype ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN ((proj_uN_0 x) + i))) : typevar))) ((List.range v_n).map (fun (i : Nat) => ((.REC i) : typeuse))) var_0)) var_0_lst subtype_lst ->
-    (v_rectype == (.REC (.mk_list subtype_lst))) ->
+    (v_rectype = (.REC (.mk_list subtype_lst))) ->
     Forall (fun (subtype_2 : subtype) => (wf_subtype subtype_2)) subtype_lst ->
     ((List.length var_0_lst) = v_n) ->
     ((List.length subtype_lst) = v_n) ->
@@ -2557,7 +2582,7 @@ inductive fun_rollrt : typeidx -> rectype -> rectype -> Prop where
 inductive fun_unrollrt : rectype -> rectype -> Prop where
   | fun_unrollrt_case_0 : forall (v_rectype : rectype) (i : Nat) (v_n : Nat) (subtype_lst : (List subtype)) (var_0_lst : (List subtype)), 
     Forall₂ (fun (var_0 : subtype) (v_subtype : subtype) => (fun_subst_subtype v_subtype ((List.range v_n).map (fun (i : Nat) => ((.REC i) : typevar))) ((List.range v_n).map (fun (i : Nat) => ((._DEF v_rectype i) : typeuse))) var_0)) var_0_lst subtype_lst ->
-    (v_rectype == (.REC (.mk_list subtype_lst))) ->
+    (v_rectype = (.REC (.mk_list subtype_lst))) ->
     Forall (fun (subtype_4 : subtype) => (wf_subtype subtype_4)) subtype_lst ->
     ((List.length var_0_lst) = v_n) ->
     ((List.length subtype_lst) = v_n) ->
@@ -2567,7 +2592,7 @@ inductive fun_unrollrt : rectype -> rectype -> Prop where
 inductive fun_rolldt : typeidx -> rectype -> (List deftype) -> Prop where
   | fun_rolldt_case_0 : forall (x : uN) (v_rectype : rectype) (v_n : Nat) (subtype_lst : (List subtype)) (var_0 : rectype), 
     (fun_rollrt x v_rectype var_0) ->
-    (var_0 == (.REC (.mk_list subtype_lst))) ->
+    (var_0 = (.REC (.mk_list subtype_lst))) ->
     Forall (fun (subtype_6 : subtype) => (wf_subtype subtype_6)) subtype_lst ->
     fun_rolldt x v_rectype ((List.range v_n).map (fun (i : Nat) => ((._DEF (.REC (.mk_list subtype_lst)) i) : deftype)))
 
@@ -2575,14 +2600,14 @@ inductive fun_rolldt : typeidx -> rectype -> (List deftype) -> Prop where
 inductive fun_unrolldt : deftype -> subtype -> Prop where
   | fun_unrolldt_case_0 : forall (v_rectype : rectype) (i : Nat) (subtype_lst : (List subtype)) (var_0 : rectype), 
     (fun_unrollrt v_rectype var_0) ->
-    ((.REC (.mk_list subtype_lst)) == var_0) ->
+    ((.REC (.mk_list subtype_lst)) = var_0) ->
     fun_unrolldt (._DEF v_rectype i) (subtype_lst[i]!)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:461.6-461.15 -/
 inductive unrolldt_is_wf : deftype -> subtype -> Prop where
   | unrolldt_is_wf_0 : forall (v_deftype : deftype) (ret_val : subtype) (var_0 : subtype), 
     (fun_unrolldt v_deftype var_0) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_subtype ret_val) ->
     unrolldt_is_wf v_deftype ret_val
 
@@ -2595,7 +2620,7 @@ def free_addrtype : ∀  (v_addrtype : addrtype) , free
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:474.6-474.20 -/
 inductive free_addrtype_is_wf : addrtype -> free -> Prop where
   | free_addrtype_is_wf_0 : forall (v_addrtype : addrtype) (ret_val : free), 
-    (ret_val == (free_addrtype v_addrtype)) ->
+    (ret_val = (free_addrtype v_addrtype)) ->
     (wf_free ret_val) ->
     free_addrtype_is_wf v_addrtype ret_val
 
@@ -2608,7 +2633,7 @@ def free_numtype : ∀  (v_numtype : numtype) , free
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:475.6-475.19 -/
 inductive free_numtype_is_wf : numtype -> free -> Prop where
   | free_numtype_is_wf_0 : forall (v_numtype : numtype) (ret_val : free), 
-    (ret_val == (free_numtype v_numtype)) ->
+    (ret_val = (free_numtype v_numtype)) ->
     (wf_free ret_val) ->
     free_numtype_is_wf v_numtype ret_val
 
@@ -2621,7 +2646,7 @@ def free_packtype : ∀  (v_packtype : packtype) , free
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:476.6-476.20 -/
 inductive free_packtype_is_wf : packtype -> free -> Prop where
   | free_packtype_is_wf_0 : forall (v_packtype : packtype) (ret_val : free), 
-    (ret_val == (free_packtype v_packtype)) ->
+    (ret_val = (free_packtype v_packtype)) ->
     (wf_free ret_val) ->
     free_packtype_is_wf v_packtype ret_val
 
@@ -2644,7 +2669,7 @@ def free_lanetype : ∀  (v_lanetype : lanetype) , free
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:477.6-477.20 -/
 inductive free_lanetype_is_wf : lanetype -> free -> Prop where
   | free_lanetype_is_wf_0 : forall (v_lanetype : lanetype) (ret_val : free), 
-    (ret_val == (free_lanetype v_lanetype)) ->
+    (ret_val = (free_lanetype v_lanetype)) ->
     (wf_free ret_val) ->
     free_lanetype_is_wf v_lanetype ret_val
 
@@ -2657,7 +2682,7 @@ def free_vectype : ∀  (v_vectype : vectype) , free
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:478.6-478.19 -/
 inductive free_vectype_is_wf : vectype -> free -> Prop where
   | free_vectype_is_wf_0 : forall (v_vectype : vectype) (ret_val : free), 
-    (ret_val == (free_vectype v_vectype)) ->
+    (ret_val = (free_vectype v_vectype)) ->
     (wf_free ret_val) ->
     free_vectype_is_wf v_vectype ret_val
 
@@ -2678,7 +2703,7 @@ def free_consttype : ∀  (v_consttype : consttype) , free
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:479.6-479.21 -/
 inductive free_consttype_is_wf : consttype -> free -> Prop where
   | free_consttype_is_wf_0 : forall (v_consttype : consttype) (ret_val : free), 
-    (ret_val == (free_consttype v_consttype)) ->
+    (ret_val = (free_consttype v_consttype)) ->
     (wf_free ret_val) ->
     free_consttype_is_wf v_consttype ret_val
 
@@ -2691,7 +2716,7 @@ def free_absheaptype : ∀  (v_absheaptype : absheaptype) , free
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:480.6-480.23 -/
 inductive free_absheaptype_is_wf : absheaptype -> free -> Prop where
   | free_absheaptype_is_wf_0 : forall (v_absheaptype : absheaptype) (ret_val : free), 
-    (ret_val == (free_absheaptype v_absheaptype)) ->
+    (ret_val = (free_absheaptype v_absheaptype)) ->
     (wf_free ret_val) ->
     free_absheaptype_is_wf v_absheaptype ret_val
 
@@ -2707,7 +2732,7 @@ def free_typevar : ∀  (v_typevar : typevar) , free
 inductive free_typevar_is_wf : typevar -> free -> Prop where
   | free_typevar_is_wf_0 : forall (v_typevar : typevar) (ret_val : free), 
     (wf_typevar v_typevar) ->
-    (ret_val == (free_typevar v_typevar)) ->
+    (ret_val = (free_typevar v_typevar)) ->
     (wf_free ret_val) ->
     free_typevar_is_wf v_typevar ret_val
 
@@ -2851,7 +2876,7 @@ inductive free_heaptype_is_wf : heaptype -> free -> Prop where
   | free_heaptype_is_wf_0 : forall (v_heaptype : heaptype) (ret_val : free) (var_0 : free), 
     (fun_free_heaptype v_heaptype var_0) ->
     (wf_heaptype v_heaptype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_heaptype_is_wf v_heaptype ret_val
 
@@ -2860,7 +2885,7 @@ inductive free_reftype_is_wf : reftype -> free -> Prop where
   | free_reftype_is_wf_0 : forall (v_reftype : reftype) (ret_val : free) (var_0 : free), 
     (fun_free_reftype v_reftype var_0) ->
     (wf_reftype v_reftype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_reftype_is_wf v_reftype ret_val
 
@@ -2869,7 +2894,7 @@ inductive free_typeuse_is_wf : typeuse -> free -> Prop where
   | free_typeuse_is_wf_0 : forall (v_typeuse : typeuse) (ret_val : free) (var_0 : free), 
     (fun_free_typeuse v_typeuse var_0) ->
     (wf_typeuse v_typeuse) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_typeuse_is_wf v_typeuse ret_val
 
@@ -2878,7 +2903,7 @@ inductive free_valtype_is_wf : valtype -> free -> Prop where
   | free_valtype_is_wf_0 : forall (v_valtype : valtype) (ret_val : free) (var_0 : free), 
     (fun_free_valtype v_valtype var_0) ->
     (wf_valtype v_valtype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_valtype_is_wf v_valtype ret_val
 
@@ -2886,7 +2911,7 @@ inductive free_valtype_is_wf : valtype -> free -> Prop where
 inductive free_resulttype_is_wf : resulttype -> free -> Prop where
   | free_resulttype_is_wf_0 : forall (v_resulttype : resulttype) (ret_val : free) (var_0 : free), 
     (fun_free_resulttype v_resulttype var_0) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_resulttype_is_wf v_resulttype ret_val
 
@@ -2895,7 +2920,7 @@ inductive free_storagetype_is_wf : storagetype -> free -> Prop where
   | free_storagetype_is_wf_0 : forall (v_storagetype : storagetype) (ret_val : free) (var_0 : free), 
     (fun_free_storagetype v_storagetype var_0) ->
     (wf_storagetype v_storagetype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_storagetype_is_wf v_storagetype ret_val
 
@@ -2904,7 +2929,7 @@ inductive free_fieldtype_is_wf : fieldtype -> free -> Prop where
   | free_fieldtype_is_wf_0 : forall (v_fieldtype : fieldtype) (ret_val : free) (var_0 : free), 
     (fun_free_fieldtype v_fieldtype var_0) ->
     (wf_fieldtype v_fieldtype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_fieldtype_is_wf v_fieldtype ret_val
 
@@ -2913,7 +2938,7 @@ inductive free_comptype_is_wf : comptype -> free -> Prop where
   | free_comptype_is_wf_0 : forall (v_comptype : comptype) (ret_val : free) (var_0 : free), 
     (fun_free_comptype v_comptype var_0) ->
     (wf_comptype v_comptype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_comptype_is_wf v_comptype ret_val
 
@@ -2922,7 +2947,7 @@ inductive free_subtype_is_wf : subtype -> free -> Prop where
   | free_subtype_is_wf_0 : forall (v_subtype : subtype) (ret_val : free) (var_0 : free), 
     (fun_free_subtype v_subtype var_0) ->
     (wf_subtype v_subtype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_subtype_is_wf v_subtype ret_val
 
@@ -2930,7 +2955,7 @@ inductive free_subtype_is_wf : subtype -> free -> Prop where
 inductive free_rectype_is_wf : rectype -> free -> Prop where
   | free_rectype_is_wf_0 : forall (v_rectype : rectype) (ret_val : free) (var_0 : free), 
     (fun_free_rectype v_rectype var_0) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_rectype_is_wf v_rectype ret_val
 
@@ -2938,7 +2963,7 @@ inductive free_rectype_is_wf : rectype -> free -> Prop where
 inductive free_deftype_is_wf : deftype -> free -> Prop where
   | free_deftype_is_wf_0 : forall (v_deftype : deftype) (ret_val : free) (var_0 : free), 
     (fun_free_deftype v_deftype var_0) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_deftype_is_wf v_deftype ret_val
 
@@ -2955,7 +2980,7 @@ inductive free_tagtype_is_wf : tagtype -> free -> Prop where
   | free_tagtype_is_wf_0 : forall (v_tagtype : tagtype) (ret_val : free) (var_0 : free), 
     (fun_free_tagtype v_tagtype var_0) ->
     (wf_typeuse v_tagtype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_tagtype_is_wf v_tagtype ret_val
 
@@ -2970,7 +2995,7 @@ inductive free_globaltype_is_wf : globaltype -> free -> Prop where
   | free_globaltype_is_wf_0 : forall (v_globaltype : globaltype) (ret_val : free) (var_0 : free), 
     (fun_free_globaltype v_globaltype var_0) ->
     (wf_globaltype v_globaltype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_globaltype_is_wf v_globaltype ret_val
 
@@ -2984,7 +3009,7 @@ def free_memtype : ∀  (v_memtype : memtype) , free
 inductive free_memtype_is_wf : memtype -> free -> Prop where
   | free_memtype_is_wf_0 : forall (v_memtype : memtype) (ret_val : free), 
     (wf_memtype v_memtype) ->
-    (ret_val == (free_memtype v_memtype)) ->
+    (ret_val = (free_memtype v_memtype)) ->
     (wf_free ret_val) ->
     free_memtype_is_wf v_memtype ret_val
 
@@ -2999,7 +3024,7 @@ inductive free_tabletype_is_wf : tabletype -> free -> Prop where
   | free_tabletype_is_wf_0 : forall (v_tabletype : tabletype) (ret_val : free) (var_0 : free), 
     (fun_free_tabletype v_tabletype var_0) ->
     (wf_tabletype v_tabletype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_tabletype_is_wf v_tabletype ret_val
 
@@ -3012,7 +3037,7 @@ def free_datatype : ∀  (v_datatype : datatype) , free
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:498.6-498.20 -/
 inductive free_datatype_is_wf : datatype -> free -> Prop where
   | free_datatype_is_wf_0 : forall (v_datatype : datatype) (ret_val : free), 
-    (ret_val == (free_datatype v_datatype)) ->
+    (ret_val = (free_datatype v_datatype)) ->
     (wf_free ret_val) ->
     free_datatype_is_wf v_datatype ret_val
 
@@ -3027,7 +3052,7 @@ inductive free_elemtype_is_wf : elemtype -> free -> Prop where
   | free_elemtype_is_wf_0 : forall (v_elemtype : elemtype) (ret_val : free) (var_0 : free), 
     (fun_free_elemtype v_elemtype var_0) ->
     (wf_reftype v_elemtype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_elemtype_is_wf v_elemtype ret_val
 
@@ -3052,7 +3077,7 @@ inductive free_externtype_is_wf : externtype -> free -> Prop where
   | free_externtype_is_wf_0 : forall (v_externtype : externtype) (ret_val : free) (var_0 : free), 
     (fun_free_externtype v_externtype var_0) ->
     (wf_externtype v_externtype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_externtype_is_wf v_externtype ret_val
 
@@ -3072,7 +3097,7 @@ inductive free_moduletype_is_wf : moduletype -> free -> Prop where
   | free_moduletype_is_wf_0 : forall (v_moduletype : moduletype) (ret_val : free) (var_0 : free), 
     (fun_free_moduletype v_moduletype var_0) ->
     (wf_moduletype v_moduletype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_moduletype_is_wf v_moduletype ret_val
 
@@ -3080,18 +3105,18 @@ inductive free_moduletype_is_wf : moduletype -> free -> Prop where
 inductive num_ : Type where
   | mk_num__0 (v_Inn : Inn) (var_x : iN) : num_
   | mk_num__1 (v_Fnn : Fnn) (var_x : fN) : num_
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:7.8-7.13 -/
 inductive wf_num_ : numtype -> num_ -> Prop where
   | num__case_0 : forall (v_numtype : numtype) (v_Inn : Inn) (var_x : iN), 
     (wf_uN (size (numtype_addrtype v_Inn)) var_x) ->
-    (v_numtype == (numtype_addrtype v_Inn)) ->
+    (v_numtype = (numtype_addrtype v_Inn)) ->
     wf_num_ v_numtype (.mk_num__0 v_Inn var_x)
   | num__case_1 : forall (v_numtype : numtype) (v_Fnn : Fnn) (var_x : fN), 
     (wf_fN (sizenn (numtype_Fnn v_Fnn)) var_x) ->
-    (v_numtype == (numtype_Fnn v_Fnn)) ->
+    (v_numtype = (numtype_Fnn v_Fnn)) ->
     wf_num_ v_numtype (.mk_num__1 v_Fnn var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:7.1-7.21 -/
@@ -3117,18 +3142,18 @@ abbrev pack_ : Type := iN
 inductive lane_ : Type where
   | mk_lane__0 (v_Jnn : Jnn) (var_x : iN) : lane_
   | mk_lane__1 (v_Fnn : Fnn) (var_x : fN) : lane_
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:20.8-20.14 -/
 inductive wf_lane_ : lanetype -> lane_ -> Prop where
   | lane__case_0 : forall (v_lanetype : lanetype) (v_Jnn : Jnn) (var_x : iN), 
     (wf_uN (lsize (lanetype_Jnn v_Jnn)) var_x) ->
-    (v_lanetype == (lanetype_Jnn v_Jnn)) ->
+    (v_lanetype = (lanetype_Jnn v_Jnn)) ->
     wf_lane_ v_lanetype (.mk_lane__0 v_Jnn var_x)
   | lane__case_1 : forall (v_lanetype : lanetype) (v_Fnn : Fnn) (var_x : fN), 
     (wf_fN (sizenn (numtype_Fnn v_Fnn)) var_x) ->
-    (v_lanetype == (lanetype_Fnn v_Fnn)) ->
+    (v_lanetype = (lanetype_Fnn v_Fnn)) ->
     wf_lane_ v_lanetype (.mk_lane__1 v_Fnn var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:20.1-20.23 -/
@@ -3155,22 +3180,22 @@ inductive lit_ : Type where
   | mk_lit__0 (v_numtype : numtype) (var_x : num_) : lit_
   | mk_lit__1 (v_vectype : vectype) (var_x : vec_) : lit_
   | mk_lit__2 (v_packtype : packtype) (var_x : pack_) : lit_
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:26.8-26.13 -/
 inductive wf_lit_ : storagetype -> lit_ -> Prop where
   | lit__case_0 : forall (v_storagetype : storagetype) (v_numtype : numtype) (var_x : num_), 
     (wf_num_ v_numtype var_x) ->
-    (v_storagetype == (storagetype_numtype v_numtype)) ->
+    (v_storagetype = (storagetype_numtype v_numtype)) ->
     wf_lit_ v_storagetype (.mk_lit__0 v_numtype var_x)
   | lit__case_1 : forall (v_storagetype : storagetype) (v_vectype : vectype) (var_x : vec_), 
     (wf_uN (vsize v_vectype) var_x) ->
-    (v_storagetype == (storagetype_vectype v_vectype)) ->
+    (v_storagetype = (storagetype_vectype v_vectype)) ->
     wf_lit_ v_storagetype (.mk_lit__1 v_vectype var_x)
   | lit__case_2 : forall (v_storagetype : storagetype) (v_packtype : packtype) (var_x : pack_), 
     (wf_uN (psize v_packtype) var_x) ->
-    (v_storagetype == (storagetype_packtype v_packtype)) ->
+    (v_storagetype = (storagetype_packtype v_packtype)) ->
     wf_lit_ v_storagetype (.mk_lit__2 v_packtype var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:26.1-26.25 -/
@@ -3200,7 +3225,7 @@ def proj_lit__2 : ∀  (var_x : lit_) , (Option pack_)
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:34.1-34.56 -/
 inductive sz : Type where
   | mk_sz (i : Nat) : sz
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:34.1-34.56 -/
@@ -3212,14 +3237,14 @@ def proj_sz_0 : ∀  (x : sz) , (Nat)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:34.8-34.10 -/
 inductive wf_sz : sz -> Prop where
   | sz_case_0 : forall (i : Nat), 
-    ((((i == 8) || (i == 16)) || (i == 32)) || (i == 64)) ->
+    ((((i = 8) ∨ (i = 16)) ∨ (i = 32)) ∨ (i = 64)) ->
     wf_sz (.mk_sz i)
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:35.1-35.42 -/
 inductive sx : Type where
   | U : sx
   | S : sx
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:37.1-37.22 -/
@@ -3228,7 +3253,7 @@ inductive unop_Inn : Type where
   | CTZ : unop_Inn
   | POPCNT : unop_Inn
   | EXTEND (v_sz : sz) : unop_Inn
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:37.8-37.14 -/
@@ -3250,24 +3275,24 @@ inductive unop_Fnn : Type where
   | FLOOR : unop_Fnn
   | TRUNC : unop_Fnn
   | NEAREST : unop_Fnn
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:37.1-37.22 -/
 inductive unop_ : Type where
   | mk_unop__0 (v_Inn : Inn) (var_x : unop_Inn) : unop_
   | mk_unop__1 (v_Fnn : Fnn) (var_x : unop_Fnn) : unop_
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:37.8-37.14 -/
 inductive wf_unop_ : numtype -> unop_ -> Prop where
   | unop__case_0 : forall (v_numtype : numtype) (v_Inn : Inn) (var_x : unop_Inn), 
     (wf_unop_Inn v_Inn var_x) ->
-    (v_numtype == (numtype_addrtype v_Inn)) ->
+    (v_numtype = (numtype_addrtype v_Inn)) ->
     wf_unop_ v_numtype (.mk_unop__0 v_Inn var_x)
   | unop__case_1 : forall (v_numtype : numtype) (v_Fnn : Fnn) (var_x : unop_Fnn), 
-    (v_numtype == (numtype_Fnn v_Fnn)) ->
+    (v_numtype = (numtype_Fnn v_Fnn)) ->
     wf_unop_ v_numtype (.mk_unop__1 v_Fnn var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:37.1-37.22 -/
@@ -3300,7 +3325,7 @@ inductive binop_Inn : Type where
   | SHR (v_sx : sx) : binop_Inn
   | ROTL : binop_Inn
   | ROTR : binop_Inn
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:41.1-41.23 -/
@@ -3312,23 +3337,23 @@ inductive binop_Fnn : Type where
   | MIN : binop_Fnn
   | MAX : binop_Fnn
   | COPYSIGN : binop_Fnn
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:41.1-41.23 -/
 inductive binop_ : Type where
   | mk_binop__0 (v_Inn : Inn) (var_x : binop_Inn) : binop_
   | mk_binop__1 (v_Fnn : Fnn) (var_x : binop_Fnn) : binop_
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:41.8-41.15 -/
 inductive wf_binop_ : numtype -> binop_ -> Prop where
   | binop__case_0 : forall (v_numtype : numtype) (v_Inn : Inn) (var_x : binop_Inn), 
-    (v_numtype == (numtype_addrtype v_Inn)) ->
+    (v_numtype = (numtype_addrtype v_Inn)) ->
     wf_binop_ v_numtype (.mk_binop__0 v_Inn var_x)
   | binop__case_1 : forall (v_numtype : numtype) (v_Fnn : Fnn) (var_x : binop_Fnn), 
-    (v_numtype == (numtype_Fnn v_Fnn)) ->
+    (v_numtype = (numtype_Fnn v_Fnn)) ->
     wf_binop_ v_numtype (.mk_binop__1 v_Fnn var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:41.1-41.23 -/
@@ -3350,19 +3375,19 @@ def proj_binop__1 : ∀  (var_x : binop_) , (Option binop_Fnn)
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:48.1-48.24 -/
 inductive testop_Inn : Type where
   | EQZ : testop_Inn
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:48.1-48.24 -/
 inductive testop_ : Type where
   | mk_testop__0 (v_Inn : Inn) (var_x : testop_Inn) : testop_
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:48.8-48.16 -/
 inductive wf_testop_ : numtype -> testop_ -> Prop where
   | testop__case_0 : forall (v_numtype : numtype) (v_Inn : Inn) (var_x : testop_Inn), 
-    (v_numtype == (numtype_addrtype v_Inn)) ->
+    (v_numtype = (numtype_addrtype v_Inn)) ->
     wf_testop_ v_numtype (.mk_testop__0 v_Inn var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:48.1-48.24 -/
@@ -3379,7 +3404,7 @@ inductive relop_Inn : Type where
   | GT (v_sx : sx) : relop_Inn
   | LE (v_sx : sx) : relop_Inn
   | GE (v_sx : sx) : relop_Inn
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:52.1-52.23 -/
@@ -3390,23 +3415,23 @@ inductive relop_Fnn : Type where
   | GT : relop_Fnn
   | LE : relop_Fnn
   | GE : relop_Fnn
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:52.1-52.23 -/
 inductive relop_ : Type where
   | mk_relop__0 (v_Inn : Inn) (var_x : relop_Inn) : relop_
   | mk_relop__1 (v_Fnn : Fnn) (var_x : relop_Fnn) : relop_
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:52.8-52.15 -/
 inductive wf_relop_ : numtype -> relop_ -> Prop where
   | relop__case_0 : forall (v_numtype : numtype) (v_Inn : Inn) (var_x : relop_Inn), 
-    (v_numtype == (numtype_addrtype v_Inn)) ->
+    (v_numtype = (numtype_addrtype v_Inn)) ->
     wf_relop_ v_numtype (.mk_relop__0 v_Inn var_x)
   | relop__case_1 : forall (v_numtype : numtype) (v_Fnn : Fnn) (var_x : relop_Fnn), 
-    (v_numtype == (numtype_Fnn v_Fnn)) ->
+    (v_numtype = (numtype_Fnn v_Fnn)) ->
     wf_relop_ v_numtype (.mk_relop__1 v_Fnn var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:52.1-52.23 -/
@@ -3429,7 +3454,7 @@ def proj_relop__1 : ∀  (var_x : relop_) , (Option relop_Fnn)
 inductive cvtop__Inn_1_Inn_2 : Type where
   | EXTEND (v_sx : sx) : cvtop__Inn_1_Inn_2
   | WRAP : cvtop__Inn_1_Inn_2
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:61.8-61.16 -/
@@ -3445,14 +3470,14 @@ inductive wf_cvtop__Inn_1_Inn_2 : Inn -> Inn -> cvtop__Inn_1_Inn_2 -> Prop where
 inductive cvtop__Inn_1_Fnn_2 : Type where
   | CONVERT (v_sx : sx) : cvtop__Inn_1_Fnn_2
   | REINTERPRET : cvtop__Inn_1_Fnn_2
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:61.8-61.16 -/
 inductive wf_cvtop__Inn_1_Fnn_2 : Inn -> Fnn -> cvtop__Inn_1_Fnn_2 -> Prop where
   | cvtop__Inn_1_Fnn_2_case_0 : forall (Inn_1 : Inn) (Fnn_2 : Fnn) (v_sx : sx), wf_cvtop__Inn_1_Fnn_2 Inn_1 Fnn_2 (.CONVERT v_sx)
   | cvtop__Inn_1_Fnn_2_case_1 : forall (Inn_1 : Inn) (Fnn_2 : Fnn), 
-    ((sizenn1 (numtype_addrtype Inn_1)) == (sizenn2 (numtype_Fnn Fnn_2))) ->
+    ((sizenn1 (numtype_addrtype Inn_1)) = (sizenn2 (numtype_Fnn Fnn_2))) ->
     wf_cvtop__Inn_1_Fnn_2 Inn_1 Fnn_2 .REINTERPRET
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:61.1-61.37 -/
@@ -3460,7 +3485,7 @@ inductive cvtop__Fnn_1_Inn_2 : Type where
   | TRUNC (v_sx : sx) : cvtop__Fnn_1_Inn_2
   | TRUNC_SAT (v_sx : sx) : cvtop__Fnn_1_Inn_2
   | REINTERPRET : cvtop__Fnn_1_Inn_2
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:61.8-61.16 -/
@@ -3468,14 +3493,14 @@ inductive wf_cvtop__Fnn_1_Inn_2 : Fnn -> Inn -> cvtop__Fnn_1_Inn_2 -> Prop where
   | cvtop__Fnn_1_Inn_2_case_0 : forall (Fnn_1 : Fnn) (Inn_2 : Inn) (v_sx : sx), wf_cvtop__Fnn_1_Inn_2 Fnn_1 Inn_2 (.TRUNC v_sx)
   | cvtop__Fnn_1_Inn_2_case_1 : forall (Fnn_1 : Fnn) (Inn_2 : Inn) (v_sx : sx), wf_cvtop__Fnn_1_Inn_2 Fnn_1 Inn_2 (.TRUNC_SAT v_sx)
   | cvtop__Fnn_1_Inn_2_case_2 : forall (Fnn_1 : Fnn) (Inn_2 : Inn), 
-    ((sizenn1 (numtype_Fnn Fnn_1)) == (sizenn2 (numtype_addrtype Inn_2))) ->
+    ((sizenn1 (numtype_Fnn Fnn_1)) = (sizenn2 (numtype_addrtype Inn_2))) ->
     wf_cvtop__Fnn_1_Inn_2 Fnn_1 Inn_2 .REINTERPRET
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:61.1-61.37 -/
 inductive cvtop__Fnn_1_Fnn_2 : Type where
   | PROMOTE : cvtop__Fnn_1_Fnn_2
   | DEMOTE : cvtop__Fnn_1_Fnn_2
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:61.8-61.16 -/
@@ -3493,30 +3518,30 @@ inductive cvtop__ : Type where
   | mk_cvtop___1 (Inn_1 : Inn) (Fnn_2 : Fnn) (var_x : cvtop__Inn_1_Fnn_2) : cvtop__
   | mk_cvtop___2 (Fnn_1 : Fnn) (Inn_2 : Inn) (var_x : cvtop__Fnn_1_Inn_2) : cvtop__
   | mk_cvtop___3 (Fnn_1 : Fnn) (Fnn_2 : Fnn) (var_x : cvtop__Fnn_1_Fnn_2) : cvtop__
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:61.8-61.16 -/
 inductive wf_cvtop__ : numtype -> numtype -> cvtop__ -> Prop where
   | cvtop___case_0 : forall (numtype_1 : numtype) (numtype_2 : numtype) (Inn_1 : Inn) (Inn_2 : Inn) (var_x : cvtop__Inn_1_Inn_2), 
     (wf_cvtop__Inn_1_Inn_2 Inn_1 Inn_2 var_x) ->
-    (numtype_1 == (numtype_addrtype Inn_1)) ->
-    (numtype_2 == (numtype_addrtype Inn_2)) ->
+    (numtype_1 = (numtype_addrtype Inn_1)) ->
+    (numtype_2 = (numtype_addrtype Inn_2)) ->
     wf_cvtop__ numtype_1 numtype_2 (.mk_cvtop___0 Inn_1 Inn_2 var_x)
   | cvtop___case_1 : forall (numtype_1 : numtype) (numtype_2 : numtype) (Inn_1 : Inn) (Fnn_2 : Fnn) (var_x : cvtop__Inn_1_Fnn_2), 
     (wf_cvtop__Inn_1_Fnn_2 Inn_1 Fnn_2 var_x) ->
-    (numtype_1 == (numtype_addrtype Inn_1)) ->
-    (numtype_2 == (numtype_Fnn Fnn_2)) ->
+    (numtype_1 = (numtype_addrtype Inn_1)) ->
+    (numtype_2 = (numtype_Fnn Fnn_2)) ->
     wf_cvtop__ numtype_1 numtype_2 (.mk_cvtop___1 Inn_1 Fnn_2 var_x)
   | cvtop___case_2 : forall (numtype_1 : numtype) (numtype_2 : numtype) (Fnn_1 : Fnn) (Inn_2 : Inn) (var_x : cvtop__Fnn_1_Inn_2), 
     (wf_cvtop__Fnn_1_Inn_2 Fnn_1 Inn_2 var_x) ->
-    (numtype_1 == (numtype_Fnn Fnn_1)) ->
-    (numtype_2 == (numtype_addrtype Inn_2)) ->
+    (numtype_1 = (numtype_Fnn Fnn_1)) ->
+    (numtype_2 = (numtype_addrtype Inn_2)) ->
     wf_cvtop__ numtype_1 numtype_2 (.mk_cvtop___2 Fnn_1 Inn_2 var_x)
   | cvtop___case_3 : forall (numtype_1 : numtype) (numtype_2 : numtype) (Fnn_1 : Fnn) (Fnn_2 : Fnn) (var_x : cvtop__Fnn_1_Fnn_2), 
     (wf_cvtop__Fnn_1_Fnn_2 Fnn_1 Fnn_2 var_x) ->
-    (numtype_1 == (numtype_Fnn Fnn_1)) ->
-    (numtype_2 == (numtype_Fnn Fnn_2)) ->
+    (numtype_1 = (numtype_Fnn Fnn_1)) ->
+    (numtype_2 = (numtype_Fnn Fnn_2)) ->
     wf_cvtop__ numtype_1 numtype_2 (.mk_cvtop___3 Fnn_1 Fnn_2 var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:61.1-61.37 -/
@@ -3554,7 +3579,7 @@ def proj_cvtop___3 : ∀  (var_x : cvtop__) , (Option cvtop__Fnn_1_Fnn_2)
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:79.1-79.60 -/
 inductive dim : Type where
   | mk_dim (i : Nat) : dim
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:79.1-79.60 -/
@@ -3566,20 +3591,20 @@ def proj_dim_0 : ∀  (x : dim) , (Nat)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:79.8-79.11 -/
 inductive wf_dim : dim -> Prop where
   | dim_case_0 : forall (i : Nat), 
-    (((((i == 1) || (i == 2)) || (i == 4)) || (i == 8)) || (i == 16)) ->
+    (((((i = 1) ∨ (i = 2)) ∨ (i = 4)) ∨ (i = 8)) ∨ (i = 16)) ->
     wf_dim (.mk_dim i)
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:80.1-81.40 -/
 inductive shape : Type where
   | X (v_lanetype : lanetype) (v_dim : dim) : shape
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:80.8-80.13 -/
 inductive wf_shape : shape -> Prop where
   | shape_case_0 : forall (v_lanetype : lanetype) (v_dim : dim), 
     (wf_dim v_dim) ->
-    (((lsize v_lanetype) * (proj_dim_0 v_dim)) == 128) ->
+    (((lsize v_lanetype) * (proj_dim_0 v_dim)) = 128) ->
     wf_shape (.X v_lanetype v_dim)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:84.1-84.43 -/
@@ -3592,7 +3617,7 @@ def fun_dim : ∀  (v_shape : shape) , dim
 inductive dim_is_wf : shape -> dim -> Prop where
   | dim_is_wf_0 : forall (v_shape : shape) (ret_val : dim), 
     (wf_shape v_shape) ->
-    (ret_val == (fun_dim v_shape)) ->
+    (ret_val = (fun_dim v_shape)) ->
     (wf_dim ret_val) ->
     dim_is_wf v_shape ret_val
 
@@ -3611,7 +3636,7 @@ def unpackshape : ∀  (v_shape : shape) , numtype
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:94.1-94.78 -/
 inductive ishape : Type where
   | mk_ishape (v_shape : shape) : ishape
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:94.1-94.78 -/
@@ -3624,13 +3649,13 @@ def proj_ishape_0 : ∀  (x : ishape) , (shape)
 inductive wf_ishape : ishape -> Prop where
   | ishape_case_0 : forall (v_Jnn : Jnn) (v_shape : shape), 
     (wf_shape v_shape) ->
-    ((fun_lanetype v_shape) == (lanetype_Jnn v_Jnn)) ->
+    ((fun_lanetype v_shape) = (lanetype_Jnn v_Jnn)) ->
     wf_ishape (.mk_ishape v_shape)
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:95.1-95.77 -/
 inductive bshape : Type where
   | mk_bshape (v_shape : shape) : bshape
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:95.1-95.77 -/
@@ -3643,26 +3668,26 @@ def proj_bshape_0 : ∀  (x : bshape) , (shape)
 inductive wf_bshape : bshape -> Prop where
   | bshape_case_0 : forall (v_shape : shape), 
     (wf_shape v_shape) ->
-    ((fun_lanetype v_shape) == .I8) ->
+    ((fun_lanetype v_shape) = .I8) ->
     wf_bshape (.mk_bshape v_shape)
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:100.1-100.19 -/
 inductive zero : Type where
   | ZERO : zero
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:101.1-101.25 -/
 inductive half : Type where
   | LOW : half
   | HIGH : half
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:103.1-103.41 -/
 inductive vvunop : Type where
   | NOT : vvunop
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:104.1-104.62 -/
@@ -3671,19 +3696,19 @@ inductive vvbinop : Type where
   | ANDNOT : vvbinop
   | OR : vvbinop
   | XOR : vvbinop
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:105.1-105.49 -/
 inductive vvternop : Type where
   | BITSELECT : vvternop
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:106.1-106.48 -/
 inductive vvtestop : Type where
   | ANY_TRUE : vvtestop
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:108.1-108.42 -/
@@ -3691,7 +3716,7 @@ inductive vunop_Jnn_M : Type where
   | ABS : vunop_Jnn_M
   | NEG : vunop_Jnn_M
   | POPCNT : vunop_Jnn_M
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:108.8-108.15 -/
@@ -3699,7 +3724,7 @@ inductive wf_vunop_Jnn_M : Jnn -> M -> vunop_Jnn_M -> Prop where
   | vunop_Jnn_M_case_0 : forall (v_Jnn : Jnn) (v_M : M), wf_vunop_Jnn_M v_Jnn v_M .ABS
   | vunop_Jnn_M_case_1 : forall (v_Jnn : Jnn) (v_M : M), wf_vunop_Jnn_M v_Jnn v_M .NEG
   | vunop_Jnn_M_case_2 : forall (v_Jnn : Jnn) (v_M : M), 
-    ((lsizenn (lanetype_Jnn v_Jnn)) == 8) ->
+    ((lsizenn (lanetype_Jnn v_Jnn)) = 8) ->
     wf_vunop_Jnn_M v_Jnn v_M .POPCNT
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:108.1-108.42 -/
@@ -3711,24 +3736,24 @@ inductive vunop_Fnn_M : Type where
   | FLOOR : vunop_Fnn_M
   | TRUNC : vunop_Fnn_M
   | NEAREST : vunop_Fnn_M
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:108.1-108.42 -/
 inductive vunop_ : Type where
   | mk_vunop__0 (v_Jnn : Jnn) (v_M : M) (var_x : vunop_Jnn_M) : vunop_
   | mk_vunop__1 (v_Fnn : Fnn) (v_M : M) (var_x : vunop_Fnn_M) : vunop_
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:108.8-108.15 -/
 inductive wf_vunop_ : shape -> vunop_ -> Prop where
   | vunop__case_0 : forall (v_shape : shape) (v_Jnn : Jnn) (v_M : M) (var_x : vunop_Jnn_M), 
     (wf_vunop_Jnn_M v_Jnn v_M var_x) ->
-    (v_shape == (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) ->
+    (v_shape = (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) ->
     wf_vunop_ v_shape (.mk_vunop__0 v_Jnn v_M var_x)
   | vunop__case_1 : forall (v_shape : shape) (v_Fnn : Fnn) (v_M : M) (var_x : vunop_Fnn_M), 
-    (v_shape == (.X (lanetype_Fnn v_Fnn) (.mk_dim v_M))) ->
+    (v_shape = (.X (lanetype_Fnn v_Fnn) (.mk_dim v_M))) ->
     wf_vunop_ v_shape (.mk_vunop__1 v_Fnn v_M var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:108.1-108.42 -/
@@ -3759,7 +3784,7 @@ inductive vbinop_Jnn_M : Type where
   | RELAXED_Q15MULRS : vbinop_Jnn_M
   | MIN (v_sx : sx) : vbinop_Jnn_M
   | MAX (v_sx : sx) : vbinop_Jnn_M
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:114.8-114.16 -/
@@ -3779,10 +3804,10 @@ inductive wf_vbinop_Jnn_M : Jnn -> M -> vbinop_Jnn_M -> Prop where
     ((lsizenn (lanetype_Jnn v_Jnn)) <= 16) ->
     wf_vbinop_Jnn_M v_Jnn v_M .AVGRU
   | vbinop_Jnn_M_case_6 : forall (v_Jnn : Jnn) (v_M : M), 
-    ((lsizenn (lanetype_Jnn v_Jnn)) == 16) ->
+    ((lsizenn (lanetype_Jnn v_Jnn)) = 16) ->
     wf_vbinop_Jnn_M v_Jnn v_M .Q15MULR_SATS
   | vbinop_Jnn_M_case_7 : forall (v_Jnn : Jnn) (v_M : M), 
-    ((lsizenn (lanetype_Jnn v_Jnn)) == 16) ->
+    ((lsizenn (lanetype_Jnn v_Jnn)) = 16) ->
     wf_vbinop_Jnn_M v_Jnn v_M .RELAXED_Q15MULRS
   | vbinop_Jnn_M_case_8 : forall (v_Jnn : Jnn) (v_M : M) (v_sx : sx), 
     ((lsizenn (lanetype_Jnn v_Jnn)) <= 32) ->
@@ -3803,24 +3828,24 @@ inductive vbinop_Fnn_M : Type where
   | PMAX : vbinop_Fnn_M
   | RELAXED_MIN : vbinop_Fnn_M
   | RELAXED_MAX : vbinop_Fnn_M
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:114.1-114.43 -/
 inductive vbinop_ : Type where
   | mk_vbinop__0 (v_Jnn : Jnn) (v_M : M) (var_x : vbinop_Jnn_M) : vbinop_
   | mk_vbinop__1 (v_Fnn : Fnn) (v_M : M) (var_x : vbinop_Fnn_M) : vbinop_
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:114.8-114.16 -/
 inductive wf_vbinop_ : shape -> vbinop_ -> Prop where
   | vbinop__case_0 : forall (v_shape : shape) (v_Jnn : Jnn) (v_M : M) (var_x : vbinop_Jnn_M), 
     (wf_vbinop_Jnn_M v_Jnn v_M var_x) ->
-    (v_shape == (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) ->
+    (v_shape = (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) ->
     wf_vbinop_ v_shape (.mk_vbinop__0 v_Jnn v_M var_x)
   | vbinop__case_1 : forall (v_shape : shape) (v_Fnn : Fnn) (v_M : M) (var_x : vbinop_Fnn_M), 
-    (v_shape == (.X (lanetype_Fnn v_Fnn) (.mk_dim v_M))) ->
+    (v_shape = (.X (lanetype_Fnn v_Fnn) (.mk_dim v_M))) ->
     wf_vbinop_ v_shape (.mk_vbinop__1 v_Fnn v_M var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:114.1-114.43 -/
@@ -3842,30 +3867,30 @@ def proj_vbinop__1 : ∀  (var_x : vbinop_) , (Option vbinop_Fnn_M)
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:130.1-130.44 -/
 inductive vternop_Jnn_M : Type where
   | RELAXED_LANESELECT : vternop_Jnn_M
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:130.1-130.44 -/
 inductive vternop_Fnn_M : Type where
   | RELAXED_MADD : vternop_Fnn_M
   | RELAXED_NMADD : vternop_Fnn_M
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:130.1-130.44 -/
 inductive vternop_ : Type where
   | mk_vternop__0 (v_Jnn : Jnn) (v_M : M) (var_x : vternop_Jnn_M) : vternop_
   | mk_vternop__1 (v_Fnn : Fnn) (v_M : M) (var_x : vternop_Fnn_M) : vternop_
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:130.8-130.17 -/
 inductive wf_vternop_ : shape -> vternop_ -> Prop where
   | vternop__case_0 : forall (v_shape : shape) (v_Jnn : Jnn) (v_M : M) (var_x : vternop_Jnn_M), 
-    (v_shape == (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) ->
+    (v_shape = (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) ->
     wf_vternop_ v_shape (.mk_vternop__0 v_Jnn v_M var_x)
   | vternop__case_1 : forall (v_shape : shape) (v_Fnn : Fnn) (v_M : M) (var_x : vternop_Fnn_M), 
-    (v_shape == (.X (lanetype_Fnn v_Fnn) (.mk_dim v_M))) ->
+    (v_shape = (.X (lanetype_Fnn v_Fnn) (.mk_dim v_M))) ->
     wf_vternop_ v_shape (.mk_vternop__1 v_Fnn v_M var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:130.1-130.44 -/
@@ -3887,19 +3912,19 @@ def proj_vternop__1 : ∀  (var_x : vternop_) , (Option vternop_Fnn_M)
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:134.1-134.44 -/
 inductive vtestop_Jnn_M : Type where
   | ALL_TRUE : vtestop_Jnn_M
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:134.1-134.44 -/
 inductive vtestop_ : Type where
   | mk_vtestop__0 (v_Jnn : Jnn) (v_M : M) (var_x : vtestop_Jnn_M) : vtestop_
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:134.8-134.17 -/
 inductive wf_vtestop_ : shape -> vtestop_ -> Prop where
   | vtestop__case_0 : forall (v_shape : shape) (v_Jnn : Jnn) (v_M : M) (var_x : vtestop_Jnn_M), 
-    (v_shape == (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) ->
+    (v_shape = (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) ->
     wf_vtestop_ v_shape (.mk_vtestop__0 v_Jnn v_M var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:134.1-134.44 -/
@@ -3916,7 +3941,7 @@ inductive vrelop_Jnn_M : Type where
   | GT (v_sx : sx) : vrelop_Jnn_M
   | LE (v_sx : sx) : vrelop_Jnn_M
   | GE (v_sx : sx) : vrelop_Jnn_M
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:138.8-138.16 -/
@@ -3924,16 +3949,16 @@ inductive wf_vrelop_Jnn_M : Jnn -> M -> vrelop_Jnn_M -> Prop where
   | vrelop_Jnn_M_case_0 : forall (v_Jnn : Jnn) (v_M : M), wf_vrelop_Jnn_M v_Jnn v_M .EQ
   | vrelop_Jnn_M_case_1 : forall (v_Jnn : Jnn) (v_M : M), wf_vrelop_Jnn_M v_Jnn v_M .NE
   | vrelop_Jnn_M_case_2 : forall (v_Jnn : Jnn) (v_M : M) (v_sx : sx), 
-    (((lsizenn (lanetype_Jnn v_Jnn)) != 64) || (v_sx == .S)) ->
+    (((lsizenn (lanetype_Jnn v_Jnn)) ≠ 64) ∨ (v_sx = .S)) ->
     wf_vrelop_Jnn_M v_Jnn v_M (.LT v_sx)
   | vrelop_Jnn_M_case_3 : forall (v_Jnn : Jnn) (v_M : M) (v_sx : sx), 
-    (((lsizenn (lanetype_Jnn v_Jnn)) != 64) || (v_sx == .S)) ->
+    (((lsizenn (lanetype_Jnn v_Jnn)) ≠ 64) ∨ (v_sx = .S)) ->
     wf_vrelop_Jnn_M v_Jnn v_M (.GT v_sx)
   | vrelop_Jnn_M_case_4 : forall (v_Jnn : Jnn) (v_M : M) (v_sx : sx), 
-    (((lsizenn (lanetype_Jnn v_Jnn)) != 64) || (v_sx == .S)) ->
+    (((lsizenn (lanetype_Jnn v_Jnn)) ≠ 64) ∨ (v_sx = .S)) ->
     wf_vrelop_Jnn_M v_Jnn v_M (.LE v_sx)
   | vrelop_Jnn_M_case_5 : forall (v_Jnn : Jnn) (v_M : M) (v_sx : sx), 
-    (((lsizenn (lanetype_Jnn v_Jnn)) != 64) || (v_sx == .S)) ->
+    (((lsizenn (lanetype_Jnn v_Jnn)) ≠ 64) ∨ (v_sx = .S)) ->
     wf_vrelop_Jnn_M v_Jnn v_M (.GE v_sx)
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:138.1-138.43 -/
@@ -3944,24 +3969,24 @@ inductive vrelop_Fnn_M : Type where
   | GT : vrelop_Fnn_M
   | LE : vrelop_Fnn_M
   | GE : vrelop_Fnn_M
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:138.1-138.43 -/
 inductive vrelop_ : Type where
   | mk_vrelop__0 (v_Jnn : Jnn) (v_M : M) (var_x : vrelop_Jnn_M) : vrelop_
   | mk_vrelop__1 (v_Fnn : Fnn) (v_M : M) (var_x : vrelop_Fnn_M) : vrelop_
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:138.8-138.16 -/
 inductive wf_vrelop_ : shape -> vrelop_ -> Prop where
   | vrelop__case_0 : forall (v_shape : shape) (v_Jnn : Jnn) (v_M : M) (var_x : vrelop_Jnn_M), 
     (wf_vrelop_Jnn_M v_Jnn v_M var_x) ->
-    (v_shape == (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) ->
+    (v_shape = (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) ->
     wf_vrelop_ v_shape (.mk_vrelop__0 v_Jnn v_M var_x)
   | vrelop__case_1 : forall (v_shape : shape) (v_Fnn : Fnn) (v_M : M) (var_x : vrelop_Fnn_M), 
-    (v_shape == (.X (lanetype_Fnn v_Fnn) (.mk_dim v_M))) ->
+    (v_shape = (.X (lanetype_Fnn v_Fnn) (.mk_dim v_M))) ->
     wf_vrelop_ v_shape (.mk_vrelop__1 v_Fnn v_M var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:138.1-138.43 -/
@@ -3984,19 +4009,19 @@ def proj_vrelop__1 : ∀  (var_x : vrelop_) , (Option vrelop_Fnn_M)
 inductive vshiftop_Jnn_M : Type where
   | SHL : vshiftop_Jnn_M
   | SHR (v_sx : sx) : vshiftop_Jnn_M
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:146.1-146.46 -/
 inductive vshiftop_ : Type where
   | mk_vshiftop__0 (v_Jnn : Jnn) (v_M : M) (var_x : vshiftop_Jnn_M) : vshiftop_
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:146.8-146.18 -/
 inductive wf_vshiftop_ : ishape -> vshiftop_ -> Prop where
   | vshiftop__case_0 : forall (v_ishape : ishape) (v_Jnn : Jnn) (v_M : M) (var_x : vshiftop_Jnn_M), 
-    (v_ishape == (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
+    (v_ishape = (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     wf_vshiftop_ v_ishape (.mk_vshiftop__0 v_Jnn v_M var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:146.1-146.46 -/
@@ -4009,19 +4034,19 @@ def proj_vshiftop__0 : ∀  (var_x : vshiftop_) , vshiftop_Jnn_M
 inductive vswizzlop_M : Type where
   | SWIZZLE : vswizzlop_M
   | RELAXED_SWIZZLE : vswizzlop_M
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:149.1-149.47 -/
 inductive vswizzlop_ : Type where
   | mk_vswizzlop__0 (v_M : M) (var_x : vswizzlop_M) : vswizzlop_
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:149.8-149.19 -/
 inductive wf_vswizzlop_ : bshape -> vswizzlop_ -> Prop where
   | vswizzlop__case_0 : forall (v_bshape : bshape) (v_M : M) (var_x : vswizzlop_M), 
-    (v_bshape == (.mk_bshape (.X .I8 (.mk_dim v_M)))) ->
+    (v_bshape = (.mk_bshape (.X .I8 (.mk_dim v_M)))) ->
     wf_vswizzlop_ v_bshape (.mk_vswizzlop__0 v_M var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:149.1-149.47 -/
@@ -4033,27 +4058,27 @@ def proj_vswizzlop__0 : ∀  (var_x : vswizzlop_) , vswizzlop_M
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:152.1-152.59 -/
 inductive vextunop__Jnn_1_M_1_Jnn_2_M_2 : Type where
   | EXTADD_PAIRWISE (v_sx : sx) : vextunop__Jnn_1_M_1_Jnn_2_M_2
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:152.8-152.19 -/
 inductive wf_vextunop__Jnn_1_M_1_Jnn_2_M_2 : Jnn -> M -> Jnn -> M -> vextunop__Jnn_1_M_1_Jnn_2_M_2 -> Prop where
   | vextunop__Jnn_1_M_1_Jnn_2_M_2_case_0 : forall (Jnn_1 : Jnn) (M_1 : M) (Jnn_2 : Jnn) (M_2 : M) (v_sx : sx), 
-    ((16 <= (2 * (lsizenn1 (lanetype_Jnn Jnn_1)))) && (((2 * (lsizenn1 (lanetype_Jnn Jnn_1))) == (lsizenn2 (lanetype_Jnn Jnn_2))) && ((lsizenn2 (lanetype_Jnn Jnn_2)) <= 32))) ->
+    ((16 <= (2 * (lsizenn1 (lanetype_Jnn Jnn_1)))) ∧ (((2 * (lsizenn1 (lanetype_Jnn Jnn_1))) = (lsizenn2 (lanetype_Jnn Jnn_2))) ∧ ((lsizenn2 (lanetype_Jnn Jnn_2)) <= 32))) ->
     wf_vextunop__Jnn_1_M_1_Jnn_2_M_2 Jnn_1 M_1 Jnn_2 M_2 (.EXTADD_PAIRWISE v_sx)
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:152.1-152.59 -/
 inductive vextunop__ : Type where
   | mk_vextunop___0 (Jnn_1 : Jnn) (M_1 : M) (Jnn_2 : Jnn) (M_2 : M) (var_x : vextunop__Jnn_1_M_1_Jnn_2_M_2) : vextunop__
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:152.8-152.19 -/
 inductive wf_vextunop__ : ishape -> ishape -> vextunop__ -> Prop where
   | vextunop___case_0 : forall (ishape_1 : ishape) (ishape_2 : ishape) (Jnn_1 : Jnn) (M_1 : M) (Jnn_2 : Jnn) (M_2 : M) (var_x : vextunop__Jnn_1_M_1_Jnn_2_M_2), 
     (wf_vextunop__Jnn_1_M_1_Jnn_2_M_2 Jnn_1 M_1 Jnn_2 M_2 var_x) ->
-    (ishape_1 == (.mk_ishape (.X (lanetype_Jnn Jnn_1) (.mk_dim M_1)))) ->
-    (ishape_2 == (.mk_ishape (.X (lanetype_Jnn Jnn_2) (.mk_dim M_2)))) ->
+    (ishape_1 = (.mk_ishape (.X (lanetype_Jnn Jnn_1) (.mk_dim M_1)))) ->
+    (ishape_2 = (.mk_ishape (.X (lanetype_Jnn Jnn_2) (.mk_dim M_2)))) ->
     wf_vextunop__ ishape_1 ishape_2 (.mk_vextunop___0 Jnn_1 M_1 Jnn_2 M_2 var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:152.1-152.59 -/
@@ -4067,33 +4092,33 @@ inductive vextbinop__Jnn_1_M_1_Jnn_2_M_2 : Type where
   | EXTMUL (v_half : half) (v_sx : sx) : vextbinop__Jnn_1_M_1_Jnn_2_M_2
   | DOTS : vextbinop__Jnn_1_M_1_Jnn_2_M_2
   | RELAXED_DOTS : vextbinop__Jnn_1_M_1_Jnn_2_M_2
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:157.8-157.20 -/
 inductive wf_vextbinop__Jnn_1_M_1_Jnn_2_M_2 : Jnn -> M -> Jnn -> M -> vextbinop__Jnn_1_M_1_Jnn_2_M_2 -> Prop where
   | vextbinop__Jnn_1_M_1_Jnn_2_M_2_case_0 : forall (Jnn_1 : Jnn) (M_1 : M) (Jnn_2 : Jnn) (M_2 : M) (v_half : half) (v_sx : sx), 
-    (((2 * (lsizenn1 (lanetype_Jnn Jnn_1))) == (lsizenn2 (lanetype_Jnn Jnn_2))) && ((lsizenn2 (lanetype_Jnn Jnn_2)) >= 16)) ->
+    (((2 * (lsizenn1 (lanetype_Jnn Jnn_1))) = (lsizenn2 (lanetype_Jnn Jnn_2))) ∧ ((lsizenn2 (lanetype_Jnn Jnn_2)) >= 16)) ->
     wf_vextbinop__Jnn_1_M_1_Jnn_2_M_2 Jnn_1 M_1 Jnn_2 M_2 (.EXTMUL v_half v_sx)
   | vextbinop__Jnn_1_M_1_Jnn_2_M_2_case_1 : forall (Jnn_1 : Jnn) (M_1 : M) (Jnn_2 : Jnn) (M_2 : M), 
-    (((2 * (lsizenn1 (lanetype_Jnn Jnn_1))) == (lsizenn2 (lanetype_Jnn Jnn_2))) && ((lsizenn2 (lanetype_Jnn Jnn_2)) == 32)) ->
+    (((2 * (lsizenn1 (lanetype_Jnn Jnn_1))) = (lsizenn2 (lanetype_Jnn Jnn_2))) ∧ ((lsizenn2 (lanetype_Jnn Jnn_2)) = 32)) ->
     wf_vextbinop__Jnn_1_M_1_Jnn_2_M_2 Jnn_1 M_1 Jnn_2 M_2 .DOTS
   | vextbinop__Jnn_1_M_1_Jnn_2_M_2_case_2 : forall (Jnn_1 : Jnn) (M_1 : M) (Jnn_2 : Jnn) (M_2 : M), 
-    (((2 * (lsizenn1 (lanetype_Jnn Jnn_1))) == (lsizenn2 (lanetype_Jnn Jnn_2))) && ((lsizenn2 (lanetype_Jnn Jnn_2)) == 16)) ->
+    (((2 * (lsizenn1 (lanetype_Jnn Jnn_1))) = (lsizenn2 (lanetype_Jnn Jnn_2))) ∧ ((lsizenn2 (lanetype_Jnn Jnn_2)) = 16)) ->
     wf_vextbinop__Jnn_1_M_1_Jnn_2_M_2 Jnn_1 M_1 Jnn_2 M_2 .RELAXED_DOTS
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:157.1-157.60 -/
 inductive vextbinop__ : Type where
   | mk_vextbinop___0 (Jnn_1 : Jnn) (M_1 : M) (Jnn_2 : Jnn) (M_2 : M) (var_x : vextbinop__Jnn_1_M_1_Jnn_2_M_2) : vextbinop__
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:157.8-157.20 -/
 inductive wf_vextbinop__ : ishape -> ishape -> vextbinop__ -> Prop where
   | vextbinop___case_0 : forall (ishape_1 : ishape) (ishape_2 : ishape) (Jnn_1 : Jnn) (M_1 : M) (Jnn_2 : Jnn) (M_2 : M) (var_x : vextbinop__Jnn_1_M_1_Jnn_2_M_2), 
     (wf_vextbinop__Jnn_1_M_1_Jnn_2_M_2 Jnn_1 M_1 Jnn_2 M_2 var_x) ->
-    (ishape_1 == (.mk_ishape (.X (lanetype_Jnn Jnn_1) (.mk_dim M_1)))) ->
-    (ishape_2 == (.mk_ishape (.X (lanetype_Jnn Jnn_2) (.mk_dim M_2)))) ->
+    (ishape_1 = (.mk_ishape (.X (lanetype_Jnn Jnn_1) (.mk_dim M_1)))) ->
+    (ishape_2 = (.mk_ishape (.X (lanetype_Jnn Jnn_2) (.mk_dim M_2)))) ->
     wf_vextbinop__ ishape_1 ishape_2 (.mk_vextbinop___0 Jnn_1 M_1 Jnn_2 M_2 var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:157.1-157.60 -/
@@ -4105,27 +4130,27 @@ def proj_vextbinop___0 : ∀  (var_x : vextbinop__) , vextbinop__Jnn_1_M_1_Jnn_2
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:166.1-166.61 -/
 inductive vextternop__Jnn_1_M_1_Jnn_2_M_2 : Type where
   | RELAXED_DOT_ADDS : vextternop__Jnn_1_M_1_Jnn_2_M_2
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:166.8-166.21 -/
 inductive wf_vextternop__Jnn_1_M_1_Jnn_2_M_2 : Jnn -> M -> Jnn -> M -> vextternop__Jnn_1_M_1_Jnn_2_M_2 -> Prop where
   | vextternop__Jnn_1_M_1_Jnn_2_M_2_case_0 : forall (Jnn_1 : Jnn) (M_1 : M) (Jnn_2 : Jnn) (M_2 : M), 
-    (((4 * (lsizenn1 (lanetype_Jnn Jnn_1))) == (lsizenn2 (lanetype_Jnn Jnn_2))) && ((lsizenn2 (lanetype_Jnn Jnn_2)) == 32)) ->
+    (((4 * (lsizenn1 (lanetype_Jnn Jnn_1))) = (lsizenn2 (lanetype_Jnn Jnn_2))) ∧ ((lsizenn2 (lanetype_Jnn Jnn_2)) = 32)) ->
     wf_vextternop__Jnn_1_M_1_Jnn_2_M_2 Jnn_1 M_1 Jnn_2 M_2 .RELAXED_DOT_ADDS
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:166.1-166.61 -/
 inductive vextternop__ : Type where
   | mk_vextternop___0 (Jnn_1 : Jnn) (M_1 : M) (Jnn_2 : Jnn) (M_2 : M) (var_x : vextternop__Jnn_1_M_1_Jnn_2_M_2) : vextternop__
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:166.8-166.21 -/
 inductive wf_vextternop__ : ishape -> ishape -> vextternop__ -> Prop where
   | vextternop___case_0 : forall (ishape_1 : ishape) (ishape_2 : ishape) (Jnn_1 : Jnn) (M_1 : M) (Jnn_2 : Jnn) (M_2 : M) (var_x : vextternop__Jnn_1_M_1_Jnn_2_M_2), 
     (wf_vextternop__Jnn_1_M_1_Jnn_2_M_2 Jnn_1 M_1 Jnn_2 M_2 var_x) ->
-    (ishape_1 == (.mk_ishape (.X (lanetype_Jnn Jnn_1) (.mk_dim M_1)))) ->
-    (ishape_2 == (.mk_ishape (.X (lanetype_Jnn Jnn_2) (.mk_dim M_2)))) ->
+    (ishape_1 = (.mk_ishape (.X (lanetype_Jnn Jnn_1) (.mk_dim M_1)))) ->
+    (ishape_2 = (.mk_ishape (.X (lanetype_Jnn Jnn_2) (.mk_dim M_2)))) ->
     wf_vextternop__ ishape_1 ishape_2 (.mk_vextternop___0 Jnn_1 M_1 Jnn_2 M_2 var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:166.1-166.61 -/
@@ -4137,57 +4162,57 @@ def proj_vextternop___0 : ∀  (var_x : vextternop__) , vextternop__Jnn_1_M_1_Jn
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:171.1-171.55 -/
 inductive vcvtop__Jnn_1_M_1_Jnn_2_M_2 : Type where
   | EXTEND (v_half : half) (v_sx : sx) : vcvtop__Jnn_1_M_1_Jnn_2_M_2
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:171.8-171.17 -/
 inductive wf_vcvtop__Jnn_1_M_1_Jnn_2_M_2 : Jnn -> M -> Jnn -> M -> vcvtop__Jnn_1_M_1_Jnn_2_M_2 -> Prop where
   | vcvtop__Jnn_1_M_1_Jnn_2_M_2_case_0 : forall (Jnn_1 : Jnn) (M_1 : M) (Jnn_2 : Jnn) (M_2 : M) (v_half : half) (v_sx : sx), 
-    ((lsizenn2 (lanetype_Jnn Jnn_2)) == (2 * (lsizenn1 (lanetype_Jnn Jnn_1)))) ->
+    ((lsizenn2 (lanetype_Jnn Jnn_2)) = (2 * (lsizenn1 (lanetype_Jnn Jnn_1)))) ->
     wf_vcvtop__Jnn_1_M_1_Jnn_2_M_2 Jnn_1 M_1 Jnn_2 M_2 (.EXTEND v_half v_sx)
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:171.1-171.55 -/
 inductive vcvtop__Jnn_1_M_1_Fnn_2_M_2 : Type where
   | CONVERT (half_opt : (Option half)) (v_sx : sx) : vcvtop__Jnn_1_M_1_Fnn_2_M_2
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:171.8-171.17 -/
 inductive wf_vcvtop__Jnn_1_M_1_Fnn_2_M_2 : Jnn -> M -> Fnn -> M -> vcvtop__Jnn_1_M_1_Fnn_2_M_2 -> Prop where
   | vcvtop__Jnn_1_M_1_Fnn_2_M_2_case_0 : forall (Jnn_1 : Jnn) (M_1 : M) (Fnn_2 : Fnn) (M_2 : M) (half_opt : (Option half)) (v_sx : sx), 
-    (((((sizenn2 (numtype_Fnn Fnn_2)) == (lsizenn1 (lanetype_Jnn Jnn_1))) && ((lsizenn1 (lanetype_Jnn Jnn_1)) == 32)) && (half_opt == none)) || (((sizenn2 (numtype_Fnn Fnn_2)) == (2 * (lsizenn1 (lanetype_Jnn Jnn_1)))) && (half_opt == (some .LOW)))) ->
+    (((((sizenn2 (numtype_Fnn Fnn_2)) = (lsizenn1 (lanetype_Jnn Jnn_1))) ∧ ((lsizenn1 (lanetype_Jnn Jnn_1)) = 32)) ∧ (half_opt = none)) ∨ (((sizenn2 (numtype_Fnn Fnn_2)) = (2 * (lsizenn1 (lanetype_Jnn Jnn_1)))) ∧ (half_opt = (some .LOW)))) ->
     wf_vcvtop__Jnn_1_M_1_Fnn_2_M_2 Jnn_1 M_1 Fnn_2 M_2 (.CONVERT half_opt v_sx)
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:171.1-171.55 -/
 inductive vcvtop__Fnn_1_M_1_Inn_2_M_2 : Type where
   | TRUNC_SAT (v_sx : sx) (zero_opt : (Option zero)) : vcvtop__Fnn_1_M_1_Inn_2_M_2
   | RELAXED_TRUNC (v_sx : sx) (zero_opt : (Option zero)) : vcvtop__Fnn_1_M_1_Inn_2_M_2
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:171.8-171.17 -/
 inductive wf_vcvtop__Fnn_1_M_1_Inn_2_M_2 : Fnn -> M -> Inn -> M -> vcvtop__Fnn_1_M_1_Inn_2_M_2 -> Prop where
   | vcvtop__Fnn_1_M_1_Inn_2_M_2_case_0 : forall (Fnn_1 : Fnn) (M_1 : M) (Inn_2 : Inn) (M_2 : M) (v_sx : sx) (zero_opt : (Option zero)), 
-    (((((sizenn1 (numtype_Fnn Fnn_1)) == (lsizenn2 (lanetype_addrtype Inn_2))) && ((lsizenn2 (lanetype_addrtype Inn_2)) == 32)) && (zero_opt == none)) || (((sizenn1 (numtype_Fnn Fnn_1)) == (2 * (lsizenn2 (lanetype_addrtype Inn_2)))) && (zero_opt == (some .ZERO)))) ->
+    (((((sizenn1 (numtype_Fnn Fnn_1)) = (lsizenn2 (lanetype_addrtype Inn_2))) ∧ ((lsizenn2 (lanetype_addrtype Inn_2)) = 32)) ∧ (zero_opt = none)) ∨ (((sizenn1 (numtype_Fnn Fnn_1)) = (2 * (lsizenn2 (lanetype_addrtype Inn_2)))) ∧ (zero_opt = (some .ZERO)))) ->
     wf_vcvtop__Fnn_1_M_1_Inn_2_M_2 Fnn_1 M_1 Inn_2 M_2 (.TRUNC_SAT v_sx zero_opt)
   | vcvtop__Fnn_1_M_1_Inn_2_M_2_case_1 : forall (Fnn_1 : Fnn) (M_1 : M) (Inn_2 : Inn) (M_2 : M) (v_sx : sx) (zero_opt : (Option zero)), 
-    (((((sizenn1 (numtype_Fnn Fnn_1)) == (lsizenn2 (lanetype_addrtype Inn_2))) && ((lsizenn2 (lanetype_addrtype Inn_2)) == 32)) && (zero_opt == none)) || (((sizenn1 (numtype_Fnn Fnn_1)) == (2 * (lsizenn2 (lanetype_addrtype Inn_2)))) && (zero_opt == (some .ZERO)))) ->
+    (((((sizenn1 (numtype_Fnn Fnn_1)) = (lsizenn2 (lanetype_addrtype Inn_2))) ∧ ((lsizenn2 (lanetype_addrtype Inn_2)) = 32)) ∧ (zero_opt = none)) ∨ (((sizenn1 (numtype_Fnn Fnn_1)) = (2 * (lsizenn2 (lanetype_addrtype Inn_2)))) ∧ (zero_opt = (some .ZERO)))) ->
     wf_vcvtop__Fnn_1_M_1_Inn_2_M_2 Fnn_1 M_1 Inn_2 M_2 (.RELAXED_TRUNC v_sx zero_opt)
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:171.1-171.55 -/
 inductive vcvtop__Fnn_1_M_1_Fnn_2_M_2 : Type where
   | DEMOTE (v_zero : zero) : vcvtop__Fnn_1_M_1_Fnn_2_M_2
   | PROMOTELOW : vcvtop__Fnn_1_M_1_Fnn_2_M_2
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:171.8-171.17 -/
 inductive wf_vcvtop__Fnn_1_M_1_Fnn_2_M_2 : Fnn -> M -> Fnn -> M -> vcvtop__Fnn_1_M_1_Fnn_2_M_2 -> Prop where
   | vcvtop__Fnn_1_M_1_Fnn_2_M_2_case_0 : forall (Fnn_1 : Fnn) (M_1 : M) (Fnn_2 : Fnn) (M_2 : M) (v_zero : zero), 
-    ((sizenn1 (numtype_Fnn Fnn_1)) == (2 * (sizenn2 (numtype_Fnn Fnn_2)))) ->
+    ((sizenn1 (numtype_Fnn Fnn_1)) = (2 * (sizenn2 (numtype_Fnn Fnn_2)))) ->
     wf_vcvtop__Fnn_1_M_1_Fnn_2_M_2 Fnn_1 M_1 Fnn_2 M_2 (.DEMOTE v_zero)
   | vcvtop__Fnn_1_M_1_Fnn_2_M_2_case_1 : forall (Fnn_1 : Fnn) (M_1 : M) (Fnn_2 : Fnn) (M_2 : M), 
-    ((2 * (sizenn1 (numtype_Fnn Fnn_1))) == (sizenn2 (numtype_Fnn Fnn_2))) ->
+    ((2 * (sizenn1 (numtype_Fnn Fnn_1))) = (sizenn2 (numtype_Fnn Fnn_2))) ->
     wf_vcvtop__Fnn_1_M_1_Fnn_2_M_2 Fnn_1 M_1 Fnn_2 M_2 .PROMOTELOW
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:171.1-171.55 -/
@@ -4196,30 +4221,30 @@ inductive vcvtop__ : Type where
   | mk_vcvtop___1 (Jnn_1 : Jnn) (M_1 : M) (Fnn_2 : Fnn) (M_2 : M) (var_x : vcvtop__Jnn_1_M_1_Fnn_2_M_2) : vcvtop__
   | mk_vcvtop___2 (Fnn_1 : Fnn) (M_1 : M) (Inn_2 : Inn) (M_2 : M) (var_x : vcvtop__Fnn_1_M_1_Inn_2_M_2) : vcvtop__
   | mk_vcvtop___3 (Fnn_1 : Fnn) (M_1 : M) (Fnn_2 : Fnn) (M_2 : M) (var_x : vcvtop__Fnn_1_M_1_Fnn_2_M_2) : vcvtop__
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:171.8-171.17 -/
 inductive wf_vcvtop__ : shape -> shape -> vcvtop__ -> Prop where
   | vcvtop___case_0 : forall (shape_1 : shape) (shape_2 : shape) (Jnn_1 : Jnn) (M_1 : M) (Jnn_2 : Jnn) (M_2 : M) (var_x : vcvtop__Jnn_1_M_1_Jnn_2_M_2), 
     (wf_vcvtop__Jnn_1_M_1_Jnn_2_M_2 Jnn_1 M_1 Jnn_2 M_2 var_x) ->
-    (shape_1 == (.X (lanetype_Jnn Jnn_1) (.mk_dim M_1))) ->
-    (shape_2 == (.X (lanetype_Jnn Jnn_2) (.mk_dim M_2))) ->
+    (shape_1 = (.X (lanetype_Jnn Jnn_1) (.mk_dim M_1))) ->
+    (shape_2 = (.X (lanetype_Jnn Jnn_2) (.mk_dim M_2))) ->
     wf_vcvtop__ shape_1 shape_2 (.mk_vcvtop___0 Jnn_1 M_1 Jnn_2 M_2 var_x)
   | vcvtop___case_1 : forall (shape_1 : shape) (shape_2 : shape) (Jnn_1 : Jnn) (M_1 : M) (Fnn_2 : Fnn) (M_2 : M) (var_x : vcvtop__Jnn_1_M_1_Fnn_2_M_2), 
     (wf_vcvtop__Jnn_1_M_1_Fnn_2_M_2 Jnn_1 M_1 Fnn_2 M_2 var_x) ->
-    (shape_1 == (.X (lanetype_Jnn Jnn_1) (.mk_dim M_1))) ->
-    (shape_2 == (.X (lanetype_Fnn Fnn_2) (.mk_dim M_2))) ->
+    (shape_1 = (.X (lanetype_Jnn Jnn_1) (.mk_dim M_1))) ->
+    (shape_2 = (.X (lanetype_Fnn Fnn_2) (.mk_dim M_2))) ->
     wf_vcvtop__ shape_1 shape_2 (.mk_vcvtop___1 Jnn_1 M_1 Fnn_2 M_2 var_x)
   | vcvtop___case_2 : forall (shape_1 : shape) (shape_2 : shape) (Fnn_1 : Fnn) (M_1 : M) (Inn_2 : Inn) (M_2 : M) (var_x : vcvtop__Fnn_1_M_1_Inn_2_M_2), 
     (wf_vcvtop__Fnn_1_M_1_Inn_2_M_2 Fnn_1 M_1 Inn_2 M_2 var_x) ->
-    (shape_1 == (.X (lanetype_Fnn Fnn_1) (.mk_dim M_1))) ->
-    (shape_2 == (.X (lanetype_addrtype Inn_2) (.mk_dim M_2))) ->
+    (shape_1 = (.X (lanetype_Fnn Fnn_1) (.mk_dim M_1))) ->
+    (shape_2 = (.X (lanetype_addrtype Inn_2) (.mk_dim M_2))) ->
     wf_vcvtop__ shape_1 shape_2 (.mk_vcvtop___2 Fnn_1 M_1 Inn_2 M_2 var_x)
   | vcvtop___case_3 : forall (shape_1 : shape) (shape_2 : shape) (Fnn_1 : Fnn) (M_1 : M) (Fnn_2 : Fnn) (M_2 : M) (var_x : vcvtop__Fnn_1_M_1_Fnn_2_M_2), 
     (wf_vcvtop__Fnn_1_M_1_Fnn_2_M_2 Fnn_1 M_1 Fnn_2 M_2 var_x) ->
-    (shape_1 == (.X (lanetype_Fnn Fnn_1) (.mk_dim M_1))) ->
-    (shape_2 == (.X (lanetype_Fnn Fnn_2) (.mk_dim M_2))) ->
+    (shape_1 = (.X (lanetype_Fnn Fnn_1) (.mk_dim M_1))) ->
+    (shape_2 = (.X (lanetype_Fnn Fnn_2) (.mk_dim M_2))) ->
     wf_vcvtop__ shape_1 shape_2 (.mk_vcvtop___3 Fnn_1 M_1 Fnn_2 M_2 var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:171.1-171.55 -/
@@ -4258,7 +4283,7 @@ def proj_vcvtop___3 : ∀  (var_x : vcvtop__) , (Option vcvtop__Fnn_1_M_1_Fnn_2_
 structure memarg where MKmemarg ::
   ALIGN : u32
   OFFSET : u64
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_memarg (arg1 arg2 : (memarg)) : memarg where
   ALIGN := arg1.ALIGN /- FIXME - Non-trivial append -/
@@ -4278,7 +4303,7 @@ inductive wf_memarg : memarg -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:199.1-199.24 -/
 inductive loadop_Inn : Type where
   | mk_loadop_Inn (v_sz : sz) (v_sx : sx) : loadop_Inn
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:199.8-199.16 -/
@@ -4291,14 +4316,14 @@ inductive wf_loadop_Inn : Inn -> loadop_Inn -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:199.1-199.24 -/
 inductive loadop_ : Type where
   | mk_loadop__0 (v_Inn : Inn) (var_x : loadop_Inn) : loadop_
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:199.8-199.16 -/
 inductive wf_loadop_ : numtype -> loadop_ -> Prop where
   | loadop__case_0 : forall (v_numtype : numtype) (v_Inn : Inn) (var_x : loadop_Inn), 
     (wf_loadop_Inn v_Inn var_x) ->
-    (v_numtype == (numtype_addrtype v_Inn)) ->
+    (v_numtype = (numtype_addrtype v_Inn)) ->
     wf_loadop_ v_numtype (.mk_loadop__0 v_Inn var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:199.1-199.24 -/
@@ -4310,7 +4335,7 @@ def proj_loadop__0 : ∀  (var_x : loadop_) , loadop_Inn
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:202.1-202.25 -/
 inductive storeop_Inn : Type where
   | mk_storeop_Inn (v_sz : sz) : storeop_Inn
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:202.8-202.17 -/
@@ -4323,14 +4348,14 @@ inductive wf_storeop_Inn : Inn -> storeop_Inn -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:202.1-202.25 -/
 inductive storeop_ : Type where
   | mk_storeop__0 (v_Inn : Inn) (var_x : storeop_Inn) : storeop_
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:202.8-202.17 -/
 inductive wf_storeop_ : numtype -> storeop_ -> Prop where
   | storeop__case_0 : forall (v_numtype : numtype) (v_Inn : Inn) (var_x : storeop_Inn), 
     (wf_storeop_Inn v_Inn var_x) ->
-    (v_numtype == (numtype_addrtype v_Inn)) ->
+    (v_numtype = (numtype_addrtype v_Inn)) ->
     wf_storeop_ v_numtype (.mk_storeop__0 v_Inn var_x)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:202.1-202.25 -/
@@ -4344,14 +4369,14 @@ inductive vloadop_ : Type where
   | SHAPEX_ (v_sz : sz) (v_M : M) (v_sx : sx) : vloadop_
   | SPLAT (v_sz : sz) : vloadop_
   | ZERO (v_sz : sz) : vloadop_
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:205.8-205.17 -/
 inductive wf_vloadop_ : vectype -> vloadop_ -> Prop where
   | vloadop__case_0 : forall (v_vectype : vectype) (v_sz : sz) (v_M : M) (v_sx : sx), 
     (wf_sz v_sz) ->
-    (((Rat.ofInt (Int.ofNat ((proj_sz_0 v_sz) * v_M))) == ((Rat.ofInt (Int.ofNat (vsize v_vectype))) / (Rat.ofInt (Int.ofNat 2)))) && (v_M > 1)) ->
+    (((Rat.ofInt (Int.ofNat ((proj_sz_0 v_sz) * v_M))) = ((Rat.ofInt (Int.ofNat (vsize v_vectype))) / (Rat.ofInt (Int.ofNat 2)))) ∧ (v_M > 1)) ->
     wf_vloadop_ v_vectype (.SHAPEX_ v_sz v_M v_sx)
   | vloadop__case_1 : forall (v_vectype : vectype) (v_sz : sz), 
     (wf_sz v_sz) ->
@@ -4365,7 +4390,7 @@ inductive wf_vloadop_ : vectype -> vloadop_ -> Prop where
 inductive blocktype : Type where
   | _RESULT (valtype_opt : (Option valtype)) : blocktype
   | _IDX (v_typeidx : typeidx) : blocktype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:213.8-213.17 -/
@@ -4389,7 +4414,7 @@ inductive «catch» : Type where
   | CATCH_REF (v_tagidx : tagidx) (v_labelidx : labelidx) : «catch»
   | CATCH_ALL (v_labelidx : labelidx) : «catch»
   | CATCH_ALL_REF (v_labelidx : labelidx) : «catch»
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:263.8-263.13 -/
@@ -4440,14 +4465,14 @@ inductive externaddr : Type where
   | MEM (v_memaddr : memaddr) : externaddr
   | TABLE (v_tableaddr : tableaddr) : externaddr
   | FUNC (v_funcaddr : funcaddr) : externaddr
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Record Creation Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:81.1-82.33 -/
 structure exportinst where MKexportinst ::
   NAME : name
   ADDR : externaddr
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_exportinst (arg1 arg2 : (exportinst)) : exportinst where
   NAME := arg1.NAME /- FIXME - Non-trivial append -/
@@ -4474,7 +4499,7 @@ structure moduleinst where MKmoduleinst ::
   DATAS : (List dataaddr)
   ELEMS : (List elemaddr)
   EXPORTS : (List exportinst)
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_moduleinst (arg1 arg2 : (moduleinst)) : moduleinst where
   TYPES := arg1.TYPES ++ arg2.TYPES
@@ -4514,7 +4539,7 @@ inductive ref : Type where
   | REF_EXN_ADDR (v_exnaddr : exnaddr) : ref
   | REF_HOST_ADDR (v_hostaddr : hostaddr) : ref
   | REF_EXTERN (v_ref : ref) : ref
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Recursive Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:35.1-43.19 -/
@@ -4543,7 +4568,7 @@ inductive val : Type where
   | REF_EXN_ADDR (v_exnaddr : exnaddr) : val
   | REF_HOST_ADDR (v_hostaddr : hostaddr) : val
   | REF_EXTERN (v_ref : ref) : val
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at:  -/
@@ -4591,7 +4616,7 @@ inductive wf_val : val -> Prop where
 structure frame where MKframe ::
   LOCALS : (List (Option val))
   MODULE : moduleinst
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_frame (arg1 arg2 : (frame)) : frame where
   LOCALS := arg1.LOCALS ++ arg2.LOCALS
@@ -4727,8 +4752,11 @@ inductive instr : Type where
   | FRAME_ (v_n : n) (v_frame : frame) (instr_lst : (List instr)) : instr
   | HANDLER_ (v_n : n) (catch_lst : (List «catch»)) (instr_lst : (List instr)) : instr
   | TRAP : instr
-deriving Inhabited, BEq
+deriving Inhabited
 
+
+noncomputable instance : DecidableEq (instr) :=
+  fun a b => Classical.propDecidable (a = b)
 
 /- Auxiliary Definition at:  -/
 def instr_ref : ∀  (var_0 : ref) , instr
@@ -5075,7 +5103,7 @@ inductive wf_instr : instr -> Prop where
   | instr_case_95 : forall (v_bshape : bshape) (laneidx_lst : (List laneidx)), 
     (wf_bshape v_bshape) ->
     Forall (fun (v_laneidx : laneidx) => (wf_uN 8 v_laneidx)) laneidx_lst ->
-    ((.mk_dim (List.length laneidx_lst)) == (fun_dim (proj_bshape_0 v_bshape))) ->
+    ((.mk_dim (List.length laneidx_lst)) = (fun_dim (proj_bshape_0 v_bshape))) ->
     wf_instr (.VSHUFFLE v_bshape laneidx_lst)
   | instr_case_96 : forall (ishape_1 : ishape) (ishape_2 : ishape) (var_0 : vextunop__), 
     (wf_ishape ishape_1) ->
@@ -5095,7 +5123,7 @@ inductive wf_instr : instr -> Prop where
   | instr_case_99 : forall (ishape_1 : ishape) (ishape_2 : ishape) (v_sx : sx), 
     (wf_ishape ishape_1) ->
     (wf_ishape ishape_2) ->
-    (((lsize (fun_lanetype (proj_ishape_0 ishape_2))) == (2 * (lsize (fun_lanetype (proj_ishape_0 ishape_1))))) && ((2 * (lsize (fun_lanetype (proj_ishape_0 ishape_1)))) <= 32)) ->
+    (((lsize (fun_lanetype (proj_ishape_0 ishape_2))) = (2 * (lsize (fun_lanetype (proj_ishape_0 ishape_1))))) ∧ ((2 * (lsize (fun_lanetype (proj_ishape_0 ishape_1)))) <= 32)) ->
     wf_instr (.VNARROW ishape_1 ishape_2 v_sx)
   | instr_case_100 : forall (shape_1 : shape) (shape_2 : shape) (var_0 : vcvtop__), 
     (wf_shape shape_1) ->
@@ -5109,7 +5137,7 @@ inductive wf_instr : instr -> Prop where
     (wf_shape v_shape) ->
     (wf_uN 8 v_laneidx) ->
     ((List.length ([.I32, .I64, .F32, .F64] : (List lanetype))) > 0) ->
-    ((sx_opt == none) <-> (List.contains ([.I32, .I64, .F32, .F64] : (List lanetype)) (fun_lanetype v_shape))) ->
+    ((sx_opt = none) ↔ ((fun_lanetype v_shape) ∈ ([.I32, .I64, .F32, .F64] : (List lanetype)))) ->
     wf_instr (.VEXTRACT_LANE v_shape sx_opt v_laneidx)
   | instr_case_103 : forall (v_shape : shape) (v_laneidx : laneidx), 
     (wf_shape v_shape) ->
@@ -5150,7 +5178,7 @@ def memarg0 : memarg := { ALIGN := (.mk_uN 0), OFFSET := (.mk_uN 0) }
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:412.6-412.13 -/
 inductive memarg0_is_wf : memarg -> Prop where
   | memarg0_is_wf_0 : forall (ret_val : memarg), 
-    (ret_val == (memarg0 )) ->
+    (ret_val = (memarg0 )) ->
     (wf_memarg ret_val) ->
     memarg0_is_wf ret_val
 
@@ -5161,8 +5189,8 @@ opaque const : forall (v_consttype : consttype) (v_lit_ : lit_), (Option instr) 
 inductive const_is_wf : consttype -> lit_ -> instr -> Prop where
   | const_is_wf_0 : forall (v_consttype : consttype) (v_lit_ : lit_) (ret_val : instr), 
     (wf_lit_ (storagetype_consttype v_consttype) v_lit_) ->
-    ((const v_consttype v_lit_) != none) ->
-    (ret_val == (Option.get! (const v_consttype v_lit_))) ->
+    ((const v_consttype v_lit_) ≠ none) ->
+    (ret_val = (Option.get! (const v_consttype v_lit_))) ->
     (wf_instr ret_val) ->
     const_is_wf v_consttype v_lit_ ret_val
 
@@ -5176,7 +5204,7 @@ def free_shape : ∀  (v_shape : shape) , free
 inductive free_shape_is_wf : shape -> free -> Prop where
   | free_shape_is_wf_0 : forall (v_shape : shape) (ret_val : free), 
     (wf_shape v_shape) ->
-    (ret_val == (free_shape v_shape)) ->
+    (ret_val = (free_shape v_shape)) ->
     (wf_free ret_val) ->
     free_shape_is_wf v_shape ret_val
 
@@ -5193,7 +5221,7 @@ inductive free_blocktype_is_wf : blocktype -> free -> Prop where
   | free_blocktype_is_wf_0 : forall (v_blocktype : blocktype) (ret_val : free) (var_0 : free), 
     (fun_free_blocktype v_blocktype var_0) ->
     (wf_blocktype v_blocktype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_blocktype_is_wf v_blocktype ret_val
 
@@ -5213,7 +5241,7 @@ def free_catch : ∀  (v_catch : «catch») , free
 inductive free_catch_is_wf : «catch» -> free -> Prop where
   | free_catch_is_wf_0 : forall (v_catch : «catch») (ret_val : free), 
     (wf_catch v_catch) ->
-    (ret_val == (free_catch v_catch)) ->
+    (ret_val = (free_catch v_catch)) ->
     (wf_free ret_val) ->
     free_catch_is_wf v_catch ret_val
 
@@ -5234,7 +5262,7 @@ inductive shift_labelidxs_is_wf : (List labelidx) -> (List labelidx) -> Prop whe
   | shift_labelidxs_is_wf_0 : forall (var_0_lst : (List labelidx)) (ret_val_lst : (List labelidx)) (var_0 : (List labelidx)), 
     (fun_shift_labelidxs var_0_lst var_0) ->
     Forall (fun (var_0 : labelidx) => (wf_uN 32 var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : labelidx) => (wf_uN 32 ret_val)) ret_val_lst ->
     shift_labelidxs_is_wf var_0_lst ret_val_lst
 
@@ -5396,7 +5424,7 @@ inductive fun_free_block : (List instr) -> free -> Prop where
     Forall₂ (fun (var_2 : free) (instr_5 : instr) => (fun_free_instr instr_5 var_2)) var_2_lst instr_lst ->
     (fun_free_list var_2_lst var_1) ->
     (fun_shift_labelidxs (v_free.LABELS) var_0) ->
-    (v_free == var_1) ->
+    (v_free = var_1) ->
     ((List.length var_2_lst) = (List.length instr_lst)) ->
     fun_free_block instr_lst { v_free with LABELS := var_0 }
 
@@ -5409,7 +5437,7 @@ inductive free_instr_is_wf : instr -> free -> Prop where
   | free_instr_is_wf_0 : forall (v_instr : instr) (ret_val : free) (var_0 : free), 
     (fun_free_instr v_instr var_0) ->
     (wf_instr v_instr) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_instr_is_wf v_instr ret_val
 
@@ -5418,7 +5446,7 @@ inductive free_block_is_wf : (List instr) -> free -> Prop where
   | free_block_is_wf_0 : forall (var_0_lst : (List instr)) (ret_val : free) (var_0 : free), 
     (fun_free_block var_0_lst var_0) ->
     Forall (fun (var_0 : instr) => (wf_instr var_0)) var_0_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_block_is_wf var_0_lst ret_val
 
@@ -5437,7 +5465,7 @@ inductive free_expr_is_wf : expr -> free -> Prop where
   | free_expr_is_wf_0 : forall (v_expr : expr) (ret_val : free) (var_0 : free), 
     (fun_free_expr v_expr var_0) ->
     Forall (fun (v_expr : instr) => (wf_instr v_expr)) v_expr ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_expr_is_wf v_expr ret_val
 
@@ -5446,7 +5474,7 @@ inductive elemmode : Type where
   | ACTIVE (v_tableidx : tableidx) (v_expr : expr) : elemmode
   | PASSIVE : elemmode
   | DECLARE : elemmode
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:5.8-5.16 -/
@@ -5462,7 +5490,7 @@ inductive wf_elemmode : elemmode -> Prop where
 inductive datamode : Type where
   | ACTIVE (v_memidx : memidx) (v_expr : expr) : datamode
   | PASSIVE : datamode
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:7.8-7.16 -/
@@ -5476,13 +5504,13 @@ inductive wf_datamode : datamode -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:10.1-11.15 -/
 inductive type : Type where
   | TYPE (v_rectype : rectype) : type
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:13.1-14.14 -/
 inductive tag : Type where
   | TAG (v_tagtype : tagtype) : tag
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:13.8-13.11 -/
@@ -5494,7 +5522,7 @@ inductive wf_tag : tag -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:16.1-17.25 -/
 inductive global : Type where
   | GLOBAL (v_globaltype : globaltype) (v_expr : expr) : global
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:16.8-16.14 -/
@@ -5507,7 +5535,7 @@ inductive wf_global : global -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:19.1-20.17 -/
 inductive mem : Type where
   | MEMORY (v_memtype : memtype) : mem
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:19.8-19.11 -/
@@ -5519,7 +5547,7 @@ inductive wf_mem : mem -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:22.1-23.23 -/
 inductive table : Type where
   | TABLE (v_tabletype : tabletype) (v_expr : expr) : table
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:22.8-22.13 -/
@@ -5532,7 +5560,7 @@ inductive wf_table : table -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:25.1-26.22 -/
 inductive data : Type where
   | DATA (byte_lst : (List byte)) (v_datamode : datamode) : data
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:25.8-25.12 -/
@@ -5545,7 +5573,7 @@ inductive wf_data : data -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:28.1-29.16 -/
 inductive «local» : Type where
   | LOCAL (v_valtype : valtype) : «local»
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:28.8-28.13 -/
@@ -5557,7 +5585,7 @@ inductive wf_local : «local» -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:31.1-32.27 -/
 inductive func : Type where
   | FUNC (v_typeidx : typeidx) (local_lst : (List «local»)) (v_expr : expr) : func
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:31.8-31.12 -/
@@ -5571,7 +5599,7 @@ inductive wf_func : func -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:34.1-35.30 -/
 inductive elem : Type where
   | ELEM (v_reftype : reftype) (expr_lst : (List expr)) (v_elemmode : elemmode) : elem
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:34.8-34.12 -/
@@ -5585,7 +5613,7 @@ inductive wf_elem : elem -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:37.1-38.16 -/
 inductive start : Type where
   | START (v_funcidx : funcidx) : start
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:37.8-37.13 -/
@@ -5597,7 +5625,7 @@ inductive wf_start : start -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:40.1-41.30 -/
 inductive «import» : Type where
   | IMPORT (v_name : name) (v_name : name) (v_externtype : externtype) : «import»
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:40.8-40.14 -/
@@ -5611,7 +5639,7 @@ inductive wf_import : «import» -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:43.1-44.24 -/
 inductive «export» : Type where
   | EXPORT (v_name : name) (v_externidx : externidx) : «export»
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:43.8-43.14 -/
@@ -5624,7 +5652,7 @@ inductive wf_export : «export» -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:46.1-58.17 -/
 inductive module : Type where
   | MODULE (_ : (list type)) (_ : (list «import»)) (_ : (list tag)) (_ : (list global)) (_ : (list mem)) (_ : (list table)) (_ : (list func)) (_ : (list data)) (_ : (list elem)) (start_opt : (Option start)) (_ : (list «export»)) : module
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:46.8-46.14 -/
@@ -5643,7 +5671,7 @@ inductive fun_free_type : type -> free -> Prop where
 inductive free_type_is_wf : type -> free -> Prop where
   | free_type_is_wf_0 : forall (v_type : type) (ret_val : free) (var_0 : free), 
     (fun_free_type v_type var_0) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_type_is_wf v_type ret_val
 
@@ -5658,7 +5686,7 @@ inductive free_tag_is_wf : tag -> free -> Prop where
   | free_tag_is_wf_0 : forall (v_tag : tag) (ret_val : free) (var_0 : free), 
     (fun_free_tag v_tag var_0) ->
     (wf_tag v_tag) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_tag_is_wf v_tag ret_val
 
@@ -5674,7 +5702,7 @@ inductive free_global_is_wf : global -> free -> Prop where
   | free_global_is_wf_0 : forall (v_global : global) (ret_val : free) (var_0 : free), 
     (fun_free_global v_global var_0) ->
     (wf_global v_global) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_global_is_wf v_global ret_val
 
@@ -5688,7 +5716,7 @@ def free_mem : ∀  (v_mem : mem) , free
 inductive free_mem_is_wf : mem -> free -> Prop where
   | free_mem_is_wf_0 : forall (v_mem : mem) (ret_val : free), 
     (wf_mem v_mem) ->
-    (ret_val == (free_mem v_mem)) ->
+    (ret_val = (free_mem v_mem)) ->
     (wf_free ret_val) ->
     free_mem_is_wf v_mem ret_val
 
@@ -5704,7 +5732,7 @@ inductive free_table_is_wf : table -> free -> Prop where
   | free_table_is_wf_0 : forall (v_table : table) (ret_val : free) (var_0 : free), 
     (fun_free_table v_table var_0) ->
     (wf_table v_table) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_table_is_wf v_table ret_val
 
@@ -5719,7 +5747,7 @@ inductive free_local_is_wf : «local» -> free -> Prop where
   | free_local_is_wf_0 : forall (v_local : «local») (ret_val : free) (var_0 : free), 
     (fun_free_local v_local var_0) ->
     (wf_local v_local) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_local_is_wf v_local ret_val
 
@@ -5737,7 +5765,7 @@ inductive free_func_is_wf : func -> free -> Prop where
   | free_func_is_wf_0 : forall (v_func : func) (ret_val : free) (var_0 : free), 
     (fun_free_func v_func var_0) ->
     (wf_func v_func) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_func_is_wf v_func ret_val
 
@@ -5753,7 +5781,7 @@ inductive free_datamode_is_wf : datamode -> free -> Prop where
   | free_datamode_is_wf_0 : forall (v_datamode : datamode) (ret_val : free) (var_0 : free), 
     (fun_free_datamode v_datamode var_0) ->
     (wf_datamode v_datamode) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_datamode_is_wf v_datamode ret_val
 
@@ -5768,7 +5796,7 @@ inductive free_data_is_wf : data -> free -> Prop where
   | free_data_is_wf_0 : forall (v_data : data) (ret_val : free) (var_0 : free), 
     (fun_free_data v_data var_0) ->
     (wf_data v_data) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_data_is_wf v_data ret_val
 
@@ -5785,7 +5813,7 @@ inductive free_elemmode_is_wf : elemmode -> free -> Prop where
   | free_elemmode_is_wf_0 : forall (v_elemmode : elemmode) (ret_val : free) (var_0 : free), 
     (fun_free_elemmode v_elemmode var_0) ->
     (wf_elemmode v_elemmode) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_elemmode_is_wf v_elemmode ret_val
 
@@ -5804,7 +5832,7 @@ inductive free_elem_is_wf : elem -> free -> Prop where
   | free_elem_is_wf_0 : forall (v_elem : elem) (ret_val : free) (var_0 : free), 
     (fun_free_elem v_elem var_0) ->
     (wf_elem v_elem) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_elem_is_wf v_elem ret_val
 
@@ -5818,7 +5846,7 @@ def free_start : ∀  (v_start : start) , free
 inductive free_start_is_wf : start -> free -> Prop where
   | free_start_is_wf_0 : forall (v_start : start) (ret_val : free), 
     (wf_start v_start) ->
-    (ret_val == (free_start v_start)) ->
+    (ret_val = (free_start v_start)) ->
     (wf_free ret_val) ->
     free_start_is_wf v_start ret_val
 
@@ -5833,7 +5861,7 @@ inductive free_import_is_wf : «import» -> free -> Prop where
   | free_import_is_wf_0 : forall (v_import : «import») (ret_val : free) (var_0 : free), 
     (fun_free_import v_import var_0) ->
     (wf_import v_import) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_import_is_wf v_import ret_val
 
@@ -5847,7 +5875,7 @@ def free_export : ∀  (v_export : «export») , free
 inductive free_export_is_wf : «export» -> free -> Prop where
   | free_export_is_wf_0 : forall (v_export : «export») (ret_val : free), 
     (wf_export v_export) ->
-    (ret_val == (free_export v_export)) ->
+    (ret_val = (free_export v_export)) ->
     (wf_free ret_val) ->
     free_export_is_wf v_export ret_val
 
@@ -5887,7 +5915,7 @@ inductive free_module_is_wf : module -> free -> Prop where
   | free_module_is_wf_0 : forall (v_module : module) (ret_val : free) (var_0 : free), 
     (fun_free_module v_module var_0) ->
     (wf_module v_module) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_free ret_val) ->
     free_module_is_wf v_module ret_val
 
@@ -5902,7 +5930,7 @@ inductive funcidx_module_is_wf : module -> (List funcidx) -> Prop where
   | funcidx_module_is_wf_0 : forall (v_module : module) (ret_val_lst : (List funcidx)) (var_0 : (List funcidx)), 
     (fun_funcidx_module v_module var_0) ->
     (wf_module v_module) ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : funcidx) => (wf_uN 32 ret_val)) ret_val_lst ->
     funcidx_module_is_wf v_module ret_val_lst
 
@@ -5919,7 +5947,7 @@ inductive dataidx_funcs_is_wf : (List func) -> (List dataidx) -> Prop where
   | dataidx_funcs_is_wf_0 : forall (var_0_lst : (List func)) (ret_val_lst : (List dataidx)) (var_0 : (List dataidx)), 
     (fun_dataidx_funcs var_0_lst var_0) ->
     Forall (fun (var_0 : func) => (wf_func var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : dataidx) => (wf_uN 32 ret_val)) ret_val_lst ->
     dataidx_funcs_is_wf var_0_lst ret_val_lst
 
@@ -5927,13 +5955,13 @@ inductive dataidx_funcs_is_wf : (List func) -> (List dataidx) -> Prop where
 inductive init : Type where
   | SET : init
   | UNSET : init
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/2.0-validation.contexts.spectec:11.1-12.15 -/
 inductive localtype : Type where
   | mk_localtype (v_init : init) (v_valtype : valtype) : localtype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.0-validation.contexts.spectec:11.8-11.17 -/
@@ -5945,7 +5973,7 @@ inductive wf_localtype : localtype -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/2.0-validation.contexts.spectec:14.1-15.57 -/
 inductive instrtype : Type where
   | mk_instrtype (v_resulttype : resulttype) (localidx_lst : (List localidx)) (v_resulttype : resulttype) : instrtype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.0-validation.contexts.spectec:14.8-14.17 -/
@@ -5969,7 +5997,7 @@ structure context where MKcontext ::
   RETURN : (Option resulttype)
   REFS : (List funcidx)
   RECS : (List subtype)
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_context (arg1 arg2 : (context)) : context where
   TYPES := arg1.TYPES ++ arg2.TYPES
@@ -6027,8 +6055,8 @@ inductive with_locals_is_wf : context -> (List localidx) -> (List localtype) -> 
     (wf_context v_context) ->
     Forall (fun (var_0 : localidx) => (wf_uN 32 var_0)) var_0_lst ->
     Forall (fun (var_1 : localtype) => (wf_localtype var_1)) var_1_lst ->
-    (var_0 != none) ->
-    (ret_val == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val = (Option.get! var_0)) ->
     (wf_context ret_val) ->
     with_locals_is_wf v_context var_0_lst var_1_lst ret_val
 
@@ -6039,7 +6067,7 @@ inductive fun_clos_deftypes : (List deftype) -> (List deftype) -> Prop where
   | fun_clos_deftypes_case_1 : forall (dt_lst : (List deftype)) (dt_n : deftype) (dt'_lst : (List deftype)) (var_1 : (List deftype)) (var_0 : deftype), 
     (fun_clos_deftypes dt_lst var_1) ->
     (fun_subst_all_deftype dt_n (List.map (fun (dt' : deftype) => (typeuse_deftype dt')) dt'_lst) var_0) ->
-    (dt'_lst == var_1) ->
+    (dt'_lst = var_1) ->
     fun_clos_deftypes (dt_lst ++ ([dt_n] : (List deftype))) (dt'_lst ++ ([var_0] : (List deftype)))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.0-validation.contexts.spectec:57.6-57.19 -/
@@ -6047,7 +6075,7 @@ inductive fun_clos_valtype : context -> valtype -> valtype -> Prop where
   | fun_clos_valtype_case_0 : forall (C : context) (t : valtype) (dt_lst : (List deftype)) (var_1 : (List deftype)) (var_0 : valtype), 
     (fun_clos_deftypes (C.TYPES) var_1) ->
     (fun_subst_all_valtype t (List.map (fun (dt : deftype) => (typeuse_deftype dt)) dt_lst) var_0) ->
-    (dt_lst == var_1) ->
+    (dt_lst = var_1) ->
     fun_clos_valtype C t var_0
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.0-validation.contexts.spectec:57.6-57.19 -/
@@ -6056,7 +6084,7 @@ inductive clos_valtype_is_wf : context -> valtype -> valtype -> Prop where
     (fun_clos_valtype v_context v_valtype var_0) ->
     (wf_context v_context) ->
     (wf_valtype v_valtype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_valtype ret_val) ->
     clos_valtype_is_wf v_context v_valtype ret_val
 
@@ -6065,7 +6093,7 @@ inductive fun_clos_deftype : context -> deftype -> deftype -> Prop where
   | fun_clos_deftype_case_0 : forall (C : context) (dt : deftype) (dt'_lst : (List deftype)) (var_1 : (List deftype)) (var_0 : deftype), 
     (fun_clos_deftypes (C.TYPES) var_1) ->
     (fun_subst_all_deftype dt (List.map (fun (dt' : deftype) => (typeuse_deftype dt')) dt'_lst) var_0) ->
-    (dt'_lst == var_1) ->
+    (dt'_lst = var_1) ->
     fun_clos_deftype C dt var_0
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.0-validation.contexts.spectec:59.6-59.19 -/
@@ -6073,7 +6101,7 @@ inductive fun_clos_tagtype : context -> tagtype -> tagtype -> Prop where
   | fun_clos_tagtype_case_0 : forall (C : context) (jt : typeuse) (dt_lst : (List deftype)) (var_1 : (List deftype)) (var_0 : tagtype), 
     (fun_clos_deftypes (C.TYPES) var_1) ->
     (fun_subst_all_tagtype jt (List.map (fun (dt : deftype) => (typeuse_deftype dt)) dt_lst) var_0) ->
-    (dt_lst == var_1) ->
+    (dt_lst = var_1) ->
     fun_clos_tagtype C jt var_0
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.0-validation.contexts.spectec:59.6-59.19 -/
@@ -6082,7 +6110,7 @@ inductive clos_tagtype_is_wf : context -> tagtype -> tagtype -> Prop where
     (fun_clos_tagtype v_context v_tagtype var_0) ->
     (wf_context v_context) ->
     (wf_typeuse v_tagtype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_typeuse ret_val) ->
     clos_tagtype_is_wf v_context v_tagtype ret_val
 
@@ -6091,7 +6119,7 @@ inductive fun_clos_externtype : context -> externtype -> externtype -> Prop wher
   | fun_clos_externtype_case_0 : forall (C : context) (xt : externtype) (dt_lst : (List deftype)) (var_1 : (List deftype)) (var_0 : externtype), 
     (fun_clos_deftypes (C.TYPES) var_1) ->
     (fun_subst_all_externtype xt (List.map (fun (dt : deftype) => (typeuse_deftype dt)) dt_lst) var_0) ->
-    (dt_lst == var_1) ->
+    (dt_lst = var_1) ->
     fun_clos_externtype C xt var_0
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.0-validation.contexts.spectec:60.6-60.22 -/
@@ -6100,7 +6128,7 @@ inductive clos_externtype_is_wf : context -> externtype -> externtype -> Prop wh
     (fun_clos_externtype v_context v_externtype var_0) ->
     (wf_context v_context) ->
     (wf_externtype v_externtype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_externtype ret_val) ->
     clos_externtype_is_wf v_context v_externtype ret_val
 
@@ -6109,7 +6137,7 @@ inductive fun_clos_moduletype : context -> moduletype -> moduletype -> Prop wher
   | fun_clos_moduletype_case_0 : forall (C : context) (mmt : moduletype) (dt_lst : (List deftype)) (var_1 : (List deftype)) (var_0 : moduletype), 
     (fun_clos_deftypes (C.TYPES) var_1) ->
     (fun_subst_all_moduletype mmt (List.map (fun (dt : deftype) => (typeuse_deftype dt)) dt_lst) var_0) ->
-    (dt_lst == var_1) ->
+    (dt_lst = var_1) ->
     fun_clos_moduletype C mmt var_0
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.0-validation.contexts.spectec:61.6-61.22 -/
@@ -6118,7 +6146,7 @@ inductive clos_moduletype_is_wf : context -> moduletype -> moduletype -> Prop wh
     (fun_clos_moduletype v_context v_moduletype var_0) ->
     (wf_context v_context) ->
     (wf_moduletype v_moduletype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_moduletype ret_val) ->
     clos_moduletype_is_wf v_context v_moduletype ret_val
 
@@ -6137,7 +6165,7 @@ inductive Vectype_ok : context -> vectype -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/2.1-validation.types.spectec:88.1-89.79 -/
 inductive oktypenat : Type where
   | OK (_ : Nat) : oktypenat
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.1-validation.types.spectec:91.1-91.103 -/
@@ -6162,7 +6190,7 @@ inductive Numtype_sub : context -> numtype -> numtype -> Prop where
 inductive Expand : deftype -> comptype -> Prop where
   | mk_Expand : forall (v_deftype : deftype) (v_comptype : comptype) (final_opt : (Option final)) (typeuse_lst : (List typeuse)) (var_0 : subtype), 
     (fun_unrolldt v_deftype var_0) ->
-    (var_0 == (.SUB final_opt typeuse_lst v_comptype)) ->
+    (var_0 = (.SUB final_opt typeuse_lst v_comptype)) ->
     (wf_subtype var_0) ->
     (wf_subtype (.SUB final_opt typeuse_lst v_comptype)) ->
     Expand v_deftype v_comptype
@@ -6197,7 +6225,7 @@ inductive unrollht__is_wf : context -> heaptype -> subtype -> Prop where
     (fun_unrollht_ v_context v_heaptype var_0) ->
     (wf_context v_context) ->
     (wf_heaptype v_heaptype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_subtype ret_val) ->
     unrollht__is_wf v_context v_heaptype ret_val
 
@@ -6250,13 +6278,13 @@ inductive Valtype_ok : context -> valtype -> Prop where
 inductive Typeuse_ok : context -> typeuse -> Prop where
   | typeidx : forall (C : context) (v_typeidx : typeidx) (dt : deftype), 
     ((proj_uN_0 v_typeidx) < (List.length (C.TYPES))) ->
-    (((C.TYPES)[(proj_uN_0 v_typeidx)]!) == dt) ->
+    (((C.TYPES)[(proj_uN_0 v_typeidx)]!) = dt) ->
     (wf_context C) ->
     (wf_typeuse (._IDX v_typeidx)) ->
     Typeuse_ok C (._IDX v_typeidx)
   | rec_ : forall (C : context) (i : n) (st : subtype), 
     (i < (List.length (C.RECS))) ->
-    (((C.RECS)[i]!) == st) ->
+    (((C.RECS)[i]!) = st) ->
     (wf_context C) ->
     (wf_subtype st) ->
     (wf_typeuse (.REC i)) ->
@@ -6320,9 +6348,9 @@ inductive Subtype_ok2 : context -> subtype -> oktypenat -> Prop where
     ((List.length typeuse_lst) <= 1) ->
     Forall (fun (v_typeuse : typeuse) => (Typeuse_ok C v_typeuse)) typeuse_lst ->
     Forall (fun (v_typeuse : typeuse) => (before v_typeuse i)) typeuse_lst ->
-    ((List.length comptype'_lst) == (List.length typeuse_lst)) ->
-    ((List.length comptype'_lst) == (List.length typeuse'_lst_lst)) ->
-    Forall₃ (fun (var_0 : subtype) (comptype' : comptype) (typeuse'_lst : (List typeuse)) => (var_0 == (.SUB none typeuse'_lst comptype'))) var_0_lst comptype'_lst typeuse'_lst_lst ->
+    ((List.length comptype'_lst) = (List.length typeuse_lst)) ->
+    ((List.length comptype'_lst) = (List.length typeuse'_lst_lst)) ->
+    Forall₃ (fun (var_0 : subtype) (comptype' : comptype) (typeuse'_lst : (List typeuse)) => (var_0 = (.SUB none typeuse'_lst comptype'))) var_0_lst comptype'_lst typeuse'_lst_lst ->
     (Comptype_ok C v_comptype) ->
     Forall (fun (comptype' : comptype) => (Comptype_sub C v_comptype comptype')) comptype'_lst ->
     (wf_context C) ->
@@ -6352,17 +6380,17 @@ inductive Rectype_ok2 : context -> rectype -> oktypenat -> Prop where
 inductive Deftype_ok : context -> deftype -> Prop where
   | mk_Deftype_ok : forall (C : context) (v_rectype : rectype) (i : n) (v_n : n) (subtype_lst : (List subtype)), 
     (Rectype_ok2 ({ TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := subtype_lst } ++ C) v_rectype (.OK 0)) ->
-    (v_rectype == (.REC (.mk_list subtype_lst))) ->
+    (v_rectype = (.REC (.mk_list subtype_lst))) ->
     (i < v_n) ->
     (wf_context C) ->
     (wf_context { TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := subtype_lst }) ->
-    (v_n == (List.length subtype_lst)) ->
+    (v_n = (List.length subtype_lst)) ->
     Deftype_ok C (._DEF v_rectype i)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.1-validation.types.spectec:102.1-102.108 -/
 inductive Comptype_sub : context -> comptype -> comptype -> Prop where
   | struct : forall (C : context) (ft_1_lst : (List fieldtype)) (ft'_1_lst : (List fieldtype)) (ft_2_lst : (List fieldtype)), 
-    ((List.length ft_1_lst) == (List.length ft_2_lst)) ->
+    ((List.length ft_1_lst) = (List.length ft_2_lst)) ->
     Forall₂ (fun (ft_1 : fieldtype) (ft_2 : fieldtype) => (Fieldtype_sub C ft_1 ft_2)) ft_1_lst ft_2_lst ->
     (wf_context C) ->
     (wf_comptype (.STRUCT (.mk_list (ft_1_lst ++ ft'_1_lst)))) ->
@@ -6388,12 +6416,12 @@ inductive Deftype_sub : context -> deftype -> deftype -> Prop where
   | refl : forall (C : context) (deftype_1 : deftype) (deftype_2 : deftype) (var_1 : deftype) (var_0 : deftype), 
     (fun_clos_deftype C deftype_2 var_1) ->
     (fun_clos_deftype C deftype_1 var_0) ->
-    (var_0 == var_1) ->
+    (var_0 = var_1) ->
     (wf_context C) ->
     Deftype_sub C deftype_1 deftype_2
   | super : forall (C : context) (deftype_1 : deftype) (deftype_2 : deftype) (final_opt : (Option final)) (typeuse_lst : (List typeuse)) (ct : comptype) (i : Nat) (var_0 : subtype), 
     (fun_unrolldt deftype_1 var_0) ->
-    (var_0 == (.SUB final_opt typeuse_lst ct)) ->
+    (var_0 = (.SUB final_opt typeuse_lst ct)) ->
     (i < (List.length typeuse_lst)) ->
     (Heaptype_sub C (heaptype_typeuse (typeuse_lst[i]!)) (heaptype_deftype deftype_2)) ->
     (wf_context C) ->
@@ -6474,7 +6502,7 @@ inductive Heaptype_sub : context -> heaptype -> heaptype -> Prop where
     Heaptype_sub C v_heaptype (._IDX v_typeidx)
   | rec_struct : forall (C : context) (i : n) (final_opt : (Option final)) (fieldtype_lst : (List fieldtype)), 
     (i < (List.length (C.RECS))) ->
-    (((C.RECS)[i]!) == (.SUB final_opt [] (.STRUCT (.mk_list fieldtype_lst)))) ->
+    (((C.RECS)[i]!) = (.SUB final_opt [] (.STRUCT (.mk_list fieldtype_lst)))) ->
     (wf_context C) ->
     (wf_heaptype (.REC i)) ->
     (wf_heaptype .STRUCT) ->
@@ -6482,7 +6510,7 @@ inductive Heaptype_sub : context -> heaptype -> heaptype -> Prop where
     Heaptype_sub C (.REC i) .STRUCT
   | rec_array : forall (C : context) (i : n) (final_opt : (Option final)) (v_fieldtype : fieldtype), 
     (i < (List.length (C.RECS))) ->
-    (((C.RECS)[i]!) == (.SUB final_opt [] (.ARRAY v_fieldtype))) ->
+    (((C.RECS)[i]!) = (.SUB final_opt [] (.ARRAY v_fieldtype))) ->
     (wf_context C) ->
     (wf_heaptype (.REC i)) ->
     (wf_heaptype .ARRAY) ->
@@ -6490,7 +6518,7 @@ inductive Heaptype_sub : context -> heaptype -> heaptype -> Prop where
     Heaptype_sub C (.REC i) .ARRAY
   | rec_func : forall (C : context) (i : n) (final_opt : (Option final)) (t_1_lst : (List valtype)) (t_2_lst : (List valtype)), 
     (i < (List.length (C.RECS))) ->
-    (((C.RECS)[i]!) == (.SUB final_opt [] (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst)))) ->
+    (((C.RECS)[i]!) = (.SUB final_opt [] (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst)))) ->
     (wf_context C) ->
     (wf_heaptype (.REC i)) ->
     (wf_heaptype .FUNC) ->
@@ -6499,14 +6527,14 @@ inductive Heaptype_sub : context -> heaptype -> heaptype -> Prop where
   | rec_sub : forall (C : context) (i : n) (typeuse_lst : (List typeuse)) (j : Nat) (final_opt : (Option final)) (ct : comptype), 
     (j < (List.length typeuse_lst)) ->
     (i < (List.length (C.RECS))) ->
-    (((C.RECS)[i]!) == (.SUB final_opt typeuse_lst ct)) ->
+    (((C.RECS)[i]!) = (.SUB final_opt typeuse_lst ct)) ->
     (wf_context C) ->
     (wf_heaptype (.REC i)) ->
     (wf_subtype (.SUB final_opt typeuse_lst ct)) ->
     Heaptype_sub C (.REC i) (heaptype_typeuse (typeuse_lst[j]!))
   | none : forall (C : context) (v_heaptype : heaptype), 
     (Heaptype_sub C v_heaptype .ANY) ->
-    (v_heaptype != .BOT) ->
+    (v_heaptype ≠ .BOT) ->
     (wf_context C) ->
     (wf_heaptype v_heaptype) ->
     (wf_heaptype .NONE) ->
@@ -6515,7 +6543,7 @@ inductive Heaptype_sub : context -> heaptype -> heaptype -> Prop where
     Heaptype_sub C .NONE v_heaptype
   | nofunc : forall (C : context) (v_heaptype : heaptype), 
     (Heaptype_sub C v_heaptype .FUNC) ->
-    (v_heaptype != .BOT) ->
+    (v_heaptype ≠ .BOT) ->
     (wf_context C) ->
     (wf_heaptype v_heaptype) ->
     (wf_heaptype .NOFUNC) ->
@@ -6524,7 +6552,7 @@ inductive Heaptype_sub : context -> heaptype -> heaptype -> Prop where
     Heaptype_sub C .NOFUNC v_heaptype
   | noexn : forall (C : context) (v_heaptype : heaptype), 
     (Heaptype_sub C v_heaptype .EXN) ->
-    (v_heaptype != .BOT) ->
+    (v_heaptype ≠ .BOT) ->
     (wf_context C) ->
     (wf_heaptype v_heaptype) ->
     (wf_heaptype .NOEXN) ->
@@ -6533,7 +6561,7 @@ inductive Heaptype_sub : context -> heaptype -> heaptype -> Prop where
     Heaptype_sub C .NOEXN v_heaptype
   | noextern : forall (C : context) (v_heaptype : heaptype), 
     (Heaptype_sub C v_heaptype .EXTERN) ->
-    (v_heaptype != .BOT) ->
+    (v_heaptype ≠ .BOT) ->
     (wf_context C) ->
     (wf_heaptype v_heaptype) ->
     (wf_heaptype .NOEXTERN) ->
@@ -6586,7 +6614,7 @@ inductive Valtype_sub : context -> valtype -> valtype -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.2-validation.subtyping.spectec:132.1-132.115 -/
 inductive Resulttype_sub : context -> resulttype -> resulttype -> Prop where
   | mk_Resulttype_sub : forall (C : context) (t_1_lst : (List valtype)) (t_2_lst : (List valtype)), 
-    ((List.length t_1_lst) == (List.length t_2_lst)) ->
+    ((List.length t_1_lst) = (List.length t_2_lst)) ->
     Forall₂ (fun (t_1 : valtype) (t_2 : valtype) => (Valtype_sub C t_1 t_2)) t_1_lst t_2_lst ->
     (wf_context C) ->
     Forall (fun (t_1 : valtype) => (wf_valtype t_1)) t_1_lst ->
@@ -6638,9 +6666,9 @@ inductive Instrtype_ok : context -> instrtype -> Prop where
   | mk_Instrtype_ok : forall (C : context) (t_1_lst : (List valtype)) (x_lst : (List idx)) (t_2_lst : (List valtype)) (lct_lst : (List localtype)), 
     (Resulttype_ok C (.mk_list t_1_lst)) ->
     (Resulttype_ok C (.mk_list t_2_lst)) ->
-    ((List.length lct_lst) == (List.length x_lst)) ->
+    ((List.length lct_lst) = (List.length x_lst)) ->
     Forall (fun (x : idx) => ((proj_uN_0 x) < (List.length (C.LOCALS)))) x_lst ->
-    Forall₂ (fun (lct : localtype) (x : idx) => (((C.LOCALS)[(proj_uN_0 x)]!) == lct)) lct_lst x_lst ->
+    Forall₂ (fun (lct : localtype) (x : idx) => (((C.LOCALS)[(proj_uN_0 x)]!) = lct)) lct_lst x_lst ->
     (wf_context C) ->
     Forall (fun (lct : localtype) => (wf_localtype lct)) lct_lst ->
     (wf_instrtype (.mk_instrtype (.mk_list t_1_lst) x_lst (.mk_list t_2_lst))) ->
@@ -6665,7 +6693,7 @@ inductive Expand_use : typeuse -> context -> comptype -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/2.1-validation.types.spectec:86.1-87.76 -/
 inductive oktypeidx : Type where
   | OK (v_typeidx : typeidx) : oktypeidx
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.1-validation.types.spectec:86.8-86.17 -/
@@ -6680,10 +6708,10 @@ inductive Subtype_ok : context -> subtype -> oktypeidx -> Prop where
     Forall₂ (fun (var_0 : subtype) (x : idx) => (fun_unrolldt ((C.TYPES)[(proj_uN_0 x)]!) var_0)) var_0_lst x_lst ->
     ((List.length x_lst) <= 1) ->
     Forall (fun (x : idx) => ((proj_uN_0 x) < (proj_uN_0 x_0))) x_lst ->
-    ((List.length comptype'_lst) == (List.length x_lst)) ->
-    ((List.length comptype'_lst) == (List.length yy_lst_lst)) ->
+    ((List.length comptype'_lst) = (List.length x_lst)) ->
+    ((List.length comptype'_lst) = (List.length yy_lst_lst)) ->
     Forall (fun (x : idx) => ((proj_uN_0 x) < (List.length (C.TYPES)))) x_lst ->
-    Forall₃ (fun (var_0 : subtype) (comptype' : comptype) (yy_lst : (List typeuse)) => (var_0 == (.SUB none yy_lst comptype'))) var_0_lst comptype'_lst yy_lst_lst ->
+    Forall₃ (fun (var_0 : subtype) (comptype' : comptype) (yy_lst : (List typeuse)) => (var_0 = (.SUB none yy_lst comptype'))) var_0_lst comptype'_lst yy_lst_lst ->
     (Comptype_ok C v_comptype) ->
     Forall (fun (comptype' : comptype) => (Comptype_sub C v_comptype comptype')) comptype'_lst ->
     (wf_context C) ->
@@ -6718,7 +6746,7 @@ inductive Rectype_ok : context -> rectype -> oktypeidx -> Prop where
 inductive Limits_ok : context -> limits -> Nat -> Prop where
   | mk_Limits_ok : forall (C : context) (v_n : n) (m_opt : (Option m)) (k : Nat), 
     (v_n <= k) ->
-    Forall (fun (v_m : Nat) => ((v_n <= v_m) && (v_m <= k))) (Option.toList m_opt) ->
+    Forall (fun (v_m : Nat) => ((v_n <= v_m) ∧ (v_m <= k))) (Option.toList m_opt) ->
     (wf_context C) ->
     (wf_limits (.mk_limits (.mk_uN v_n) (Option.map (fun (v_m : m) => ((.mk_uN v_m) : u64)) m_opt))) ->
     Limits_ok C (.mk_limits (.mk_uN v_n) (Option.map (fun (v_m : m) => ((.mk_uN v_m) : u64)) m_opt)) k
@@ -6793,10 +6821,10 @@ inductive Instrtype_sub : context -> instrtype -> instrtype -> Prop where
   | mk_Instrtype_sub : forall (C : context) (t_11_lst : (List valtype)) (x_1_lst : (List idx)) (t_12_lst : (List valtype)) (t_21_lst : (List valtype)) (x_2_lst : (List idx)) (t_22_lst : (List valtype)) (x_lst : (List idx)) (t_lst : (List valtype)), 
     (Resulttype_sub C (.mk_list t_21_lst) (.mk_list t_11_lst)) ->
     (Resulttype_sub C (.mk_list t_12_lst) (.mk_list t_22_lst)) ->
-    (x_lst == (setminus_ localidx x_2_lst x_1_lst)) ->
-    ((List.length t_lst) == (List.length x_lst)) ->
+    (x_lst = (setminus_ localidx x_2_lst x_1_lst)) ->
+    ((List.length t_lst) = (List.length x_lst)) ->
     Forall (fun (x : idx) => ((proj_uN_0 x) < (List.length (C.LOCALS)))) x_lst ->
-    Forall₂ (fun (t : valtype) (x : idx) => (((C.LOCALS)[(proj_uN_0 x)]!) == (.mk_localtype .SET t))) t_lst x_lst ->
+    Forall₂ (fun (t : valtype) (x : idx) => (((C.LOCALS)[(proj_uN_0 x)]!) = (.mk_localtype .SET t))) t_lst x_lst ->
     (wf_context C) ->
     Forall (fun (x : idx) => (wf_uN 32 x)) x_lst ->
     Forall (fun (iter : localidx) => (wf_uN 32 iter)) (setminus_ localidx x_2_lst x_1_lst) ->
@@ -6919,7 +6947,7 @@ inductive Blocktype_ok : context -> blocktype -> instrtype -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.3-validation.instructions.spectec:164.1-164.77 -/
 inductive Catch_ok : context -> «catch» -> Prop where
   | «catch» : forall (C : context) (x : idx) (l : labelidx) (t_lst : (List valtype)), 
-    ((as_deftype ((C.TAGS)[(proj_uN_0 x)]!)) != none) ->
+    ((as_deftype ((C.TAGS)[(proj_uN_0 x)]!)) ≠ none) ->
     ((proj_uN_0 x) < (List.length (C.TAGS))) ->
     (Expand (Option.get! (as_deftype ((C.TAGS)[(proj_uN_0 x)]!))) (.FUNC (.mk_list t_lst) (.mk_list []))) ->
     ((proj_uN_0 l) < (List.length (C.LABELS))) ->
@@ -6929,7 +6957,7 @@ inductive Catch_ok : context -> «catch» -> Prop where
     (wf_comptype (.FUNC (.mk_list t_lst) (.mk_list []))) ->
     Catch_ok C (.CATCH x l)
   | catch_ref : forall (C : context) (x : idx) (l : labelidx) (t_lst : (List valtype)), 
-    ((as_deftype ((C.TAGS)[(proj_uN_0 x)]!)) != none) ->
+    ((as_deftype ((C.TAGS)[(proj_uN_0 x)]!)) ≠ none) ->
     ((proj_uN_0 x) < (List.length (C.TAGS))) ->
     (Expand (Option.get! (as_deftype ((C.TAGS)[(proj_uN_0 x)]!))) (.FUNC (.mk_list t_lst) (.mk_list []))) ->
     ((proj_uN_0 l) < (List.length (C.LABELS))) ->
@@ -6983,8 +7011,8 @@ inductive default__is_wf : valtype -> (Option val) -> Prop where
   | default__is_wf_0 : forall (v_valtype : valtype) (ret_val_opt : (Option val)) (var_0 : (Option (Option val))), 
     (fun_default_ v_valtype var_0) ->
     (wf_valtype v_valtype) ->
-    (var_0 != none) ->
-    (ret_val_opt == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val_opt = (Option.get! var_0)) ->
     Forall (fun (ret_val : val) => (wf_val ret_val)) (Option.toList ret_val_opt) ->
     default__is_wf v_valtype ret_val_opt
 
@@ -6992,8 +7020,8 @@ inductive default__is_wf : valtype -> (Option val) -> Prop where
 inductive Defaultable : valtype -> Prop where
   | mk_Defaultable : forall (t : valtype) (var_0 : (Option (Option val))), 
     (fun_default_ t var_0) ->
-    (var_0 != none) ->
-    ((Option.get! var_0) != none) ->
+    (var_0 ≠ none) ->
+    ((Option.get! var_0) ≠ none) ->
     (wf_valtype t) ->
     Forall (fun (iter : val) => (wf_val iter)) (Option.toList (Option.get! var_0)) ->
     Defaultable t
@@ -7042,7 +7070,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
   | select_impl : forall (C : context) (t : valtype) (t' : valtype) (v_numtype : numtype) (v_vectype : vectype), 
     (Valtype_ok C t) ->
     (Valtype_sub C t t') ->
-    ((t' == (valtype_numtype v_numtype)) || (t' == (valtype_vectype v_vectype))) ->
+    ((t' = (valtype_numtype v_numtype)) ∨ (t' = (valtype_vectype v_vectype))) ->
     (wf_context C) ->
     (wf_valtype t') ->
     (wf_instr (.SELECT none)) ->
@@ -7080,7 +7108,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.IFELSE bt instr_1_lst instr_2_lst) (.mk_instrtype (.mk_list (t_1_lst ++ ([.I32] : (List valtype)))) [] (.mk_list t_2_lst))
   | br : forall (C : context) (l : labelidx) (t_1_lst : (List valtype)) (t_lst : (List valtype)) (t_2_lst : (List valtype)), 
     ((proj_uN_0 l) < (List.length (C.LABELS))) ->
-    ((proj_list_0 valtype ((C.LABELS)[(proj_uN_0 l)]!)) == t_lst) ->
+    ((proj_list_0 valtype ((C.LABELS)[(proj_uN_0 l)]!)) = t_lst) ->
     (Instrtype_ok C (.mk_instrtype (.mk_list t_1_lst) [] (.mk_list t_2_lst))) ->
     (wf_context C) ->
     (wf_instr (.BR l)) ->
@@ -7089,7 +7117,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.BR l) (.mk_instrtype (.mk_list (t_1_lst ++ t_lst)) [] (.mk_list t_2_lst))
   | br_if : forall (C : context) (l : labelidx) (t_lst : (List valtype)), 
     ((proj_uN_0 l) < (List.length (C.LABELS))) ->
-    ((proj_list_0 valtype ((C.LABELS)[(proj_uN_0 l)]!)) == t_lst) ->
+    ((proj_list_0 valtype ((C.LABELS)[(proj_uN_0 l)]!)) = t_lst) ->
     (wf_context C) ->
     (wf_instr (.BR_IF l)) ->
     (wf_instrtype (.mk_instrtype (.mk_list (t_lst ++ ([.I32] : (List valtype)))) [] (.mk_list t_lst))) ->
@@ -7106,7 +7134,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.BR_TABLE l_lst l') (.mk_instrtype (.mk_list (t_1_lst ++ (t_lst ++ ([.I32] : (List valtype))))) [] (.mk_list t_2_lst))
   | br_on_null : forall (C : context) (l : labelidx) (t_lst : (List valtype)) (ht : heaptype), 
     ((proj_uN_0 l) < (List.length (C.LABELS))) ->
-    ((proj_list_0 valtype ((C.LABELS)[(proj_uN_0 l)]!)) == t_lst) ->
+    ((proj_list_0 valtype ((C.LABELS)[(proj_uN_0 l)]!)) = t_lst) ->
     (Heaptype_ok C ht) ->
     (wf_context C) ->
     (wf_instr (.BR_ON_NULL l)) ->
@@ -7114,14 +7142,14 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.BR_ON_NULL l) (.mk_instrtype (.mk_list (t_lst ++ ([(.REF (some .NULL) ht)] : (List valtype)))) [] (.mk_list (t_lst ++ ([(.REF none ht)] : (List valtype)))))
   | br_on_non_null : forall (C : context) (l : labelidx) (t_lst : (List valtype)) (ht : heaptype), 
     ((proj_uN_0 l) < (List.length (C.LABELS))) ->
-    (((C.LABELS)[(proj_uN_0 l)]!) == (.mk_list (t_lst ++ ([(.REF (some .NULL) ht)] : (List valtype))))) ->
+    (((C.LABELS)[(proj_uN_0 l)]!) = (.mk_list (t_lst ++ ([(.REF (some .NULL) ht)] : (List valtype))))) ->
     (wf_context C) ->
     (wf_instr (.BR_ON_NON_NULL l)) ->
     (wf_instrtype (.mk_instrtype (.mk_list (t_lst ++ ([(.REF (some .NULL) ht)] : (List valtype)))) [] (.mk_list t_lst))) ->
     Instr_ok C (.BR_ON_NON_NULL l) (.mk_instrtype (.mk_list (t_lst ++ ([(.REF (some .NULL) ht)] : (List valtype)))) [] (.mk_list t_lst))
   | br_on_cast : forall (C : context) (l : labelidx) (rt_1 : reftype) (rt_2 : reftype) (t_lst : (List valtype)) (rt : reftype), 
     ((proj_uN_0 l) < (List.length (C.LABELS))) ->
-    (((C.LABELS)[(proj_uN_0 l)]!) == (.mk_list (t_lst ++ ([(valtype_reftype rt)] : (List valtype))))) ->
+    (((C.LABELS)[(proj_uN_0 l)]!) = (.mk_list (t_lst ++ ([(valtype_reftype rt)] : (List valtype))))) ->
     (Reftype_ok C rt_1) ->
     (Reftype_ok C rt_2) ->
     (Reftype_sub C rt_2 rt_1) ->
@@ -7133,7 +7161,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.BR_ON_CAST l rt_1 rt_2) (.mk_instrtype (.mk_list (t_lst ++ ([(valtype_reftype rt_1)] : (List valtype)))) [] (.mk_list (t_lst ++ ([(valtype_reftype (diffrt rt_1 rt_2))] : (List valtype)))))
   | br_on_cast_fail : forall (C : context) (l : labelidx) (rt_1 : reftype) (rt_2 : reftype) (t_lst : (List valtype)) (rt : reftype), 
     ((proj_uN_0 l) < (List.length (C.LABELS))) ->
-    (((C.LABELS)[(proj_uN_0 l)]!) == (.mk_list (t_lst ++ ([(valtype_reftype rt)] : (List valtype))))) ->
+    (((C.LABELS)[(proj_uN_0 l)]!) = (.mk_list (t_lst ++ ([(valtype_reftype rt)] : (List valtype))))) ->
     (Reftype_ok C rt_1) ->
     (Reftype_ok C rt_2) ->
     (Reftype_sub C rt_2 rt_1) ->
@@ -7162,7 +7190,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.CALL_REF (._IDX x)) (.mk_instrtype (.mk_list (t_1_lst ++ ([(.REF (some .NULL) (._IDX x))] : (List valtype)))) [] (.mk_list t_2_lst))
   | call_indirect : forall (C : context) (x : idx) (y : idx) (t_1_lst : (List valtype)) («at» : addrtype) (t_2_lst : (List valtype)) (lim : limits) (rt : reftype), 
     ((proj_uN_0 x) < (List.length (C.TABLES))) ->
-    (((C.TABLES)[(proj_uN_0 x)]!) == (.mk_tabletype «at» lim rt)) ->
+    (((C.TABLES)[(proj_uN_0 x)]!) = (.mk_tabletype «at» lim rt)) ->
     (Reftype_sub C rt (.REF (some .NULL) .FUNC)) ->
     ((proj_uN_0 y) < (List.length (C.TYPES))) ->
     (Expand ((C.TYPES)[(proj_uN_0 y)]!) (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst))) ->
@@ -7174,7 +7202,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     (wf_comptype (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst))) ->
     Instr_ok C (.CALL_INDIRECT x (._IDX y)) (.mk_instrtype (.mk_list (t_1_lst ++ ([(valtype_addrtype «at»)] : (List valtype)))) [] (.mk_list t_2_lst))
   | return : forall (C : context) (t_1_lst : (List valtype)) (t_lst : (List valtype)) (t_2_lst : (List valtype)), 
-    ((C.RETURN) == (some (.mk_list t_lst))) ->
+    ((C.RETURN) = (some (.mk_list t_lst))) ->
     (Instrtype_ok C (.mk_instrtype (.mk_list t_1_lst) [] (.mk_list t_2_lst))) ->
     (wf_context C) ->
     (wf_instr .RETURN) ->
@@ -7184,7 +7212,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
   | return_call : forall (C : context) (x : idx) (t_3_lst : (List valtype)) (t_1_lst : (List valtype)) (t_4_lst : (List valtype)) (t_2_lst : (List valtype)) (t'_2_lst : (List valtype)), 
     ((proj_uN_0 x) < (List.length (C.FUNCS))) ->
     (Expand ((C.FUNCS)[(proj_uN_0 x)]!) (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst))) ->
-    ((C.RETURN) == (some (.mk_list t'_2_lst))) ->
+    ((C.RETURN) = (some (.mk_list t'_2_lst))) ->
     (Resulttype_sub C (.mk_list t_2_lst) (.mk_list t'_2_lst)) ->
     (Instrtype_ok C (.mk_instrtype (.mk_list t_3_lst) [] (.mk_list t_4_lst))) ->
     (wf_context C) ->
@@ -7197,7 +7225,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
   | return_call_ref : forall (C : context) (x : idx) (t_3_lst : (List valtype)) (t_1_lst : (List valtype)) (t_4_lst : (List valtype)) (t_2_lst : (List valtype)) (t'_2_lst : (List valtype)), 
     ((proj_uN_0 x) < (List.length (C.TYPES))) ->
     (Expand ((C.TYPES)[(proj_uN_0 x)]!) (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst))) ->
-    ((C.RETURN) == (some (.mk_list t'_2_lst))) ->
+    ((C.RETURN) = (some (.mk_list t'_2_lst))) ->
     (Resulttype_sub C (.mk_list t_2_lst) (.mk_list t'_2_lst)) ->
     (Instrtype_ok C (.mk_instrtype (.mk_list t_3_lst) [] (.mk_list t_4_lst))) ->
     (wf_context C) ->
@@ -7209,11 +7237,11 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.RETURN_CALL_REF (._IDX x)) (.mk_instrtype (.mk_list (t_3_lst ++ (t_1_lst ++ ([(.REF (some .NULL) (._IDX x))] : (List valtype))))) [] (.mk_list t_4_lst))
   | return_call_indirect : forall (C : context) (x : idx) (y : idx) (t_3_lst : (List valtype)) (t_1_lst : (List valtype)) («at» : addrtype) (t_4_lst : (List valtype)) (lim : limits) (rt : reftype) (t_2_lst : (List valtype)) (t'_2_lst : (List valtype)), 
     ((proj_uN_0 x) < (List.length (C.TABLES))) ->
-    (((C.TABLES)[(proj_uN_0 x)]!) == (.mk_tabletype «at» lim rt)) ->
+    (((C.TABLES)[(proj_uN_0 x)]!) = (.mk_tabletype «at» lim rt)) ->
     (Reftype_sub C rt (.REF (some .NULL) .FUNC)) ->
     ((proj_uN_0 y) < (List.length (C.TYPES))) ->
     (Expand ((C.TYPES)[(proj_uN_0 y)]!) (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst))) ->
-    ((C.RETURN) == (some (.mk_list t'_2_lst))) ->
+    ((C.RETURN) = (some (.mk_list t'_2_lst))) ->
     (Resulttype_sub C (.mk_list t_2_lst) (.mk_list t'_2_lst)) ->
     (Instrtype_ok C (.mk_instrtype (.mk_list t_3_lst) [] (.mk_list t_4_lst))) ->
     (wf_context C) ->
@@ -7226,7 +7254,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     (wf_instrtype (.mk_instrtype (.mk_list t_3_lst) [] (.mk_list t_4_lst))) ->
     Instr_ok C (.RETURN_CALL_INDIRECT x (._IDX y)) (.mk_instrtype (.mk_list (t_3_lst ++ (t_1_lst ++ ([(valtype_addrtype «at»)] : (List valtype))))) [] (.mk_list t_4_lst))
   | throw : forall (C : context) (x : idx) (t_1_lst : (List valtype)) (t_lst : (List valtype)) (t_2_lst : (List valtype)), 
-    ((as_deftype ((C.TAGS)[(proj_uN_0 x)]!)) != none) ->
+    ((as_deftype ((C.TAGS)[(proj_uN_0 x)]!)) ≠ none) ->
     ((proj_uN_0 x) < (List.length (C.TAGS))) ->
     (Expand (Option.get! (as_deftype ((C.TAGS)[(proj_uN_0 x)]!))) (.FUNC (.mk_list t_lst) (.mk_list []))) ->
     (Instrtype_ok C (.mk_instrtype (.mk_list t_1_lst) [] (.mk_list t_2_lst))) ->
@@ -7261,9 +7289,9 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.REF_NULL ht) (.mk_instrtype (.mk_list []) [] (.mk_list ([(.REF (some .NULL) ht)] : (List valtype))))
   | ref_func : forall (C : context) (x : idx) (dt : deftype), 
     ((proj_uN_0 x) < (List.length (C.FUNCS))) ->
-    (((C.FUNCS)[(proj_uN_0 x)]!) == dt) ->
+    (((C.FUNCS)[(proj_uN_0 x)]!) = dt) ->
     ((List.length (C.REFS)) > 0) ->
-    (List.contains (C.REFS) x) ->
+    (x ∈ (C.REFS)) ->
     (wf_context C) ->
     (wf_instr (.REF_FUNC x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list []) [] (.mk_list ([(.REF none (heaptype_deftype dt))] : (List valtype))))) ->
@@ -7336,8 +7364,8 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     ((proj_uN_0 x) < (List.length (C.TYPES))) ->
     (Expand ((C.TYPES)[(proj_uN_0 x)]!) (.STRUCT (.mk_list ft_lst))) ->
     ((proj_uN_0 i) < (List.length ft_lst)) ->
-    ((ft_lst[(proj_uN_0 i)]!) == (.mk_fieldtype mut_opt zt)) ->
-    ((sx_opt != none) <-> var_0) ->
+    ((ft_lst[(proj_uN_0 i)]!) = (.mk_fieldtype mut_opt zt)) ->
+    ((sx_opt ≠ none) ↔ var_0) ->
     (wf_context C) ->
     (wf_instr (.STRUCT_GET sx_opt x i)) ->
     (wf_instrtype (.mk_instrtype (.mk_list ([(.REF (some .NULL) (._IDX x))] : (List valtype))) [] (.mk_list ([(unpack zt)] : (List valtype))))) ->
@@ -7348,7 +7376,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     ((proj_uN_0 x) < (List.length (C.TYPES))) ->
     (Expand ((C.TYPES)[(proj_uN_0 x)]!) (.STRUCT (.mk_list ft_lst))) ->
     ((proj_uN_0 i) < (List.length ft_lst)) ->
-    ((ft_lst[(proj_uN_0 i)]!) == (.mk_fieldtype (some .MUT) zt)) ->
+    ((ft_lst[(proj_uN_0 i)]!) = (.mk_fieldtype (some .MUT) zt)) ->
     (wf_context C) ->
     (wf_instr (.STRUCT_SET x i)) ->
     (wf_instrtype (.mk_instrtype (.mk_list ([(.REF (some .NULL) (._IDX x)), (unpack zt)] : (List valtype))) [] (.mk_list []))) ->
@@ -7394,9 +7422,9 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
   | array_new_data : forall (C : context) (x : idx) (y : idx) (mut_opt : (Option «mut»)) (zt : storagetype) (v_numtype : numtype) (v_vectype : vectype), 
     ((proj_uN_0 x) < (List.length (C.TYPES))) ->
     (Expand ((C.TYPES)[(proj_uN_0 x)]!) (.ARRAY (.mk_fieldtype mut_opt zt))) ->
-    (((unpack zt) == (valtype_numtype v_numtype)) || ((unpack zt) == (valtype_vectype v_vectype))) ->
+    (((unpack zt) = (valtype_numtype v_numtype)) ∨ ((unpack zt) = (valtype_vectype v_vectype))) ->
     ((proj_uN_0 y) < (List.length (C.DATAS))) ->
-    (((C.DATAS)[(proj_uN_0 y)]!) == .OK) ->
+    (((C.DATAS)[(proj_uN_0 y)]!) = .OK) ->
     (wf_context C) ->
     (wf_valtype (unpack zt)) ->
     (wf_instr (.ARRAY_NEW_DATA x y)) ->
@@ -7407,7 +7435,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     (fun_is_packtype zt var_0) ->
     ((proj_uN_0 x) < (List.length (C.TYPES))) ->
     (Expand ((C.TYPES)[(proj_uN_0 x)]!) (.ARRAY (.mk_fieldtype mut_opt zt))) ->
-    ((sx_opt != none) <-> var_0) ->
+    ((sx_opt ≠ none) ↔ var_0) ->
     (wf_context C) ->
     (wf_instr (.ARRAY_GET sx_opt x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list ([(.REF (some .NULL) (._IDX x)), .I32] : (List valtype))) [] (.mk_list ([(unpack zt)] : (List valtype))))) ->
@@ -7459,9 +7487,9 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
   | array_init_data : forall (C : context) (x : idx) (y : idx) (zt : storagetype) (v_numtype : numtype) (v_vectype : vectype), 
     ((proj_uN_0 x) < (List.length (C.TYPES))) ->
     (Expand ((C.TYPES)[(proj_uN_0 x)]!) (.ARRAY (.mk_fieldtype (some .MUT) zt))) ->
-    (((unpack zt) == (valtype_numtype v_numtype)) || ((unpack zt) == (valtype_vectype v_vectype))) ->
+    (((unpack zt) = (valtype_numtype v_numtype)) ∨ ((unpack zt) = (valtype_vectype v_vectype))) ->
     ((proj_uN_0 y) < (List.length (C.DATAS))) ->
-    (((C.DATAS)[(proj_uN_0 y)]!) == .OK) ->
+    (((C.DATAS)[(proj_uN_0 y)]!) = .OK) ->
     (wf_context C) ->
     (wf_valtype (unpack zt)) ->
     (wf_instr (.ARRAY_INIT_DATA x y)) ->
@@ -7469,20 +7497,20 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     (wf_comptype (.ARRAY (.mk_fieldtype (some .MUT) zt))) ->
     Instr_ok C (.ARRAY_INIT_DATA x y) (.mk_instrtype (.mk_list ([(.REF (some .NULL) (._IDX x)), .I32, .I32, .I32] : (List valtype))) [] (.mk_list []))
   | extern_convert_any : forall (C : context) (null_1_opt : (Option null)) (null_2_opt : (Option null)), 
-    (null_1_opt == null_2_opt) ->
+    (null_1_opt = null_2_opt) ->
     (wf_context C) ->
     (wf_instr .EXTERN_CONVERT_ANY) ->
     (wf_instrtype (.mk_instrtype (.mk_list ([(.REF null_1_opt .ANY)] : (List valtype))) [] (.mk_list ([(.REF null_2_opt .EXTERN)] : (List valtype))))) ->
     Instr_ok C .EXTERN_CONVERT_ANY (.mk_instrtype (.mk_list ([(.REF null_1_opt .ANY)] : (List valtype))) [] (.mk_list ([(.REF null_2_opt .EXTERN)] : (List valtype))))
   | any_convert_extern : forall (C : context) (null_1_opt : (Option null)) (null_2_opt : (Option null)), 
-    (null_1_opt == null_2_opt) ->
+    (null_1_opt = null_2_opt) ->
     (wf_context C) ->
     (wf_instr .ANY_CONVERT_EXTERN) ->
     (wf_instrtype (.mk_instrtype (.mk_list ([(.REF null_1_opt .EXTERN)] : (List valtype))) [] (.mk_list ([(.REF null_2_opt .ANY)] : (List valtype))))) ->
     Instr_ok C .ANY_CONVERT_EXTERN (.mk_instrtype (.mk_list ([(.REF null_1_opt .EXTERN)] : (List valtype))) [] (.mk_list ([(.REF null_2_opt .ANY)] : (List valtype))))
   | local_get : forall (C : context) (x : idx) (t : valtype), 
     ((proj_uN_0 x) < (List.length (C.LOCALS))) ->
-    (((C.LOCALS)[(proj_uN_0 x)]!) == (.mk_localtype .SET t)) ->
+    (((C.LOCALS)[(proj_uN_0 x)]!) = (.mk_localtype .SET t)) ->
     (wf_context C) ->
     (wf_instr (.LOCAL_GET x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list []) [] (.mk_list ([t] : (List valtype))))) ->
@@ -7490,7 +7518,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.LOCAL_GET x) (.mk_instrtype (.mk_list []) [] (.mk_list ([t] : (List valtype))))
   | local_set : forall (C : context) (x : idx) (t : valtype) (v_init : init), 
     ((proj_uN_0 x) < (List.length (C.LOCALS))) ->
-    (((C.LOCALS)[(proj_uN_0 x)]!) == (.mk_localtype v_init t)) ->
+    (((C.LOCALS)[(proj_uN_0 x)]!) = (.mk_localtype v_init t)) ->
     (wf_context C) ->
     (wf_instr (.LOCAL_SET x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list ([t] : (List valtype))) ([x] : (List localidx)) (.mk_list []))) ->
@@ -7498,7 +7526,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.LOCAL_SET x) (.mk_instrtype (.mk_list ([t] : (List valtype))) ([x] : (List localidx)) (.mk_list []))
   | local_tee : forall (C : context) (x : idx) (t : valtype) (v_init : init), 
     ((proj_uN_0 x) < (List.length (C.LOCALS))) ->
-    (((C.LOCALS)[(proj_uN_0 x)]!) == (.mk_localtype v_init t)) ->
+    (((C.LOCALS)[(proj_uN_0 x)]!) = (.mk_localtype v_init t)) ->
     (wf_context C) ->
     (wf_instr (.LOCAL_TEE x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list ([t] : (List valtype))) ([x] : (List localidx)) (.mk_list ([t] : (List valtype))))) ->
@@ -7506,7 +7534,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.LOCAL_TEE x) (.mk_instrtype (.mk_list ([t] : (List valtype))) ([x] : (List localidx)) (.mk_list ([t] : (List valtype))))
   | global_get : forall (C : context) (x : idx) (t : valtype) (mut_opt : (Option «mut»)), 
     ((proj_uN_0 x) < (List.length (C.GLOBALS))) ->
-    (((C.GLOBALS)[(proj_uN_0 x)]!) == (.mk_globaltype mut_opt t)) ->
+    (((C.GLOBALS)[(proj_uN_0 x)]!) = (.mk_globaltype mut_opt t)) ->
     (wf_context C) ->
     (wf_instr (.GLOBAL_GET x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list []) [] (.mk_list ([t] : (List valtype))))) ->
@@ -7514,7 +7542,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.GLOBAL_GET x) (.mk_instrtype (.mk_list []) [] (.mk_list ([t] : (List valtype))))
   | global_set : forall (C : context) (x : idx) (t : valtype), 
     ((proj_uN_0 x) < (List.length (C.GLOBALS))) ->
-    (((C.GLOBALS)[(proj_uN_0 x)]!) == (.mk_globaltype (some .MUT) t)) ->
+    (((C.GLOBALS)[(proj_uN_0 x)]!) = (.mk_globaltype (some .MUT) t)) ->
     (wf_context C) ->
     (wf_instr (.GLOBAL_SET x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list ([t] : (List valtype))) [] (.mk_list []))) ->
@@ -7522,7 +7550,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.GLOBAL_SET x) (.mk_instrtype (.mk_list ([t] : (List valtype))) [] (.mk_list []))
   | table_get : forall (C : context) (x : idx) («at» : addrtype) (rt : reftype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.TABLES))) ->
-    (((C.TABLES)[(proj_uN_0 x)]!) == (.mk_tabletype «at» lim rt)) ->
+    (((C.TABLES)[(proj_uN_0 x)]!) = (.mk_tabletype «at» lim rt)) ->
     (wf_context C) ->
     (wf_instr (.TABLE_GET x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list ([(valtype_addrtype «at»)] : (List valtype))) [] (.mk_list ([(valtype_reftype rt)] : (List valtype))))) ->
@@ -7530,7 +7558,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.TABLE_GET x) (.mk_instrtype (.mk_list ([(valtype_addrtype «at»)] : (List valtype))) [] (.mk_list ([(valtype_reftype rt)] : (List valtype))))
   | table_set : forall (C : context) (x : idx) («at» : addrtype) (rt : reftype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.TABLES))) ->
-    (((C.TABLES)[(proj_uN_0 x)]!) == (.mk_tabletype «at» lim rt)) ->
+    (((C.TABLES)[(proj_uN_0 x)]!) = (.mk_tabletype «at» lim rt)) ->
     (wf_context C) ->
     (wf_instr (.TABLE_SET x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list ([(valtype_addrtype «at»), (valtype_reftype rt)] : (List valtype))) [] (.mk_list []))) ->
@@ -7538,7 +7566,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.TABLE_SET x) (.mk_instrtype (.mk_list ([(valtype_addrtype «at»), (valtype_reftype rt)] : (List valtype))) [] (.mk_list []))
   | table_size : forall (C : context) (x : idx) («at» : addrtype) (lim : limits) (rt : reftype), 
     ((proj_uN_0 x) < (List.length (C.TABLES))) ->
-    (((C.TABLES)[(proj_uN_0 x)]!) == (.mk_tabletype «at» lim rt)) ->
+    (((C.TABLES)[(proj_uN_0 x)]!) = (.mk_tabletype «at» lim rt)) ->
     (wf_context C) ->
     (wf_instr (.TABLE_SIZE x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list []) [] (.mk_list ([(valtype_addrtype «at»)] : (List valtype))))) ->
@@ -7546,7 +7574,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.TABLE_SIZE x) (.mk_instrtype (.mk_list []) [] (.mk_list ([(valtype_addrtype «at»)] : (List valtype))))
   | table_grow : forall (C : context) (x : idx) (rt : reftype) («at» : addrtype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.TABLES))) ->
-    (((C.TABLES)[(proj_uN_0 x)]!) == (.mk_tabletype «at» lim rt)) ->
+    (((C.TABLES)[(proj_uN_0 x)]!) = (.mk_tabletype «at» lim rt)) ->
     (wf_context C) ->
     (wf_instr (.TABLE_GROW x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list ([(valtype_reftype rt), (valtype_addrtype «at»)] : (List valtype))) [] (.mk_list ([(valtype_addrtype «at»)] : (List valtype))))) ->
@@ -7554,7 +7582,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.TABLE_GROW x) (.mk_instrtype (.mk_list ([(valtype_reftype rt), (valtype_addrtype «at»)] : (List valtype))) [] (.mk_list ([(valtype_addrtype «at»)] : (List valtype))))
   | table_fill : forall (C : context) (x : idx) («at» : addrtype) (rt : reftype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.TABLES))) ->
-    (((C.TABLES)[(proj_uN_0 x)]!) == (.mk_tabletype «at» lim rt)) ->
+    (((C.TABLES)[(proj_uN_0 x)]!) = (.mk_tabletype «at» lim rt)) ->
     (wf_context C) ->
     (wf_instr (.TABLE_FILL x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list ([(valtype_addrtype «at»), (valtype_reftype rt), (valtype_addrtype «at»)] : (List valtype))) [] (.mk_list []))) ->
@@ -7562,9 +7590,9 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.TABLE_FILL x) (.mk_instrtype (.mk_list ([(valtype_addrtype «at»), (valtype_reftype rt), (valtype_addrtype «at»)] : (List valtype))) [] (.mk_list []))
   | table_copy : forall (C : context) (x_1 : idx) (x_2 : idx) (at_1 : addrtype) (at_2 : addrtype) (lim_1 : limits) (rt_1 : reftype) (lim_2 : limits) (rt_2 : reftype), 
     ((proj_uN_0 x_1) < (List.length (C.TABLES))) ->
-    (((C.TABLES)[(proj_uN_0 x_1)]!) == (.mk_tabletype at_1 lim_1 rt_1)) ->
+    (((C.TABLES)[(proj_uN_0 x_1)]!) = (.mk_tabletype at_1 lim_1 rt_1)) ->
     ((proj_uN_0 x_2) < (List.length (C.TABLES))) ->
-    (((C.TABLES)[(proj_uN_0 x_2)]!) == (.mk_tabletype at_2 lim_2 rt_2)) ->
+    (((C.TABLES)[(proj_uN_0 x_2)]!) = (.mk_tabletype at_2 lim_2 rt_2)) ->
     (Reftype_sub C rt_2 rt_1) ->
     (wf_context C) ->
     (wf_instr (.TABLE_COPY x_1 x_2)) ->
@@ -7574,9 +7602,9 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.TABLE_COPY x_1 x_2) (.mk_instrtype (.mk_list ([(valtype_addrtype at_1), (valtype_addrtype at_2), (valtype_addrtype (minat at_1 at_2))] : (List valtype))) [] (.mk_list []))
   | table_init : forall (C : context) (x : idx) (y : idx) («at» : addrtype) (lim : limits) (rt_1 : reftype) (rt_2 : reftype), 
     ((proj_uN_0 x) < (List.length (C.TABLES))) ->
-    (((C.TABLES)[(proj_uN_0 x)]!) == (.mk_tabletype «at» lim rt_1)) ->
+    (((C.TABLES)[(proj_uN_0 x)]!) = (.mk_tabletype «at» lim rt_1)) ->
     ((proj_uN_0 y) < (List.length (C.ELEMS))) ->
-    (((C.ELEMS)[(proj_uN_0 y)]!) == rt_2) ->
+    (((C.ELEMS)[(proj_uN_0 y)]!) = rt_2) ->
     (Reftype_sub C rt_2 rt_1) ->
     (wf_context C) ->
     (wf_reftype rt_2) ->
@@ -7586,7 +7614,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.TABLE_INIT x y) (.mk_instrtype (.mk_list ([(valtype_addrtype «at»), .I32, .I32] : (List valtype))) [] (.mk_list []))
   | elem_drop : forall (C : context) (x : idx) (rt : reftype), 
     ((proj_uN_0 x) < (List.length (C.ELEMS))) ->
-    (((C.ELEMS)[(proj_uN_0 x)]!) == rt) ->
+    (((C.ELEMS)[(proj_uN_0 x)]!) = rt) ->
     (wf_context C) ->
     (wf_reftype rt) ->
     (wf_instr (.ELEM_DROP x)) ->
@@ -7594,7 +7622,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.ELEM_DROP x) (.mk_instrtype (.mk_list []) [] (.mk_list []))
   | memory_size : forall (C : context) (x : idx) («at» : addrtype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x)]!) == (.PAGE «at» lim)) ->
+    (((C.MEMS)[(proj_uN_0 x)]!) = (.PAGE «at» lim)) ->
     (wf_context C) ->
     (wf_instr (.MEMORY_SIZE x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list []) [] (.mk_list ([(valtype_addrtype «at»)] : (List valtype))))) ->
@@ -7602,7 +7630,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.MEMORY_SIZE x) (.mk_instrtype (.mk_list []) [] (.mk_list ([(valtype_addrtype «at»)] : (List valtype))))
   | memory_grow : forall (C : context) (x : idx) («at» : addrtype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x)]!) == (.PAGE «at» lim)) ->
+    (((C.MEMS)[(proj_uN_0 x)]!) = (.PAGE «at» lim)) ->
     (wf_context C) ->
     (wf_instr (.MEMORY_GROW x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list ([(valtype_addrtype «at»)] : (List valtype))) [] (.mk_list ([(valtype_addrtype «at»)] : (List valtype))))) ->
@@ -7610,7 +7638,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.MEMORY_GROW x) (.mk_instrtype (.mk_list ([(valtype_addrtype «at»)] : (List valtype))) [] (.mk_list ([(valtype_addrtype «at»)] : (List valtype))))
   | memory_fill : forall (C : context) (x : idx) («at» : addrtype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x)]!) == (.PAGE «at» lim)) ->
+    (((C.MEMS)[(proj_uN_0 x)]!) = (.PAGE «at» lim)) ->
     (wf_context C) ->
     (wf_instr (.MEMORY_FILL x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list ([(valtype_addrtype «at»), .I32, (valtype_addrtype «at»)] : (List valtype))) [] (.mk_list []))) ->
@@ -7618,9 +7646,9 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.MEMORY_FILL x) (.mk_instrtype (.mk_list ([(valtype_addrtype «at»), .I32, (valtype_addrtype «at»)] : (List valtype))) [] (.mk_list []))
   | memory_copy : forall (C : context) (x_1 : idx) (x_2 : idx) (at_1 : addrtype) (at_2 : addrtype) (lim_1 : limits) (lim_2 : limits), 
     ((proj_uN_0 x_1) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x_1)]!) == (.PAGE at_1 lim_1)) ->
+    (((C.MEMS)[(proj_uN_0 x_1)]!) = (.PAGE at_1 lim_1)) ->
     ((proj_uN_0 x_2) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x_2)]!) == (.PAGE at_2 lim_2)) ->
+    (((C.MEMS)[(proj_uN_0 x_2)]!) = (.PAGE at_2 lim_2)) ->
     (wf_context C) ->
     (wf_instr (.MEMORY_COPY x_1 x_2)) ->
     (wf_instrtype (.mk_instrtype (.mk_list ([(valtype_addrtype at_1), (valtype_addrtype at_2), (valtype_addrtype (minat at_1 at_2))] : (List valtype))) [] (.mk_list []))) ->
@@ -7629,9 +7657,9 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.MEMORY_COPY x_1 x_2) (.mk_instrtype (.mk_list ([(valtype_addrtype at_1), (valtype_addrtype at_2), (valtype_addrtype (minat at_1 at_2))] : (List valtype))) [] (.mk_list []))
   | memory_init : forall (C : context) (x : idx) (y : idx) («at» : addrtype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x)]!) == (.PAGE «at» lim)) ->
+    (((C.MEMS)[(proj_uN_0 x)]!) = (.PAGE «at» lim)) ->
     ((proj_uN_0 y) < (List.length (C.DATAS))) ->
-    (((C.DATAS)[(proj_uN_0 y)]!) == .OK) ->
+    (((C.DATAS)[(proj_uN_0 y)]!) = .OK) ->
     (wf_context C) ->
     (wf_instr (.MEMORY_INIT x y)) ->
     (wf_instrtype (.mk_instrtype (.mk_list ([(valtype_addrtype «at»), .I32, .I32] : (List valtype))) [] (.mk_list []))) ->
@@ -7639,14 +7667,14 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.MEMORY_INIT x y) (.mk_instrtype (.mk_list ([(valtype_addrtype «at»), .I32, .I32] : (List valtype))) [] (.mk_list []))
   | data_drop : forall (C : context) (x : idx), 
     ((proj_uN_0 x) < (List.length (C.DATAS))) ->
-    (((C.DATAS)[(proj_uN_0 x)]!) == .OK) ->
+    (((C.DATAS)[(proj_uN_0 x)]!) = .OK) ->
     (wf_context C) ->
     (wf_instr (.DATA_DROP x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list []) [] (.mk_list []))) ->
     Instr_ok C (.DATA_DROP x) (.mk_instrtype (.mk_list []) [] (.mk_list []))
   | load_val : forall (C : context) (nt : numtype) (x : idx) (v_memarg : memarg) («at» : addrtype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x)]!) == (.PAGE «at» lim)) ->
+    (((C.MEMS)[(proj_uN_0 x)]!) = (.PAGE «at» lim)) ->
     (Memarg_ok v_memarg «at» (size nt)) ->
     (wf_context C) ->
     (wf_instr (.LOAD nt none x v_memarg)) ->
@@ -7655,7 +7683,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.LOAD nt none x v_memarg) (.mk_instrtype (.mk_list ([(valtype_addrtype «at»)] : (List valtype))) [] (.mk_list ([(valtype_numtype nt)] : (List valtype))))
   | load_pack : forall (C : context) (v_Inn : Inn) (v_M : M) (v_sx : sx) (x : idx) (v_memarg : memarg) («at» : addrtype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x)]!) == (.PAGE «at» lim)) ->
+    (((C.MEMS)[(proj_uN_0 x)]!) = (.PAGE «at» lim)) ->
     (Memarg_ok v_memarg «at» v_M) ->
     (wf_context C) ->
     (wf_instr (.LOAD (numtype_addrtype v_Inn) (some (.mk_loadop__0 v_Inn (.mk_loadop_Inn (.mk_sz v_M) v_sx))) x v_memarg)) ->
@@ -7664,7 +7692,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.LOAD (numtype_addrtype v_Inn) (some (.mk_loadop__0 v_Inn (.mk_loadop_Inn (.mk_sz v_M) v_sx))) x v_memarg) (.mk_instrtype (.mk_list ([(valtype_addrtype «at»)] : (List valtype))) [] (.mk_list ([(valtype_addrtype v_Inn)] : (List valtype))))
   | store_val : forall (C : context) (nt : numtype) (x : idx) (v_memarg : memarg) («at» : addrtype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x)]!) == (.PAGE «at» lim)) ->
+    (((C.MEMS)[(proj_uN_0 x)]!) = (.PAGE «at» lim)) ->
     (Memarg_ok v_memarg «at» (size nt)) ->
     (wf_context C) ->
     (wf_instr (.STORE nt none x v_memarg)) ->
@@ -7673,7 +7701,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.STORE nt none x v_memarg) (.mk_instrtype (.mk_list ([(valtype_addrtype «at»), (valtype_numtype nt)] : (List valtype))) [] (.mk_list []))
   | store_pack : forall (C : context) (v_Inn : Inn) (v_M : M) (x : idx) (v_memarg : memarg) («at» : addrtype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x)]!) == (.PAGE «at» lim)) ->
+    (((C.MEMS)[(proj_uN_0 x)]!) = (.PAGE «at» lim)) ->
     (Memarg_ok v_memarg «at» v_M) ->
     (wf_context C) ->
     (wf_instr (.STORE (numtype_addrtype v_Inn) (some (.mk_storeop__0 v_Inn (.mk_storeop_Inn (.mk_sz v_M)))) x v_memarg)) ->
@@ -7682,7 +7710,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.STORE (numtype_addrtype v_Inn) (some (.mk_storeop__0 v_Inn (.mk_storeop_Inn (.mk_sz v_M)))) x v_memarg) (.mk_instrtype (.mk_list ([(valtype_addrtype «at»), (valtype_addrtype v_Inn)] : (List valtype))) [] (.mk_list []))
   | vload_val : forall (C : context) (x : idx) (v_memarg : memarg) («at» : addrtype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x)]!) == (.PAGE «at» lim)) ->
+    (((C.MEMS)[(proj_uN_0 x)]!) = (.PAGE «at» lim)) ->
     (Memarg_ok v_memarg «at» (vsize .V128)) ->
     (wf_context C) ->
     (wf_instr (.VLOAD .V128 none x v_memarg)) ->
@@ -7691,7 +7719,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.VLOAD .V128 none x v_memarg) (.mk_instrtype (.mk_list ([(valtype_addrtype «at»)] : (List valtype))) [] (.mk_list ([.V128] : (List valtype))))
   | vload_pack : forall (C : context) (v_M : M) (v_N : N) (v_sx : sx) (x : idx) (v_memarg : memarg) («at» : addrtype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x)]!) == (.PAGE «at» lim)) ->
+    (((C.MEMS)[(proj_uN_0 x)]!) = (.PAGE «at» lim)) ->
     (Memarg_ok v_memarg «at» (v_M * v_N)) ->
     (wf_context C) ->
     (wf_instr (.VLOAD .V128 (some (.SHAPEX_ (.mk_sz v_M) v_N v_sx)) x v_memarg)) ->
@@ -7700,7 +7728,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.VLOAD .V128 (some (.SHAPEX_ (.mk_sz v_M) v_N v_sx)) x v_memarg) (.mk_instrtype (.mk_list ([(valtype_addrtype «at»)] : (List valtype))) [] (.mk_list ([.V128] : (List valtype))))
   | vload_splat : forall (C : context) (v_N : N) (x : idx) (v_memarg : memarg) («at» : addrtype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x)]!) == (.PAGE «at» lim)) ->
+    (((C.MEMS)[(proj_uN_0 x)]!) = (.PAGE «at» lim)) ->
     (Memarg_ok v_memarg «at» v_N) ->
     (wf_context C) ->
     (wf_instr (.VLOAD .V128 (some (.SPLAT (.mk_sz v_N))) x v_memarg)) ->
@@ -7709,7 +7737,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.VLOAD .V128 (some (.SPLAT (.mk_sz v_N))) x v_memarg) (.mk_instrtype (.mk_list ([(valtype_addrtype «at»)] : (List valtype))) [] (.mk_list ([.V128] : (List valtype))))
   | vload_zero : forall (C : context) (v_N : N) (x : idx) (v_memarg : memarg) («at» : addrtype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x)]!) == (.PAGE «at» lim)) ->
+    (((C.MEMS)[(proj_uN_0 x)]!) = (.PAGE «at» lim)) ->
     (Memarg_ok v_memarg «at» v_N) ->
     (wf_context C) ->
     (wf_instr (.VLOAD .V128 (some (.ZERO (.mk_sz v_N))) x v_memarg)) ->
@@ -7718,7 +7746,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.VLOAD .V128 (some (.ZERO (.mk_sz v_N))) x v_memarg) (.mk_instrtype (.mk_list ([(valtype_addrtype «at»)] : (List valtype))) [] (.mk_list ([.V128] : (List valtype))))
   | vload_lane : forall (C : context) (v_N : N) (x : idx) (v_memarg : memarg) (i : laneidx) («at» : addrtype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x)]!) == (.PAGE «at» lim)) ->
+    (((C.MEMS)[(proj_uN_0 x)]!) = (.PAGE «at» lim)) ->
     (Memarg_ok v_memarg «at» v_N) ->
     ((Rat.ofInt (Int.ofNat (proj_uN_0 i))) < ((Rat.ofInt (Int.ofNat 128)) / (Rat.ofInt (Int.ofNat v_N)))) ->
     (wf_context C) ->
@@ -7728,7 +7756,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.VLOAD_LANE .V128 (.mk_sz v_N) x v_memarg i) (.mk_instrtype (.mk_list ([(valtype_addrtype «at»), .V128] : (List valtype))) [] (.mk_list ([.V128] : (List valtype))))
   | vstore : forall (C : context) (x : idx) (v_memarg : memarg) («at» : addrtype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x)]!) == (.PAGE «at» lim)) ->
+    (((C.MEMS)[(proj_uN_0 x)]!) = (.PAGE «at» lim)) ->
     (Memarg_ok v_memarg «at» (vsize .V128)) ->
     (wf_context C) ->
     (wf_instr (.VSTORE .V128 x v_memarg)) ->
@@ -7737,7 +7765,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     Instr_ok C (.VSTORE .V128 x v_memarg) (.mk_instrtype (.mk_list ([(valtype_addrtype «at»), .V128] : (List valtype))) [] (.mk_list []))
   | vstore_lane : forall (C : context) (v_N : N) (x : idx) (v_memarg : memarg) (i : laneidx) («at» : addrtype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x)]!) == (.PAGE «at» lim)) ->
+    (((C.MEMS)[(proj_uN_0 x)]!) = (.PAGE «at» lim)) ->
     (Memarg_ok v_memarg «at» v_N) ->
     ((Rat.ofInt (Int.ofNat (proj_uN_0 i))) < ((Rat.ofInt (Int.ofNat 128)) / (Rat.ofInt (Int.ofNat v_N)))) ->
     (wf_context C) ->
@@ -7907,11 +7935,11 @@ inductive Instrs_ok : context -> (List instr) -> instrtype -> Prop where
   | seq : forall (C : context) (instr_1_lst : (List instr)) (instr_2_lst : (List instr)) (t_1_lst : (List valtype)) (x_1_lst : (List idx)) (x_2_lst : (List idx)) (t_3_lst : (List valtype)) (t_2_lst : (List valtype)) (init_lst : (List init)) (t_lst : (List valtype)) (var_0 : (Option context)), 
     (fun_with_locals C x_1_lst (List.map (fun (t : valtype) => ((.mk_localtype .SET t) : localtype)) t_lst) var_0) ->
     (Instrs_ok C instr_1_lst (.mk_instrtype (.mk_list t_1_lst) x_1_lst (.mk_list t_2_lst))) ->
-    ((List.length init_lst) == (List.length t_lst)) ->
-    ((List.length init_lst) == (List.length x_1_lst)) ->
+    ((List.length init_lst) = (List.length t_lst)) ->
+    ((List.length init_lst) = (List.length x_1_lst)) ->
     Forall (fun (x_1 : idx) => ((proj_uN_0 x_1) < (List.length (C.LOCALS)))) x_1_lst ->
-    Forall₃ (fun (v_init : init) (t : valtype) (x_1 : idx) => (((C.LOCALS)[(proj_uN_0 x_1)]!) == (.mk_localtype v_init t))) init_lst t_lst x_1_lst ->
-    (var_0 != none) ->
+    Forall₃ (fun (v_init : init) (t : valtype) (x_1 : idx) => (((C.LOCALS)[(proj_uN_0 x_1)]!) = (.mk_localtype v_init t))) init_lst t_lst x_1_lst ->
+    (var_0 ≠ none) ->
     (Instrs_ok (Option.get! var_0) instr_2_lst (.mk_instrtype (.mk_list t_2_lst) x_2_lst (.mk_list t_3_lst))) ->
     (wf_context C) ->
     Forall (fun (instr_1 : instr) => (wf_instr instr_1)) instr_1_lst ->
@@ -7958,8 +7986,8 @@ inductive Expr_ok : context -> expr -> resulttype -> Prop where
 inductive Nondefaultable : valtype -> Prop where
   | mk_Nondefaultable : forall (t : valtype) (var_0 : (Option (Option val))), 
     (fun_default_ t var_0) ->
-    (var_0 != none) ->
-    ((Option.get! var_0) == none) ->
+    (var_0 ≠ none) ->
+    ((Option.get! var_0) = none) ->
     (wf_valtype t) ->
     Forall (fun (iter : val) => (wf_val iter)) (Option.toList (Option.get! var_0)) ->
     Nondefaultable t
@@ -8016,16 +8044,16 @@ inductive Instr_const : context -> instr -> Prop where
     Instr_const C .EXTERN_CONVERT_ANY
   | global_get : forall (C : context) (x : idx) (t : valtype), 
     ((proj_uN_0 x) < (List.length (C.GLOBALS))) ->
-    (((C.GLOBALS)[(proj_uN_0 x)]!) == (.mk_globaltype none t)) ->
+    (((C.GLOBALS)[(proj_uN_0 x)]!) = (.mk_globaltype none t)) ->
     (wf_context C) ->
     (wf_instr (.GLOBAL_GET x)) ->
     (wf_globaltype (.mk_globaltype none t)) ->
     Instr_const C (.GLOBAL_GET x)
   | binop : forall (C : context) (v_Inn : Inn) (binop : binop_), 
     ((List.length ([.I32, .I64] : (List Inn))) > 0) ->
-    (List.contains ([.I32, .I64] : (List Inn)) v_Inn) ->
+    (v_Inn ∈ ([.I32, .I64] : (List Inn))) ->
     ((List.length ([(.mk_binop__0 v_Inn .ADD), (.mk_binop__0 v_Inn .SUB), (.mk_binop__0 v_Inn .MUL)] : (List binop_))) > 0) ->
-    (List.contains ([(.mk_binop__0 v_Inn .ADD), (.mk_binop__0 v_Inn .SUB), (.mk_binop__0 v_Inn .MUL)] : (List binop_)) binop) ->
+    (binop ∈ ([(.mk_binop__0 v_Inn .ADD), (.mk_binop__0 v_Inn .SUB), (.mk_binop__0 v_Inn .MUL)] : (List binop_))) ->
     (wf_context C) ->
     (wf_instr (.BINOP (numtype_addrtype v_Inn) binop)) ->
     (wf_binop_ (numtype_addrtype v_Inn) (.mk_binop__0 v_Inn .ADD)) ->
@@ -8055,8 +8083,8 @@ inductive Expr_ok_const : context -> expr -> valtype -> Prop where
 inductive Type_ok : context -> type -> (List deftype) -> Prop where
   | mk_Type_ok : forall (C : context) (v_rectype : rectype) (dt_lst : (List deftype)) (x : idx) (var_0 : (List deftype)), 
     (fun_rolldt x v_rectype var_0) ->
-    ((proj_uN_0 x) == (List.length (C.TYPES))) ->
-    (dt_lst == var_0) ->
+    ((proj_uN_0 x) = (List.length (C.TYPES))) ->
+    (dt_lst = var_0) ->
     (Rectype_ok (C ++ { TYPES := dt_lst, TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] }) v_rectype (.OK x)) ->
     (wf_context C) ->
     (wf_context { TYPES := dt_lst, TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] }) ->
@@ -8077,7 +8105,7 @@ inductive Tag_ok : context -> tag -> tagtype -> Prop where
 inductive Global_ok : context -> global -> globaltype -> Prop where
   | mk_Global_ok : forall (C : context) (v_globaltype : globaltype) (v_expr : expr) (t : valtype), 
     (Globaltype_ok C v_globaltype) ->
-    (v_globaltype == (.mk_globaltype (some .MUT) t)) ->
+    (v_globaltype = (.mk_globaltype (some .MUT) t)) ->
     (Expr_ok_const C v_expr t) ->
     (wf_context C) ->
     (wf_global (.GLOBAL v_globaltype v_expr)) ->
@@ -8096,7 +8124,7 @@ inductive Mem_ok : context -> mem -> memtype -> Prop where
 inductive Table_ok : context -> table -> tabletype -> Prop where
   | mk_Table_ok : forall (C : context) (v_tabletype : tabletype) (v_expr : expr) («at» : addrtype) (lim : limits) (rt : reftype), 
     (Tabletype_ok C v_tabletype) ->
-    (v_tabletype == (.mk_tabletype «at» lim rt)) ->
+    (v_tabletype = (.mk_tabletype «at» lim rt)) ->
     (Expr_ok_const C v_expr (valtype_reftype rt)) ->
     (wf_context C) ->
     (wf_table (.TABLE v_tabletype v_expr)) ->
@@ -8123,7 +8151,7 @@ inductive Func_ok : context -> func -> deftype -> Prop where
   | mk_Func_ok : forall (C : context) (x : idx) (local_lst : (List «local»)) (v_expr : expr) (t_1_lst : (List valtype)) (t_2_lst : (List valtype)) (lct_lst : (List localtype)), 
     ((proj_uN_0 x) < (List.length (C.TYPES))) ->
     (Expand ((C.TYPES)[(proj_uN_0 x)]!) (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst))) ->
-    ((List.length lct_lst) == (List.length local_lst)) ->
+    ((List.length lct_lst) = (List.length local_lst)) ->
     Forall₂ (fun (lct : localtype) (v_local : «local») => (Local_ok C v_local lct)) lct_lst local_lst ->
     (Expr_ok (C ++ { TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := ((List.map (fun (t_1 : valtype) => ((.mk_localtype .SET t_1) : localtype)) t_1_lst) ++ lct_lst), LABELS := ([(.mk_list t_2_lst)] : (List resulttype)), RETURN := (some (.mk_list t_2_lst)), REFS := [], RECS := [] }) v_expr (.mk_list t_2_lst)) ->
     (wf_context C) ->
@@ -8141,7 +8169,7 @@ inductive Datamode_ok : context -> datamode -> datatype -> Prop where
     Datamode_ok C .PASSIVE .OK
   | active : forall (C : context) (x : idx) (v_expr : expr) («at» : addrtype) (lim : limits), 
     ((proj_uN_0 x) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x)]!) == (.PAGE «at» lim)) ->
+    (((C.MEMS)[(proj_uN_0 x)]!) = (.PAGE «at» lim)) ->
     (Expr_ok_const C v_expr (valtype_addrtype «at»)) ->
     (wf_context C) ->
     (wf_datamode (.ACTIVE x v_expr)) ->
@@ -8170,7 +8198,7 @@ inductive Elemmode_ok : context -> elemmode -> elemtype -> Prop where
     Elemmode_ok C .DECLARE rt
   | active : forall (C : context) (x : idx) (v_expr : expr) (rt : reftype) («at» : addrtype) (lim : limits) (rt' : reftype), 
     ((proj_uN_0 x) < (List.length (C.TABLES))) ->
-    (((C.TABLES)[(proj_uN_0 x)]!) == (.mk_tabletype «at» lim rt')) ->
+    (((C.TABLES)[(proj_uN_0 x)]!) = (.mk_tabletype «at» lim rt')) ->
     (Reftype_sub C rt rt') ->
     (Expr_ok_const C v_expr (valtype_addrtype «at»)) ->
     (wf_context C) ->
@@ -8213,35 +8241,35 @@ inductive Import_ok : context -> «import» -> externtype -> Prop where
 inductive Externidx_ok : context -> externidx -> externtype -> Prop where
   | tag : forall (C : context) (x : idx) (jt : tagtype), 
     ((proj_uN_0 x) < (List.length (C.TAGS))) ->
-    (((C.TAGS)[(proj_uN_0 x)]!) == jt) ->
+    (((C.TAGS)[(proj_uN_0 x)]!) = jt) ->
     (wf_context C) ->
     (wf_externidx (.TAG x)) ->
     (wf_externtype (.TAG jt)) ->
     Externidx_ok C (.TAG x) (.TAG jt)
   | global : forall (C : context) (x : idx) (gt : globaltype), 
     ((proj_uN_0 x) < (List.length (C.GLOBALS))) ->
-    (((C.GLOBALS)[(proj_uN_0 x)]!) == gt) ->
+    (((C.GLOBALS)[(proj_uN_0 x)]!) = gt) ->
     (wf_context C) ->
     (wf_externidx (.GLOBAL x)) ->
     (wf_externtype (.GLOBAL gt)) ->
     Externidx_ok C (.GLOBAL x) (.GLOBAL gt)
   | mem : forall (C : context) (x : idx) (mt : memtype), 
     ((proj_uN_0 x) < (List.length (C.MEMS))) ->
-    (((C.MEMS)[(proj_uN_0 x)]!) == mt) ->
+    (((C.MEMS)[(proj_uN_0 x)]!) = mt) ->
     (wf_context C) ->
     (wf_externidx (.MEM x)) ->
     (wf_externtype (.MEM mt)) ->
     Externidx_ok C (.MEM x) (.MEM mt)
   | table : forall (C : context) (x : idx) (tt : tabletype), 
     ((proj_uN_0 x) < (List.length (C.TABLES))) ->
-    (((C.TABLES)[(proj_uN_0 x)]!) == tt) ->
+    (((C.TABLES)[(proj_uN_0 x)]!) = tt) ->
     (wf_context C) ->
     (wf_externidx (.TABLE x)) ->
     (wf_externtype (.TABLE tt)) ->
     Externidx_ok C (.TABLE x) (.TABLE tt)
   | func : forall (C : context) (x : idx) (dt : deftype), 
     ((proj_uN_0 x) < (List.length (C.FUNCS))) ->
-    (((C.FUNCS)[(proj_uN_0 x)]!) == dt) ->
+    (((C.FUNCS)[(proj_uN_0 x)]!) = dt) ->
     (wf_context C) ->
     (wf_externidx (.FUNC x)) ->
     (wf_externtype (.FUNC (typeuse_deftype dt))) ->
@@ -8288,7 +8316,7 @@ inductive Types_ok : context -> (List type) -> (List deftype) -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/2.4-validation.modules.spectec:139.1-139.59 -/
 inductive nonfuncs : Type where
   | mk_nonfuncs (global_lst : (List global)) (mem_lst : (List mem)) (table_lst : (List table)) (elem_lst : (List elem)) (start_opt : (Option start)) (export_lst : (List «export»)) : nonfuncs
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.4-validation.modules.spectec:139.8-139.16 -/
@@ -8313,7 +8341,7 @@ inductive funcidx_nonfuncs_is_wf : nonfuncs -> (List funcidx) -> Prop where
   | funcidx_nonfuncs_is_wf_0 : forall (v_nonfuncs : nonfuncs) (ret_val_lst : (List funcidx)) (var_0 : (List funcidx)), 
     (fun_funcidx_nonfuncs v_nonfuncs var_0) ->
     (wf_nonfuncs v_nonfuncs) ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : funcidx) => (wf_uN 32 ret_val)) ret_val_lst ->
     funcidx_nonfuncs_is_wf v_nonfuncs ret_val_lst
 
@@ -8328,34 +8356,34 @@ inductive Module_ok : module -> moduletype -> Prop where
     (fun_funcidx_nonfuncs (.mk_nonfuncs global_lst mem_lst table_lst elem_lst start_opt export_lst) var_1) ->
     (fun_clos_moduletype C (.mk_moduletype xt_I_lst xt_E_lst) var_0) ->
     (Types_ok { TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] } type_lst dt'_lst) ->
-    ((List.length import_lst) == (List.length xt_I_lst)) ->
+    ((List.length import_lst) = (List.length xt_I_lst)) ->
     Forall₂ (fun (v_import : «import») (xt_I : externtype) => (Import_ok { TYPES := dt'_lst, TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] } v_import xt_I)) import_lst xt_I_lst ->
-    ((List.length jt_lst) == (List.length tag_lst)) ->
+    ((List.length jt_lst) = (List.length tag_lst)) ->
     Forall₂ (fun (jt : tagtype) (v_tag : tag) => (Tag_ok C' v_tag jt)) jt_lst tag_lst ->
     (Globals_ok C' global_lst gt_lst) ->
-    ((List.length mem_lst) == (List.length mt_lst)) ->
+    ((List.length mem_lst) = (List.length mt_lst)) ->
     Forall₂ (fun (v_mem : mem) (mt : memtype) => (Mem_ok C' v_mem mt)) mem_lst mt_lst ->
-    ((List.length table_lst) == (List.length tt_lst)) ->
+    ((List.length table_lst) = (List.length tt_lst)) ->
     Forall₂ (fun (v_table : table) (tt : tabletype) => (Table_ok C' v_table tt)) table_lst tt_lst ->
-    ((List.length dt_lst) == (List.length func_lst)) ->
+    ((List.length dt_lst) = (List.length func_lst)) ->
     Forall₂ (fun (dt : deftype) (v_func : func) => (Func_ok C v_func dt)) dt_lst func_lst ->
-    ((List.length data_lst) == (List.length ok_lst)) ->
+    ((List.length data_lst) = (List.length ok_lst)) ->
     Forall₂ (fun (v_data : data) (ok : datatype) => (Data_ok C v_data ok)) data_lst ok_lst ->
-    ((List.length elem_lst) == (List.length rt_lst)) ->
+    ((List.length elem_lst) = (List.length rt_lst)) ->
     Forall₂ (fun (v_elem : elem) (rt : elemtype) => (Elem_ok C v_elem rt)) elem_lst rt_lst ->
     Forall (fun (v_start : start) => (Start_ok C v_start)) (Option.toList start_opt) ->
-    ((List.length export_lst) == (List.length nm_lst)) ->
-    ((List.length export_lst) == (List.length xt_E_lst)) ->
+    ((List.length export_lst) = (List.length nm_lst)) ->
+    ((List.length export_lst) = (List.length xt_E_lst)) ->
     Forall₃ (fun (v_export : «export») (nm : name) (xt_E : externtype) => (Export_ok C v_export nm xt_E)) export_lst nm_lst xt_E_lst ->
     (disjoint_ name nm_lst) ->
-    (C == (C' ++ { TYPES := [], TAGS := (jt_I_lst ++ jt_lst), GLOBALS := gt_lst, MEMS := (mt_I_lst ++ mt_lst), TABLES := (tt_I_lst ++ tt_lst), FUNCS := [], DATAS := ok_lst, ELEMS := rt_lst, LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] })) ->
-    (C' == { TYPES := dt'_lst, TAGS := [], GLOBALS := gt_I_lst, MEMS := [], TABLES := [], FUNCS := (dt_I_lst ++ dt_lst), DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := x_lst, RECS := [] }) ->
-    (x_lst == var_1) ->
-    (jt_I_lst == var_2) ->
-    (gt_I_lst == var_3) ->
-    (mt_I_lst == var_4) ->
-    (tt_I_lst == var_5) ->
-    (dt_I_lst == var_6) ->
+    (C = (C' ++ { TYPES := [], TAGS := (jt_I_lst ++ jt_lst), GLOBALS := gt_lst, MEMS := (mt_I_lst ++ mt_lst), TABLES := (tt_I_lst ++ tt_lst), FUNCS := [], DATAS := ok_lst, ELEMS := rt_lst, LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] })) ->
+    (C' = { TYPES := dt'_lst, TAGS := [], GLOBALS := gt_I_lst, MEMS := [], TABLES := [], FUNCS := (dt_I_lst ++ dt_lst), DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := x_lst, RECS := [] }) ->
+    (x_lst = var_1) ->
+    (jt_I_lst = var_2) ->
+    (gt_I_lst = var_3) ->
+    (mt_I_lst = var_4) ->
+    (tt_I_lst = var_5) ->
+    (dt_I_lst = var_6) ->
     (wf_context C) ->
     (wf_context C') ->
     Forall (fun (nm : name) => (wf_name nm)) nm_lst ->
@@ -8386,7 +8414,7 @@ inductive Module_ok : module -> moduletype -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/3.0-numerics.relaxed.spectec:5.1-5.24 -/
 inductive relaxed2 : Type where
   | mk_relaxed2 (i : Nat) : relaxed2
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.0-numerics.relaxed.spectec:5.1-5.24 -/
@@ -8398,13 +8426,13 @@ def proj_relaxed2_0 : ∀  (x : relaxed2) , (Nat)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.0-numerics.relaxed.spectec:5.8-5.16 -/
 inductive wf_relaxed2 : relaxed2 -> Prop where
   | relaxed2_case_0 : forall (i : Nat), 
-    ((i == 0) || (i == 1)) ->
+    ((i = 0) ∨ (i = 1)) ->
     wf_relaxed2 (.mk_relaxed2 i)
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/3.0-numerics.relaxed.spectec:6.1-6.32 -/
 inductive relaxed4 : Type where
   | mk_relaxed4 (i : Nat) : relaxed4
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.0-numerics.relaxed.spectec:6.1-6.32 -/
@@ -8416,7 +8444,7 @@ def proj_relaxed4_0 : ∀  (x : relaxed4) , (Nat)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.0-numerics.relaxed.spectec:6.8-6.16 -/
 inductive wf_relaxed4 : relaxed4 -> Prop where
   | relaxed4_case_0 : forall (i : Nat), 
-    ((((i == 0) || (i == 1)) || (i == 2)) || (i == 3)) ->
+    ((((i = 0) ∨ (i = 1)) ∨ (i = 2)) ∨ (i = 3)) ->
     wf_relaxed4 (.mk_relaxed4 i)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.0-numerics.relaxed.spectec:8.1-8.83 -/
@@ -8437,7 +8465,7 @@ opaque R_fmadd : relaxed2 := opaqueDef
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.0-numerics.relaxed.spectec:18.6-18.13 -/
 inductive R_fmadd_is_wf : relaxed2 -> Prop where
   | R_fmadd_is_wf_0 : forall (ret_val : relaxed2), 
-    (ret_val == (R_fmadd )) ->
+    (ret_val = (R_fmadd )) ->
     (wf_relaxed2 ret_val) ->
     R_fmadd_is_wf ret_val
 
@@ -8447,7 +8475,7 @@ opaque R_fmin : relaxed4 := opaqueDef
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.0-numerics.relaxed.spectec:19.6-19.12 -/
 inductive R_fmin_is_wf : relaxed4 -> Prop where
   | R_fmin_is_wf_0 : forall (ret_val : relaxed4), 
-    (ret_val == (R_fmin )) ->
+    (ret_val = (R_fmin )) ->
     (wf_relaxed4 ret_val) ->
     R_fmin_is_wf ret_val
 
@@ -8457,7 +8485,7 @@ opaque R_fmax : relaxed4 := opaqueDef
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.0-numerics.relaxed.spectec:20.6-20.12 -/
 inductive R_fmax_is_wf : relaxed4 -> Prop where
   | R_fmax_is_wf_0 : forall (ret_val : relaxed4), 
-    (ret_val == (R_fmax )) ->
+    (ret_val = (R_fmax )) ->
     (wf_relaxed4 ret_val) ->
     R_fmax_is_wf ret_val
 
@@ -8467,7 +8495,7 @@ opaque R_idot : relaxed2 := opaqueDef
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.0-numerics.relaxed.spectec:21.6-21.12 -/
 inductive R_idot_is_wf : relaxed2 -> Prop where
   | R_idot_is_wf_0 : forall (ret_val : relaxed2), 
-    (ret_val == (R_idot )) ->
+    (ret_val = (R_idot )) ->
     (wf_relaxed2 ret_val) ->
     R_idot_is_wf ret_val
 
@@ -8477,7 +8505,7 @@ opaque R_iq15mulr : relaxed2 := opaqueDef
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.0-numerics.relaxed.spectec:22.6-22.16 -/
 inductive R_iq15mulr_is_wf : relaxed2 -> Prop where
   | R_iq15mulr_is_wf_0 : forall (ret_val : relaxed2), 
-    (ret_val == (R_iq15mulr )) ->
+    (ret_val = (R_iq15mulr )) ->
     (wf_relaxed2 ret_val) ->
     R_iq15mulr_is_wf ret_val
 
@@ -8487,7 +8515,7 @@ opaque R_trunc_u : relaxed4 := opaqueDef
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.0-numerics.relaxed.spectec:23.6-23.15 -/
 inductive R_trunc_u_is_wf : relaxed4 -> Prop where
   | R_trunc_u_is_wf_0 : forall (ret_val : relaxed4), 
-    (ret_val == (R_trunc_u )) ->
+    (ret_val = (R_trunc_u )) ->
     (wf_relaxed4 ret_val) ->
     R_trunc_u_is_wf ret_val
 
@@ -8497,7 +8525,7 @@ opaque R_trunc_s : relaxed2 := opaqueDef
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.0-numerics.relaxed.spectec:24.6-24.15 -/
 inductive R_trunc_s_is_wf : relaxed2 -> Prop where
   | R_trunc_s_is_wf_0 : forall (ret_val : relaxed2), 
-    (ret_val == (R_trunc_s )) ->
+    (ret_val = (R_trunc_s )) ->
     (wf_relaxed2 ret_val) ->
     R_trunc_s_is_wf ret_val
 
@@ -8507,7 +8535,7 @@ opaque R_swizzle : relaxed2 := opaqueDef
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.0-numerics.relaxed.spectec:25.6-25.15 -/
 inductive R_swizzle_is_wf : relaxed2 -> Prop where
   | R_swizzle_is_wf_0 : forall (ret_val : relaxed2), 
-    (ret_val == (R_swizzle )) ->
+    (ret_val = (R_swizzle )) ->
     (wf_relaxed2 ret_val) ->
     R_swizzle_is_wf ret_val
 
@@ -8517,7 +8545,7 @@ opaque R_laneselect : relaxed2 := opaqueDef
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.0-numerics.relaxed.spectec:26.6-26.18 -/
 inductive R_laneselect_is_wf : relaxed2 -> Prop where
   | R_laneselect_is_wf_0 : forall (ret_val : relaxed2), 
-    (ret_val == (R_laneselect )) ->
+    (ret_val = (R_laneselect )) ->
     (wf_relaxed2 ret_val) ->
     R_laneselect_is_wf ret_val
 
@@ -8528,7 +8556,7 @@ opaque s33_to_u32 : forall (v_s33 : s33), u32 := opaqueDef
 inductive s33_to_u32_is_wf : s33 -> u32 -> Prop where
   | s33_to_u32_is_wf_0 : forall (v_s33 : s33) (ret_val : u32), 
     (wf_sN 33 v_s33) ->
-    (ret_val == (s33_to_u32 v_s33)) ->
+    (ret_val = (s33_to_u32 v_s33)) ->
     (wf_uN 32 ret_val) ->
     s33_to_u32_is_wf v_s33 ret_val
 
@@ -8539,7 +8567,7 @@ opaque ibits_ : forall (v_N : N) (v_iN : iN), (List bit) := opaqueDef
 inductive ibits__is_wf : N -> iN -> (List bit) -> Prop where
   | ibits__is_wf_0 : forall (v_N : N) (v_iN : iN) (ret_val_lst : (List bit)), 
     (wf_uN v_N v_iN) ->
-    (ret_val_lst == (ibits_ v_N v_iN)) ->
+    (ret_val_lst = (ibits_ v_N v_iN)) ->
     Forall (fun (ret_val : bit) => (wf_bit ret_val)) ret_val_lst ->
     ibits__is_wf v_N v_iN ret_val_lst
 
@@ -8550,7 +8578,7 @@ opaque fbits_ : forall (v_N : N) (v_fN : fN), (List bit) := opaqueDef
 inductive fbits__is_wf : N -> fN -> (List bit) -> Prop where
   | fbits__is_wf_0 : forall (v_N : N) (v_fN : fN) (ret_val_lst : (List bit)), 
     (wf_fN v_N v_fN) ->
-    (ret_val_lst == (fbits_ v_N v_fN)) ->
+    (ret_val_lst = (fbits_ v_N v_fN)) ->
     Forall (fun (ret_val : bit) => (wf_bit ret_val)) ret_val_lst ->
     fbits__is_wf v_N v_fN ret_val_lst
 
@@ -8561,7 +8589,7 @@ opaque ibytes_ : forall (v_N : N) (v_iN : iN), (List byte) := opaqueDef
 inductive ibytes__is_wf : N -> iN -> (List byte) -> Prop where
   | ibytes__is_wf_0 : forall (v_N : N) (v_iN : iN) (ret_val_lst : (List byte)), 
     (wf_uN v_N v_iN) ->
-    (ret_val_lst == (ibytes_ v_N v_iN)) ->
+    (ret_val_lst = (ibytes_ v_N v_iN)) ->
     Forall (fun (ret_val : byte) => (wf_byte ret_val)) ret_val_lst ->
     ibytes__is_wf v_N v_iN ret_val_lst
 
@@ -8572,7 +8600,7 @@ opaque fbytes_ : forall (v_N : N) (v_fN : fN), (List byte) := opaqueDef
 inductive fbytes__is_wf : N -> fN -> (List byte) -> Prop where
   | fbytes__is_wf_0 : forall (v_N : N) (v_fN : fN) (ret_val_lst : (List byte)), 
     (wf_fN v_N v_fN) ->
-    (ret_val_lst == (fbytes_ v_N v_fN)) ->
+    (ret_val_lst = (fbytes_ v_N v_fN)) ->
     Forall (fun (ret_val : byte) => (wf_byte ret_val)) ret_val_lst ->
     fbytes__is_wf v_N v_fN ret_val_lst
 
@@ -8583,7 +8611,7 @@ opaque nbytes_ : forall (v_numtype : numtype) (v_num_ : num_), (List byte) := op
 inductive nbytes__is_wf : numtype -> num_ -> (List byte) -> Prop where
   | nbytes__is_wf_0 : forall (v_numtype : numtype) (v_num_ : num_) (ret_val_lst : (List byte)), 
     (wf_num_ v_numtype v_num_) ->
-    (ret_val_lst == (nbytes_ v_numtype v_num_)) ->
+    (ret_val_lst = (nbytes_ v_numtype v_num_)) ->
     Forall (fun (ret_val : byte) => (wf_byte ret_val)) ret_val_lst ->
     nbytes__is_wf v_numtype v_num_ ret_val_lst
 
@@ -8594,7 +8622,7 @@ opaque vbytes_ : forall (v_vectype : vectype) (v_vec_ : vec_), (List byte) := op
 inductive vbytes__is_wf : vectype -> vec_ -> (List byte) -> Prop where
   | vbytes__is_wf_0 : forall (v_vectype : vectype) (v_vec_ : vec_) (ret_val_lst : (List byte)), 
     (wf_uN (vsize v_vectype) v_vec_) ->
-    (ret_val_lst == (vbytes_ v_vectype v_vec_)) ->
+    (ret_val_lst = (vbytes_ v_vectype v_vec_)) ->
     Forall (fun (ret_val : byte) => (wf_byte ret_val)) ret_val_lst ->
     vbytes__is_wf v_vectype v_vec_ ret_val_lst
 
@@ -8606,7 +8634,7 @@ inductive zbytes__is_wf : storagetype -> lit_ -> (List byte) -> Prop where
   | zbytes__is_wf_0 : forall (v_storagetype : storagetype) (v_lit_ : lit_) (ret_val_lst : (List byte)), 
     (wf_storagetype v_storagetype) ->
     (wf_lit_ v_storagetype v_lit_) ->
-    (ret_val_lst == (zbytes_ v_storagetype v_lit_)) ->
+    (ret_val_lst = (zbytes_ v_storagetype v_lit_)) ->
     Forall (fun (ret_val : byte) => (wf_byte ret_val)) ret_val_lst ->
     zbytes__is_wf v_storagetype v_lit_ ret_val_lst
 
@@ -8617,7 +8645,7 @@ opaque cbytes_ : forall (v_Cnn : Cnn) (v_lit_ : lit_), (List byte) := opaqueDef
 inductive cbytes__is_wf : Cnn -> lit_ -> (List byte) -> Prop where
   | cbytes__is_wf_0 : forall (v_Cnn : Cnn) (v_lit_ : lit_) (ret_val_lst : (List byte)), 
     (wf_lit_ (storagetype_Cnn v_Cnn) v_lit_) ->
-    (ret_val_lst == (cbytes_ v_Cnn v_lit_)) ->
+    (ret_val_lst = (cbytes_ v_Cnn v_lit_)) ->
     Forall (fun (ret_val : byte) => (wf_byte ret_val)) ret_val_lst ->
     cbytes__is_wf v_Cnn v_lit_ ret_val_lst
 
@@ -8628,7 +8656,7 @@ opaque inv_ibits_ : forall (v_N : N) (var_0_lst : (List bit)), iN := opaqueDef
 inductive inv_ibits__is_wf : N -> (List bit) -> iN -> Prop where
   | inv_ibits__is_wf_0 : forall (v_N : N) (var_0_lst : (List bit)) (ret_val : iN), 
     Forall (fun (var_0 : bit) => (wf_bit var_0)) var_0_lst ->
-    (ret_val == (inv_ibits_ v_N var_0_lst)) ->
+    (ret_val = (inv_ibits_ v_N var_0_lst)) ->
     (wf_uN v_N ret_val) ->
     inv_ibits__is_wf v_N var_0_lst ret_val
 
@@ -8639,7 +8667,7 @@ opaque inv_fbits_ : forall (v_N : N) (var_0_lst : (List bit)), fN := opaqueDef
 inductive inv_fbits__is_wf : N -> (List bit) -> fN -> Prop where
   | inv_fbits__is_wf_0 : forall (v_N : N) (var_0_lst : (List bit)) (ret_val : fN), 
     Forall (fun (var_0 : bit) => (wf_bit var_0)) var_0_lst ->
-    (ret_val == (inv_fbits_ v_N var_0_lst)) ->
+    (ret_val = (inv_fbits_ v_N var_0_lst)) ->
     (wf_fN v_N ret_val) ->
     inv_fbits__is_wf v_N var_0_lst ret_val
 
@@ -8650,7 +8678,7 @@ opaque inv_ibytes_ : forall (v_N : N) (var_0_lst : (List byte)), iN := opaqueDef
 inductive inv_ibytes__is_wf : N -> (List byte) -> iN -> Prop where
   | inv_ibytes__is_wf_0 : forall (v_N : N) (var_0_lst : (List byte)) (ret_val : iN), 
     Forall (fun (var_0 : byte) => (wf_byte var_0)) var_0_lst ->
-    (ret_val == (inv_ibytes_ v_N var_0_lst)) ->
+    (ret_val = (inv_ibytes_ v_N var_0_lst)) ->
     (wf_uN v_N ret_val) ->
     inv_ibytes__is_wf v_N var_0_lst ret_val
 
@@ -8661,7 +8689,7 @@ opaque inv_fbytes_ : forall (v_N : N) (var_0_lst : (List byte)), fN := opaqueDef
 inductive inv_fbytes__is_wf : N -> (List byte) -> fN -> Prop where
   | inv_fbytes__is_wf_0 : forall (v_N : N) (var_0_lst : (List byte)) (ret_val : fN), 
     Forall (fun (var_0 : byte) => (wf_byte var_0)) var_0_lst ->
-    (ret_val == (inv_fbytes_ v_N var_0_lst)) ->
+    (ret_val = (inv_fbytes_ v_N var_0_lst)) ->
     (wf_fN v_N ret_val) ->
     inv_fbytes__is_wf v_N var_0_lst ret_val
 
@@ -8672,7 +8700,7 @@ opaque inv_nbytes_ : forall (v_numtype : numtype) (var_0_lst : (List byte)), num
 inductive inv_nbytes__is_wf : numtype -> (List byte) -> num_ -> Prop where
   | inv_nbytes__is_wf_0 : forall (v_numtype : numtype) (var_0_lst : (List byte)) (ret_val : num_), 
     Forall (fun (var_0 : byte) => (wf_byte var_0)) var_0_lst ->
-    (ret_val == (inv_nbytes_ v_numtype var_0_lst)) ->
+    (ret_val = (inv_nbytes_ v_numtype var_0_lst)) ->
     (wf_num_ v_numtype ret_val) ->
     inv_nbytes__is_wf v_numtype var_0_lst ret_val
 
@@ -8683,7 +8711,7 @@ opaque inv_vbytes_ : forall (v_vectype : vectype) (var_0_lst : (List byte)), vec
 inductive inv_vbytes__is_wf : vectype -> (List byte) -> vec_ -> Prop where
   | inv_vbytes__is_wf_0 : forall (v_vectype : vectype) (var_0_lst : (List byte)) (ret_val : vec_), 
     Forall (fun (var_0 : byte) => (wf_byte var_0)) var_0_lst ->
-    (ret_val == (inv_vbytes_ v_vectype var_0_lst)) ->
+    (ret_val = (inv_vbytes_ v_vectype var_0_lst)) ->
     (wf_uN (vsize v_vectype) ret_val) ->
     inv_vbytes__is_wf v_vectype var_0_lst ret_val
 
@@ -8695,7 +8723,7 @@ inductive inv_zbytes__is_wf : storagetype -> (List byte) -> lit_ -> Prop where
   | inv_zbytes__is_wf_0 : forall (v_storagetype : storagetype) (var_0_lst : (List byte)) (ret_val : lit_), 
     (wf_storagetype v_storagetype) ->
     Forall (fun (var_0 : byte) => (wf_byte var_0)) var_0_lst ->
-    (ret_val == (inv_zbytes_ v_storagetype var_0_lst)) ->
+    (ret_val = (inv_zbytes_ v_storagetype var_0_lst)) ->
     (wf_lit_ v_storagetype ret_val) ->
     inv_zbytes__is_wf v_storagetype var_0_lst ret_val
 
@@ -8706,7 +8734,7 @@ opaque inv_cbytes_ : forall (v_Cnn : Cnn) (var_0_lst : (List byte)), lit_ := opa
 inductive inv_cbytes__is_wf : Cnn -> (List byte) -> lit_ -> Prop where
   | inv_cbytes__is_wf_0 : forall (v_Cnn : Cnn) (var_0_lst : (List byte)) (ret_val : lit_), 
     Forall (fun (var_0 : byte) => (wf_byte var_0)) var_0_lst ->
-    (ret_val == (inv_cbytes_ v_Cnn var_0_lst)) ->
+    (ret_val = (inv_cbytes_ v_Cnn var_0_lst)) ->
     (wf_lit_ (storagetype_Cnn v_Cnn) ret_val) ->
     inv_cbytes__is_wf v_Cnn var_0_lst ret_val
 
@@ -8716,16 +8744,16 @@ inductive fun_signed_ : N -> Nat -> Int -> Prop where
     (i < (2 ^ (Int.toNat ((Int.ofNat v_N) - (Int.ofNat 1))))) ->
     fun_signed_ v_N i (Int.ofNat i)
   | fun_signed__case_1 : forall (v_N : Nat) (i : Nat), 
-    (((2 ^ (Int.toNat ((Int.ofNat v_N) - (Int.ofNat 1)))) <= i) && (i < (2 ^ v_N))) ->
+    (((2 ^ (Int.toNat ((Int.ofNat v_N) - (Int.ofNat 1)))) <= i) ∧ (i < (2 ^ v_N))) ->
     fun_signed_ v_N i ((Int.ofNat i) - (Int.ofNat (2 ^ v_N)))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:56.6-56.18 -/
 inductive fun_inv_signed_ : N -> Int -> Nat -> Prop where
   | fun_inv_signed__case_0 : forall (v_N : Nat) (i : Int), 
-    (((Int.ofNat 0) <= i) && (i < (Int.ofNat (2 ^ (Int.toNat ((Int.ofNat v_N) - (Int.ofNat 1))))))) ->
+    (((Int.ofNat 0) <= i) ∧ (i < (Int.ofNat (2 ^ (Int.toNat ((Int.ofNat v_N) - (Int.ofNat 1))))))) ->
     fun_inv_signed_ v_N i (Int.toNat i)
   | fun_inv_signed__case_1 : forall (v_N : Nat) (i : Int), 
-    (((0 - (Int.ofNat (2 ^ (Int.toNat ((Int.ofNat v_N) - (Int.ofNat 1)))))) <= i) && (i < (Int.ofNat 0))) ->
+    (((0 - (Int.ofNat (2 ^ (Int.toNat ((Int.ofNat v_N) - (Int.ofNat 1)))))) <= i) ∧ (i < (Int.ofNat 0))) ->
     fun_inv_signed_ v_N i (Int.toNat (i + (Int.ofNat (2 ^ v_N))))
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:61.1-61.60 -/
@@ -8748,7 +8776,7 @@ inductive fun_zero : lanetype -> lane_ -> Prop where
 inductive zero_is_wf : lanetype -> lane_ -> Prop where
   | zero_is_wf_0 : forall (v_lanetype : lanetype) (ret_val : lane_) (var_0 : lane_), 
     (fun_zero v_lanetype var_0) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_lane_ v_lanetype ret_val) ->
     zero_is_wf v_lanetype ret_val
 
@@ -8788,7 +8816,7 @@ def ineg_ : ∀  (v_N : N) (v_iN : iN) , iN
 inductive ineg__is_wf : N -> iN -> iN -> Prop where
   | ineg__is_wf_0 : forall (v_N : N) (v_iN : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
-    (ret_val == (ineg_ v_N v_iN)) ->
+    (ret_val = (ineg_ v_N v_iN)) ->
     (wf_uN v_N ret_val) ->
     ineg__is_wf v_N v_iN ret_val
 
@@ -8799,7 +8827,7 @@ opaque iabs_ : forall (v_N : N) (v_iN : iN), iN := opaqueDef
 inductive iabs__is_wf : N -> iN -> iN -> Prop where
   | iabs__is_wf_0 : forall (v_N : N) (v_iN : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
-    (ret_val == (iabs_ v_N v_iN)) ->
+    (ret_val = (iabs_ v_N v_iN)) ->
     (wf_uN v_N ret_val) ->
     iabs__is_wf v_N v_iN ret_val
 
@@ -8810,7 +8838,7 @@ opaque iclz_ : forall (v_N : N) (v_iN : iN), iN := opaqueDef
 inductive iclz__is_wf : N -> iN -> iN -> Prop where
   | iclz__is_wf_0 : forall (v_N : N) (v_iN : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
-    (ret_val == (iclz_ v_N v_iN)) ->
+    (ret_val = (iclz_ v_N v_iN)) ->
     (wf_uN v_N ret_val) ->
     iclz__is_wf v_N v_iN ret_val
 
@@ -8821,7 +8849,7 @@ opaque ictz_ : forall (v_N : N) (v_iN : iN), iN := opaqueDef
 inductive ictz__is_wf : N -> iN -> iN -> Prop where
   | ictz__is_wf_0 : forall (v_N : N) (v_iN : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
-    (ret_val == (ictz_ v_N v_iN)) ->
+    (ret_val = (ictz_ v_N v_iN)) ->
     (wf_uN v_N ret_val) ->
     ictz__is_wf v_N v_iN ret_val
 
@@ -8832,7 +8860,7 @@ opaque ipopcnt_ : forall (v_N : N) (v_iN : iN), iN := opaqueDef
 inductive ipopcnt__is_wf : N -> iN -> iN -> Prop where
   | ipopcnt__is_wf_0 : forall (v_N : N) (v_iN : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
-    (ret_val == (ipopcnt_ v_N v_iN)) ->
+    (ret_val = (ipopcnt_ v_N v_iN)) ->
     (wf_uN v_N ret_val) ->
     ipopcnt__is_wf v_N v_iN ret_val
 
@@ -8849,7 +8877,7 @@ inductive iextend__is_wf : N -> M -> sx -> iN -> iN -> Prop where
   | iextend__is_wf_0 : forall (v_N : N) (v_M : M) (v_sx : sx) (v_iN : iN) (ret_val : iN) (var_0 : iN), 
     (fun_iextend_ v_N v_M v_sx v_iN var_0) ->
     (wf_uN v_N v_iN) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_uN v_N ret_val) ->
     iextend__is_wf v_N v_M v_sx v_iN ret_val
 
@@ -8864,7 +8892,7 @@ inductive iadd__is_wf : N -> iN -> iN -> iN -> Prop where
   | iadd__is_wf_0 : forall (v_N : N) (v_iN : iN) (iN_0 : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (iadd_ v_N v_iN iN_0)) ->
+    (ret_val = (iadd_ v_N v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
     iadd__is_wf v_N v_iN iN_0 ret_val
 
@@ -8879,7 +8907,7 @@ inductive isub__is_wf : N -> iN -> iN -> iN -> Prop where
   | isub__is_wf_0 : forall (v_N : N) (v_iN : iN) (iN_0 : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (isub_ v_N v_iN iN_0)) ->
+    (ret_val = (isub_ v_N v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
     isub__is_wf v_N v_iN iN_0 ret_val
 
@@ -8894,7 +8922,7 @@ inductive imul__is_wf : N -> iN -> iN -> iN -> Prop where
   | imul__is_wf_0 : forall (v_N : N) (v_iN : iN) (iN_0 : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (imul_ v_N v_iN iN_0)) ->
+    (ret_val = (imul_ v_N v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
     imul__is_wf v_N v_iN iN_0 ret_val
 
@@ -8908,7 +8936,7 @@ inductive fun_idiv_ : N -> sx -> iN -> iN -> (Option iN) -> Prop where
   | fun_idiv__case_3 : forall (v_N : Nat) (i_1 : uN) (i_2 : uN) (var_1 : Int) (var_0 : Int), 
     (fun_signed_ v_N (proj_uN_0 i_2) var_1) ->
     (fun_signed_ v_N (proj_uN_0 i_1) var_0) ->
-    (((Rat.ofInt var_0) / (Rat.ofInt var_1)) == (Rat.ofInt (Int.ofNat (2 ^ (Int.toNat ((Int.ofNat v_N) - (Int.ofNat 1))))))) ->
+    (((Rat.ofInt var_0) / (Rat.ofInt var_1)) = (Rat.ofInt (Int.ofNat (2 ^ (Int.toNat ((Int.ofNat v_N) - (Int.ofNat 1))))))) ->
     fun_idiv_ v_N .S i_1 i_2 none
   | fun_idiv__case_4 : forall (v_N : Nat) (i_1 : uN) (i_2 : uN) (var_2 : Int) (var_1 : Int) (var_0 : Nat), 
     (fun_signed_ v_N (proj_uN_0 i_2) var_2) ->
@@ -8926,7 +8954,7 @@ inductive fun_irem_ : N -> sx -> iN -> iN -> (Option iN) -> Prop where
     (fun_signed_ v_N (proj_uN_0 i_2) var_2) ->
     (fun_signed_ v_N (proj_uN_0 i_1) var_1) ->
     (fun_inv_signed_ v_N (j_1 - (j_2 * (truncz ((Rat.ofInt j_1) / (Rat.ofInt j_2))))) var_0) ->
-    ((j_1 == var_1) && (j_2 == var_2)) ->
+    ((j_1 = var_1) ∧ (j_2 = var_2)) ->
     fun_irem_ v_N .S i_1 i_2 (some (.mk_uN var_0))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:111.6-111.12 -/
@@ -8935,7 +8963,7 @@ inductive irem__is_wf : N -> sx -> iN -> iN -> (Option iN) -> Prop where
     (fun_irem_ v_N v_sx v_iN iN_0 var_0) ->
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val_opt == var_0) ->
+    (ret_val_opt = var_0) ->
     Forall (fun (ret_val : iN) => (wf_uN v_N ret_val)) (Option.toList ret_val_opt) ->
     irem__is_wf v_N v_sx v_iN iN_0 ret_val_opt
 
@@ -8947,7 +8975,7 @@ inductive imin__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
   | imin__is_wf_0 : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (imin_ v_N v_sx v_iN iN_0)) ->
+    (ret_val = (imin_ v_N v_sx v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
     imin__is_wf v_N v_sx v_iN iN_0 ret_val
 
@@ -8959,7 +8987,7 @@ inductive imax__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
   | imax__is_wf_0 : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (imax_ v_N v_sx v_iN iN_0)) ->
+    (ret_val = (imax_ v_N v_sx v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
     imax__is_wf v_N v_sx v_iN iN_0 ret_val
 
@@ -8971,7 +8999,7 @@ inductive iadd_sat__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
   | iadd_sat__is_wf_0 : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (iadd_sat_ v_N v_sx v_iN iN_0)) ->
+    (ret_val = (iadd_sat_ v_N v_sx v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
     iadd_sat__is_wf v_N v_sx v_iN iN_0 ret_val
 
@@ -8983,7 +9011,7 @@ inductive isub_sat__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
   | isub_sat__is_wf_0 : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (isub_sat_ v_N v_sx v_iN iN_0)) ->
+    (ret_val = (isub_sat_ v_N v_sx v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
     isub_sat__is_wf v_N v_sx v_iN iN_0 ret_val
 
@@ -8995,7 +9023,7 @@ inductive iq15mulr_sat__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
   | iq15mulr_sat__is_wf_0 : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (iq15mulr_sat_ v_N v_sx v_iN iN_0)) ->
+    (ret_val = (iq15mulr_sat_ v_N v_sx v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
     iq15mulr_sat__is_wf v_N v_sx v_iN iN_0 ret_val
 
@@ -9007,7 +9035,7 @@ inductive irelaxed_q15mulr__is_wf : N -> sx -> iN -> iN -> (List iN) -> Prop whe
   | irelaxed_q15mulr__is_wf_0 : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN) (ret_val_lst : (List iN)), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val_lst == (irelaxed_q15mulr_ v_N v_sx v_iN iN_0)) ->
+    (ret_val_lst = (irelaxed_q15mulr_ v_N v_sx v_iN iN_0)) ->
     Forall (fun (ret_val : iN) => (wf_uN v_N ret_val)) ret_val_lst ->
     irelaxed_q15mulr__is_wf v_N v_sx v_iN iN_0 ret_val_lst
 
@@ -9019,7 +9047,7 @@ inductive iavgr__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
   | iavgr__is_wf_0 : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (iavgr_ v_N v_sx v_iN iN_0)) ->
+    (ret_val = (iavgr_ v_N v_sx v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
     iavgr__is_wf v_N v_sx v_iN iN_0 ret_val
 
@@ -9030,7 +9058,7 @@ opaque inot_ : forall (v_N : N) (v_iN : iN), iN := opaqueDef
 inductive inot__is_wf : N -> iN -> iN -> Prop where
   | inot__is_wf_0 : forall (v_N : N) (v_iN : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
-    (ret_val == (inot_ v_N v_iN)) ->
+    (ret_val = (inot_ v_N v_iN)) ->
     (wf_uN v_N ret_val) ->
     inot__is_wf v_N v_iN ret_val
 
@@ -9041,7 +9069,7 @@ opaque irev_ : forall (v_N : N) (v_iN : iN), iN := opaqueDef
 inductive irev__is_wf : N -> iN -> iN -> Prop where
   | irev__is_wf_0 : forall (v_N : N) (v_iN : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
-    (ret_val == (irev_ v_N v_iN)) ->
+    (ret_val = (irev_ v_N v_iN)) ->
     (wf_uN v_N ret_val) ->
     irev__is_wf v_N v_iN ret_val
 
@@ -9053,7 +9081,7 @@ inductive iand__is_wf : N -> iN -> iN -> iN -> Prop where
   | iand__is_wf_0 : forall (v_N : N) (v_iN : iN) (iN_0 : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (iand_ v_N v_iN iN_0)) ->
+    (ret_val = (iand_ v_N v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
     iand__is_wf v_N v_iN iN_0 ret_val
 
@@ -9065,7 +9093,7 @@ inductive iandnot__is_wf : N -> iN -> iN -> iN -> Prop where
   | iandnot__is_wf_0 : forall (v_N : N) (v_iN : iN) (iN_0 : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (iandnot_ v_N v_iN iN_0)) ->
+    (ret_val = (iandnot_ v_N v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
     iandnot__is_wf v_N v_iN iN_0 ret_val
 
@@ -9077,7 +9105,7 @@ inductive ior__is_wf : N -> iN -> iN -> iN -> Prop where
   | ior__is_wf_0 : forall (v_N : N) (v_iN : iN) (iN_0 : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (ior_ v_N v_iN iN_0)) ->
+    (ret_val = (ior_ v_N v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
     ior__is_wf v_N v_iN iN_0 ret_val
 
@@ -9089,7 +9117,7 @@ inductive ixor__is_wf : N -> iN -> iN -> iN -> Prop where
   | ixor__is_wf_0 : forall (v_N : N) (v_iN : iN) (iN_0 : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (ixor_ v_N v_iN iN_0)) ->
+    (ret_val = (ixor_ v_N v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
     ixor__is_wf v_N v_iN iN_0 ret_val
 
@@ -9101,7 +9129,7 @@ inductive ishl__is_wf : N -> iN -> iN -> iN -> Prop where
   | ishl__is_wf_0 : forall (v_N : N) (v_iN : iN) (iN_0 : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (ishl_ v_N v_iN iN_0)) ->
+    (ret_val = (ishl_ v_N v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
     ishl__is_wf v_N v_iN iN_0 ret_val
 
@@ -9113,7 +9141,7 @@ inductive ishr__is_wf : N -> sx -> iN -> iN -> iN -> Prop where
   | ishr__is_wf_0 : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (ishr_ v_N v_sx v_iN iN_0)) ->
+    (ret_val = (ishr_ v_N v_sx v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
     ishr__is_wf v_N v_sx v_iN iN_0 ret_val
 
@@ -9125,7 +9153,7 @@ inductive irotl__is_wf : N -> iN -> iN -> iN -> Prop where
   | irotl__is_wf_0 : forall (v_N : N) (v_iN : iN) (iN_0 : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (irotl_ v_N v_iN iN_0)) ->
+    (ret_val = (irotl_ v_N v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
     irotl__is_wf v_N v_iN iN_0 ret_val
 
@@ -9137,7 +9165,7 @@ inductive irotr__is_wf : N -> iN -> iN -> iN -> Prop where
   | irotr__is_wf_0 : forall (v_N : N) (v_iN : iN) (iN_0 : iN) (ret_val : iN), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (irotr_ v_N v_iN iN_0)) ->
+    (ret_val = (irotr_ v_N v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
     irotr__is_wf v_N v_iN iN_0 ret_val
 
@@ -9150,7 +9178,7 @@ inductive ibitselect__is_wf : N -> iN -> iN -> iN -> iN -> Prop where
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
     (wf_uN v_N iN_1) ->
-    (ret_val == (ibitselect_ v_N v_iN iN_0 iN_1)) ->
+    (ret_val = (ibitselect_ v_N v_iN iN_0 iN_1)) ->
     (wf_uN v_N ret_val) ->
     ibitselect__is_wf v_N v_iN iN_0 iN_1 ret_val
 
@@ -9163,7 +9191,7 @@ inductive irelaxed_laneselect__is_wf : N -> iN -> iN -> iN -> (List iN) -> Prop 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
     (wf_uN v_N iN_1) ->
-    (ret_val_lst == (irelaxed_laneselect_ v_N v_iN iN_0 iN_1)) ->
+    (ret_val_lst = (irelaxed_laneselect_ v_N v_iN iN_0 iN_1)) ->
     Forall (fun (ret_val : iN) => (wf_uN v_N ret_val)) ret_val_lst ->
     irelaxed_laneselect__is_wf v_N v_iN iN_0 iN_1 ret_val_lst
 
@@ -9177,7 +9205,7 @@ def ieqz_ : ∀  (v_N : N) (v_iN : iN) , u32
 inductive ieqz__is_wf : N -> iN -> u32 -> Prop where
   | ieqz__is_wf_0 : forall (v_N : N) (v_iN : iN) (ret_val : u32), 
     (wf_uN v_N v_iN) ->
-    (ret_val == (ieqz_ v_N v_iN)) ->
+    (ret_val = (ieqz_ v_N v_iN)) ->
     (wf_uN 32 ret_val) ->
     ieqz__is_wf v_N v_iN ret_val
 
@@ -9191,7 +9219,7 @@ def inez_ : ∀  (v_N : N) (v_iN : iN) , u32
 inductive inez__is_wf : N -> iN -> u32 -> Prop where
   | inez__is_wf_0 : forall (v_N : N) (v_iN : iN) (ret_val : u32), 
     (wf_uN v_N v_iN) ->
-    (ret_val == (inez_ v_N v_iN)) ->
+    (ret_val = (inez_ v_N v_iN)) ->
     (wf_uN 32 ret_val) ->
     inez__is_wf v_N v_iN ret_val
 
@@ -9206,7 +9234,7 @@ inductive ieq__is_wf : N -> iN -> iN -> u32 -> Prop where
   | ieq__is_wf_0 : forall (v_N : N) (v_iN : iN) (iN_0 : iN) (ret_val : u32), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (ieq_ v_N v_iN iN_0)) ->
+    (ret_val = (ieq_ v_N v_iN iN_0)) ->
     (wf_uN 32 ret_val) ->
     ieq__is_wf v_N v_iN iN_0 ret_val
 
@@ -9221,7 +9249,7 @@ inductive ine__is_wf : N -> iN -> iN -> u32 -> Prop where
   | ine__is_wf_0 : forall (v_N : N) (v_iN : iN) (iN_0 : iN) (ret_val : u32), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (ine_ v_N v_iN iN_0)) ->
+    (ret_val = (ine_ v_N v_iN iN_0)) ->
     (wf_uN 32 ret_val) ->
     ine__is_wf v_N v_iN iN_0 ret_val
 
@@ -9233,7 +9261,7 @@ inductive ilt__is_wf : N -> sx -> iN -> iN -> u32 -> Prop where
   | ilt__is_wf_0 : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN) (ret_val : u32), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (ilt_ v_N v_sx v_iN iN_0)) ->
+    (ret_val = (ilt_ v_N v_sx v_iN iN_0)) ->
     (wf_uN 32 ret_val) ->
     ilt__is_wf v_N v_sx v_iN iN_0 ret_val
 
@@ -9245,7 +9273,7 @@ inductive igt__is_wf : N -> sx -> iN -> iN -> u32 -> Prop where
   | igt__is_wf_0 : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN) (ret_val : u32), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (igt_ v_N v_sx v_iN iN_0)) ->
+    (ret_val = (igt_ v_N v_sx v_iN iN_0)) ->
     (wf_uN 32 ret_val) ->
     igt__is_wf v_N v_sx v_iN iN_0 ret_val
 
@@ -9257,7 +9285,7 @@ inductive ile__is_wf : N -> sx -> iN -> iN -> u32 -> Prop where
   | ile__is_wf_0 : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN) (ret_val : u32), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (ile_ v_N v_sx v_iN iN_0)) ->
+    (ret_val = (ile_ v_N v_sx v_iN iN_0)) ->
     (wf_uN 32 ret_val) ->
     ile__is_wf v_N v_sx v_iN iN_0 ret_val
 
@@ -9269,7 +9297,7 @@ inductive ige__is_wf : N -> sx -> iN -> iN -> u32 -> Prop where
   | ige__is_wf_0 : forall (v_N : N) (v_sx : sx) (v_iN : iN) (iN_0 : iN) (ret_val : u32), 
     (wf_uN v_N v_iN) ->
     (wf_uN v_N iN_0) ->
-    (ret_val == (ige_ v_N v_sx v_iN iN_0)) ->
+    (ret_val = (ige_ v_N v_sx v_iN iN_0)) ->
     (wf_uN 32 ret_val) ->
     ige__is_wf v_N v_sx v_iN iN_0 ret_val
 
@@ -9280,7 +9308,7 @@ opaque fabs_ : forall (v_N : N) (v_fN : fN), (List fN) := opaqueDef
 inductive fabs__is_wf : N -> fN -> (List fN) -> Prop where
   | fabs__is_wf_0 : forall (v_N : N) (v_fN : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
-    (ret_val_lst == (fabs_ v_N v_fN)) ->
+    (ret_val_lst = (fabs_ v_N v_fN)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     fabs__is_wf v_N v_fN ret_val_lst
 
@@ -9291,7 +9319,7 @@ opaque fneg_ : forall (v_N : N) (v_fN : fN), (List fN) := opaqueDef
 inductive fneg__is_wf : N -> fN -> (List fN) -> Prop where
   | fneg__is_wf_0 : forall (v_N : N) (v_fN : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
-    (ret_val_lst == (fneg_ v_N v_fN)) ->
+    (ret_val_lst = (fneg_ v_N v_fN)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     fneg__is_wf v_N v_fN ret_val_lst
 
@@ -9302,7 +9330,7 @@ opaque fsqrt_ : forall (v_N : N) (v_fN : fN), (List fN) := opaqueDef
 inductive fsqrt__is_wf : N -> fN -> (List fN) -> Prop where
   | fsqrt__is_wf_0 : forall (v_N : N) (v_fN : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
-    (ret_val_lst == (fsqrt_ v_N v_fN)) ->
+    (ret_val_lst = (fsqrt_ v_N v_fN)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     fsqrt__is_wf v_N v_fN ret_val_lst
 
@@ -9313,7 +9341,7 @@ opaque fceil_ : forall (v_N : N) (v_fN : fN), (List fN) := opaqueDef
 inductive fceil__is_wf : N -> fN -> (List fN) -> Prop where
   | fceil__is_wf_0 : forall (v_N : N) (v_fN : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
-    (ret_val_lst == (fceil_ v_N v_fN)) ->
+    (ret_val_lst = (fceil_ v_N v_fN)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     fceil__is_wf v_N v_fN ret_val_lst
 
@@ -9324,7 +9352,7 @@ opaque ffloor_ : forall (v_N : N) (v_fN : fN), (List fN) := opaqueDef
 inductive ffloor__is_wf : N -> fN -> (List fN) -> Prop where
   | ffloor__is_wf_0 : forall (v_N : N) (v_fN : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
-    (ret_val_lst == (ffloor_ v_N v_fN)) ->
+    (ret_val_lst = (ffloor_ v_N v_fN)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     ffloor__is_wf v_N v_fN ret_val_lst
 
@@ -9335,7 +9363,7 @@ opaque ftrunc_ : forall (v_N : N) (v_fN : fN), (List fN) := opaqueDef
 inductive ftrunc__is_wf : N -> fN -> (List fN) -> Prop where
   | ftrunc__is_wf_0 : forall (v_N : N) (v_fN : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
-    (ret_val_lst == (ftrunc_ v_N v_fN)) ->
+    (ret_val_lst = (ftrunc_ v_N v_fN)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     ftrunc__is_wf v_N v_fN ret_val_lst
 
@@ -9346,7 +9374,7 @@ opaque fnearest_ : forall (v_N : N) (v_fN : fN), (List fN) := opaqueDef
 inductive fnearest__is_wf : N -> fN -> (List fN) -> Prop where
   | fnearest__is_wf_0 : forall (v_N : N) (v_fN : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
-    (ret_val_lst == (fnearest_ v_N v_fN)) ->
+    (ret_val_lst = (fnearest_ v_N v_fN)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     fnearest__is_wf v_N v_fN ret_val_lst
 
@@ -9358,7 +9386,7 @@ inductive fadd__is_wf : N -> fN -> fN -> (List fN) -> Prop where
   | fadd__is_wf_0 : forall (v_N : N) (v_fN : fN) (fN_0 : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
-    (ret_val_lst == (fadd_ v_N v_fN fN_0)) ->
+    (ret_val_lst = (fadd_ v_N v_fN fN_0)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     fadd__is_wf v_N v_fN fN_0 ret_val_lst
 
@@ -9370,7 +9398,7 @@ inductive fsub__is_wf : N -> fN -> fN -> (List fN) -> Prop where
   | fsub__is_wf_0 : forall (v_N : N) (v_fN : fN) (fN_0 : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
-    (ret_val_lst == (fsub_ v_N v_fN fN_0)) ->
+    (ret_val_lst = (fsub_ v_N v_fN fN_0)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     fsub__is_wf v_N v_fN fN_0 ret_val_lst
 
@@ -9382,7 +9410,7 @@ inductive fmul__is_wf : N -> fN -> fN -> (List fN) -> Prop where
   | fmul__is_wf_0 : forall (v_N : N) (v_fN : fN) (fN_0 : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
-    (ret_val_lst == (fmul_ v_N v_fN fN_0)) ->
+    (ret_val_lst = (fmul_ v_N v_fN fN_0)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     fmul__is_wf v_N v_fN fN_0 ret_val_lst
 
@@ -9394,7 +9422,7 @@ inductive fdiv__is_wf : N -> fN -> fN -> (List fN) -> Prop where
   | fdiv__is_wf_0 : forall (v_N : N) (v_fN : fN) (fN_0 : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
-    (ret_val_lst == (fdiv_ v_N v_fN fN_0)) ->
+    (ret_val_lst = (fdiv_ v_N v_fN fN_0)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     fdiv__is_wf v_N v_fN fN_0 ret_val_lst
 
@@ -9406,7 +9434,7 @@ inductive fmin__is_wf : N -> fN -> fN -> (List fN) -> Prop where
   | fmin__is_wf_0 : forall (v_N : N) (v_fN : fN) (fN_0 : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
-    (ret_val_lst == (fmin_ v_N v_fN fN_0)) ->
+    (ret_val_lst = (fmin_ v_N v_fN fN_0)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     fmin__is_wf v_N v_fN fN_0 ret_val_lst
 
@@ -9418,7 +9446,7 @@ inductive fmax__is_wf : N -> fN -> fN -> (List fN) -> Prop where
   | fmax__is_wf_0 : forall (v_N : N) (v_fN : fN) (fN_0 : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
-    (ret_val_lst == (fmax_ v_N v_fN fN_0)) ->
+    (ret_val_lst = (fmax_ v_N v_fN fN_0)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     fmax__is_wf v_N v_fN fN_0 ret_val_lst
 
@@ -9430,7 +9458,7 @@ inductive fpmin__is_wf : N -> fN -> fN -> (List fN) -> Prop where
   | fpmin__is_wf_0 : forall (v_N : N) (v_fN : fN) (fN_0 : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
-    (ret_val_lst == (fpmin_ v_N v_fN fN_0)) ->
+    (ret_val_lst = (fpmin_ v_N v_fN fN_0)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     fpmin__is_wf v_N v_fN fN_0 ret_val_lst
 
@@ -9442,7 +9470,7 @@ inductive fpmax__is_wf : N -> fN -> fN -> (List fN) -> Prop where
   | fpmax__is_wf_0 : forall (v_N : N) (v_fN : fN) (fN_0 : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
-    (ret_val_lst == (fpmax_ v_N v_fN fN_0)) ->
+    (ret_val_lst = (fpmax_ v_N v_fN fN_0)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     fpmax__is_wf v_N v_fN fN_0 ret_val_lst
 
@@ -9454,7 +9482,7 @@ inductive frelaxed_min__is_wf : N -> fN -> fN -> (List fN) -> Prop where
   | frelaxed_min__is_wf_0 : forall (v_N : N) (v_fN : fN) (fN_0 : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
-    (ret_val_lst == (frelaxed_min_ v_N v_fN fN_0)) ->
+    (ret_val_lst = (frelaxed_min_ v_N v_fN fN_0)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     frelaxed_min__is_wf v_N v_fN fN_0 ret_val_lst
 
@@ -9466,7 +9494,7 @@ inductive frelaxed_max__is_wf : N -> fN -> fN -> (List fN) -> Prop where
   | frelaxed_max__is_wf_0 : forall (v_N : N) (v_fN : fN) (fN_0 : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
-    (ret_val_lst == (frelaxed_max_ v_N v_fN fN_0)) ->
+    (ret_val_lst = (frelaxed_max_ v_N v_fN fN_0)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     frelaxed_max__is_wf v_N v_fN fN_0 ret_val_lst
 
@@ -9478,7 +9506,7 @@ inductive fcopysign__is_wf : N -> fN -> fN -> (List fN) -> Prop where
   | fcopysign__is_wf_0 : forall (v_N : N) (v_fN : fN) (fN_0 : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
-    (ret_val_lst == (fcopysign_ v_N v_fN fN_0)) ->
+    (ret_val_lst = (fcopysign_ v_N v_fN fN_0)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     fcopysign__is_wf v_N v_fN fN_0 ret_val_lst
 
@@ -9490,7 +9518,7 @@ inductive feq__is_wf : N -> fN -> fN -> u32 -> Prop where
   | feq__is_wf_0 : forall (v_N : N) (v_fN : fN) (fN_0 : fN) (ret_val : u32), 
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
-    (ret_val == (feq_ v_N v_fN fN_0)) ->
+    (ret_val = (feq_ v_N v_fN fN_0)) ->
     (wf_uN 32 ret_val) ->
     feq__is_wf v_N v_fN fN_0 ret_val
 
@@ -9502,7 +9530,7 @@ inductive fne__is_wf : N -> fN -> fN -> u32 -> Prop where
   | fne__is_wf_0 : forall (v_N : N) (v_fN : fN) (fN_0 : fN) (ret_val : u32), 
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
-    (ret_val == (fne_ v_N v_fN fN_0)) ->
+    (ret_val = (fne_ v_N v_fN fN_0)) ->
     (wf_uN 32 ret_val) ->
     fne__is_wf v_N v_fN fN_0 ret_val
 
@@ -9514,7 +9542,7 @@ inductive flt__is_wf : N -> fN -> fN -> u32 -> Prop where
   | flt__is_wf_0 : forall (v_N : N) (v_fN : fN) (fN_0 : fN) (ret_val : u32), 
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
-    (ret_val == (flt_ v_N v_fN fN_0)) ->
+    (ret_val = (flt_ v_N v_fN fN_0)) ->
     (wf_uN 32 ret_val) ->
     flt__is_wf v_N v_fN fN_0 ret_val
 
@@ -9526,7 +9554,7 @@ inductive fgt__is_wf : N -> fN -> fN -> u32 -> Prop where
   | fgt__is_wf_0 : forall (v_N : N) (v_fN : fN) (fN_0 : fN) (ret_val : u32), 
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
-    (ret_val == (fgt_ v_N v_fN fN_0)) ->
+    (ret_val = (fgt_ v_N v_fN fN_0)) ->
     (wf_uN 32 ret_val) ->
     fgt__is_wf v_N v_fN fN_0 ret_val
 
@@ -9538,7 +9566,7 @@ inductive fle__is_wf : N -> fN -> fN -> u32 -> Prop where
   | fle__is_wf_0 : forall (v_N : N) (v_fN : fN) (fN_0 : fN) (ret_val : u32), 
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
-    (ret_val == (fle_ v_N v_fN fN_0)) ->
+    (ret_val = (fle_ v_N v_fN fN_0)) ->
     (wf_uN 32 ret_val) ->
     fle__is_wf v_N v_fN fN_0 ret_val
 
@@ -9550,7 +9578,7 @@ inductive fge__is_wf : N -> fN -> fN -> u32 -> Prop where
   | fge__is_wf_0 : forall (v_N : N) (v_fN : fN) (fN_0 : fN) (ret_val : u32), 
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
-    (ret_val == (fge_ v_N v_fN fN_0)) ->
+    (ret_val = (fge_ v_N v_fN fN_0)) ->
     (wf_uN 32 ret_val) ->
     fge__is_wf v_N v_fN fN_0 ret_val
 
@@ -9563,7 +9591,7 @@ inductive frelaxed_madd__is_wf : N -> fN -> fN -> fN -> (List fN) -> Prop where
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
     (wf_fN v_N fN_1) ->
-    (ret_val_lst == (frelaxed_madd_ v_N v_fN fN_0 fN_1)) ->
+    (ret_val_lst = (frelaxed_madd_ v_N v_fN fN_0 fN_1)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     frelaxed_madd__is_wf v_N v_fN fN_0 fN_1 ret_val_lst
 
@@ -9576,7 +9604,7 @@ inductive frelaxed_nmadd__is_wf : N -> fN -> fN -> fN -> (List fN) -> Prop where
     (wf_fN v_N v_fN) ->
     (wf_fN v_N fN_0) ->
     (wf_fN v_N fN_1) ->
-    (ret_val_lst == (frelaxed_nmadd_ v_N v_fN fN_0 fN_1)) ->
+    (ret_val_lst = (frelaxed_nmadd_ v_N v_fN fN_0 fN_1)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     frelaxed_nmadd__is_wf v_N v_fN fN_0 fN_1 ret_val_lst
 
@@ -9587,7 +9615,7 @@ opaque wrap__ : forall (v_M : M) (v_N : N) (v_iN : iN), iN := opaqueDef
 inductive wrap___is_wf : M -> N -> iN -> iN -> Prop where
   | wrap___is_wf_0 : forall (v_M : M) (v_N : N) (v_iN : iN) (ret_val : iN), 
     (wf_uN v_M v_iN) ->
-    (ret_val == (wrap__ v_M v_N v_iN)) ->
+    (ret_val = (wrap__ v_M v_N v_iN)) ->
     (wf_uN v_N ret_val) ->
     wrap___is_wf v_M v_N v_iN ret_val
 
@@ -9598,7 +9626,7 @@ opaque extend__ : forall (v_M : M) (v_N : N) (v_sx : sx) (v_iN : iN), iN := opaq
 inductive extend___is_wf : M -> N -> sx -> iN -> iN -> Prop where
   | extend___is_wf_0 : forall (v_M : M) (v_N : N) (v_sx : sx) (v_iN : iN) (ret_val : iN), 
     (wf_uN v_M v_iN) ->
-    (ret_val == (extend__ v_M v_N v_sx v_iN)) ->
+    (ret_val = (extend__ v_M v_N v_sx v_iN)) ->
     (wf_uN v_N ret_val) ->
     extend___is_wf v_M v_N v_sx v_iN ret_val
 
@@ -9609,7 +9637,7 @@ opaque trunc__ : forall (v_M : M) (v_N : N) (v_sx : sx) (v_fN : fN), (Option iN)
 inductive trunc___is_wf : M -> N -> sx -> fN -> (Option iN) -> Prop where
   | trunc___is_wf_0 : forall (v_M : M) (v_N : N) (v_sx : sx) (v_fN : fN) (ret_val_opt : (Option iN)), 
     (wf_fN v_M v_fN) ->
-    (ret_val_opt == (trunc__ v_M v_N v_sx v_fN)) ->
+    (ret_val_opt = (trunc__ v_M v_N v_sx v_fN)) ->
     Forall (fun (ret_val : iN) => (wf_uN v_N ret_val)) (Option.toList ret_val_opt) ->
     trunc___is_wf v_M v_N v_sx v_fN ret_val_opt
 
@@ -9620,7 +9648,7 @@ opaque trunc_sat__ : forall (v_M : M) (v_N : N) (v_sx : sx) (v_fN : fN), (Option
 inductive trunc_sat___is_wf : M -> N -> sx -> fN -> (Option iN) -> Prop where
   | trunc_sat___is_wf_0 : forall (v_M : M) (v_N : N) (v_sx : sx) (v_fN : fN) (ret_val_opt : (Option iN)), 
     (wf_fN v_M v_fN) ->
-    (ret_val_opt == (trunc_sat__ v_M v_N v_sx v_fN)) ->
+    (ret_val_opt = (trunc_sat__ v_M v_N v_sx v_fN)) ->
     Forall (fun (ret_val : iN) => (wf_uN v_N ret_val)) (Option.toList ret_val_opt) ->
     trunc_sat___is_wf v_M v_N v_sx v_fN ret_val_opt
 
@@ -9631,7 +9659,7 @@ opaque relaxed_trunc__ : forall (v_M : M) (v_N : N) (v_sx : sx) (v_fN : fN), (Op
 inductive relaxed_trunc___is_wf : M -> N -> sx -> fN -> (Option iN) -> Prop where
   | relaxed_trunc___is_wf_0 : forall (v_M : M) (v_N : N) (v_sx : sx) (v_fN : fN) (ret_val_opt : (Option iN)), 
     (wf_fN v_M v_fN) ->
-    (ret_val_opt == (relaxed_trunc__ v_M v_N v_sx v_fN)) ->
+    (ret_val_opt = (relaxed_trunc__ v_M v_N v_sx v_fN)) ->
     Forall (fun (ret_val : iN) => (wf_uN v_N ret_val)) (Option.toList ret_val_opt) ->
     relaxed_trunc___is_wf v_M v_N v_sx v_fN ret_val_opt
 
@@ -9642,7 +9670,7 @@ opaque demote__ : forall (v_M : M) (v_N : N) (v_fN : fN), (List fN) := opaqueDef
 inductive demote___is_wf : M -> N -> fN -> (List fN) -> Prop where
   | demote___is_wf_0 : forall (v_M : M) (v_N : N) (v_fN : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_M v_fN) ->
-    (ret_val_lst == (demote__ v_M v_N v_fN)) ->
+    (ret_val_lst = (demote__ v_M v_N v_fN)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     demote___is_wf v_M v_N v_fN ret_val_lst
 
@@ -9653,7 +9681,7 @@ opaque promote__ : forall (v_M : M) (v_N : N) (v_fN : fN), (List fN) := opaqueDe
 inductive promote___is_wf : M -> N -> fN -> (List fN) -> Prop where
   | promote___is_wf_0 : forall (v_M : M) (v_N : N) (v_fN : fN) (ret_val_lst : (List fN)), 
     (wf_fN v_M v_fN) ->
-    (ret_val_lst == (promote__ v_M v_N v_fN)) ->
+    (ret_val_lst = (promote__ v_M v_N v_fN)) ->
     Forall (fun (ret_val : fN) => (wf_fN v_N ret_val)) ret_val_lst ->
     promote___is_wf v_M v_N v_fN ret_val_lst
 
@@ -9664,7 +9692,7 @@ opaque convert__ : forall (v_M : M) (v_N : N) (v_sx : sx) (v_iN : iN), fN := opa
 inductive convert___is_wf : M -> N -> sx -> iN -> fN -> Prop where
   | convert___is_wf_0 : forall (v_M : M) (v_N : N) (v_sx : sx) (v_iN : iN) (ret_val : fN), 
     (wf_uN v_M v_iN) ->
-    (ret_val == (convert__ v_M v_N v_sx v_iN)) ->
+    (ret_val = (convert__ v_M v_N v_sx v_iN)) ->
     (wf_fN v_N ret_val) ->
     convert___is_wf v_M v_N v_sx v_iN ret_val
 
@@ -9675,7 +9703,7 @@ opaque narrow__ : forall (v_M : M) (v_N : N) (v_sx : sx) (v_iN : iN), iN := opaq
 inductive narrow___is_wf : M -> N -> sx -> iN -> iN -> Prop where
   | narrow___is_wf_0 : forall (v_M : M) (v_N : N) (v_sx : sx) (v_iN : iN) (ret_val : iN), 
     (wf_uN v_M v_iN) ->
-    (ret_val == (narrow__ v_M v_N v_sx v_iN)) ->
+    (ret_val = (narrow__ v_M v_N v_sx v_iN)) ->
     (wf_uN v_N ret_val) ->
     narrow___is_wf v_M v_N v_sx v_iN ret_val
 
@@ -9686,7 +9714,7 @@ opaque reinterpret__ : forall (numtype_1 : numtype) (numtype_2 : numtype) (v_num
 inductive reinterpret___is_wf : numtype -> numtype -> num_ -> num_ -> Prop where
   | reinterpret___is_wf_0 : forall (numtype_1 : numtype) (numtype_2 : numtype) (v_num_ : num_) (ret_val : num_), 
     (wf_num_ numtype_1 v_num_) ->
-    (ret_val == (reinterpret__ numtype_1 numtype_2 v_num_)) ->
+    (ret_val = (reinterpret__ numtype_1 numtype_2 v_num_)) ->
     (wf_num_ numtype_2 ret_val) ->
     reinterpret___is_wf numtype_1 numtype_2 v_num_ ret_val
 
@@ -9697,8 +9725,8 @@ opaque lpacknum_ : forall (v_lanetype : lanetype) (v_num_ : num_), (Option lane_
 inductive lpacknum__is_wf : lanetype -> num_ -> lane_ -> Prop where
   | lpacknum__is_wf_0 : forall (v_lanetype : lanetype) (v_num_ : num_) (ret_val : lane_), 
     (wf_num_ (lunpack v_lanetype) v_num_) ->
-    ((lpacknum_ v_lanetype v_num_) != none) ->
-    (ret_val == (Option.get! (lpacknum_ v_lanetype v_num_))) ->
+    ((lpacknum_ v_lanetype v_num_) ≠ none) ->
+    (ret_val = (Option.get! (lpacknum_ v_lanetype v_num_))) ->
     (wf_lane_ v_lanetype ret_val) ->
     lpacknum__is_wf v_lanetype v_num_ ret_val
 
@@ -9709,10 +9737,10 @@ opaque cpacknum_ : forall (v_storagetype : storagetype) (v_lit_ : lit_), (Option
 inductive cpacknum__is_wf : storagetype -> lit_ -> lit_ -> Prop where
   | cpacknum__is_wf_0 : forall (v_storagetype : storagetype) (v_lit_ : lit_) (ret_val : lit_), 
     (wf_storagetype v_storagetype) ->
-    ((cunpack v_storagetype) != none) ->
+    ((cunpack v_storagetype) ≠ none) ->
     (wf_lit_ (storagetype_consttype (Option.get! (cunpack v_storagetype))) v_lit_) ->
-    ((cpacknum_ v_storagetype v_lit_) != none) ->
-    (ret_val == (Option.get! (cpacknum_ v_storagetype v_lit_))) ->
+    ((cpacknum_ v_storagetype v_lit_) ≠ none) ->
+    (ret_val = (Option.get! (cpacknum_ v_storagetype v_lit_))) ->
     (wf_lit_ v_storagetype ret_val) ->
     cpacknum__is_wf v_storagetype v_lit_ ret_val
 
@@ -9723,8 +9751,8 @@ opaque lunpacknum_ : forall (v_lanetype : lanetype) (v_lane_ : lane_), (Option n
 inductive lunpacknum__is_wf : lanetype -> lane_ -> num_ -> Prop where
   | lunpacknum__is_wf_0 : forall (v_lanetype : lanetype) (v_lane_ : lane_) (ret_val : num_), 
     (wf_lane_ v_lanetype v_lane_) ->
-    ((lunpacknum_ v_lanetype v_lane_) != none) ->
-    (ret_val == (Option.get! (lunpacknum_ v_lanetype v_lane_))) ->
+    ((lunpacknum_ v_lanetype v_lane_) ≠ none) ->
+    (ret_val = (Option.get! (lunpacknum_ v_lanetype v_lane_))) ->
     (wf_num_ (lunpack v_lanetype) ret_val) ->
     lunpacknum__is_wf v_lanetype v_lane_ ret_val
 
@@ -9736,9 +9764,9 @@ inductive cunpacknum__is_wf : storagetype -> lit_ -> lit_ -> Prop where
   | cunpacknum__is_wf_0 : forall (v_storagetype : storagetype) (v_lit_ : lit_) (ret_val : lit_), 
     (wf_storagetype v_storagetype) ->
     (wf_lit_ v_storagetype v_lit_) ->
-    ((cunpacknum_ v_storagetype v_lit_) != none) ->
-    (ret_val == (Option.get! (cunpacknum_ v_storagetype v_lit_))) ->
-    ((cunpack v_storagetype) != none) ->
+    ((cunpacknum_ v_storagetype v_lit_) ≠ none) ->
+    (ret_val = (Option.get! (cunpacknum_ v_storagetype v_lit_))) ->
+    ((cunpack v_storagetype) ≠ none) ->
     (wf_lit_ (storagetype_consttype (Option.get! (cunpack v_storagetype))) ret_val) ->
     cunpacknum__is_wf v_storagetype v_lit_ ret_val
 
@@ -9805,8 +9833,8 @@ inductive unop__is_wf : numtype -> unop_ -> num_ -> (List num_) -> Prop where
     (fun_unop_ v_numtype v_unop_ v_num_ var_0) ->
     (wf_unop_ v_numtype v_unop_) ->
     (wf_num_ v_numtype v_num_) ->
-    (var_0 != none) ->
-    (ret_val_lst == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val_lst = (Option.get! var_0)) ->
     Forall (fun (ret_val : num_) => (wf_num_ v_numtype ret_val)) ret_val_lst ->
     unop__is_wf v_numtype v_unop_ v_num_ ret_val_lst
 
@@ -10099,8 +10127,8 @@ inductive testop__is_wf : numtype -> testop_ -> num_ -> u32 -> Prop where
   | testop__is_wf_0 : forall (v_numtype : numtype) (v_testop_ : testop_) (v_num_ : num_) (ret_val : u32), 
     (wf_testop_ v_numtype v_testop_) ->
     (wf_num_ v_numtype v_num_) ->
-    ((fun_testop_ v_numtype v_testop_ v_num_) != none) ->
-    (ret_val == (Option.get! (fun_testop_ v_numtype v_testop_ v_num_))) ->
+    ((fun_testop_ v_numtype v_testop_ v_num_) ≠ none) ->
+    (ret_val = (Option.get! (fun_testop_ v_numtype v_testop_ v_num_))) ->
     (wf_uN 32 ret_val) ->
     testop__is_wf v_numtype v_testop_ v_num_ ret_val
 
@@ -10113,36 +10141,36 @@ inductive relop__is_wf : numtype -> relop_ -> num_ -> num_ -> u32 -> Prop where
     (wf_relop_ v_numtype v_relop_) ->
     (wf_num_ v_numtype v_num_) ->
     (wf_num_ v_numtype num__0) ->
-    ((fun_relop_ v_numtype v_relop_ v_num_ num__0) != none) ->
-    (ret_val == (Option.get! (fun_relop_ v_numtype v_relop_ v_num_ num__0))) ->
+    ((fun_relop_ v_numtype v_relop_ v_num_ num__0) ≠ none) ->
+    (ret_val = (Option.get! (fun_relop_ v_numtype v_relop_ v_num_ num__0))) ->
     (wf_uN 32 ret_val) ->
     relop__is_wf v_numtype v_relop_ v_num_ num__0 ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:374.6-374.14 -/
 inductive fun_cvtop___before_fun_cvtop___case_36 : numtype -> numtype -> cvtop__ -> num_ -> Prop where
   | fun_cvtop___case_35 : forall (f_1 : fN), 
-    ((size (numtype_Fnn .F64)) == (size (numtype_addrtype .I64))) ->
+    ((size (numtype_Fnn .F64)) = (size (numtype_addrtype .I64))) ->
     fun_cvtop___before_fun_cvtop___case_36 .F64 .I64 (.mk_cvtop___2 .F64 .I64 .REINTERPRET) (.mk_num__1 .F64 f_1)
   | fun_cvtop___case_34 : forall (f_1 : fN), 
-    ((size (numtype_Fnn .F32)) == (size (numtype_addrtype .I64))) ->
+    ((size (numtype_Fnn .F32)) = (size (numtype_addrtype .I64))) ->
     fun_cvtop___before_fun_cvtop___case_36 .F32 .I64 (.mk_cvtop___2 .F32 .I64 .REINTERPRET) (.mk_num__1 .F32 f_1)
   | fun_cvtop___case_33 : forall (f_1 : fN), 
-    ((size (numtype_Fnn .F64)) == (size (numtype_addrtype .I32))) ->
+    ((size (numtype_Fnn .F64)) = (size (numtype_addrtype .I32))) ->
     fun_cvtop___before_fun_cvtop___case_36 .F64 .I32 (.mk_cvtop___2 .F64 .I32 .REINTERPRET) (.mk_num__1 .F64 f_1)
   | fun_cvtop___case_32 : forall (f_1 : fN), 
-    ((size (numtype_Fnn .F32)) == (size (numtype_addrtype .I32))) ->
+    ((size (numtype_Fnn .F32)) = (size (numtype_addrtype .I32))) ->
     fun_cvtop___before_fun_cvtop___case_36 .F32 .I32 (.mk_cvtop___2 .F32 .I32 .REINTERPRET) (.mk_num__1 .F32 f_1)
   | fun_cvtop___case_31 : forall (i_1 : uN), 
-    ((size (numtype_addrtype .I64)) == (size (numtype_Fnn .F64))) ->
+    ((size (numtype_addrtype .I64)) = (size (numtype_Fnn .F64))) ->
     fun_cvtop___before_fun_cvtop___case_36 .I64 .F64 (.mk_cvtop___1 .I64 .F64 .REINTERPRET) (.mk_num__0 .I64 i_1)
   | fun_cvtop___case_30 : forall (i_1 : uN), 
-    ((size (numtype_addrtype .I32)) == (size (numtype_Fnn .F64))) ->
+    ((size (numtype_addrtype .I32)) = (size (numtype_Fnn .F64))) ->
     fun_cvtop___before_fun_cvtop___case_36 .I32 .F64 (.mk_cvtop___1 .I32 .F64 .REINTERPRET) (.mk_num__0 .I32 i_1)
   | fun_cvtop___case_29 : forall (i_1 : uN), 
-    ((size (numtype_addrtype .I64)) == (size (numtype_Fnn .F32))) ->
+    ((size (numtype_addrtype .I64)) = (size (numtype_Fnn .F32))) ->
     fun_cvtop___before_fun_cvtop___case_36 .I64 .F32 (.mk_cvtop___1 .I64 .F32 .REINTERPRET) (.mk_num__0 .I64 i_1)
   | fun_cvtop___case_28 : forall (i_1 : uN), 
-    ((size (numtype_addrtype .I32)) == (size (numtype_Fnn .F32))) ->
+    ((size (numtype_addrtype .I32)) = (size (numtype_Fnn .F32))) ->
     fun_cvtop___before_fun_cvtop___case_36 .I32 .F32 (.mk_cvtop___1 .I32 .F32 .REINTERPRET) (.mk_num__0 .I32 i_1)
   | fun_cvtop___case_27 : forall (f_1 : fN), fun_cvtop___before_fun_cvtop___case_36 .F64 .F64 (.mk_cvtop___3 .F64 .F64 .DEMOTE) (.mk_num__1 .F64 f_1)
   | fun_cvtop___case_26 : forall (f_1 : fN), fun_cvtop___before_fun_cvtop___case_36 .F32 .F64 (.mk_cvtop___3 .F32 .F64 .DEMOTE) (.mk_num__1 .F32 f_1)
@@ -10204,28 +10232,28 @@ inductive fun_cvtop__ : numtype -> numtype -> cvtop__ -> num_ -> (Option (List n
   | fun_cvtop___case_26 : forall (f_1 : fN), fun_cvtop__ .F32 .F64 (.mk_cvtop___3 .F32 .F64 .DEMOTE) (.mk_num__1 .F32 f_1) (some (List.map (fun (iter_0_65 : fN) => ((.mk_num__1 .F64 iter_0_65) : num_)) (demote__ (sizenn1 (numtype_Fnn .F32)) (sizenn2 (numtype_Fnn .F64)) f_1)))
   | fun_cvtop___case_27 : forall (f_1 : fN), fun_cvtop__ .F64 .F64 (.mk_cvtop___3 .F64 .F64 .DEMOTE) (.mk_num__1 .F64 f_1) (some (List.map (fun (iter_0_66 : fN) => ((.mk_num__1 .F64 iter_0_66) : num_)) (demote__ (sizenn1 (numtype_Fnn .F64)) (sizenn2 (numtype_Fnn .F64)) f_1)))
   | fun_cvtop___case_28 : forall (i_1 : uN), 
-    ((size (numtype_addrtype .I32)) == (size (numtype_Fnn .F32))) ->
+    ((size (numtype_addrtype .I32)) = (size (numtype_Fnn .F32))) ->
     fun_cvtop__ .I32 .F32 (.mk_cvtop___1 .I32 .F32 .REINTERPRET) (.mk_num__0 .I32 i_1) (some ([(reinterpret__ (numtype_addrtype .I32) (numtype_Fnn .F32) (.mk_num__0 .I32 i_1))] : (List num_)))
   | fun_cvtop___case_29 : forall (i_1 : uN), 
-    ((size (numtype_addrtype .I64)) == (size (numtype_Fnn .F32))) ->
+    ((size (numtype_addrtype .I64)) = (size (numtype_Fnn .F32))) ->
     fun_cvtop__ .I64 .F32 (.mk_cvtop___1 .I64 .F32 .REINTERPRET) (.mk_num__0 .I64 i_1) (some ([(reinterpret__ (numtype_addrtype .I64) (numtype_Fnn .F32) (.mk_num__0 .I64 i_1))] : (List num_)))
   | fun_cvtop___case_30 : forall (i_1 : uN), 
-    ((size (numtype_addrtype .I32)) == (size (numtype_Fnn .F64))) ->
+    ((size (numtype_addrtype .I32)) = (size (numtype_Fnn .F64))) ->
     fun_cvtop__ .I32 .F64 (.mk_cvtop___1 .I32 .F64 .REINTERPRET) (.mk_num__0 .I32 i_1) (some ([(reinterpret__ (numtype_addrtype .I32) (numtype_Fnn .F64) (.mk_num__0 .I32 i_1))] : (List num_)))
   | fun_cvtop___case_31 : forall (i_1 : uN), 
-    ((size (numtype_addrtype .I64)) == (size (numtype_Fnn .F64))) ->
+    ((size (numtype_addrtype .I64)) = (size (numtype_Fnn .F64))) ->
     fun_cvtop__ .I64 .F64 (.mk_cvtop___1 .I64 .F64 .REINTERPRET) (.mk_num__0 .I64 i_1) (some ([(reinterpret__ (numtype_addrtype .I64) (numtype_Fnn .F64) (.mk_num__0 .I64 i_1))] : (List num_)))
   | fun_cvtop___case_32 : forall (f_1 : fN), 
-    ((size (numtype_Fnn .F32)) == (size (numtype_addrtype .I32))) ->
+    ((size (numtype_Fnn .F32)) = (size (numtype_addrtype .I32))) ->
     fun_cvtop__ .F32 .I32 (.mk_cvtop___2 .F32 .I32 .REINTERPRET) (.mk_num__1 .F32 f_1) (some ([(reinterpret__ (numtype_Fnn .F32) (numtype_addrtype .I32) (.mk_num__1 .F32 f_1))] : (List num_)))
   | fun_cvtop___case_33 : forall (f_1 : fN), 
-    ((size (numtype_Fnn .F64)) == (size (numtype_addrtype .I32))) ->
+    ((size (numtype_Fnn .F64)) = (size (numtype_addrtype .I32))) ->
     fun_cvtop__ .F64 .I32 (.mk_cvtop___2 .F64 .I32 .REINTERPRET) (.mk_num__1 .F64 f_1) (some ([(reinterpret__ (numtype_Fnn .F64) (numtype_addrtype .I32) (.mk_num__1 .F64 f_1))] : (List num_)))
   | fun_cvtop___case_34 : forall (f_1 : fN), 
-    ((size (numtype_Fnn .F32)) == (size (numtype_addrtype .I64))) ->
+    ((size (numtype_Fnn .F32)) = (size (numtype_addrtype .I64))) ->
     fun_cvtop__ .F32 .I64 (.mk_cvtop___2 .F32 .I64 .REINTERPRET) (.mk_num__1 .F32 f_1) (some ([(reinterpret__ (numtype_Fnn .F32) (numtype_addrtype .I64) (.mk_num__1 .F32 f_1))] : (List num_)))
   | fun_cvtop___case_35 : forall (f_1 : fN), 
-    ((size (numtype_Fnn .F64)) == (size (numtype_addrtype .I64))) ->
+    ((size (numtype_Fnn .F64)) = (size (numtype_addrtype .I64))) ->
     fun_cvtop__ .F64 .I64 (.mk_cvtop___2 .F64 .I64 .REINTERPRET) (.mk_num__1 .F64 f_1) (some ([(reinterpret__ (numtype_Fnn .F64) (numtype_addrtype .I64) (.mk_num__1 .F64 f_1))] : (List num_)))
   | fun_cvtop___case_36 : forall (x0 : numtype) (x1 : numtype) (x2 : cvtop__) (x3 : num_), 
     (¬(fun_cvtop___before_fun_cvtop___case_36 x0 x1 x2 x3)) ->
@@ -10237,8 +10265,8 @@ inductive cvtop___is_wf : numtype -> numtype -> cvtop__ -> num_ -> (List num_) -
     (fun_cvtop__ numtype_1 numtype_2 v_cvtop__ v_num_ var_0) ->
     (wf_cvtop__ numtype_1 numtype_2 v_cvtop__) ->
     (wf_num_ numtype_1 v_num_) ->
-    (var_0 != none) ->
-    (ret_val_lst == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val_lst = (Option.get! var_0)) ->
     Forall (fun (ret_val : num_) => (wf_num_ numtype_2 ret_val)) ret_val_lst ->
     cvtop___is_wf numtype_1 numtype_2 v_cvtop__ v_num_ ret_val_lst
 
@@ -10250,7 +10278,7 @@ inductive lanes__is_wf : shape -> vec_ -> (List lane_) -> Prop where
   | lanes__is_wf_0 : forall (v_shape : shape) (v_vec_ : vec_) (ret_val_lst : (List lane_)), 
     (wf_shape v_shape) ->
     (wf_uN 128 v_vec_) ->
-    (ret_val_lst == (lanes_ v_shape v_vec_)) ->
+    (ret_val_lst = (lanes_ v_shape v_vec_)) ->
     Forall (fun (ret_val : lane_) => (wf_lane_ (fun_lanetype v_shape) ret_val)) ret_val_lst ->
     lanes__is_wf v_shape v_vec_ ret_val_lst
 
@@ -10262,334 +10290,334 @@ inductive inv_lanes__is_wf : shape -> (List lane_) -> vec_ -> Prop where
   | inv_lanes__is_wf_0 : forall (v_shape : shape) (var_0_lst : (List lane_)) (ret_val : vec_), 
     (wf_shape v_shape) ->
     Forall (fun (var_0 : lane_) => (wf_lane_ (fun_lanetype v_shape) var_0)) var_0_lst ->
-    (ret_val == (inv_lanes_ v_shape var_0_lst)) ->
+    (ret_val = (inv_lanes_ v_shape var_0_lst)) ->
     (wf_uN 128 ret_val) ->
     inv_lanes__is_wf v_shape var_0_lst ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:19.6-19.13 -/
 inductive fun_zeroop_before_fun_zeroop_case_40 : shape -> shape -> vcvtop__ -> Prop where
   | fun_zeroop_case_39 : forall (M_1 : Nat) (M_2 : Nat) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .F64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F64 M_2_0 .PROMOTELOW)
   | fun_zeroop_case_38 : forall (M_1 : Nat) (M_2 : Nat) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .F32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F64 M_2_0 .PROMOTELOW)
   | fun_zeroop_case_37 : forall (M_1 : Nat) (M_2 : Nat) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .F64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F32 M_2_0 .PROMOTELOW)
   | fun_zeroop_case_36 : forall (M_1 : Nat) (M_2 : Nat) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .F32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F32 M_2_0 .PROMOTELOW)
   | fun_zeroop_case_35 : forall (M_1 : Nat) (M_2 : Nat) (v_zero : zero) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .F64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F64 M_2_0 (.DEMOTE v_zero))
   | fun_zeroop_case_34 : forall (M_1 : Nat) (M_2 : Nat) (v_zero : zero) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .F32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F64 M_2_0 (.DEMOTE v_zero))
   | fun_zeroop_case_33 : forall (M_1 : Nat) (M_2 : Nat) (v_zero : zero) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .F64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F32 M_2_0 (.DEMOTE v_zero))
   | fun_zeroop_case_32 : forall (M_1 : Nat) (M_2 : Nat) (v_zero : zero) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .F32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F32 M_2_0 (.DEMOTE v_zero))
   | fun_zeroop_case_31 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .F64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I64 M_2_0 (.RELAXED_TRUNC v_sx zero_opt))
   | fun_zeroop_case_30 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .F32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I64 M_2_0 (.RELAXED_TRUNC v_sx zero_opt))
   | fun_zeroop_case_29 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .F64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I32 M_2_0 (.RELAXED_TRUNC v_sx zero_opt))
   | fun_zeroop_case_28 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .F32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I32 M_2_0 (.RELAXED_TRUNC v_sx zero_opt))
   | fun_zeroop_case_27 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .F64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I64 M_2_0 (.TRUNC_SAT v_sx zero_opt))
   | fun_zeroop_case_26 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .F32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I64 M_2_0 (.TRUNC_SAT v_sx zero_opt))
   | fun_zeroop_case_25 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .F64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I32 M_2_0 (.TRUNC_SAT v_sx zero_opt))
   | fun_zeroop_case_24 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .F32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I32 M_2_0 (.TRUNC_SAT v_sx zero_opt))
   | fun_zeroop_case_23 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I16 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I16 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx))
   | fun_zeroop_case_22 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I8 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I8 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx))
   | fun_zeroop_case_21 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I64 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx))
   | fun_zeroop_case_20 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I32 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx))
   | fun_zeroop_case_19 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I16 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I16 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx))
   | fun_zeroop_case_18 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I8 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I8 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx))
   | fun_zeroop_case_17 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I64 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx))
   | fun_zeroop_case_16 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I32 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx))
   | fun_zeroop_case_15 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I16 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx))
   | fun_zeroop_case_14 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I8 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx))
   | fun_zeroop_case_13 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I64 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx))
   | fun_zeroop_case_12 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I32 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx))
   | fun_zeroop_case_11 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I16 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx))
   | fun_zeroop_case_10 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I8 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx))
   | fun_zeroop_case_9 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I64 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx))
   | fun_zeroop_case_8 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I32 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx))
   | fun_zeroop_case_7 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I16 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx))
   | fun_zeroop_case_6 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I8 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx))
   | fun_zeroop_case_5 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx))
   | fun_zeroop_case_4 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx))
   | fun_zeroop_case_3 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I16 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx))
   | fun_zeroop_case_2 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I8 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx))
   | fun_zeroop_case_1 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx))
   | fun_zeroop_case_0 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop_before_fun_zeroop_case_40 (.X .I32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:19.6-19.13 -/
 inductive fun_zeroop : shape -> shape -> vcvtop__ -> (Option (Option zero)) -> Prop where
   | fun_zeroop_case_0 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx)) (some none)
   | fun_zeroop_case_1 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx)) (some none)
   | fun_zeroop_case_2 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I8 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx)) (some none)
   | fun_zeroop_case_3 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I16 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx)) (some none)
   | fun_zeroop_case_4 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx)) (some none)
   | fun_zeroop_case_5 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx)) (some none)
   | fun_zeroop_case_6 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I8 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx)) (some none)
   | fun_zeroop_case_7 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I16 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx)) (some none)
   | fun_zeroop_case_8 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I32 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx)) (some none)
   | fun_zeroop_case_9 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I64 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx)) (some none)
   | fun_zeroop_case_10 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I8 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx)) (some none)
   | fun_zeroop_case_11 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I16 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx)) (some none)
   | fun_zeroop_case_12 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I32 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx)) (some none)
   | fun_zeroop_case_13 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I64 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx)) (some none)
   | fun_zeroop_case_14 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I8 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx)) (some none)
   | fun_zeroop_case_15 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I16 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx)) (some none)
   | fun_zeroop_case_16 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I32 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx)) (some none)
   | fun_zeroop_case_17 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I64 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx)) (some none)
   | fun_zeroop_case_18 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I8 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I8 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx)) (some none)
   | fun_zeroop_case_19 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I16 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I16 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx)) (some none)
   | fun_zeroop_case_20 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I32 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx)) (some none)
   | fun_zeroop_case_21 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I64 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx)) (some none)
   | fun_zeroop_case_22 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I8 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I8 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx)) (some none)
   | fun_zeroop_case_23 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .I16 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I16 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx)) (some none)
   | fun_zeroop_case_24 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .F32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I32 M_2_0 (.TRUNC_SAT v_sx zero_opt)) (some zero_opt)
   | fun_zeroop_case_25 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .F64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I32 M_2_0 (.TRUNC_SAT v_sx zero_opt)) (some zero_opt)
   | fun_zeroop_case_26 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .F32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I64 M_2_0 (.TRUNC_SAT v_sx zero_opt)) (some zero_opt)
   | fun_zeroop_case_27 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .F64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I64 M_2_0 (.TRUNC_SAT v_sx zero_opt)) (some zero_opt)
   | fun_zeroop_case_28 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .F32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I32 M_2_0 (.RELAXED_TRUNC v_sx zero_opt)) (some zero_opt)
   | fun_zeroop_case_29 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .F64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I32 M_2_0 (.RELAXED_TRUNC v_sx zero_opt)) (some zero_opt)
   | fun_zeroop_case_30 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .F32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I64 M_2_0 (.RELAXED_TRUNC v_sx zero_opt)) (some zero_opt)
   | fun_zeroop_case_31 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .F64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I64 M_2_0 (.RELAXED_TRUNC v_sx zero_opt)) (some zero_opt)
   | fun_zeroop_case_32 : forall (M_1 : Nat) (M_2 : Nat) (v_zero : zero) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .F32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F32 M_2_0 (.DEMOTE v_zero)) (some (some v_zero))
   | fun_zeroop_case_33 : forall (M_1 : Nat) (M_2 : Nat) (v_zero : zero) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .F64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F32 M_2_0 (.DEMOTE v_zero)) (some (some v_zero))
   | fun_zeroop_case_34 : forall (M_1 : Nat) (M_2 : Nat) (v_zero : zero) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .F32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F64 M_2_0 (.DEMOTE v_zero)) (some (some v_zero))
   | fun_zeroop_case_35 : forall (M_1 : Nat) (M_2 : Nat) (v_zero : zero) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .F64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F64 M_2_0 (.DEMOTE v_zero)) (some (some v_zero))
   | fun_zeroop_case_36 : forall (M_1 : Nat) (M_2 : Nat) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .F32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F32 M_2_0 .PROMOTELOW) (some none)
   | fun_zeroop_case_37 : forall (M_1 : Nat) (M_2 : Nat) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .F64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F32 M_2_0 .PROMOTELOW) (some none)
   | fun_zeroop_case_38 : forall (M_1 : Nat) (M_2 : Nat) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .F32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F64 M_2_0 .PROMOTELOW) (some none)
   | fun_zeroop_case_39 : forall (M_1 : Nat) (M_2 : Nat) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_zeroop (.X .F64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F64 M_2_0 .PROMOTELOW) (some none)
   | fun_zeroop_case_40 : forall (x0 : shape) (x1 : shape) (x2 : vcvtop__), 
     (¬(fun_zeroop_before_fun_zeroop_case_40 x0 x1 x2)) ->
@@ -10598,327 +10626,327 @@ inductive fun_zeroop : shape -> shape -> vcvtop__ -> (Option (Option zero)) -> P
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:27.6-27.13 -/
 inductive fun_halfop_before_fun_halfop_case_40 : shape -> shape -> vcvtop__ -> Prop where
   | fun_halfop_case_39 : forall (M_1 : Nat) (M_2 : Nat) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .F64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F64 M_2_0 .PROMOTELOW)
   | fun_halfop_case_38 : forall (M_1 : Nat) (M_2 : Nat) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .F32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F64 M_2_0 .PROMOTELOW)
   | fun_halfop_case_37 : forall (M_1 : Nat) (M_2 : Nat) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .F64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F32 M_2_0 .PROMOTELOW)
   | fun_halfop_case_36 : forall (M_1 : Nat) (M_2 : Nat) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .F32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F32 M_2_0 .PROMOTELOW)
   | fun_halfop_case_35 : forall (M_1 : Nat) (M_2 : Nat) (v_zero : zero) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .F64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F64 M_2_0 (.DEMOTE v_zero))
   | fun_halfop_case_34 : forall (M_1 : Nat) (M_2 : Nat) (v_zero : zero) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .F32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F64 M_2_0 (.DEMOTE v_zero))
   | fun_halfop_case_33 : forall (M_1 : Nat) (M_2 : Nat) (v_zero : zero) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .F64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F32 M_2_0 (.DEMOTE v_zero))
   | fun_halfop_case_32 : forall (M_1 : Nat) (M_2 : Nat) (v_zero : zero) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .F32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F32 M_2_0 (.DEMOTE v_zero))
   | fun_halfop_case_31 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .F64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I64 M_2_0 (.RELAXED_TRUNC v_sx zero_opt))
   | fun_halfop_case_30 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .F32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I64 M_2_0 (.RELAXED_TRUNC v_sx zero_opt))
   | fun_halfop_case_29 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .F64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I32 M_2_0 (.RELAXED_TRUNC v_sx zero_opt))
   | fun_halfop_case_28 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .F32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I32 M_2_0 (.RELAXED_TRUNC v_sx zero_opt))
   | fun_halfop_case_27 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .F64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I64 M_2_0 (.TRUNC_SAT v_sx zero_opt))
   | fun_halfop_case_26 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .F32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I64 M_2_0 (.TRUNC_SAT v_sx zero_opt))
   | fun_halfop_case_25 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .F64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I32 M_2_0 (.TRUNC_SAT v_sx zero_opt))
   | fun_halfop_case_24 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .F32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I32 M_2_0 (.TRUNC_SAT v_sx zero_opt))
   | fun_halfop_case_23 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I16 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I16 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx))
   | fun_halfop_case_22 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I8 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I8 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx))
   | fun_halfop_case_21 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I64 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx))
   | fun_halfop_case_20 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I32 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx))
   | fun_halfop_case_19 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I16 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I16 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx))
   | fun_halfop_case_18 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I8 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I8 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx))
   | fun_halfop_case_17 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I64 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx))
   | fun_halfop_case_16 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I32 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx))
   | fun_halfop_case_15 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I16 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx))
   | fun_halfop_case_14 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I8 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx))
   | fun_halfop_case_13 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I64 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx))
   | fun_halfop_case_12 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I32 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx))
   | fun_halfop_case_11 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I16 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx))
   | fun_halfop_case_10 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I8 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx))
   | fun_halfop_case_9 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I64 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx))
   | fun_halfop_case_8 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I32 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx))
   | fun_halfop_case_7 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I16 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx))
   | fun_halfop_case_6 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I8 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx))
   | fun_halfop_case_5 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx))
   | fun_halfop_case_4 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx))
   | fun_halfop_case_3 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I16 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx))
   | fun_halfop_case_2 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I8 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx))
   | fun_halfop_case_1 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx))
   | fun_halfop_case_0 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop_before_fun_halfop_case_40 (.X .I32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:27.6-27.13 -/
 inductive fun_halfop : shape -> shape -> vcvtop__ -> (Option (Option half)) -> Prop where
   | fun_halfop_case_0 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx)) (some (some v_half))
   | fun_halfop_case_1 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx)) (some (some v_half))
   | fun_halfop_case_2 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I8 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx)) (some (some v_half))
   | fun_halfop_case_3 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I16 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx)) (some (some v_half))
   | fun_halfop_case_4 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx)) (some (some v_half))
   | fun_halfop_case_5 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx)) (some (some v_half))
   | fun_halfop_case_6 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I8 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx)) (some (some v_half))
   | fun_halfop_case_7 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I16 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx)) (some (some v_half))
   | fun_halfop_case_8 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I32 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx)) (some (some v_half))
   | fun_halfop_case_9 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I64 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx)) (some (some v_half))
   | fun_halfop_case_10 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I8 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx)) (some (some v_half))
   | fun_halfop_case_11 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I16 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx)) (some (some v_half))
   | fun_halfop_case_12 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I32 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx)) (some (some v_half))
   | fun_halfop_case_13 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I64 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx)) (some (some v_half))
   | fun_halfop_case_14 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I8 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx)) (some (some v_half))
   | fun_halfop_case_15 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I16 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx)) (some (some v_half))
   | fun_halfop_case_16 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I32 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx)) (some half_opt)
   | fun_halfop_case_17 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I64 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx)) (some half_opt)
   | fun_halfop_case_18 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I8 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I8 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx)) (some half_opt)
   | fun_halfop_case_19 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I16 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I16 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx)) (some half_opt)
   | fun_halfop_case_20 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I32 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx)) (some half_opt)
   | fun_halfop_case_21 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I64 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx)) (some half_opt)
   | fun_halfop_case_22 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I8 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I8 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx)) (some half_opt)
   | fun_halfop_case_23 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .I16 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I16 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx)) (some half_opt)
   | fun_halfop_case_24 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .F32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I32 M_2_0 (.TRUNC_SAT v_sx zero_opt)) (some none)
   | fun_halfop_case_25 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .F64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I32 M_2_0 (.TRUNC_SAT v_sx zero_opt)) (some none)
   | fun_halfop_case_26 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .F32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I64 M_2_0 (.TRUNC_SAT v_sx zero_opt)) (some none)
   | fun_halfop_case_27 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .F64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I64 M_2_0 (.TRUNC_SAT v_sx zero_opt)) (some none)
   | fun_halfop_case_28 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .F32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I32 M_2_0 (.RELAXED_TRUNC v_sx zero_opt)) (some none)
   | fun_halfop_case_29 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .F64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I32 M_2_0 (.RELAXED_TRUNC v_sx zero_opt)) (some none)
   | fun_halfop_case_30 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .F32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I64 M_2_0 (.RELAXED_TRUNC v_sx zero_opt)) (some none)
   | fun_halfop_case_31 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .F64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I64 M_2_0 (.RELAXED_TRUNC v_sx zero_opt)) (some none)
   | fun_halfop_case_32 : forall (M_1 : Nat) (M_2 : Nat) (v_zero : zero) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .F32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F32 M_2_0 (.DEMOTE v_zero)) (some none)
   | fun_halfop_case_33 : forall (M_1 : Nat) (M_2 : Nat) (v_zero : zero) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .F64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F32 M_2_0 (.DEMOTE v_zero)) (some none)
   | fun_halfop_case_34 : forall (M_1 : Nat) (M_2 : Nat) (v_zero : zero) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .F32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F64 M_2_0 (.DEMOTE v_zero)) (some none)
   | fun_halfop_case_35 : forall (M_1 : Nat) (M_2 : Nat) (v_zero : zero) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .F64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F64 M_2_0 (.DEMOTE v_zero)) (some none)
   | fun_halfop_case_36 : forall (M_1 : Nat) (M_2 : Nat) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .F32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F32 M_2_0 .PROMOTELOW) (some (some .LOW))
   | fun_halfop_case_37 : forall (M_1 : Nat) (M_2 : Nat) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .F64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F32 M_2_0 .PROMOTELOW) (some (some .LOW))
   | fun_halfop_case_38 : forall (M_1 : Nat) (M_2 : Nat) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .F32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F64 M_2_0 .PROMOTELOW) (some (some .LOW))
   | fun_halfop_case_39 : forall (M_1 : Nat) (M_2 : Nat) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_halfop (.X .F64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F64 M_2_0 .PROMOTELOW) (some (some .LOW))
   | fun_halfop_case_40 : forall (x0 : shape) (x1 : shape) (x2 : vcvtop__), 
     (¬(fun_halfop_before_fun_halfop_case_40 x0 x1 x2)) ->
@@ -10943,7 +10971,7 @@ inductive iswizzle_lane__is_wf : N -> (List iN) -> iN -> iN -> Prop where
   | iswizzle_lane__is_wf_0 : forall (v_N : N) (var_0_lst : (List iN)) (v_iN : iN) (ret_val : iN), 
     Forall (fun (var_0 : iN) => (wf_uN v_N var_0)) var_0_lst ->
     (wf_uN v_N v_iN) ->
-    (ret_val == (iswizzle_lane_ v_N var_0_lst v_iN)) ->
+    (ret_val = (iswizzle_lane_ v_N var_0_lst v_iN)) ->
     (wf_uN v_N ret_val) ->
     iswizzle_lane__is_wf v_N var_0_lst v_iN ret_val
 
@@ -10955,7 +10983,7 @@ inductive irelaxed_swizzle_lane__is_wf : N -> (List iN) -> iN -> iN -> Prop wher
   | irelaxed_swizzle_lane__is_wf_0 : forall (v_N : N) (var_0_lst : (List iN)) (v_iN : iN) (ret_val : iN), 
     Forall (fun (var_0 : iN) => (wf_uN v_N var_0)) var_0_lst ->
     (wf_uN v_N v_iN) ->
-    (ret_val == (irelaxed_swizzle_lane_ v_N var_0_lst v_iN)) ->
+    (ret_val = (irelaxed_swizzle_lane_ v_N var_0_lst v_iN)) ->
     (wf_uN v_N ret_val) ->
     irelaxed_swizzle_lane__is_wf v_N var_0_lst v_iN ret_val
 
@@ -10967,8 +10995,8 @@ inductive ivunop__is_wf (f_ : N -> iN -> iN) : shape -> vec_ -> (List vec_) -> P
   | ivunop__is_wf_0 : forall (v_shape : shape) (v_vec_ : vec_) (ret_val_lst : (List vec_)), 
     (wf_shape v_shape) ->
     (wf_uN 128 v_vec_) ->
-    ((ivunop_ v_shape f_ v_vec_) != none) ->
-    (ret_val_lst == (Option.get! (ivunop_ v_shape f_ v_vec_))) ->
+    ((ivunop_ v_shape f_ v_vec_) ≠ none) ->
+    (ret_val_lst = (Option.get! (ivunop_ v_shape f_ v_vec_))) ->
     Forall (fun (ret_val : vec_) => (wf_uN 128 ret_val)) ret_val_lst ->
     ivunop__is_wf f_ v_shape v_vec_ ret_val_lst
 
@@ -10980,7 +11008,7 @@ inductive fvunop__is_wf (f_ : N -> fN -> (List fN)) : shape -> vec_ -> (List vec
   | fvunop__is_wf_0 : forall (v_shape : shape) (v_vec_ : vec_) (ret_val_lst : (List vec_)), 
     (wf_shape v_shape) ->
     (wf_uN 128 v_vec_) ->
-    (ret_val_lst == (fvunop_ v_shape f_ v_vec_)) ->
+    (ret_val_lst = (fvunop_ v_shape f_ v_vec_)) ->
     Forall (fun (ret_val : vec_) => (wf_uN 128 ret_val)) ret_val_lst ->
     fvunop__is_wf f_ v_shape v_vec_ ret_val_lst
 
@@ -10993,8 +11021,8 @@ inductive ivbinop__is_wf (f_ : N -> iN -> iN -> iN) : shape -> vec_ -> vec_ -> (
     (wf_shape v_shape) ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
-    ((ivbinop_ v_shape f_ v_vec_ vec__0) != none) ->
-    (ret_val_lst == (Option.get! (ivbinop_ v_shape f_ v_vec_ vec__0))) ->
+    ((ivbinop_ v_shape f_ v_vec_ vec__0) ≠ none) ->
+    (ret_val_lst = (Option.get! (ivbinop_ v_shape f_ v_vec_ vec__0))) ->
     Forall (fun (ret_val : vec_) => (wf_uN 128 ret_val)) ret_val_lst ->
     ivbinop__is_wf f_ v_shape v_vec_ vec__0 ret_val_lst
 
@@ -11007,8 +11035,8 @@ inductive ivbinopsx__is_wf (f_ : N -> sx -> iN -> iN -> iN) : shape -> sx -> vec
     (wf_shape v_shape) ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
-    ((ivbinopsx_ v_shape f_ v_sx v_vec_ vec__0) != none) ->
-    (ret_val_lst == (Option.get! (ivbinopsx_ v_shape f_ v_sx v_vec_ vec__0))) ->
+    ((ivbinopsx_ v_shape f_ v_sx v_vec_ vec__0) ≠ none) ->
+    (ret_val_lst = (Option.get! (ivbinopsx_ v_shape f_ v_sx v_vec_ vec__0))) ->
     Forall (fun (ret_val : vec_) => (wf_uN 128 ret_val)) ret_val_lst ->
     ivbinopsx__is_wf f_ v_shape v_sx v_vec_ vec__0 ret_val_lst
 
@@ -11021,7 +11049,7 @@ inductive ivbinopsxnd__is_wf (f_ : N -> sx -> iN -> iN -> (List iN)) : shape -> 
     (wf_shape v_shape) ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
-    (ret_val_lst == (ivbinopsxnd_ v_shape f_ v_sx v_vec_ vec__0)) ->
+    (ret_val_lst = (ivbinopsxnd_ v_shape f_ v_sx v_vec_ vec__0)) ->
     Forall (fun (ret_val : vec_) => (wf_uN 128 ret_val)) ret_val_lst ->
     ivbinopsxnd__is_wf f_ v_shape v_sx v_vec_ vec__0 ret_val_lst
 
@@ -11034,7 +11062,7 @@ inductive fvbinop__is_wf (f_ : N -> fN -> fN -> (List fN)) : shape -> vec_ -> ve
     (wf_shape v_shape) ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
-    (ret_val_lst == (fvbinop_ v_shape f_ v_vec_ vec__0)) ->
+    (ret_val_lst = (fvbinop_ v_shape f_ v_vec_ vec__0)) ->
     Forall (fun (ret_val : vec_) => (wf_uN 128 ret_val)) ret_val_lst ->
     fvbinop__is_wf f_ v_shape v_vec_ vec__0 ret_val_lst
 
@@ -11048,7 +11076,7 @@ inductive ivternopnd__is_wf (f_ : N -> iN -> iN -> iN -> (List iN)) : shape -> v
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
     (wf_uN 128 vec__1) ->
-    (ret_val_lst == (ivternopnd_ v_shape f_ v_vec_ vec__0 vec__1)) ->
+    (ret_val_lst = (ivternopnd_ v_shape f_ v_vec_ vec__0 vec__1)) ->
     Forall (fun (ret_val : vec_) => (wf_uN 128 ret_val)) ret_val_lst ->
     ivternopnd__is_wf f_ v_shape v_vec_ vec__0 vec__1 ret_val_lst
 
@@ -11062,7 +11090,7 @@ inductive fvternop__is_wf (f_ : N -> fN -> fN -> fN -> (List fN)) : shape -> vec
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
     (wf_uN 128 vec__1) ->
-    (ret_val_lst == (fvternop_ v_shape f_ v_vec_ vec__0 vec__1)) ->
+    (ret_val_lst = (fvternop_ v_shape f_ v_vec_ vec__0 vec__1)) ->
     Forall (fun (ret_val : vec_) => (wf_uN 128 ret_val)) ret_val_lst ->
     fvternop__is_wf f_ v_shape v_vec_ vec__0 vec__1 ret_val_lst
 
@@ -11075,7 +11103,7 @@ inductive ivrelop__is_wf (f_ : N -> iN -> iN -> u32) : shape -> vec_ -> vec_ -> 
     (wf_shape v_shape) ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
-    (ret_val == (ivrelop_ v_shape f_ v_vec_ vec__0)) ->
+    (ret_val = (ivrelop_ v_shape f_ v_vec_ vec__0)) ->
     (wf_uN 128 ret_val) ->
     ivrelop__is_wf f_ v_shape v_vec_ vec__0 ret_val
 
@@ -11088,7 +11116,7 @@ inductive ivrelopsx__is_wf (f_ : N -> sx -> iN -> iN -> u32) : shape -> sx -> ve
     (wf_shape v_shape) ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
-    (ret_val == (ivrelopsx_ v_shape f_ v_sx v_vec_ vec__0)) ->
+    (ret_val = (ivrelopsx_ v_shape f_ v_sx v_vec_ vec__0)) ->
     (wf_uN 128 ret_val) ->
     ivrelopsx__is_wf f_ v_shape v_sx v_vec_ vec__0 ret_val
 
@@ -11101,7 +11129,7 @@ inductive fvrelop__is_wf (f_ : N -> fN -> fN -> u32) : shape -> vec_ -> vec_ -> 
     (wf_shape v_shape) ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
-    (ret_val == (fvrelop_ v_shape f_ v_vec_ vec__0)) ->
+    (ret_val = (fvrelop_ v_shape f_ v_vec_ vec__0)) ->
     (wf_uN 128 ret_val) ->
     fvrelop__is_wf f_ v_shape v_vec_ vec__0 ret_val
 
@@ -11114,8 +11142,8 @@ inductive ivshiftop__is_wf (f_ : N -> iN -> iN -> iN) : shape -> vec_ -> u32 -> 
     (wf_shape v_shape) ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 32 v_u32) ->
-    ((ivshiftop_ v_shape f_ v_vec_ v_u32) != none) ->
-    (ret_val == (Option.get! (ivshiftop_ v_shape f_ v_vec_ v_u32))) ->
+    ((ivshiftop_ v_shape f_ v_vec_ v_u32) ≠ none) ->
+    (ret_val = (Option.get! (ivshiftop_ v_shape f_ v_vec_ v_u32))) ->
     (wf_uN 128 ret_val) ->
     ivshiftop__is_wf f_ v_shape v_vec_ v_u32 ret_val
 
@@ -11128,37 +11156,37 @@ inductive ivshiftopsx__is_wf (f_ : N -> sx -> iN -> iN -> iN) : shape -> sx -> v
     (wf_shape v_shape) ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 32 v_u32) ->
-    ((ivshiftopsx_ v_shape f_ v_sx v_vec_ v_u32) != none) ->
-    (ret_val == (Option.get! (ivshiftopsx_ v_shape f_ v_sx v_vec_ v_u32))) ->
+    ((ivshiftopsx_ v_shape f_ v_sx v_vec_ v_u32) ≠ none) ->
+    (ret_val = (Option.get! (ivshiftopsx_ v_shape f_ v_sx v_vec_ v_u32))) ->
     (wf_uN 128 ret_val) ->
     ivshiftopsx__is_wf f_ v_shape v_sx v_vec_ v_u32 ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:72.6-72.19 -/
 inductive fun_ivbitmaskop_ : shape -> vec_ -> u32 -> Prop where
   | fun_ivbitmaskop__case_0 : forall (v_M : Nat) (v_1 : uN) (c : uN) (c_1_lst : (List lane_)), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) v_1)) ->
-    ((ibits_ 32 c) == ((List.map (fun (c_1_114 : lane_) => ((.mk_bit (proj_uN_0 (ilt_ (lsizenn (lanetype_Jnn .I32)) .S (Option.get! (proj_lane__0 c_1_114)) (.mk_uN 0)))) : bit)) c_1_lst) ++ (List.replicate (Int.toNat ((Int.ofNat 32) - (Int.ofNat v_M))) (.mk_bit 0)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) v_1)) ->
+    ((ibits_ 32 c) = ((List.map (fun (c_1_114 : lane_) => ((.mk_bit (proj_uN_0 (ilt_ (lsizenn (lanetype_Jnn .I32)) .S (Option.get! (proj_lane__0 c_1_114)) (.mk_uN 0)))) : bit)) c_1_lst) ++ (List.replicate (Int.toNat ((Int.ofNat 32) - (Int.ofNat v_M))) (.mk_bit 0)))) ->
     (wf_shape (.X (lanetype_Jnn .I32) (.mk_dim v_M))) ->
     Forall (fun (c_1_115 : lane_) => (wf_bit (.mk_bit (proj_uN_0 (ilt_ (lsizenn (lanetype_Jnn .I32)) .S (Option.get! (proj_lane__0 c_1_115)) (.mk_uN 0)))))) c_1_lst ->
     (wf_bit (.mk_bit 0)) ->
     fun_ivbitmaskop_ (.X .I32 (.mk_dim v_M)) v_1 (irev_ 32 c)
   | fun_ivbitmaskop__case_1 : forall (v_M : Nat) (v_1 : uN) (c : uN) (c_1_lst : (List lane_)), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) v_1)) ->
-    ((ibits_ 32 c) == ((List.map (fun (c_1_117 : lane_) => ((.mk_bit (proj_uN_0 (ilt_ (lsizenn (lanetype_Jnn .I64)) .S (Option.get! (proj_lane__0 c_1_117)) (.mk_uN 0)))) : bit)) c_1_lst) ++ (List.replicate (Int.toNat ((Int.ofNat 32) - (Int.ofNat v_M))) (.mk_bit 0)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) v_1)) ->
+    ((ibits_ 32 c) = ((List.map (fun (c_1_117 : lane_) => ((.mk_bit (proj_uN_0 (ilt_ (lsizenn (lanetype_Jnn .I64)) .S (Option.get! (proj_lane__0 c_1_117)) (.mk_uN 0)))) : bit)) c_1_lst) ++ (List.replicate (Int.toNat ((Int.ofNat 32) - (Int.ofNat v_M))) (.mk_bit 0)))) ->
     (wf_shape (.X (lanetype_Jnn .I64) (.mk_dim v_M))) ->
     Forall (fun (c_1_118 : lane_) => (wf_bit (.mk_bit (proj_uN_0 (ilt_ (lsizenn (lanetype_Jnn .I64)) .S (Option.get! (proj_lane__0 c_1_118)) (.mk_uN 0)))))) c_1_lst ->
     (wf_bit (.mk_bit 0)) ->
     fun_ivbitmaskop_ (.X .I64 (.mk_dim v_M)) v_1 (irev_ 32 c)
   | fun_ivbitmaskop__case_2 : forall (v_M : Nat) (v_1 : uN) (c : uN) (c_1_lst : (List lane_)), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) v_1)) ->
-    ((ibits_ 32 c) == ((List.map (fun (c_1_120 : lane_) => ((.mk_bit (proj_uN_0 (ilt_ (lsizenn (lanetype_Jnn .I8)) .S (Option.get! (proj_lane__0 c_1_120)) (.mk_uN 0)))) : bit)) c_1_lst) ++ (List.replicate (Int.toNat ((Int.ofNat 32) - (Int.ofNat v_M))) (.mk_bit 0)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) v_1)) ->
+    ((ibits_ 32 c) = ((List.map (fun (c_1_120 : lane_) => ((.mk_bit (proj_uN_0 (ilt_ (lsizenn (lanetype_Jnn .I8)) .S (Option.get! (proj_lane__0 c_1_120)) (.mk_uN 0)))) : bit)) c_1_lst) ++ (List.replicate (Int.toNat ((Int.ofNat 32) - (Int.ofNat v_M))) (.mk_bit 0)))) ->
     (wf_shape (.X (lanetype_Jnn .I8) (.mk_dim v_M))) ->
     Forall (fun (c_1_121 : lane_) => (wf_bit (.mk_bit (proj_uN_0 (ilt_ (lsizenn (lanetype_Jnn .I8)) .S (Option.get! (proj_lane__0 c_1_121)) (.mk_uN 0)))))) c_1_lst ->
     (wf_bit (.mk_bit 0)) ->
     fun_ivbitmaskop_ (.X .I8 (.mk_dim v_M)) v_1 (irev_ 32 c)
   | fun_ivbitmaskop__case_3 : forall (v_M : Nat) (v_1 : uN) (c : uN) (c_1_lst : (List lane_)), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) v_1)) ->
-    ((ibits_ 32 c) == ((List.map (fun (c_1_123 : lane_) => ((.mk_bit (proj_uN_0 (ilt_ (lsizenn (lanetype_Jnn .I16)) .S (Option.get! (proj_lane__0 c_1_123)) (.mk_uN 0)))) : bit)) c_1_lst) ++ (List.replicate (Int.toNat ((Int.ofNat 32) - (Int.ofNat v_M))) (.mk_bit 0)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) v_1)) ->
+    ((ibits_ 32 c) = ((List.map (fun (c_1_123 : lane_) => ((.mk_bit (proj_uN_0 (ilt_ (lsizenn (lanetype_Jnn .I16)) .S (Option.get! (proj_lane__0 c_1_123)) (.mk_uN 0)))) : bit)) c_1_lst) ++ (List.replicate (Int.toNat ((Int.ofNat 32) - (Int.ofNat v_M))) (.mk_bit 0)))) ->
     (wf_shape (.X (lanetype_Jnn .I16) (.mk_dim v_M))) ->
     Forall (fun (c_1_124 : lane_) => (wf_bit (.mk_bit (proj_uN_0 (ilt_ (lsizenn (lanetype_Jnn .I16)) .S (Option.get! (proj_lane__0 c_1_124)) (.mk_uN 0)))))) c_1_lst ->
     (wf_bit (.mk_bit 0)) ->
@@ -11170,7 +11198,7 @@ inductive ivbitmaskop__is_wf : shape -> vec_ -> u32 -> Prop where
     (fun_ivbitmaskop_ v_shape v_vec_ var_0) ->
     (wf_shape v_shape) ->
     (wf_uN 128 v_vec_) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_uN 32 ret_val) ->
     ivbitmaskop__is_wf v_shape v_vec_ ret_val
 
@@ -11183,8 +11211,8 @@ inductive ivswizzlop__is_wf (f_ : N -> (List iN) -> iN -> iN) : shape -> vec_ ->
     (wf_shape v_shape) ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
-    ((ivswizzlop_ v_shape f_ v_vec_ vec__0) != none) ->
-    (ret_val == (Option.get! (ivswizzlop_ v_shape f_ v_vec_ vec__0))) ->
+    ((ivswizzlop_ v_shape f_ v_vec_ vec__0) ≠ none) ->
+    (ret_val = (Option.get! (ivswizzlop_ v_shape f_ v_vec_ vec__0))) ->
     (wf_uN 128 ret_val) ->
     ivswizzlop__is_wf f_ v_shape v_vec_ vec__0 ret_val
 
@@ -11198,8 +11226,8 @@ inductive ivshufflop__is_wf : shape -> (List laneidx) -> vec_ -> vec_ -> vec_ ->
     Forall (fun (var_0 : laneidx) => (wf_uN 8 var_0)) var_0_lst ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
-    ((ivshufflop_ v_shape var_0_lst v_vec_ vec__0) != none) ->
-    (ret_val == (Option.get! (ivshufflop_ v_shape var_0_lst v_vec_ vec__0))) ->
+    ((ivshufflop_ v_shape var_0_lst v_vec_ vec__0) ≠ none) ->
+    (ret_val = (Option.get! (ivshufflop_ v_shape var_0_lst v_vec_ vec__0))) ->
     (wf_uN 128 ret_val) ->
     ivshufflop__is_wf v_shape var_0_lst v_vec_ vec__0 ret_val
 
@@ -11213,7 +11241,7 @@ def vvunop_ : ∀  (v_vectype : vectype) (v_vvunop : vvunop) (v_vec_ : vec_) , (
 inductive vvunop__is_wf : vectype -> vvunop -> vec_ -> (List vec_) -> Prop where
   | vvunop__is_wf_0 : forall (v_vectype : vectype) (v_vvunop : vvunop) (v_vec_ : vec_) (ret_val_lst : (List vec_)), 
     (wf_uN (vsize v_vectype) v_vec_) ->
-    (ret_val_lst == (vvunop_ v_vectype v_vvunop v_vec_)) ->
+    (ret_val_lst = (vvunop_ v_vectype v_vvunop v_vec_)) ->
     Forall (fun (ret_val : vec_) => (wf_uN (vsize v_vectype) ret_val)) ret_val_lst ->
     vvunop__is_wf v_vectype v_vvunop v_vec_ ret_val_lst
 
@@ -11234,7 +11262,7 @@ inductive vvbinop__is_wf : vectype -> vvbinop -> vec_ -> vec_ -> (List vec_) -> 
   | vvbinop__is_wf_0 : forall (v_vectype : vectype) (v_vvbinop : vvbinop) (v_vec_ : vec_) (vec__0 : vec_) (ret_val_lst : (List vec_)), 
     (wf_uN (vsize v_vectype) v_vec_) ->
     (wf_uN (vsize v_vectype) vec__0) ->
-    (ret_val_lst == (vvbinop_ v_vectype v_vvbinop v_vec_ vec__0)) ->
+    (ret_val_lst = (vvbinop_ v_vectype v_vvbinop v_vec_ vec__0)) ->
     Forall (fun (ret_val : vec_) => (wf_uN (vsize v_vectype) ret_val)) ret_val_lst ->
     vvbinop__is_wf v_vectype v_vvbinop v_vec_ vec__0 ret_val_lst
 
@@ -11250,170 +11278,170 @@ inductive vvternop__is_wf : vectype -> vvternop -> vec_ -> vec_ -> vec_ -> (List
     (wf_uN (vsize v_vectype) v_vec_) ->
     (wf_uN (vsize v_vectype) vec__0) ->
     (wf_uN (vsize v_vectype) vec__1) ->
-    (ret_val_lst == (vvternop_ v_vectype v_vvternop v_vec_ vec__0 vec__1)) ->
+    (ret_val_lst = (vvternop_ v_vectype v_vvternop v_vec_ vec__0 vec__1)) ->
     Forall (fun (ret_val : vec_) => (wf_uN (vsize v_vectype) ret_val)) ret_val_lst ->
     vvternop__is_wf v_vectype v_vvternop v_vec_ vec__0 vec__1 ret_val_lst
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:172.6-172.13 -/
 inductive fun_vunop__before_fun_vunop__case_26 : shape -> vunop_ -> vec_ -> Prop where
   | fun_vunop__case_25 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .I16 (.mk_dim v_M)) (.mk_vunop__0 .I16 M_0 .POPCNT) v
   | fun_vunop__case_24 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .I8 (.mk_dim v_M)) (.mk_vunop__0 .I8 M_0 .POPCNT) v
   | fun_vunop__case_23 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .I64 (.mk_dim v_M)) (.mk_vunop__0 .I64 M_0 .POPCNT) v
   | fun_vunop__case_22 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .I32 (.mk_dim v_M)) (.mk_vunop__0 .I32 M_0 .POPCNT) v
   | fun_vunop__case_21 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .I16 (.mk_dim v_M)) (.mk_vunop__0 .I16 M_0 .NEG) v
   | fun_vunop__case_20 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .I8 (.mk_dim v_M)) (.mk_vunop__0 .I8 M_0 .NEG) v
   | fun_vunop__case_19 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .I64 (.mk_dim v_M)) (.mk_vunop__0 .I64 M_0 .NEG) v
   | fun_vunop__case_18 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .I32 (.mk_dim v_M)) (.mk_vunop__0 .I32 M_0 .NEG) v
   | fun_vunop__case_17 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .I16 (.mk_dim v_M)) (.mk_vunop__0 .I16 M_0 .ABS) v
   | fun_vunop__case_16 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .I8 (.mk_dim v_M)) (.mk_vunop__0 .I8 M_0 .ABS) v
   | fun_vunop__case_15 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .I64 (.mk_dim v_M)) (.mk_vunop__0 .I64 M_0 .ABS) v
   | fun_vunop__case_14 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .I32 (.mk_dim v_M)) (.mk_vunop__0 .I32 M_0 .ABS) v
   | fun_vunop__case_13 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .F64 (.mk_dim v_M)) (.mk_vunop__1 .F64 M_0 .NEAREST) v
   | fun_vunop__case_12 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .F32 (.mk_dim v_M)) (.mk_vunop__1 .F32 M_0 .NEAREST) v
   | fun_vunop__case_11 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .F64 (.mk_dim v_M)) (.mk_vunop__1 .F64 M_0 .TRUNC) v
   | fun_vunop__case_10 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .F32 (.mk_dim v_M)) (.mk_vunop__1 .F32 M_0 .TRUNC) v
   | fun_vunop__case_9 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .F64 (.mk_dim v_M)) (.mk_vunop__1 .F64 M_0 .FLOOR) v
   | fun_vunop__case_8 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .F32 (.mk_dim v_M)) (.mk_vunop__1 .F32 M_0 .FLOOR) v
   | fun_vunop__case_7 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .F64 (.mk_dim v_M)) (.mk_vunop__1 .F64 M_0 .CEIL) v
   | fun_vunop__case_6 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .F32 (.mk_dim v_M)) (.mk_vunop__1 .F32 M_0 .CEIL) v
   | fun_vunop__case_5 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .F64 (.mk_dim v_M)) (.mk_vunop__1 .F64 M_0 .SQRT) v
   | fun_vunop__case_4 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .F32 (.mk_dim v_M)) (.mk_vunop__1 .F32 M_0 .SQRT) v
   | fun_vunop__case_3 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .F64 (.mk_dim v_M)) (.mk_vunop__1 .F64 M_0 .NEG) v
   | fun_vunop__case_2 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .F32 (.mk_dim v_M)) (.mk_vunop__1 .F32 M_0 .NEG) v
   | fun_vunop__case_1 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .F64 (.mk_dim v_M)) (.mk_vunop__1 .F64 M_0 .ABS) v
   | fun_vunop__case_0 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop__before_fun_vunop__case_26 (.X .F32 (.mk_dim v_M)) (.mk_vunop__1 .F32 M_0 .ABS) v
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:172.6-172.13 -/
 inductive fun_vunop_ : shape -> vunop_ -> vec_ -> (Option (List vec_)) -> Prop where
   | fun_vunop__case_0 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .F32 (.mk_dim v_M)) (.mk_vunop__1 .F32 M_0 .ABS) v (some (fvunop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) fabs_ v))
   | fun_vunop__case_1 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .F64 (.mk_dim v_M)) (.mk_vunop__1 .F64 M_0 .ABS) v (some (fvunop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) fabs_ v))
   | fun_vunop__case_2 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .F32 (.mk_dim v_M)) (.mk_vunop__1 .F32 M_0 .NEG) v (some (fvunop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) fneg_ v))
   | fun_vunop__case_3 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .F64 (.mk_dim v_M)) (.mk_vunop__1 .F64 M_0 .NEG) v (some (fvunop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) fneg_ v))
   | fun_vunop__case_4 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .F32 (.mk_dim v_M)) (.mk_vunop__1 .F32 M_0 .SQRT) v (some (fvunop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) fsqrt_ v))
   | fun_vunop__case_5 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .F64 (.mk_dim v_M)) (.mk_vunop__1 .F64 M_0 .SQRT) v (some (fvunop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) fsqrt_ v))
   | fun_vunop__case_6 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .F32 (.mk_dim v_M)) (.mk_vunop__1 .F32 M_0 .CEIL) v (some (fvunop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) fceil_ v))
   | fun_vunop__case_7 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .F64 (.mk_dim v_M)) (.mk_vunop__1 .F64 M_0 .CEIL) v (some (fvunop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) fceil_ v))
   | fun_vunop__case_8 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .F32 (.mk_dim v_M)) (.mk_vunop__1 .F32 M_0 .FLOOR) v (some (fvunop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) ffloor_ v))
   | fun_vunop__case_9 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .F64 (.mk_dim v_M)) (.mk_vunop__1 .F64 M_0 .FLOOR) v (some (fvunop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) ffloor_ v))
   | fun_vunop__case_10 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .F32 (.mk_dim v_M)) (.mk_vunop__1 .F32 M_0 .TRUNC) v (some (fvunop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) ftrunc_ v))
   | fun_vunop__case_11 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .F64 (.mk_dim v_M)) (.mk_vunop__1 .F64 M_0 .TRUNC) v (some (fvunop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) ftrunc_ v))
   | fun_vunop__case_12 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .F32 (.mk_dim v_M)) (.mk_vunop__1 .F32 M_0 .NEAREST) v (some (fvunop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) fnearest_ v))
   | fun_vunop__case_13 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .F64 (.mk_dim v_M)) (.mk_vunop__1 .F64 M_0 .NEAREST) v (some (fvunop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) fnearest_ v))
   | fun_vunop__case_14 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .I32 (.mk_dim v_M)) (.mk_vunop__0 .I32 M_0 .ABS) v (ivunop_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) iabs_ v)
   | fun_vunop__case_15 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .I64 (.mk_dim v_M)) (.mk_vunop__0 .I64 M_0 .ABS) v (ivunop_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) iabs_ v)
   | fun_vunop__case_16 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .I8 (.mk_dim v_M)) (.mk_vunop__0 .I8 M_0 .ABS) v (ivunop_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) iabs_ v)
   | fun_vunop__case_17 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .I16 (.mk_dim v_M)) (.mk_vunop__0 .I16 M_0 .ABS) v (ivunop_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) iabs_ v)
   | fun_vunop__case_18 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .I32 (.mk_dim v_M)) (.mk_vunop__0 .I32 M_0 .NEG) v (ivunop_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) ineg_ v)
   | fun_vunop__case_19 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .I64 (.mk_dim v_M)) (.mk_vunop__0 .I64 M_0 .NEG) v (ivunop_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) ineg_ v)
   | fun_vunop__case_20 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .I8 (.mk_dim v_M)) (.mk_vunop__0 .I8 M_0 .NEG) v (ivunop_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) ineg_ v)
   | fun_vunop__case_21 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .I16 (.mk_dim v_M)) (.mk_vunop__0 .I16 M_0 .NEG) v (ivunop_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) ineg_ v)
   | fun_vunop__case_22 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .I32 (.mk_dim v_M)) (.mk_vunop__0 .I32 M_0 .POPCNT) v (ivunop_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) ipopcnt_ v)
   | fun_vunop__case_23 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .I64 (.mk_dim v_M)) (.mk_vunop__0 .I64 M_0 .POPCNT) v (ivunop_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) ipopcnt_ v)
   | fun_vunop__case_24 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .I8 (.mk_dim v_M)) (.mk_vunop__0 .I8 M_0 .POPCNT) v (ivunop_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) ipopcnt_ v)
   | fun_vunop__case_25 : forall (v_M : Nat) (v : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vunop_ (.X .I16 (.mk_dim v_M)) (.mk_vunop__0 .I16 M_0 .POPCNT) v (ivunop_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) ipopcnt_ v)
   | fun_vunop__case_26 : forall (x0 : shape) (x1 : vunop_) (x2 : vec_), 
     (¬(fun_vunop__before_fun_vunop__case_26 x0 x1 x2)) ->
@@ -11426,375 +11454,375 @@ inductive vunop__is_wf : shape -> vunop_ -> vec_ -> (List vec_) -> Prop where
     (wf_shape v_shape) ->
     (wf_vunop_ v_shape v_vunop_) ->
     (wf_uN 128 v_vec_) ->
-    (var_0 != none) ->
-    (ret_val_lst == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val_lst = (Option.get! var_0)) ->
     Forall (fun (ret_val : vec_) => (wf_uN 128 ret_val)) ret_val_lst ->
     vunop__is_wf v_shape v_vunop_ v_vec_ ret_val_lst
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:174.6-174.14 -/
 inductive fun_vbinop__before_fun_vbinop__case_60 : shape -> vbinop_ -> vec_ -> vec_ -> Prop where
   | fun_vbinop__case_59 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .RELAXED_MAX) v_1 v_2
   | fun_vbinop__case_58 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .RELAXED_MAX) v_1 v_2
   | fun_vbinop__case_57 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .RELAXED_MIN) v_1 v_2
   | fun_vbinop__case_56 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .RELAXED_MIN) v_1 v_2
   | fun_vbinop__case_55 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .PMAX) v_1 v_2
   | fun_vbinop__case_54 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .PMAX) v_1 v_2
   | fun_vbinop__case_53 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .PMIN) v_1 v_2
   | fun_vbinop__case_52 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .PMIN) v_1 v_2
   | fun_vbinop__case_51 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .MAX) v_1 v_2
   | fun_vbinop__case_50 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .MAX) v_1 v_2
   | fun_vbinop__case_49 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .MIN) v_1 v_2
   | fun_vbinop__case_48 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .MIN) v_1 v_2
   | fun_vbinop__case_47 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .DIV) v_1 v_2
   | fun_vbinop__case_46 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .DIV) v_1 v_2
   | fun_vbinop__case_45 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .MUL) v_1 v_2
   | fun_vbinop__case_44 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .MUL) v_1 v_2
   | fun_vbinop__case_43 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .SUB) v_1 v_2
   | fun_vbinop__case_42 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .SUB) v_1 v_2
   | fun_vbinop__case_41 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .ADD) v_1 v_2
   | fun_vbinop__case_40 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .ADD) v_1 v_2
   | fun_vbinop__case_39 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 .RELAXED_Q15MULRS) v_1 v_2
   | fun_vbinop__case_38 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 .RELAXED_Q15MULRS) v_1 v_2
   | fun_vbinop__case_37 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 .RELAXED_Q15MULRS) v_1 v_2
   | fun_vbinop__case_36 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 .RELAXED_Q15MULRS) v_1 v_2
   | fun_vbinop__case_35 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 .Q15MULR_SATS) v_1 v_2
   | fun_vbinop__case_34 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 .Q15MULR_SATS) v_1 v_2
   | fun_vbinop__case_33 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 .Q15MULR_SATS) v_1 v_2
   | fun_vbinop__case_32 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 .Q15MULR_SATS) v_1 v_2
   | fun_vbinop__case_31 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 .AVGRU) v_1 v_2
   | fun_vbinop__case_30 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 .AVGRU) v_1 v_2
   | fun_vbinop__case_29 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 .AVGRU) v_1 v_2
   | fun_vbinop__case_28 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 .AVGRU) v_1 v_2
   | fun_vbinop__case_27 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 (.MAX v_sx)) v_1 v_2
   | fun_vbinop__case_26 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 (.MAX v_sx)) v_1 v_2
   | fun_vbinop__case_25 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 (.MAX v_sx)) v_1 v_2
   | fun_vbinop__case_24 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 (.MAX v_sx)) v_1 v_2
   | fun_vbinop__case_23 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 (.MIN v_sx)) v_1 v_2
   | fun_vbinop__case_22 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 (.MIN v_sx)) v_1 v_2
   | fun_vbinop__case_21 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 (.MIN v_sx)) v_1 v_2
   | fun_vbinop__case_20 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 (.MIN v_sx)) v_1 v_2
   | fun_vbinop__case_19 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 (.SUB_SAT v_sx)) v_1 v_2
   | fun_vbinop__case_18 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 (.SUB_SAT v_sx)) v_1 v_2
   | fun_vbinop__case_17 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 (.SUB_SAT v_sx)) v_1 v_2
   | fun_vbinop__case_16 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 (.SUB_SAT v_sx)) v_1 v_2
   | fun_vbinop__case_15 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 (.ADD_SAT v_sx)) v_1 v_2
   | fun_vbinop__case_14 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 (.ADD_SAT v_sx)) v_1 v_2
   | fun_vbinop__case_13 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 (.ADD_SAT v_sx)) v_1 v_2
   | fun_vbinop__case_12 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 (.ADD_SAT v_sx)) v_1 v_2
   | fun_vbinop__case_11 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 .MUL) v_1 v_2
   | fun_vbinop__case_10 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 .MUL) v_1 v_2
   | fun_vbinop__case_9 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 .MUL) v_1 v_2
   | fun_vbinop__case_8 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 .MUL) v_1 v_2
   | fun_vbinop__case_7 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 .SUB) v_1 v_2
   | fun_vbinop__case_6 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 .SUB) v_1 v_2
   | fun_vbinop__case_5 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 .SUB) v_1 v_2
   | fun_vbinop__case_4 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 .SUB) v_1 v_2
   | fun_vbinop__case_3 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 .ADD) v_1 v_2
   | fun_vbinop__case_2 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 .ADD) v_1 v_2
   | fun_vbinop__case_1 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 .ADD) v_1 v_2
   | fun_vbinop__case_0 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop__before_fun_vbinop__case_60 (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 .ADD) v_1 v_2
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:174.6-174.14 -/
 inductive fun_vbinop_ : shape -> vbinop_ -> vec_ -> vec_ -> (Option (List vec_)) -> Prop where
   | fun_vbinop__case_0 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 .ADD) v_1 v_2 (ivbinop_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) iadd_ v_1 v_2)
   | fun_vbinop__case_1 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 .ADD) v_1 v_2 (ivbinop_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) iadd_ v_1 v_2)
   | fun_vbinop__case_2 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 .ADD) v_1 v_2 (ivbinop_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) iadd_ v_1 v_2)
   | fun_vbinop__case_3 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 .ADD) v_1 v_2 (ivbinop_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) iadd_ v_1 v_2)
   | fun_vbinop__case_4 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 .SUB) v_1 v_2 (ivbinop_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) isub_ v_1 v_2)
   | fun_vbinop__case_5 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 .SUB) v_1 v_2 (ivbinop_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) isub_ v_1 v_2)
   | fun_vbinop__case_6 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 .SUB) v_1 v_2 (ivbinop_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) isub_ v_1 v_2)
   | fun_vbinop__case_7 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 .SUB) v_1 v_2 (ivbinop_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) isub_ v_1 v_2)
   | fun_vbinop__case_8 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 .MUL) v_1 v_2 (ivbinop_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) imul_ v_1 v_2)
   | fun_vbinop__case_9 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 .MUL) v_1 v_2 (ivbinop_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) imul_ v_1 v_2)
   | fun_vbinop__case_10 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 .MUL) v_1 v_2 (ivbinop_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) imul_ v_1 v_2)
   | fun_vbinop__case_11 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 .MUL) v_1 v_2 (ivbinop_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) imul_ v_1 v_2)
   | fun_vbinop__case_12 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 (.ADD_SAT v_sx)) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) iadd_sat_ v_sx v_1 v_2)
   | fun_vbinop__case_13 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 (.ADD_SAT v_sx)) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) iadd_sat_ v_sx v_1 v_2)
   | fun_vbinop__case_14 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 (.ADD_SAT v_sx)) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) iadd_sat_ v_sx v_1 v_2)
   | fun_vbinop__case_15 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 (.ADD_SAT v_sx)) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) iadd_sat_ v_sx v_1 v_2)
   | fun_vbinop__case_16 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 (.SUB_SAT v_sx)) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) isub_sat_ v_sx v_1 v_2)
   | fun_vbinop__case_17 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 (.SUB_SAT v_sx)) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) isub_sat_ v_sx v_1 v_2)
   | fun_vbinop__case_18 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 (.SUB_SAT v_sx)) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) isub_sat_ v_sx v_1 v_2)
   | fun_vbinop__case_19 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 (.SUB_SAT v_sx)) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) isub_sat_ v_sx v_1 v_2)
   | fun_vbinop__case_20 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 (.MIN v_sx)) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) imin_ v_sx v_1 v_2)
   | fun_vbinop__case_21 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 (.MIN v_sx)) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) imin_ v_sx v_1 v_2)
   | fun_vbinop__case_22 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 (.MIN v_sx)) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) imin_ v_sx v_1 v_2)
   | fun_vbinop__case_23 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 (.MIN v_sx)) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) imin_ v_sx v_1 v_2)
   | fun_vbinop__case_24 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 (.MAX v_sx)) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) imax_ v_sx v_1 v_2)
   | fun_vbinop__case_25 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 (.MAX v_sx)) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) imax_ v_sx v_1 v_2)
   | fun_vbinop__case_26 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 (.MAX v_sx)) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) imax_ v_sx v_1 v_2)
   | fun_vbinop__case_27 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 (.MAX v_sx)) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) imax_ v_sx v_1 v_2)
   | fun_vbinop__case_28 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 .AVGRU) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) iavgr_ .U v_1 v_2)
   | fun_vbinop__case_29 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 .AVGRU) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) iavgr_ .U v_1 v_2)
   | fun_vbinop__case_30 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 .AVGRU) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) iavgr_ .U v_1 v_2)
   | fun_vbinop__case_31 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 .AVGRU) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) iavgr_ .U v_1 v_2)
   | fun_vbinop__case_32 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 .Q15MULR_SATS) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) iq15mulr_sat_ .S v_1 v_2)
   | fun_vbinop__case_33 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 .Q15MULR_SATS) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) iq15mulr_sat_ .S v_1 v_2)
   | fun_vbinop__case_34 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 .Q15MULR_SATS) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) iq15mulr_sat_ .S v_1 v_2)
   | fun_vbinop__case_35 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 .Q15MULR_SATS) v_1 v_2 (ivbinopsx_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) iq15mulr_sat_ .S v_1 v_2)
   | fun_vbinop__case_36 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I32 (.mk_dim v_M)) (.mk_vbinop__0 .I32 M_0 .RELAXED_Q15MULRS) v_1 v_2 (some (ivbinopsxnd_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) irelaxed_q15mulr_ .S v_1 v_2))
   | fun_vbinop__case_37 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I64 (.mk_dim v_M)) (.mk_vbinop__0 .I64 M_0 .RELAXED_Q15MULRS) v_1 v_2 (some (ivbinopsxnd_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) irelaxed_q15mulr_ .S v_1 v_2))
   | fun_vbinop__case_38 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I8 (.mk_dim v_M)) (.mk_vbinop__0 .I8 M_0 .RELAXED_Q15MULRS) v_1 v_2 (some (ivbinopsxnd_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) irelaxed_q15mulr_ .S v_1 v_2))
   | fun_vbinop__case_39 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .I16 (.mk_dim v_M)) (.mk_vbinop__0 .I16 M_0 .RELAXED_Q15MULRS) v_1 v_2 (some (ivbinopsxnd_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) irelaxed_q15mulr_ .S v_1 v_2))
   | fun_vbinop__case_40 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .ADD) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) fadd_ v_1 v_2))
   | fun_vbinop__case_41 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .ADD) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) fadd_ v_1 v_2))
   | fun_vbinop__case_42 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .SUB) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) fsub_ v_1 v_2))
   | fun_vbinop__case_43 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .SUB) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) fsub_ v_1 v_2))
   | fun_vbinop__case_44 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .MUL) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) fmul_ v_1 v_2))
   | fun_vbinop__case_45 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .MUL) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) fmul_ v_1 v_2))
   | fun_vbinop__case_46 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .DIV) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) fdiv_ v_1 v_2))
   | fun_vbinop__case_47 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .DIV) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) fdiv_ v_1 v_2))
   | fun_vbinop__case_48 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .MIN) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) fmin_ v_1 v_2))
   | fun_vbinop__case_49 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .MIN) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) fmin_ v_1 v_2))
   | fun_vbinop__case_50 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .MAX) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) fmax_ v_1 v_2))
   | fun_vbinop__case_51 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .MAX) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) fmax_ v_1 v_2))
   | fun_vbinop__case_52 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .PMIN) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) fpmin_ v_1 v_2))
   | fun_vbinop__case_53 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .PMIN) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) fpmin_ v_1 v_2))
   | fun_vbinop__case_54 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .PMAX) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) fpmax_ v_1 v_2))
   | fun_vbinop__case_55 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .PMAX) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) fpmax_ v_1 v_2))
   | fun_vbinop__case_56 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .RELAXED_MIN) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) frelaxed_min_ v_1 v_2))
   | fun_vbinop__case_57 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .RELAXED_MIN) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) frelaxed_min_ v_1 v_2))
   | fun_vbinop__case_58 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F32 (.mk_dim v_M)) (.mk_vbinop__1 .F32 M_0 .RELAXED_MAX) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) frelaxed_max_ v_1 v_2))
   | fun_vbinop__case_59 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vbinop_ (.X .F64 (.mk_dim v_M)) (.mk_vbinop__1 .F64 M_0 .RELAXED_MAX) v_1 v_2 (some (fvbinop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) frelaxed_max_ v_1 v_2))
   | fun_vbinop__case_60 : forall (x0 : shape) (x1 : vbinop_) (x2 : vec_) (x3 : vec_), 
     (¬(fun_vbinop__before_fun_vbinop__case_60 x0 x1 x2 x3)) ->
@@ -11808,63 +11836,63 @@ inductive vbinop__is_wf : shape -> vbinop_ -> vec_ -> vec_ -> (List vec_) -> Pro
     (wf_vbinop_ v_shape v_vbinop_) ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
-    (var_0 != none) ->
-    (ret_val_lst == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val_lst = (Option.get! var_0)) ->
     Forall (fun (ret_val : vec_) => (wf_uN 128 ret_val)) ret_val_lst ->
     vbinop__is_wf v_shape v_vbinop_ v_vec_ vec__0 ret_val_lst
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:176.6-176.15 -/
 inductive fun_vternop__before_fun_vternop__case_8 : shape -> vternop_ -> vec_ -> vec_ -> vec_ -> Prop where
   | fun_vternop__case_7 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (v_3 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vternop__before_fun_vternop__case_8 (.X .F64 (.mk_dim v_M)) (.mk_vternop__1 .F64 M_0 .RELAXED_NMADD) v_1 v_2 v_3
   | fun_vternop__case_6 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (v_3 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vternop__before_fun_vternop__case_8 (.X .F32 (.mk_dim v_M)) (.mk_vternop__1 .F32 M_0 .RELAXED_NMADD) v_1 v_2 v_3
   | fun_vternop__case_5 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (v_3 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vternop__before_fun_vternop__case_8 (.X .F64 (.mk_dim v_M)) (.mk_vternop__1 .F64 M_0 .RELAXED_MADD) v_1 v_2 v_3
   | fun_vternop__case_4 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (v_3 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vternop__before_fun_vternop__case_8 (.X .F32 (.mk_dim v_M)) (.mk_vternop__1 .F32 M_0 .RELAXED_MADD) v_1 v_2 v_3
   | fun_vternop__case_3 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (v_3 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vternop__before_fun_vternop__case_8 (.X .I16 (.mk_dim v_M)) (.mk_vternop__0 .I16 M_0 .RELAXED_LANESELECT) v_1 v_2 v_3
   | fun_vternop__case_2 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (v_3 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vternop__before_fun_vternop__case_8 (.X .I8 (.mk_dim v_M)) (.mk_vternop__0 .I8 M_0 .RELAXED_LANESELECT) v_1 v_2 v_3
   | fun_vternop__case_1 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (v_3 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vternop__before_fun_vternop__case_8 (.X .I64 (.mk_dim v_M)) (.mk_vternop__0 .I64 M_0 .RELAXED_LANESELECT) v_1 v_2 v_3
   | fun_vternop__case_0 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (v_3 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vternop__before_fun_vternop__case_8 (.X .I32 (.mk_dim v_M)) (.mk_vternop__0 .I32 M_0 .RELAXED_LANESELECT) v_1 v_2 v_3
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:176.6-176.15 -/
 inductive fun_vternop_ : shape -> vternop_ -> vec_ -> vec_ -> vec_ -> (Option (List vec_)) -> Prop where
   | fun_vternop__case_0 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (v_3 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vternop_ (.X .I32 (.mk_dim v_M)) (.mk_vternop__0 .I32 M_0 .RELAXED_LANESELECT) v_1 v_2 v_3 (some (ivternopnd_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) irelaxed_laneselect_ v_1 v_2 v_3))
   | fun_vternop__case_1 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (v_3 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vternop_ (.X .I64 (.mk_dim v_M)) (.mk_vternop__0 .I64 M_0 .RELAXED_LANESELECT) v_1 v_2 v_3 (some (ivternopnd_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) irelaxed_laneselect_ v_1 v_2 v_3))
   | fun_vternop__case_2 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (v_3 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vternop_ (.X .I8 (.mk_dim v_M)) (.mk_vternop__0 .I8 M_0 .RELAXED_LANESELECT) v_1 v_2 v_3 (some (ivternopnd_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) irelaxed_laneselect_ v_1 v_2 v_3))
   | fun_vternop__case_3 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (v_3 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vternop_ (.X .I16 (.mk_dim v_M)) (.mk_vternop__0 .I16 M_0 .RELAXED_LANESELECT) v_1 v_2 v_3 (some (ivternopnd_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) irelaxed_laneselect_ v_1 v_2 v_3))
   | fun_vternop__case_4 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (v_3 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vternop_ (.X .F32 (.mk_dim v_M)) (.mk_vternop__1 .F32 M_0 .RELAXED_MADD) v_1 v_2 v_3 (some (fvternop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) frelaxed_madd_ v_1 v_2 v_3))
   | fun_vternop__case_5 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (v_3 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vternop_ (.X .F64 (.mk_dim v_M)) (.mk_vternop__1 .F64 M_0 .RELAXED_MADD) v_1 v_2 v_3 (some (fvternop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) frelaxed_madd_ v_1 v_2 v_3))
   | fun_vternop__case_6 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (v_3 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vternop_ (.X .F32 (.mk_dim v_M)) (.mk_vternop__1 .F32 M_0 .RELAXED_NMADD) v_1 v_2 v_3 (some (fvternop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) frelaxed_nmadd_ v_1 v_2 v_3))
   | fun_vternop__case_7 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (v_3 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vternop_ (.X .F64 (.mk_dim v_M)) (.mk_vternop__1 .F64 M_0 .RELAXED_NMADD) v_1 v_2 v_3 (some (fvternop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) frelaxed_nmadd_ v_1 v_2 v_3))
   | fun_vternop__case_8 : forall (x0 : shape) (x1 : vternop_) (x2 : vec_) (x3 : vec_) (x4 : vec_), 
     (¬(fun_vternop__before_fun_vternop__case_8 x0 x1 x2 x3 x4)) ->
@@ -11879,231 +11907,231 @@ inductive vternop__is_wf : shape -> vternop_ -> vec_ -> vec_ -> vec_ -> (List ve
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
     (wf_uN 128 vec__1) ->
-    (var_0 != none) ->
-    (ret_val_lst == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val_lst = (Option.get! var_0)) ->
     Forall (fun (ret_val : vec_) => (wf_uN 128 ret_val)) ret_val_lst ->
     vternop__is_wf v_shape v_vternop_ v_vec_ vec__0 vec__1 ret_val_lst
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:178.6-178.14 -/
 inductive fun_vrelop__before_fun_vrelop__case_36 : shape -> vrelop_ -> vec_ -> vec_ -> Prop where
   | fun_vrelop__case_35 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .F64 (.mk_dim v_M)) (.mk_vrelop__1 .F64 M_0 .GE) v_1 v_2
   | fun_vrelop__case_34 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .F32 (.mk_dim v_M)) (.mk_vrelop__1 .F32 M_0 .GE) v_1 v_2
   | fun_vrelop__case_33 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .F64 (.mk_dim v_M)) (.mk_vrelop__1 .F64 M_0 .LE) v_1 v_2
   | fun_vrelop__case_32 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .F32 (.mk_dim v_M)) (.mk_vrelop__1 .F32 M_0 .LE) v_1 v_2
   | fun_vrelop__case_31 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .F64 (.mk_dim v_M)) (.mk_vrelop__1 .F64 M_0 .GT) v_1 v_2
   | fun_vrelop__case_30 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .F32 (.mk_dim v_M)) (.mk_vrelop__1 .F32 M_0 .GT) v_1 v_2
   | fun_vrelop__case_29 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .F64 (.mk_dim v_M)) (.mk_vrelop__1 .F64 M_0 .LT) v_1 v_2
   | fun_vrelop__case_28 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .F32 (.mk_dim v_M)) (.mk_vrelop__1 .F32 M_0 .LT) v_1 v_2
   | fun_vrelop__case_27 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .F64 (.mk_dim v_M)) (.mk_vrelop__1 .F64 M_0 .NE) v_1 v_2
   | fun_vrelop__case_26 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .F32 (.mk_dim v_M)) (.mk_vrelop__1 .F32 M_0 .NE) v_1 v_2
   | fun_vrelop__case_25 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .F64 (.mk_dim v_M)) (.mk_vrelop__1 .F64 M_0 .EQ) v_1 v_2
   | fun_vrelop__case_24 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .F32 (.mk_dim v_M)) (.mk_vrelop__1 .F32 M_0 .EQ) v_1 v_2
   | fun_vrelop__case_23 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I16 (.mk_dim v_M)) (.mk_vrelop__0 .I16 M_0 (.GE v_sx)) v_1 v_2
   | fun_vrelop__case_22 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I8 (.mk_dim v_M)) (.mk_vrelop__0 .I8 M_0 (.GE v_sx)) v_1 v_2
   | fun_vrelop__case_21 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I64 (.mk_dim v_M)) (.mk_vrelop__0 .I64 M_0 (.GE v_sx)) v_1 v_2
   | fun_vrelop__case_20 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I32 (.mk_dim v_M)) (.mk_vrelop__0 .I32 M_0 (.GE v_sx)) v_1 v_2
   | fun_vrelop__case_19 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I16 (.mk_dim v_M)) (.mk_vrelop__0 .I16 M_0 (.LE v_sx)) v_1 v_2
   | fun_vrelop__case_18 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I8 (.mk_dim v_M)) (.mk_vrelop__0 .I8 M_0 (.LE v_sx)) v_1 v_2
   | fun_vrelop__case_17 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I64 (.mk_dim v_M)) (.mk_vrelop__0 .I64 M_0 (.LE v_sx)) v_1 v_2
   | fun_vrelop__case_16 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I32 (.mk_dim v_M)) (.mk_vrelop__0 .I32 M_0 (.LE v_sx)) v_1 v_2
   | fun_vrelop__case_15 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I16 (.mk_dim v_M)) (.mk_vrelop__0 .I16 M_0 (.GT v_sx)) v_1 v_2
   | fun_vrelop__case_14 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I8 (.mk_dim v_M)) (.mk_vrelop__0 .I8 M_0 (.GT v_sx)) v_1 v_2
   | fun_vrelop__case_13 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I64 (.mk_dim v_M)) (.mk_vrelop__0 .I64 M_0 (.GT v_sx)) v_1 v_2
   | fun_vrelop__case_12 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I32 (.mk_dim v_M)) (.mk_vrelop__0 .I32 M_0 (.GT v_sx)) v_1 v_2
   | fun_vrelop__case_11 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I16 (.mk_dim v_M)) (.mk_vrelop__0 .I16 M_0 (.LT v_sx)) v_1 v_2
   | fun_vrelop__case_10 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I8 (.mk_dim v_M)) (.mk_vrelop__0 .I8 M_0 (.LT v_sx)) v_1 v_2
   | fun_vrelop__case_9 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I64 (.mk_dim v_M)) (.mk_vrelop__0 .I64 M_0 (.LT v_sx)) v_1 v_2
   | fun_vrelop__case_8 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I32 (.mk_dim v_M)) (.mk_vrelop__0 .I32 M_0 (.LT v_sx)) v_1 v_2
   | fun_vrelop__case_7 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I16 (.mk_dim v_M)) (.mk_vrelop__0 .I16 M_0 .NE) v_1 v_2
   | fun_vrelop__case_6 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I8 (.mk_dim v_M)) (.mk_vrelop__0 .I8 M_0 .NE) v_1 v_2
   | fun_vrelop__case_5 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I64 (.mk_dim v_M)) (.mk_vrelop__0 .I64 M_0 .NE) v_1 v_2
   | fun_vrelop__case_4 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I32 (.mk_dim v_M)) (.mk_vrelop__0 .I32 M_0 .NE) v_1 v_2
   | fun_vrelop__case_3 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I16 (.mk_dim v_M)) (.mk_vrelop__0 .I16 M_0 .EQ) v_1 v_2
   | fun_vrelop__case_2 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I8 (.mk_dim v_M)) (.mk_vrelop__0 .I8 M_0 .EQ) v_1 v_2
   | fun_vrelop__case_1 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I64 (.mk_dim v_M)) (.mk_vrelop__0 .I64 M_0 .EQ) v_1 v_2
   | fun_vrelop__case_0 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop__before_fun_vrelop__case_36 (.X .I32 (.mk_dim v_M)) (.mk_vrelop__0 .I32 M_0 .EQ) v_1 v_2
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:178.6-178.14 -/
 inductive fun_vrelop_ : shape -> vrelop_ -> vec_ -> vec_ -> (Option vec_) -> Prop where
   | fun_vrelop__case_0 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I32 (.mk_dim v_M)) (.mk_vrelop__0 .I32 M_0 .EQ) v_1 v_2 (some (ivrelop_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) ieq_ v_1 v_2))
   | fun_vrelop__case_1 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I64 (.mk_dim v_M)) (.mk_vrelop__0 .I64 M_0 .EQ) v_1 v_2 (some (ivrelop_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) ieq_ v_1 v_2))
   | fun_vrelop__case_2 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I8 (.mk_dim v_M)) (.mk_vrelop__0 .I8 M_0 .EQ) v_1 v_2 (some (ivrelop_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) ieq_ v_1 v_2))
   | fun_vrelop__case_3 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I16 (.mk_dim v_M)) (.mk_vrelop__0 .I16 M_0 .EQ) v_1 v_2 (some (ivrelop_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) ieq_ v_1 v_2))
   | fun_vrelop__case_4 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I32 (.mk_dim v_M)) (.mk_vrelop__0 .I32 M_0 .NE) v_1 v_2 (some (ivrelop_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) ine_ v_1 v_2))
   | fun_vrelop__case_5 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I64 (.mk_dim v_M)) (.mk_vrelop__0 .I64 M_0 .NE) v_1 v_2 (some (ivrelop_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) ine_ v_1 v_2))
   | fun_vrelop__case_6 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I8 (.mk_dim v_M)) (.mk_vrelop__0 .I8 M_0 .NE) v_1 v_2 (some (ivrelop_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) ine_ v_1 v_2))
   | fun_vrelop__case_7 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I16 (.mk_dim v_M)) (.mk_vrelop__0 .I16 M_0 .NE) v_1 v_2 (some (ivrelop_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) ine_ v_1 v_2))
   | fun_vrelop__case_8 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I32 (.mk_dim v_M)) (.mk_vrelop__0 .I32 M_0 (.LT v_sx)) v_1 v_2 (some (ivrelopsx_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) ilt_ v_sx v_1 v_2))
   | fun_vrelop__case_9 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I64 (.mk_dim v_M)) (.mk_vrelop__0 .I64 M_0 (.LT v_sx)) v_1 v_2 (some (ivrelopsx_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) ilt_ v_sx v_1 v_2))
   | fun_vrelop__case_10 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I8 (.mk_dim v_M)) (.mk_vrelop__0 .I8 M_0 (.LT v_sx)) v_1 v_2 (some (ivrelopsx_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) ilt_ v_sx v_1 v_2))
   | fun_vrelop__case_11 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I16 (.mk_dim v_M)) (.mk_vrelop__0 .I16 M_0 (.LT v_sx)) v_1 v_2 (some (ivrelopsx_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) ilt_ v_sx v_1 v_2))
   | fun_vrelop__case_12 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I32 (.mk_dim v_M)) (.mk_vrelop__0 .I32 M_0 (.GT v_sx)) v_1 v_2 (some (ivrelopsx_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) igt_ v_sx v_1 v_2))
   | fun_vrelop__case_13 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I64 (.mk_dim v_M)) (.mk_vrelop__0 .I64 M_0 (.GT v_sx)) v_1 v_2 (some (ivrelopsx_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) igt_ v_sx v_1 v_2))
   | fun_vrelop__case_14 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I8 (.mk_dim v_M)) (.mk_vrelop__0 .I8 M_0 (.GT v_sx)) v_1 v_2 (some (ivrelopsx_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) igt_ v_sx v_1 v_2))
   | fun_vrelop__case_15 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I16 (.mk_dim v_M)) (.mk_vrelop__0 .I16 M_0 (.GT v_sx)) v_1 v_2 (some (ivrelopsx_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) igt_ v_sx v_1 v_2))
   | fun_vrelop__case_16 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I32 (.mk_dim v_M)) (.mk_vrelop__0 .I32 M_0 (.LE v_sx)) v_1 v_2 (some (ivrelopsx_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) ile_ v_sx v_1 v_2))
   | fun_vrelop__case_17 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I64 (.mk_dim v_M)) (.mk_vrelop__0 .I64 M_0 (.LE v_sx)) v_1 v_2 (some (ivrelopsx_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) ile_ v_sx v_1 v_2))
   | fun_vrelop__case_18 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I8 (.mk_dim v_M)) (.mk_vrelop__0 .I8 M_0 (.LE v_sx)) v_1 v_2 (some (ivrelopsx_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) ile_ v_sx v_1 v_2))
   | fun_vrelop__case_19 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I16 (.mk_dim v_M)) (.mk_vrelop__0 .I16 M_0 (.LE v_sx)) v_1 v_2 (some (ivrelopsx_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) ile_ v_sx v_1 v_2))
   | fun_vrelop__case_20 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I32 (.mk_dim v_M)) (.mk_vrelop__0 .I32 M_0 (.GE v_sx)) v_1 v_2 (some (ivrelopsx_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) ige_ v_sx v_1 v_2))
   | fun_vrelop__case_21 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I64 (.mk_dim v_M)) (.mk_vrelop__0 .I64 M_0 (.GE v_sx)) v_1 v_2 (some (ivrelopsx_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) ige_ v_sx v_1 v_2))
   | fun_vrelop__case_22 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I8 (.mk_dim v_M)) (.mk_vrelop__0 .I8 M_0 (.GE v_sx)) v_1 v_2 (some (ivrelopsx_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) ige_ v_sx v_1 v_2))
   | fun_vrelop__case_23 : forall (v_M : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .I16 (.mk_dim v_M)) (.mk_vrelop__0 .I16 M_0 (.GE v_sx)) v_1 v_2 (some (ivrelopsx_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) ige_ v_sx v_1 v_2))
   | fun_vrelop__case_24 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .F32 (.mk_dim v_M)) (.mk_vrelop__1 .F32 M_0 .EQ) v_1 v_2 (some (fvrelop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) feq_ v_1 v_2))
   | fun_vrelop__case_25 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .F64 (.mk_dim v_M)) (.mk_vrelop__1 .F64 M_0 .EQ) v_1 v_2 (some (fvrelop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) feq_ v_1 v_2))
   | fun_vrelop__case_26 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .F32 (.mk_dim v_M)) (.mk_vrelop__1 .F32 M_0 .NE) v_1 v_2 (some (fvrelop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) fne_ v_1 v_2))
   | fun_vrelop__case_27 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .F64 (.mk_dim v_M)) (.mk_vrelop__1 .F64 M_0 .NE) v_1 v_2 (some (fvrelop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) fne_ v_1 v_2))
   | fun_vrelop__case_28 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .F32 (.mk_dim v_M)) (.mk_vrelop__1 .F32 M_0 .LT) v_1 v_2 (some (fvrelop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) flt_ v_1 v_2))
   | fun_vrelop__case_29 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .F64 (.mk_dim v_M)) (.mk_vrelop__1 .F64 M_0 .LT) v_1 v_2 (some (fvrelop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) flt_ v_1 v_2))
   | fun_vrelop__case_30 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .F32 (.mk_dim v_M)) (.mk_vrelop__1 .F32 M_0 .GT) v_1 v_2 (some (fvrelop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) fgt_ v_1 v_2))
   | fun_vrelop__case_31 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .F64 (.mk_dim v_M)) (.mk_vrelop__1 .F64 M_0 .GT) v_1 v_2 (some (fvrelop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) fgt_ v_1 v_2))
   | fun_vrelop__case_32 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .F32 (.mk_dim v_M)) (.mk_vrelop__1 .F32 M_0 .LE) v_1 v_2 (some (fvrelop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) fle_ v_1 v_2))
   | fun_vrelop__case_33 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .F64 (.mk_dim v_M)) (.mk_vrelop__1 .F64 M_0 .LE) v_1 v_2 (some (fvrelop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) fle_ v_1 v_2))
   | fun_vrelop__case_34 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .F32 (.mk_dim v_M)) (.mk_vrelop__1 .F32 M_0 .GE) v_1 v_2 (some (fvrelop_ (.X (lanetype_Fnn .F32) (.mk_dim v_M)) fge_ v_1 v_2))
   | fun_vrelop__case_35 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vrelop_ (.X .F64 (.mk_dim v_M)) (.mk_vrelop__1 .F64 M_0 .GE) v_1 v_2 (some (fvrelop_ (.X (lanetype_Fnn .F64) (.mk_dim v_M)) fge_ v_1 v_2))
   | fun_vrelop__case_36 : forall (x0 : shape) (x1 : vrelop_) (x2 : vec_) (x3 : vec_), 
     (¬(fun_vrelop__before_fun_vrelop__case_36 x0 x1 x2 x3)) ->
@@ -12117,415 +12145,415 @@ inductive vrelop__is_wf : shape -> vrelop_ -> vec_ -> vec_ -> vec_ -> Prop where
     (wf_vrelop_ v_shape v_vrelop_) ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
-    (var_0 != none) ->
-    (ret_val == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val = (Option.get! var_0)) ->
     (wf_uN 128 ret_val) ->
     vrelop__is_wf v_shape v_vrelop_ v_vec_ vec__0 ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:181.6-181.15 -/
 inductive fun_lcvtop___before_fun_lcvtop___case_40 : shape -> shape -> vcvtop__ -> lane_ -> Prop where
   | fun_lcvtop___case_39 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_lst : (List fN)), 
-    (c_lst == (promote__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_Fnn .F64)) c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_lst = (promote__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_Fnn .F64)) c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .F64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F64 M_2_0 .PROMOTELOW) (.mk_lane__1 .F64 c_1)
   | fun_lcvtop___case_38 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_lst : (List fN)), 
-    (c_lst == (promote__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_Fnn .F64)) c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_lst = (promote__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_Fnn .F64)) c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .F32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F64 M_2_0 .PROMOTELOW) (.mk_lane__1 .F32 c_1)
   | fun_lcvtop___case_37 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_lst : (List fN)), 
-    (c_lst == (promote__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_Fnn .F32)) c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_lst = (promote__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_Fnn .F32)) c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .F64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F32 M_2_0 .PROMOTELOW) (.mk_lane__1 .F64 c_1)
   | fun_lcvtop___case_36 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_lst : (List fN)), 
-    (c_lst == (promote__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_Fnn .F32)) c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_lst = (promote__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_Fnn .F32)) c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .F32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F32 M_2_0 .PROMOTELOW) (.mk_lane__1 .F32 c_1)
   | fun_lcvtop___case_35 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_lst : (List fN)), 
-    (c_lst == (demote__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_Fnn .F64)) c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_lst = (demote__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_Fnn .F64)) c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .F64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F64 M_2_0 (.DEMOTE .ZERO)) (.mk_lane__1 .F64 c_1)
   | fun_lcvtop___case_34 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_lst : (List fN)), 
-    (c_lst == (demote__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_Fnn .F64)) c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_lst = (demote__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_Fnn .F64)) c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .F32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F64 M_2_0 (.DEMOTE .ZERO)) (.mk_lane__1 .F32 c_1)
   | fun_lcvtop___case_33 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_lst : (List fN)), 
-    (c_lst == (demote__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_Fnn .F32)) c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_lst = (demote__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_Fnn .F32)) c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .F64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F32 M_2_0 (.DEMOTE .ZERO)) (.mk_lane__1 .F64 c_1)
   | fun_lcvtop___case_32 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_lst : (List fN)), 
-    (c_lst == (demote__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_Fnn .F32)) c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_lst = (demote__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_Fnn .F32)) c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .F32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F32 M_2_0 (.DEMOTE .ZERO)) (.mk_lane__1 .F32 c_1)
   | fun_lcvtop___case_31 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_opt : (Option iN)), 
-    (c_opt == (relaxed_trunc__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_addrtype .I64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_opt = (relaxed_trunc__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_addrtype .I64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .F64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I64 M_2_0 (.RELAXED_TRUNC v_sx zero_opt)) (.mk_lane__1 .F64 c_1)
   | fun_lcvtop___case_30 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_opt : (Option iN)), 
-    (c_opt == (relaxed_trunc__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_addrtype .I64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_opt = (relaxed_trunc__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_addrtype .I64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .F32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I64 M_2_0 (.RELAXED_TRUNC v_sx zero_opt)) (.mk_lane__1 .F32 c_1)
   | fun_lcvtop___case_29 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_opt : (Option iN)), 
-    (c_opt == (relaxed_trunc__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_addrtype .I32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_opt = (relaxed_trunc__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_addrtype .I32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .F64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I32 M_2_0 (.RELAXED_TRUNC v_sx zero_opt)) (.mk_lane__1 .F64 c_1)
   | fun_lcvtop___case_28 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_opt : (Option iN)), 
-    (c_opt == (relaxed_trunc__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_addrtype .I32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_opt = (relaxed_trunc__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_addrtype .I32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .F32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I32 M_2_0 (.RELAXED_TRUNC v_sx zero_opt)) (.mk_lane__1 .F32 c_1)
   | fun_lcvtop___case_27 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_opt : (Option iN)), 
-    (c_opt == (trunc_sat__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_addrtype .I64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_opt = (trunc_sat__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_addrtype .I64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .F64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I64 M_2_0 (.TRUNC_SAT v_sx zero_opt)) (.mk_lane__1 .F64 c_1)
   | fun_lcvtop___case_26 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_opt : (Option iN)), 
-    (c_opt == (trunc_sat__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_addrtype .I64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_opt = (trunc_sat__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_addrtype .I64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .F32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I64 M_2_0 (.TRUNC_SAT v_sx zero_opt)) (.mk_lane__1 .F32 c_1)
   | fun_lcvtop___case_25 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_opt : (Option iN)), 
-    (c_opt == (trunc_sat__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_addrtype .I32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_opt = (trunc_sat__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_addrtype .I32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .F64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I32 M_2_0 (.TRUNC_SAT v_sx zero_opt)) (.mk_lane__1 .F64 c_1)
   | fun_lcvtop___case_24 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_opt : (Option iN)), 
-    (c_opt == (trunc_sat__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_addrtype .I32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_opt = (trunc_sat__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_addrtype .I32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .F32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I32 M_2_0 (.TRUNC_SAT v_sx zero_opt)) (.mk_lane__1 .F32 c_1)
   | fun_lcvtop___case_23 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : fN), 
-    (c == (convert__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Fnn .F64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (convert__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Fnn .F64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I16 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I16 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx)) (.mk_lane__0 .I16 c_1)
   | fun_lcvtop___case_22 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : fN), 
-    (c == (convert__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Fnn .F64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (convert__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Fnn .F64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I8 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I8 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx)) (.mk_lane__0 .I8 c_1)
   | fun_lcvtop___case_21 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : fN), 
-    (c == (convert__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Fnn .F64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (convert__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Fnn .F64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I64 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx)) (.mk_lane__0 .I64 c_1)
   | fun_lcvtop___case_20 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : fN), 
-    (c == (convert__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Fnn .F64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (convert__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Fnn .F64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I32 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx)) (.mk_lane__0 .I32 c_1)
   | fun_lcvtop___case_19 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : fN), 
-    (c == (convert__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Fnn .F32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (convert__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Fnn .F32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I16 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I16 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx)) (.mk_lane__0 .I16 c_1)
   | fun_lcvtop___case_18 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : fN), 
-    (c == (convert__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Fnn .F32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (convert__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Fnn .F32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I8 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I8 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx)) (.mk_lane__0 .I8 c_1)
   | fun_lcvtop___case_17 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : fN), 
-    (c == (convert__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Fnn .F32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (convert__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Fnn .F32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I64 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx)) (.mk_lane__0 .I64 c_1)
   | fun_lcvtop___case_16 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : fN), 
-    (c == (convert__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Fnn .F32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (convert__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Fnn .F32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I32 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx)) (.mk_lane__0 .I32 c_1)
   | fun_lcvtop___case_15 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Jnn .I16)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Jnn .I16)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I16 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I16 c_1)
   | fun_lcvtop___case_14 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Jnn .I16)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Jnn .I16)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I8 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I8 c_1)
   | fun_lcvtop___case_13 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Jnn .I16)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Jnn .I16)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I64 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I64 c_1)
   | fun_lcvtop___case_12 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Jnn .I16)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Jnn .I16)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I32 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I32 c_1)
   | fun_lcvtop___case_11 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Jnn .I8)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Jnn .I8)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I16 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I16 c_1)
   | fun_lcvtop___case_10 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Jnn .I8)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Jnn .I8)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I8 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I8 c_1)
   | fun_lcvtop___case_9 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Jnn .I8)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Jnn .I8)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I64 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I64 c_1)
   | fun_lcvtop___case_8 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Jnn .I8)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Jnn .I8)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I32 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I32 c_1)
   | fun_lcvtop___case_7 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Jnn .I64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Jnn .I64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I16 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I16 c_1)
   | fun_lcvtop___case_6 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Jnn .I64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Jnn .I64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I8 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I8 c_1)
   | fun_lcvtop___case_5 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Jnn .I64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Jnn .I64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I64 c_1)
   | fun_lcvtop___case_4 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Jnn .I64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Jnn .I64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I32 c_1)
   | fun_lcvtop___case_3 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Jnn .I32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Jnn .I32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I16 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I16 c_1)
   | fun_lcvtop___case_2 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Jnn .I32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Jnn .I32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I8 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I8 c_1)
   | fun_lcvtop___case_1 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Jnn .I32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Jnn .I32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I64 c_1)
   | fun_lcvtop___case_0 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Jnn .I32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Jnn .I32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop___before_fun_lcvtop___case_40 (.X .I32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I32 c_1)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:181.6-181.15 -/
 inductive fun_lcvtop__ : shape -> shape -> vcvtop__ -> lane_ -> (Option (List lane_)) -> Prop where
   | fun_lcvtop___case_0 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Jnn .I32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Jnn .I32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I32 c_1) (some ([(.mk_lane__0 .I32 c)] : (List lane_)))
   | fun_lcvtop___case_1 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Jnn .I32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Jnn .I32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I64 c_1) (some ([(.mk_lane__0 .I32 c)] : (List lane_)))
   | fun_lcvtop___case_2 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Jnn .I32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Jnn .I32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I8 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I8 c_1) (some ([(.mk_lane__0 .I32 c)] : (List lane_)))
   | fun_lcvtop___case_3 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Jnn .I32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Jnn .I32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I16 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I32 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I16 c_1) (some ([(.mk_lane__0 .I32 c)] : (List lane_)))
   | fun_lcvtop___case_4 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Jnn .I64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Jnn .I64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I32 c_1) (some ([(.mk_lane__0 .I64 c)] : (List lane_)))
   | fun_lcvtop___case_5 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Jnn .I64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Jnn .I64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I64 c_1) (some ([(.mk_lane__0 .I64 c)] : (List lane_)))
   | fun_lcvtop___case_6 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Jnn .I64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Jnn .I64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I8 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I8 c_1) (some ([(.mk_lane__0 .I64 c)] : (List lane_)))
   | fun_lcvtop___case_7 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Jnn .I64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Jnn .I64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I16 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I64 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I16 c_1) (some ([(.mk_lane__0 .I64 c)] : (List lane_)))
   | fun_lcvtop___case_8 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Jnn .I8)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Jnn .I8)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I32 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I32 c_1) (some ([(.mk_lane__0 .I8 c)] : (List lane_)))
   | fun_lcvtop___case_9 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Jnn .I8)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Jnn .I8)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I64 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I64 c_1) (some ([(.mk_lane__0 .I8 c)] : (List lane_)))
   | fun_lcvtop___case_10 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Jnn .I8)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Jnn .I8)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I8 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I8 c_1) (some ([(.mk_lane__0 .I8 c)] : (List lane_)))
   | fun_lcvtop___case_11 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Jnn .I8)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Jnn .I8)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I16 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I8 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I16 c_1) (some ([(.mk_lane__0 .I8 c)] : (List lane_)))
   | fun_lcvtop___case_12 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Jnn .I16)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Jnn .I16)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I32 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I32 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I32 c_1) (some ([(.mk_lane__0 .I16 c)] : (List lane_)))
   | fun_lcvtop___case_13 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Jnn .I16)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Jnn .I16)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I64 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I64 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I64 c_1) (some ([(.mk_lane__0 .I16 c)] : (List lane_)))
   | fun_lcvtop___case_14 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Jnn .I16)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Jnn .I16)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I8 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I8 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I8 c_1) (some ([(.mk_lane__0 .I16 c)] : (List lane_)))
   | fun_lcvtop___case_15 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : iN), 
-    (c == (extend__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Jnn .I16)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (extend__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Jnn .I16)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I16 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) (.mk_vcvtop___0 .I16 M_1_0 .I16 M_2_0 (.EXTEND v_half v_sx)) (.mk_lane__0 .I16 c_1) (some ([(.mk_lane__0 .I16 c)] : (List lane_)))
   | fun_lcvtop___case_16 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : fN), 
-    (c == (convert__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Fnn .F32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (convert__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Fnn .F32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I32 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx)) (.mk_lane__0 .I32 c_1) (some ([(.mk_lane__1 .F32 c)] : (List lane_)))
   | fun_lcvtop___case_17 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : fN), 
-    (c == (convert__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Fnn .F32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (convert__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Fnn .F32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I64 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx)) (.mk_lane__0 .I64 c_1) (some ([(.mk_lane__1 .F32 c)] : (List lane_)))
   | fun_lcvtop___case_18 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : fN), 
-    (c == (convert__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Fnn .F32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (convert__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Fnn .F32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I8 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I8 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx)) (.mk_lane__0 .I8 c_1) (some ([(.mk_lane__1 .F32 c)] : (List lane_)))
   | fun_lcvtop___case_19 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : fN), 
-    (c == (convert__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Fnn .F32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (convert__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Fnn .F32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I16 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___1 .I16 M_1_0 .F32 M_2_0 (.CONVERT half_opt v_sx)) (.mk_lane__0 .I16 c_1) (some ([(.mk_lane__1 .F32 c)] : (List lane_)))
   | fun_lcvtop___case_20 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : fN), 
-    (c == (convert__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Fnn .F64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (convert__ (lsizenn1 (lanetype_Jnn .I32)) (lsizenn2 (lanetype_Fnn .F64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I32 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx)) (.mk_lane__0 .I32 c_1) (some ([(.mk_lane__1 .F64 c)] : (List lane_)))
   | fun_lcvtop___case_21 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : fN), 
-    (c == (convert__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Fnn .F64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (convert__ (lsizenn1 (lanetype_Jnn .I64)) (lsizenn2 (lanetype_Fnn .F64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I64 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx)) (.mk_lane__0 .I64 c_1) (some ([(.mk_lane__1 .F64 c)] : (List lane_)))
   | fun_lcvtop___case_22 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : fN), 
-    (c == (convert__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Fnn .F64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (convert__ (lsizenn1 (lanetype_Jnn .I8)) (lsizenn2 (lanetype_Fnn .F64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I8 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I8 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx)) (.mk_lane__0 .I8 c_1) (some ([(.mk_lane__1 .F64 c)] : (List lane_)))
   | fun_lcvtop___case_23 : forall (M_1 : Nat) (M_2 : Nat) (half_opt : (Option half)) (v_sx : sx) (c_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat) (c : fN), 
-    (c == (convert__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Fnn .F64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c = (convert__ (lsizenn1 (lanetype_Jnn .I16)) (lsizenn2 (lanetype_Fnn .F64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .I16 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___1 .I16 M_1_0 .F64 M_2_0 (.CONVERT half_opt v_sx)) (.mk_lane__0 .I16 c_1) (some ([(.mk_lane__1 .F64 c)] : (List lane_)))
   | fun_lcvtop___case_24 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_opt : (Option iN)), 
-    (c_opt == (trunc_sat__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_addrtype .I32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_opt = (trunc_sat__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_addrtype .I32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .F32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I32 M_2_0 (.TRUNC_SAT v_sx zero_opt)) (.mk_lane__1 .F32 c_1) (some (Option.toList (Option.map (fun (c_108 : iN) => ((.mk_lane__0 (Jnn_addrtype .I32) c_108) : lane_)) c_opt)))
   | fun_lcvtop___case_25 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_opt : (Option iN)), 
-    (c_opt == (trunc_sat__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_addrtype .I32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_opt = (trunc_sat__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_addrtype .I32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .F64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I32 M_2_0 (.TRUNC_SAT v_sx zero_opt)) (.mk_lane__1 .F64 c_1) (some (Option.toList (Option.map (fun (c_110 : iN) => ((.mk_lane__0 (Jnn_addrtype .I32) c_110) : lane_)) c_opt)))
   | fun_lcvtop___case_26 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_opt : (Option iN)), 
-    (c_opt == (trunc_sat__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_addrtype .I64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_opt = (trunc_sat__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_addrtype .I64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .F32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I64 M_2_0 (.TRUNC_SAT v_sx zero_opt)) (.mk_lane__1 .F32 c_1) (some (Option.toList (Option.map (fun (c_112 : iN) => ((.mk_lane__0 (Jnn_addrtype .I64) c_112) : lane_)) c_opt)))
   | fun_lcvtop___case_27 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_opt : (Option iN)), 
-    (c_opt == (trunc_sat__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_addrtype .I64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_opt = (trunc_sat__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_addrtype .I64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .F64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I64 M_2_0 (.TRUNC_SAT v_sx zero_opt)) (.mk_lane__1 .F64 c_1) (some (Option.toList (Option.map (fun (c_114 : iN) => ((.mk_lane__0 (Jnn_addrtype .I64) c_114) : lane_)) c_opt)))
   | fun_lcvtop___case_28 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_opt : (Option iN)), 
-    (c_opt == (relaxed_trunc__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_addrtype .I32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_opt = (relaxed_trunc__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_addrtype .I32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .F32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I32 M_2_0 (.RELAXED_TRUNC v_sx zero_opt)) (.mk_lane__1 .F32 c_1) (some (Option.toList (Option.map (fun (c_116 : iN) => ((.mk_lane__0 (Jnn_addrtype .I32) c_116) : lane_)) c_opt)))
   | fun_lcvtop___case_29 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_opt : (Option iN)), 
-    (c_opt == (relaxed_trunc__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_addrtype .I32)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_opt = (relaxed_trunc__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_addrtype .I32)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .F64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I32 M_2_0 (.RELAXED_TRUNC v_sx zero_opt)) (.mk_lane__1 .F64 c_1) (some (Option.toList (Option.map (fun (c_118 : iN) => ((.mk_lane__0 (Jnn_addrtype .I32) c_118) : lane_)) c_opt)))
   | fun_lcvtop___case_30 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_opt : (Option iN)), 
-    (c_opt == (relaxed_trunc__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_addrtype .I64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_opt = (relaxed_trunc__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_addrtype .I64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .F32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F32 M_1_0 .I64 M_2_0 (.RELAXED_TRUNC v_sx zero_opt)) (.mk_lane__1 .F32 c_1) (some (Option.toList (Option.map (fun (c_120 : iN) => ((.mk_lane__0 (Jnn_addrtype .I64) c_120) : lane_)) c_opt)))
   | fun_lcvtop___case_31 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (zero_opt : (Option zero)) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_opt : (Option iN)), 
-    (c_opt == (relaxed_trunc__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_addrtype .I64)) v_sx c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_opt = (relaxed_trunc__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_addrtype .I64)) v_sx c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .F64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) (.mk_vcvtop___2 .F64 M_1_0 .I64 M_2_0 (.RELAXED_TRUNC v_sx zero_opt)) (.mk_lane__1 .F64 c_1) (some (Option.toList (Option.map (fun (c_122 : iN) => ((.mk_lane__0 (Jnn_addrtype .I64) c_122) : lane_)) c_opt)))
   | fun_lcvtop___case_32 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_lst : (List fN)), 
-    (c_lst == (demote__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_Fnn .F32)) c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_lst = (demote__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_Fnn .F32)) c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .F32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F32 M_2_0 (.DEMOTE .ZERO)) (.mk_lane__1 .F32 c_1) (some (List.map (fun (c_124 : fN) => ((.mk_lane__1 .F32 c_124) : lane_)) c_lst))
   | fun_lcvtop___case_33 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_lst : (List fN)), 
-    (c_lst == (demote__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_Fnn .F32)) c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_lst = (demote__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_Fnn .F32)) c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .F64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F32 M_2_0 (.DEMOTE .ZERO)) (.mk_lane__1 .F64 c_1) (some (List.map (fun (c_126 : fN) => ((.mk_lane__1 .F32 c_126) : lane_)) c_lst))
   | fun_lcvtop___case_34 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_lst : (List fN)), 
-    (c_lst == (demote__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_Fnn .F64)) c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_lst = (demote__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_Fnn .F64)) c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .F32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F64 M_2_0 (.DEMOTE .ZERO)) (.mk_lane__1 .F32 c_1) (some (List.map (fun (c_128 : fN) => ((.mk_lane__1 .F64 c_128) : lane_)) c_lst))
   | fun_lcvtop___case_35 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_lst : (List fN)), 
-    (c_lst == (demote__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_Fnn .F64)) c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_lst = (demote__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_Fnn .F64)) c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .F64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F64 M_2_0 (.DEMOTE .ZERO)) (.mk_lane__1 .F64 c_1) (some (List.map (fun (c_130 : fN) => ((.mk_lane__1 .F64 c_130) : lane_)) c_lst))
   | fun_lcvtop___case_36 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_lst : (List fN)), 
-    (c_lst == (promote__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_Fnn .F32)) c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_lst = (promote__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_Fnn .F32)) c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .F32 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F32 M_2_0 .PROMOTELOW) (.mk_lane__1 .F32 c_1) (some (List.map (fun (c_132 : fN) => ((.mk_lane__1 .F32 c_132) : lane_)) c_lst))
   | fun_lcvtop___case_37 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_lst : (List fN)), 
-    (c_lst == (promote__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_Fnn .F32)) c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_lst = (promote__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_Fnn .F32)) c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .F64 (.mk_dim M_1)) (.X .F32 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F32 M_2_0 .PROMOTELOW) (.mk_lane__1 .F64 c_1) (some (List.map (fun (c_134 : fN) => ((.mk_lane__1 .F32 c_134) : lane_)) c_lst))
   | fun_lcvtop___case_38 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_lst : (List fN)), 
-    (c_lst == (promote__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_Fnn .F64)) c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_lst = (promote__ (lsizenn1 (lanetype_Fnn .F32)) (lsizenn2 (lanetype_Fnn .F64)) c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .F32 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F32 M_1_0 .F64 M_2_0 .PROMOTELOW) (.mk_lane__1 .F32 c_1) (some (List.map (fun (c_136 : fN) => ((.mk_lane__1 .F64 c_136) : lane_)) c_lst))
   | fun_lcvtop___case_39 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : fN) (M_1_0 : Nat) (M_2_0 : Nat) (c_lst : (List fN)), 
-    (c_lst == (promote__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_Fnn .F64)) c_1)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (c_lst = (promote__ (lsizenn1 (lanetype_Fnn .F64)) (lsizenn2 (lanetype_Fnn .F64)) c_1)) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_lcvtop__ (.X .F64 (.mk_dim M_1)) (.X .F64 (.mk_dim M_2)) (.mk_vcvtop___3 .F64 M_1_0 .F64 M_2_0 .PROMOTELOW) (.mk_lane__1 .F64 c_1) (some (List.map (fun (c_138 : fN) => ((.mk_lane__1 .F64 c_138) : lane_)) c_lst))
   | fun_lcvtop___case_40 : forall (x0 : shape) (x1 : shape) (x2 : vcvtop__) (x3 : lane_), 
     (¬(fun_lcvtop___before_fun_lcvtop___case_40 x0 x1 x2 x3)) ->
@@ -12539,8 +12567,8 @@ inductive lcvtop___is_wf : shape -> shape -> vcvtop__ -> lane_ -> (List lane_) -
     (wf_shape shape_2) ->
     (wf_vcvtop__ shape_1 shape_2 v_vcvtop__) ->
     (wf_lane_ (fun_lanetype shape_1) v_lane_) ->
-    (var_0 != none) ->
-    (ret_val_lst == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val_lst = (Option.get! var_0)) ->
     Forall (fun (ret_val : lane_) => (wf_lane_ (fun_lanetype shape_2) ret_val)) ret_val_lst ->
     lcvtop___is_wf shape_1 shape_2 v_vcvtop__ v_lane_ ret_val_lst
 
@@ -12550,10 +12578,10 @@ inductive fun_vcvtop___before_fun_vcvtop___case_3 : shape -> shape -> vcvtop__ -
     (fun_zero Lnn_2 var_2) ->
     Forall₂ (fun (var_1 : (Option (List lane_))) (c_1_146 : lane_) => (fun_lcvtop__ (.X Lnn_1 (.mk_dim M_1)) (.X Lnn_2 (.mk_dim M_2)) vcvtop c_1_146 var_1)) var_1_lst c_1_lst ->
     (fun_zeroop (.X Lnn_1 (.mk_dim M_1)) (.X Lnn_2 (.mk_dim M_2)) vcvtop var_0) ->
-    ((Option.get! var_0) == (some .ZERO)) ->
-    (c_1_lst == (lanes_ (.X Lnn_1 (.mk_dim M_1)) v_1)) ->
-    (c_lst_lst == (setproduct_ lane_ ((List.map (fun (var_1 : (Option (List lane_))) => (Option.get! var_1)) var_1_lst) ++ (List.replicate M_1 ([var_2] : (List lane_)))))) ->
-    (List.contains (List.map (fun (c_lst_34 : (List lane_)) => (inv_lanes_ (.X Lnn_2 (.mk_dim M_2)) c_lst_34)) c_lst_lst) v) ->
+    ((Option.get! var_0) = (some .ZERO)) ->
+    (c_1_lst = (lanes_ (.X Lnn_1 (.mk_dim M_1)) v_1)) ->
+    (c_lst_lst = (setproduct_ lane_ ((List.map (fun (var_1 : (Option (List lane_))) => (Option.get! var_1)) var_1_lst) ++ (List.replicate M_1 ([var_2] : (List lane_)))))) ->
+    (v ∈ (List.map (fun (c_lst_34 : (List lane_)) => (inv_lanes_ (.X Lnn_2 (.mk_dim M_2)) c_lst_34)) c_lst_lst)) ->
     (wf_shape (.X Lnn_1 (.mk_dim M_1))) ->
     (wf_shape (.X Lnn_2 (.mk_dim M_2))) ->
     ((List.length var_1_lst) = (List.length c_1_lst)) ->
@@ -12561,10 +12589,10 @@ inductive fun_vcvtop___before_fun_vcvtop___case_3 : shape -> shape -> vcvtop__ -
   | fun_vcvtop___case_1 : forall (Lnn_1 : lanetype) (M_1 : Nat) (Lnn_2 : lanetype) (M_2 : Nat) (vcvtop : vcvtop__) (v_1 : uN) (v : uN) (v_half : half) (c_1_lst : (List lane_)) (c_lst_lst : (List (List lane_))) (var_1_lst : (List (Option (List lane_)))) (var_0 : (Option (Option half))), 
     Forall₂ (fun (var_1 : (Option (List lane_))) (c_1_144 : lane_) => (fun_lcvtop__ (.X Lnn_1 (.mk_dim M_1)) (.X Lnn_2 (.mk_dim M_2)) vcvtop c_1_144 var_1)) var_1_lst c_1_lst ->
     (fun_halfop (.X Lnn_1 (.mk_dim M_1)) (.X Lnn_2 (.mk_dim M_2)) vcvtop var_0) ->
-    ((Option.get! var_0) == (some v_half)) ->
-    (c_1_lst == (List.take M_2 (List.drop (fun_half v_half 0 M_2) (lanes_ (.X Lnn_1 (.mk_dim M_1)) v_1)))) ->
-    (c_lst_lst == (setproduct_ lane_ (List.map (fun (var_1 : (Option (List lane_))) => (Option.get! var_1)) var_1_lst))) ->
-    (List.contains (List.map (fun (c_lst_32 : (List lane_)) => (inv_lanes_ (.X Lnn_2 (.mk_dim M_2)) c_lst_32)) c_lst_lst) v) ->
+    ((Option.get! var_0) = (some v_half)) ->
+    (c_1_lst = (List.take M_2 (List.drop (fun_half v_half 0 M_2) (lanes_ (.X Lnn_1 (.mk_dim M_1)) v_1)))) ->
+    (c_lst_lst = (setproduct_ lane_ (List.map (fun (var_1 : (Option (List lane_))) => (Option.get! var_1)) var_1_lst))) ->
+    (v ∈ (List.map (fun (c_lst_32 : (List lane_)) => (inv_lanes_ (.X Lnn_2 (.mk_dim M_2)) c_lst_32)) c_lst_lst)) ->
     (wf_shape (.X Lnn_1 (.mk_dim M_1))) ->
     (wf_shape (.X Lnn_2 (.mk_dim M_2))) ->
     ((List.length var_1_lst) = (List.length c_1_lst)) ->
@@ -12573,13 +12601,13 @@ inductive fun_vcvtop___before_fun_vcvtop___case_3 : shape -> shape -> vcvtop__ -
     Forall₂ (fun (var_2 : (Option (List lane_))) (c_1_142 : lane_) => (fun_lcvtop__ (.X Lnn_1 (.mk_dim v_M)) (.X Lnn_2 (.mk_dim v_M)) vcvtop c_1_142 var_2)) var_2_lst c_1_lst ->
     (fun_zeroop (.X Lnn_1 (.mk_dim v_M)) (.X Lnn_2 (.mk_dim v_M)) vcvtop var_1) ->
     (fun_halfop (.X Lnn_1 (.mk_dim v_M)) (.X Lnn_2 (.mk_dim v_M)) vcvtop var_0) ->
-    (((Option.get! var_0) == none) && ((Option.get! var_1) == none)) ->
-    (c_1_lst == (lanes_ (.X Lnn_1 (.mk_dim v_M)) v_1)) ->
-    (c_lst_lst == (setproduct_ lane_ (List.map (fun (var_2 : (Option (List lane_))) => (Option.get! var_2)) var_2_lst))) ->
-    (List.contains (List.map (fun (c_lst_30 : (List lane_)) => (inv_lanes_ (.X Lnn_2 (.mk_dim v_M)) c_lst_30)) c_lst_lst) v) ->
+    (((Option.get! var_0) = none) ∧ ((Option.get! var_1) = none)) ->
+    (c_1_lst = (lanes_ (.X Lnn_1 (.mk_dim v_M)) v_1)) ->
+    (c_lst_lst = (setproduct_ lane_ (List.map (fun (var_2 : (Option (List lane_))) => (Option.get! var_2)) var_2_lst))) ->
+    (v ∈ (List.map (fun (c_lst_30 : (List lane_)) => (inv_lanes_ (.X Lnn_2 (.mk_dim v_M)) c_lst_30)) c_lst_lst)) ->
     (wf_shape (.X Lnn_1 (.mk_dim v_M))) ->
     (wf_shape (.X Lnn_2 (.mk_dim v_M))) ->
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     ((List.length var_2_lst) = (List.length c_1_lst)) ->
     fun_vcvtop___before_fun_vcvtop___case_3 (.X Lnn_1 (.mk_dim v_M)) (.X Lnn_2 (.mk_dim M_0)) vcvtop v_1
 
@@ -12589,22 +12617,22 @@ inductive fun_vcvtop__ : shape -> shape -> vcvtop__ -> vec_ -> (Option vec_) -> 
     Forall₂ (fun (var_2 : (Option (List lane_))) (c_1_142 : lane_) => (fun_lcvtop__ (.X Lnn_1 (.mk_dim v_M)) (.X Lnn_2 (.mk_dim v_M)) vcvtop c_1_142 var_2)) var_2_lst c_1_lst ->
     (fun_zeroop (.X Lnn_1 (.mk_dim v_M)) (.X Lnn_2 (.mk_dim v_M)) vcvtop var_1) ->
     (fun_halfop (.X Lnn_1 (.mk_dim v_M)) (.X Lnn_2 (.mk_dim v_M)) vcvtop var_0) ->
-    (((Option.get! var_0) == none) && ((Option.get! var_1) == none)) ->
-    (c_1_lst == (lanes_ (.X Lnn_1 (.mk_dim v_M)) v_1)) ->
-    (c_lst_lst == (setproduct_ lane_ (List.map (fun (var_2 : (Option (List lane_))) => (Option.get! var_2)) var_2_lst))) ->
-    (List.contains (List.map (fun (c_lst_30 : (List lane_)) => (inv_lanes_ (.X Lnn_2 (.mk_dim v_M)) c_lst_30)) c_lst_lst) v) ->
+    (((Option.get! var_0) = none) ∧ ((Option.get! var_1) = none)) ->
+    (c_1_lst = (lanes_ (.X Lnn_1 (.mk_dim v_M)) v_1)) ->
+    (c_lst_lst = (setproduct_ lane_ (List.map (fun (var_2 : (Option (List lane_))) => (Option.get! var_2)) var_2_lst))) ->
+    (v ∈ (List.map (fun (c_lst_30 : (List lane_)) => (inv_lanes_ (.X Lnn_2 (.mk_dim v_M)) c_lst_30)) c_lst_lst)) ->
     (wf_shape (.X Lnn_1 (.mk_dim v_M))) ->
     (wf_shape (.X Lnn_2 (.mk_dim v_M))) ->
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     ((List.length var_2_lst) = (List.length c_1_lst)) ->
     fun_vcvtop__ (.X Lnn_1 (.mk_dim v_M)) (.X Lnn_2 (.mk_dim M_0)) vcvtop v_1 (some v)
   | fun_vcvtop___case_1 : forall (Lnn_1 : lanetype) (M_1 : Nat) (Lnn_2 : lanetype) (M_2 : Nat) (vcvtop : vcvtop__) (v_1 : uN) (v : uN) (v_half : half) (c_1_lst : (List lane_)) (c_lst_lst : (List (List lane_))) (var_1_lst : (List (Option (List lane_)))) (var_0 : (Option (Option half))), 
     Forall₂ (fun (var_1 : (Option (List lane_))) (c_1_144 : lane_) => (fun_lcvtop__ (.X Lnn_1 (.mk_dim M_1)) (.X Lnn_2 (.mk_dim M_2)) vcvtop c_1_144 var_1)) var_1_lst c_1_lst ->
     (fun_halfop (.X Lnn_1 (.mk_dim M_1)) (.X Lnn_2 (.mk_dim M_2)) vcvtop var_0) ->
-    ((Option.get! var_0) == (some v_half)) ->
-    (c_1_lst == (List.take M_2 (List.drop (fun_half v_half 0 M_2) (lanes_ (.X Lnn_1 (.mk_dim M_1)) v_1)))) ->
-    (c_lst_lst == (setproduct_ lane_ (List.map (fun (var_1 : (Option (List lane_))) => (Option.get! var_1)) var_1_lst))) ->
-    (List.contains (List.map (fun (c_lst_32 : (List lane_)) => (inv_lanes_ (.X Lnn_2 (.mk_dim M_2)) c_lst_32)) c_lst_lst) v) ->
+    ((Option.get! var_0) = (some v_half)) ->
+    (c_1_lst = (List.take M_2 (List.drop (fun_half v_half 0 M_2) (lanes_ (.X Lnn_1 (.mk_dim M_1)) v_1)))) ->
+    (c_lst_lst = (setproduct_ lane_ (List.map (fun (var_1 : (Option (List lane_))) => (Option.get! var_1)) var_1_lst))) ->
+    (v ∈ (List.map (fun (c_lst_32 : (List lane_)) => (inv_lanes_ (.X Lnn_2 (.mk_dim M_2)) c_lst_32)) c_lst_lst)) ->
     (wf_shape (.X Lnn_1 (.mk_dim M_1))) ->
     (wf_shape (.X Lnn_2 (.mk_dim M_2))) ->
     ((List.length var_1_lst) = (List.length c_1_lst)) ->
@@ -12613,10 +12641,10 @@ inductive fun_vcvtop__ : shape -> shape -> vcvtop__ -> vec_ -> (Option vec_) -> 
     (fun_zero Lnn_2 var_2) ->
     Forall₂ (fun (var_1 : (Option (List lane_))) (c_1_146 : lane_) => (fun_lcvtop__ (.X Lnn_1 (.mk_dim M_1)) (.X Lnn_2 (.mk_dim M_2)) vcvtop c_1_146 var_1)) var_1_lst c_1_lst ->
     (fun_zeroop (.X Lnn_1 (.mk_dim M_1)) (.X Lnn_2 (.mk_dim M_2)) vcvtop var_0) ->
-    ((Option.get! var_0) == (some .ZERO)) ->
-    (c_1_lst == (lanes_ (.X Lnn_1 (.mk_dim M_1)) v_1)) ->
-    (c_lst_lst == (setproduct_ lane_ ((List.map (fun (var_1 : (Option (List lane_))) => (Option.get! var_1)) var_1_lst) ++ (List.replicate M_1 ([var_2] : (List lane_)))))) ->
-    (List.contains (List.map (fun (c_lst_34 : (List lane_)) => (inv_lanes_ (.X Lnn_2 (.mk_dim M_2)) c_lst_34)) c_lst_lst) v) ->
+    ((Option.get! var_0) = (some .ZERO)) ->
+    (c_1_lst = (lanes_ (.X Lnn_1 (.mk_dim M_1)) v_1)) ->
+    (c_lst_lst = (setproduct_ lane_ ((List.map (fun (var_1 : (Option (List lane_))) => (Option.get! var_1)) var_1_lst) ++ (List.replicate M_1 ([var_2] : (List lane_)))))) ->
+    (v ∈ (List.map (fun (c_lst_34 : (List lane_)) => (inv_lanes_ (.X Lnn_2 (.mk_dim M_2)) c_lst_34)) c_lst_lst)) ->
     (wf_shape (.X Lnn_1 (.mk_dim M_1))) ->
     (wf_shape (.X Lnn_2 (.mk_dim M_2))) ->
     ((List.length var_1_lst) = (List.length c_1_lst)) ->
@@ -12633,63 +12661,63 @@ inductive vcvtop___is_wf : shape -> shape -> vcvtop__ -> vec_ -> vec_ -> Prop wh
     (wf_shape shape_2) ->
     (wf_vcvtop__ shape_1 shape_2 v_vcvtop__) ->
     (wf_uN 128 v_vec_) ->
-    (var_0 != none) ->
-    (ret_val == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val = (Option.get! var_0)) ->
     (wf_uN 128 ret_val) ->
     vcvtop___is_wf shape_1 shape_2 v_vcvtop__ v_vec_ ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:186.6-186.16 -/
 inductive fun_vshiftop__before_fun_vshiftop__case_8 : ishape -> vshiftop_ -> vec_ -> u32 -> Prop where
   | fun_vshiftop__case_7 : forall (v_M : Nat) (v_sx : sx) (v : uN) (i : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vshiftop__before_fun_vshiftop__case_8 (.mk_ishape (.X .I16 (.mk_dim v_M))) (.mk_vshiftop__0 .I16 M_0 (.SHR v_sx)) v i
   | fun_vshiftop__case_6 : forall (v_M : Nat) (v_sx : sx) (v : uN) (i : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vshiftop__before_fun_vshiftop__case_8 (.mk_ishape (.X .I8 (.mk_dim v_M))) (.mk_vshiftop__0 .I8 M_0 (.SHR v_sx)) v i
   | fun_vshiftop__case_5 : forall (v_M : Nat) (v_sx : sx) (v : uN) (i : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vshiftop__before_fun_vshiftop__case_8 (.mk_ishape (.X .I64 (.mk_dim v_M))) (.mk_vshiftop__0 .I64 M_0 (.SHR v_sx)) v i
   | fun_vshiftop__case_4 : forall (v_M : Nat) (v_sx : sx) (v : uN) (i : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vshiftop__before_fun_vshiftop__case_8 (.mk_ishape (.X .I32 (.mk_dim v_M))) (.mk_vshiftop__0 .I32 M_0 (.SHR v_sx)) v i
   | fun_vshiftop__case_3 : forall (v_M : Nat) (v : uN) (i : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vshiftop__before_fun_vshiftop__case_8 (.mk_ishape (.X .I16 (.mk_dim v_M))) (.mk_vshiftop__0 .I16 M_0 .SHL) v i
   | fun_vshiftop__case_2 : forall (v_M : Nat) (v : uN) (i : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vshiftop__before_fun_vshiftop__case_8 (.mk_ishape (.X .I8 (.mk_dim v_M))) (.mk_vshiftop__0 .I8 M_0 .SHL) v i
   | fun_vshiftop__case_1 : forall (v_M : Nat) (v : uN) (i : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vshiftop__before_fun_vshiftop__case_8 (.mk_ishape (.X .I64 (.mk_dim v_M))) (.mk_vshiftop__0 .I64 M_0 .SHL) v i
   | fun_vshiftop__case_0 : forall (v_M : Nat) (v : uN) (i : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vshiftop__before_fun_vshiftop__case_8 (.mk_ishape (.X .I32 (.mk_dim v_M))) (.mk_vshiftop__0 .I32 M_0 .SHL) v i
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:186.6-186.16 -/
 inductive fun_vshiftop_ : ishape -> vshiftop_ -> vec_ -> u32 -> (Option vec_) -> Prop where
   | fun_vshiftop__case_0 : forall (v_M : Nat) (v : uN) (i : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vshiftop_ (.mk_ishape (.X .I32 (.mk_dim v_M))) (.mk_vshiftop__0 .I32 M_0 .SHL) v i (ivshiftop_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) ishl_ v (.mk_uN ((proj_uN_0 i) % (lsizenn (lanetype_Jnn .I32)))))
   | fun_vshiftop__case_1 : forall (v_M : Nat) (v : uN) (i : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vshiftop_ (.mk_ishape (.X .I64 (.mk_dim v_M))) (.mk_vshiftop__0 .I64 M_0 .SHL) v i (ivshiftop_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) ishl_ v (.mk_uN ((proj_uN_0 i) % (lsizenn (lanetype_Jnn .I64)))))
   | fun_vshiftop__case_2 : forall (v_M : Nat) (v : uN) (i : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vshiftop_ (.mk_ishape (.X .I8 (.mk_dim v_M))) (.mk_vshiftop__0 .I8 M_0 .SHL) v i (ivshiftop_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) ishl_ v (.mk_uN ((proj_uN_0 i) % (lsizenn (lanetype_Jnn .I8)))))
   | fun_vshiftop__case_3 : forall (v_M : Nat) (v : uN) (i : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vshiftop_ (.mk_ishape (.X .I16 (.mk_dim v_M))) (.mk_vshiftop__0 .I16 M_0 .SHL) v i (ivshiftop_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) ishl_ v (.mk_uN ((proj_uN_0 i) % (lsizenn (lanetype_Jnn .I16)))))
   | fun_vshiftop__case_4 : forall (v_M : Nat) (v_sx : sx) (v : uN) (i : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vshiftop_ (.mk_ishape (.X .I32 (.mk_dim v_M))) (.mk_vshiftop__0 .I32 M_0 (.SHR v_sx)) v i (ivshiftopsx_ (.X (lanetype_Jnn .I32) (.mk_dim v_M)) ishr_ v_sx v (.mk_uN ((proj_uN_0 i) % (lsizenn (lanetype_Jnn .I32)))))
   | fun_vshiftop__case_5 : forall (v_M : Nat) (v_sx : sx) (v : uN) (i : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vshiftop_ (.mk_ishape (.X .I64 (.mk_dim v_M))) (.mk_vshiftop__0 .I64 M_0 (.SHR v_sx)) v i (ivshiftopsx_ (.X (lanetype_Jnn .I64) (.mk_dim v_M)) ishr_ v_sx v (.mk_uN ((proj_uN_0 i) % (lsizenn (lanetype_Jnn .I64)))))
   | fun_vshiftop__case_6 : forall (v_M : Nat) (v_sx : sx) (v : uN) (i : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vshiftop_ (.mk_ishape (.X .I8 (.mk_dim v_M))) (.mk_vshiftop__0 .I8 M_0 (.SHR v_sx)) v i (ivshiftopsx_ (.X (lanetype_Jnn .I8) (.mk_dim v_M)) ishr_ v_sx v (.mk_uN ((proj_uN_0 i) % (lsizenn (lanetype_Jnn .I8)))))
   | fun_vshiftop__case_7 : forall (v_M : Nat) (v_sx : sx) (v : uN) (i : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vshiftop_ (.mk_ishape (.X .I16 (.mk_dim v_M))) (.mk_vshiftop__0 .I16 M_0 (.SHR v_sx)) v i (ivshiftopsx_ (.X (lanetype_Jnn .I16) (.mk_dim v_M)) ishr_ v_sx v (.mk_uN ((proj_uN_0 i) % (lsizenn (lanetype_Jnn .I16)))))
   | fun_vshiftop__case_8 : forall (x0 : ishape) (x1 : vshiftop_) (x2 : vec_) (x3 : u32), 
     (¬(fun_vshiftop__before_fun_vshiftop__case_8 x0 x1 x2 x3)) ->
@@ -12703,8 +12731,8 @@ inductive vshiftop__is_wf : ishape -> vshiftop_ -> vec_ -> u32 -> vec_ -> Prop w
     (wf_vshiftop_ v_ishape v_vshiftop_) ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 32 v_u32) ->
-    (var_0 != none) ->
-    (ret_val == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val = (Option.get! var_0)) ->
     (wf_uN 128 ret_val) ->
     vshiftop__is_wf v_ishape v_vshiftop_ v_vec_ v_u32 ret_val
 
@@ -12729,26 +12757,26 @@ inductive vbitmaskop__is_wf : ishape -> vec_ -> u32 -> Prop where
     (fun_vbitmaskop_ v_ishape v_vec_ var_0) ->
     (wf_ishape v_ishape) ->
     (wf_uN 128 v_vec_) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_uN 32 ret_val) ->
     vbitmaskop__is_wf v_ishape v_vec_ ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:190.6-190.17 -/
 inductive fun_vswizzlop__before_fun_vswizzlop__case_2 : bshape -> vswizzlop_ -> vec_ -> vec_ -> Prop where
   | fun_vswizzlop__case_1 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vswizzlop__before_fun_vswizzlop__case_2 (.mk_bshape (.X .I8 (.mk_dim v_M))) (.mk_vswizzlop__0 M_0 .RELAXED_SWIZZLE) v_1 v_2
   | fun_vswizzlop__case_0 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vswizzlop__before_fun_vswizzlop__case_2 (.mk_bshape (.X .I8 (.mk_dim v_M))) (.mk_vswizzlop__0 M_0 .SWIZZLE) v_1 v_2
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:190.6-190.17 -/
 inductive fun_vswizzlop_ : bshape -> vswizzlop_ -> vec_ -> vec_ -> (Option vec_) -> Prop where
   | fun_vswizzlop__case_0 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vswizzlop_ (.mk_bshape (.X .I8 (.mk_dim v_M))) (.mk_vswizzlop__0 M_0 .SWIZZLE) v_1 v_2 (ivswizzlop_ (.X .I8 (.mk_dim v_M)) iswizzle_lane_ v_1 v_2)
   | fun_vswizzlop__case_1 : forall (v_M : Nat) (v_1 : uN) (v_2 : uN) (M_0 : Nat), 
-    (v_M == M_0) ->
+    (v_M = M_0) ->
     fun_vswizzlop_ (.mk_bshape (.X .I8 (.mk_dim v_M))) (.mk_vswizzlop__0 M_0 .RELAXED_SWIZZLE) v_1 v_2 (ivswizzlop_ (.X .I8 (.mk_dim v_M)) irelaxed_swizzle_lane_ v_1 v_2)
   | fun_vswizzlop__case_2 : forall (x0 : bshape) (x1 : vswizzlop_) (x2 : vec_) (x3 : vec_), 
     (¬(fun_vswizzlop__before_fun_vswizzlop__case_2 x0 x1 x2 x3)) ->
@@ -12762,8 +12790,8 @@ inductive vswizzlop__is_wf : bshape -> vswizzlop_ -> vec_ -> vec_ -> vec_ -> Pro
     (wf_vswizzlop_ v_bshape v_vswizzlop_) ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
-    (var_0 != none) ->
-    (ret_val == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val = (Option.get! var_0)) ->
     (wf_uN 128 ret_val) ->
     vswizzlop__is_wf v_bshape v_vswizzlop_ v_vec_ vec__0 ret_val
 
@@ -12777,184 +12805,184 @@ inductive vshufflop__is_wf : bshape -> (List laneidx) -> vec_ -> vec_ -> vec_ ->
     Forall (fun (var_0 : laneidx) => (wf_uN 8 var_0)) var_0_lst ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
-    ((vshufflop_ v_bshape var_0_lst v_vec_ vec__0) != none) ->
-    (ret_val == (Option.get! (vshufflop_ v_bshape var_0_lst v_vec_ vec__0))) ->
+    ((vshufflop_ v_bshape var_0_lst v_vec_ vec__0) ≠ none) ->
+    (ret_val = (Option.get! (vshufflop_ v_bshape var_0_lst v_vec_ vec__0))) ->
     (wf_uN 128 ret_val) ->
     vshufflop__is_wf v_bshape var_0_lst v_vec_ vec__0 ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:195.6-195.18 -/
 inductive fun_vnarrowop__ : shape -> shape -> sx -> vec_ -> vec_ -> vec_ -> Prop where
   | fun_vnarrowop___case_0 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (c_1_lst : (List lane_)) (c_2_lst : (List lane_)) (c'_1_lst : (List iN)) (c'_2_lst : (List iN)) (v : vec_), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) v_1)) ->
-    (c_2_lst == (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) v_2)) ->
-    (c'_1_lst == (List.map (fun (c_1_148 : lane_) => (narrow__ (lsize (lanetype_Jnn .I32)) (lsize (lanetype_Jnn .I32)) v_sx (Option.get! (proj_lane__0 c_1_148)))) c_1_lst)) ->
-    (c'_2_lst == (List.map (fun (c_2_100 : lane_) => (narrow__ (lsize (lanetype_Jnn .I32)) (lsize (lanetype_Jnn .I32)) v_sx (Option.get! (proj_lane__0 c_2_100)))) c_2_lst)) ->
-    (v == (inv_lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ((List.map (fun (c'_1_2 : iN) => ((.mk_lane__0 .I32 c'_1_2) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_2 : iN) => ((.mk_lane__0 .I32 c'_2_2) : lane_)) c'_2_lst)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) v_1)) ->
+    (c_2_lst = (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) v_2)) ->
+    (c'_1_lst = (List.map (fun (c_1_148 : lane_) => (narrow__ (lsize (lanetype_Jnn .I32)) (lsize (lanetype_Jnn .I32)) v_sx (Option.get! (proj_lane__0 c_1_148)))) c_1_lst)) ->
+    (c'_2_lst = (List.map (fun (c_2_100 : lane_) => (narrow__ (lsize (lanetype_Jnn .I32)) (lsize (lanetype_Jnn .I32)) v_sx (Option.get! (proj_lane__0 c_2_100)))) c_2_lst)) ->
+    (v = (inv_lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ((List.map (fun (c'_1_2 : iN) => ((.mk_lane__0 .I32 c'_1_2) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_2 : iN) => ((.mk_lane__0 .I32 c'_2_2) : lane_)) c'_2_lst)))) ->
     (wf_shape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) ->
     (wf_shape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) ->
     Forall (fun (c'_1_3 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_lane__0 .I32 c'_1_3))) c'_1_lst ->
     Forall (fun (c'_2_3 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_lane__0 .I32 c'_2_3))) c'_2_lst ->
     fun_vnarrowop__ (.X .I32 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) v_sx v_1 v_2 v
   | fun_vnarrowop___case_1 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (c_1_lst : (List lane_)) (c_2_lst : (List lane_)) (c'_1_lst : (List iN)) (c'_2_lst : (List iN)) (v : vec_), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) v_1)) ->
-    (c_2_lst == (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) v_2)) ->
-    (c'_1_lst == (List.map (fun (c_1_150 : lane_) => (narrow__ (lsize (lanetype_Jnn .I64)) (lsize (lanetype_Jnn .I32)) v_sx (Option.get! (proj_lane__0 c_1_150)))) c_1_lst)) ->
-    (c'_2_lst == (List.map (fun (c_2_102 : lane_) => (narrow__ (lsize (lanetype_Jnn .I64)) (lsize (lanetype_Jnn .I32)) v_sx (Option.get! (proj_lane__0 c_2_102)))) c_2_lst)) ->
-    (v == (inv_lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ((List.map (fun (c'_1_5 : iN) => ((.mk_lane__0 .I32 c'_1_5) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_5 : iN) => ((.mk_lane__0 .I32 c'_2_5) : lane_)) c'_2_lst)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) v_1)) ->
+    (c_2_lst = (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) v_2)) ->
+    (c'_1_lst = (List.map (fun (c_1_150 : lane_) => (narrow__ (lsize (lanetype_Jnn .I64)) (lsize (lanetype_Jnn .I32)) v_sx (Option.get! (proj_lane__0 c_1_150)))) c_1_lst)) ->
+    (c'_2_lst = (List.map (fun (c_2_102 : lane_) => (narrow__ (lsize (lanetype_Jnn .I64)) (lsize (lanetype_Jnn .I32)) v_sx (Option.get! (proj_lane__0 c_2_102)))) c_2_lst)) ->
+    (v = (inv_lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ((List.map (fun (c'_1_5 : iN) => ((.mk_lane__0 .I32 c'_1_5) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_5 : iN) => ((.mk_lane__0 .I32 c'_2_5) : lane_)) c'_2_lst)))) ->
     (wf_shape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) ->
     (wf_shape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) ->
     Forall (fun (c'_1_6 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_lane__0 .I32 c'_1_6))) c'_1_lst ->
     Forall (fun (c'_2_6 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_lane__0 .I32 c'_2_6))) c'_2_lst ->
     fun_vnarrowop__ (.X .I64 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) v_sx v_1 v_2 v
   | fun_vnarrowop___case_2 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (c_1_lst : (List lane_)) (c_2_lst : (List lane_)) (c'_1_lst : (List iN)) (c'_2_lst : (List iN)) (v : vec_), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) v_1)) ->
-    (c_2_lst == (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) v_2)) ->
-    (c'_1_lst == (List.map (fun (c_1_152 : lane_) => (narrow__ (lsize (lanetype_Jnn .I8)) (lsize (lanetype_Jnn .I32)) v_sx (Option.get! (proj_lane__0 c_1_152)))) c_1_lst)) ->
-    (c'_2_lst == (List.map (fun (c_2_104 : lane_) => (narrow__ (lsize (lanetype_Jnn .I8)) (lsize (lanetype_Jnn .I32)) v_sx (Option.get! (proj_lane__0 c_2_104)))) c_2_lst)) ->
-    (v == (inv_lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ((List.map (fun (c'_1_8 : iN) => ((.mk_lane__0 .I32 c'_1_8) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_8 : iN) => ((.mk_lane__0 .I32 c'_2_8) : lane_)) c'_2_lst)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) v_1)) ->
+    (c_2_lst = (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) v_2)) ->
+    (c'_1_lst = (List.map (fun (c_1_152 : lane_) => (narrow__ (lsize (lanetype_Jnn .I8)) (lsize (lanetype_Jnn .I32)) v_sx (Option.get! (proj_lane__0 c_1_152)))) c_1_lst)) ->
+    (c'_2_lst = (List.map (fun (c_2_104 : lane_) => (narrow__ (lsize (lanetype_Jnn .I8)) (lsize (lanetype_Jnn .I32)) v_sx (Option.get! (proj_lane__0 c_2_104)))) c_2_lst)) ->
+    (v = (inv_lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ((List.map (fun (c'_1_8 : iN) => ((.mk_lane__0 .I32 c'_1_8) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_8 : iN) => ((.mk_lane__0 .I32 c'_2_8) : lane_)) c'_2_lst)))) ->
     (wf_shape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) ->
     (wf_shape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) ->
     Forall (fun (c'_1_9 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_lane__0 .I32 c'_1_9))) c'_1_lst ->
     Forall (fun (c'_2_9 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_lane__0 .I32 c'_2_9))) c'_2_lst ->
     fun_vnarrowop__ (.X .I8 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) v_sx v_1 v_2 v
   | fun_vnarrowop___case_3 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (c_1_lst : (List lane_)) (c_2_lst : (List lane_)) (c'_1_lst : (List iN)) (c'_2_lst : (List iN)) (v : vec_), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) v_1)) ->
-    (c_2_lst == (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) v_2)) ->
-    (c'_1_lst == (List.map (fun (c_1_154 : lane_) => (narrow__ (lsize (lanetype_Jnn .I16)) (lsize (lanetype_Jnn .I32)) v_sx (Option.get! (proj_lane__0 c_1_154)))) c_1_lst)) ->
-    (c'_2_lst == (List.map (fun (c_2_106 : lane_) => (narrow__ (lsize (lanetype_Jnn .I16)) (lsize (lanetype_Jnn .I32)) v_sx (Option.get! (proj_lane__0 c_2_106)))) c_2_lst)) ->
-    (v == (inv_lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ((List.map (fun (c'_1_11 : iN) => ((.mk_lane__0 .I32 c'_1_11) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_11 : iN) => ((.mk_lane__0 .I32 c'_2_11) : lane_)) c'_2_lst)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) v_1)) ->
+    (c_2_lst = (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) v_2)) ->
+    (c'_1_lst = (List.map (fun (c_1_154 : lane_) => (narrow__ (lsize (lanetype_Jnn .I16)) (lsize (lanetype_Jnn .I32)) v_sx (Option.get! (proj_lane__0 c_1_154)))) c_1_lst)) ->
+    (c'_2_lst = (List.map (fun (c_2_106 : lane_) => (narrow__ (lsize (lanetype_Jnn .I16)) (lsize (lanetype_Jnn .I32)) v_sx (Option.get! (proj_lane__0 c_2_106)))) c_2_lst)) ->
+    (v = (inv_lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ((List.map (fun (c'_1_11 : iN) => ((.mk_lane__0 .I32 c'_1_11) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_11 : iN) => ((.mk_lane__0 .I32 c'_2_11) : lane_)) c'_2_lst)))) ->
     (wf_shape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) ->
     (wf_shape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) ->
     Forall (fun (c'_1_12 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_lane__0 .I32 c'_1_12))) c'_1_lst ->
     Forall (fun (c'_2_12 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_lane__0 .I32 c'_2_12))) c'_2_lst ->
     fun_vnarrowop__ (.X .I16 (.mk_dim M_1)) (.X .I32 (.mk_dim M_2)) v_sx v_1 v_2 v
   | fun_vnarrowop___case_4 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (c_1_lst : (List lane_)) (c_2_lst : (List lane_)) (c'_1_lst : (List iN)) (c'_2_lst : (List iN)) (v : vec_), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) v_1)) ->
-    (c_2_lst == (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) v_2)) ->
-    (c'_1_lst == (List.map (fun (c_1_156 : lane_) => (narrow__ (lsize (lanetype_Jnn .I32)) (lsize (lanetype_Jnn .I64)) v_sx (Option.get! (proj_lane__0 c_1_156)))) c_1_lst)) ->
-    (c'_2_lst == (List.map (fun (c_2_108 : lane_) => (narrow__ (lsize (lanetype_Jnn .I32)) (lsize (lanetype_Jnn .I64)) v_sx (Option.get! (proj_lane__0 c_2_108)))) c_2_lst)) ->
-    (v == (inv_lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ((List.map (fun (c'_1_14 : iN) => ((.mk_lane__0 .I64 c'_1_14) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_14 : iN) => ((.mk_lane__0 .I64 c'_2_14) : lane_)) c'_2_lst)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) v_1)) ->
+    (c_2_lst = (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) v_2)) ->
+    (c'_1_lst = (List.map (fun (c_1_156 : lane_) => (narrow__ (lsize (lanetype_Jnn .I32)) (lsize (lanetype_Jnn .I64)) v_sx (Option.get! (proj_lane__0 c_1_156)))) c_1_lst)) ->
+    (c'_2_lst = (List.map (fun (c_2_108 : lane_) => (narrow__ (lsize (lanetype_Jnn .I32)) (lsize (lanetype_Jnn .I64)) v_sx (Option.get! (proj_lane__0 c_2_108)))) c_2_lst)) ->
+    (v = (inv_lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ((List.map (fun (c'_1_14 : iN) => ((.mk_lane__0 .I64 c'_1_14) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_14 : iN) => ((.mk_lane__0 .I64 c'_2_14) : lane_)) c'_2_lst)))) ->
     (wf_shape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) ->
     (wf_shape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) ->
     Forall (fun (c'_1_15 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_lane__0 .I64 c'_1_15))) c'_1_lst ->
     Forall (fun (c'_2_15 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_lane__0 .I64 c'_2_15))) c'_2_lst ->
     fun_vnarrowop__ (.X .I32 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) v_sx v_1 v_2 v
   | fun_vnarrowop___case_5 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (c_1_lst : (List lane_)) (c_2_lst : (List lane_)) (c'_1_lst : (List iN)) (c'_2_lst : (List iN)) (v : vec_), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) v_1)) ->
-    (c_2_lst == (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) v_2)) ->
-    (c'_1_lst == (List.map (fun (c_1_158 : lane_) => (narrow__ (lsize (lanetype_Jnn .I64)) (lsize (lanetype_Jnn .I64)) v_sx (Option.get! (proj_lane__0 c_1_158)))) c_1_lst)) ->
-    (c'_2_lst == (List.map (fun (c_2_110 : lane_) => (narrow__ (lsize (lanetype_Jnn .I64)) (lsize (lanetype_Jnn .I64)) v_sx (Option.get! (proj_lane__0 c_2_110)))) c_2_lst)) ->
-    (v == (inv_lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ((List.map (fun (c'_1_17 : iN) => ((.mk_lane__0 .I64 c'_1_17) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_17 : iN) => ((.mk_lane__0 .I64 c'_2_17) : lane_)) c'_2_lst)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) v_1)) ->
+    (c_2_lst = (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) v_2)) ->
+    (c'_1_lst = (List.map (fun (c_1_158 : lane_) => (narrow__ (lsize (lanetype_Jnn .I64)) (lsize (lanetype_Jnn .I64)) v_sx (Option.get! (proj_lane__0 c_1_158)))) c_1_lst)) ->
+    (c'_2_lst = (List.map (fun (c_2_110 : lane_) => (narrow__ (lsize (lanetype_Jnn .I64)) (lsize (lanetype_Jnn .I64)) v_sx (Option.get! (proj_lane__0 c_2_110)))) c_2_lst)) ->
+    (v = (inv_lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ((List.map (fun (c'_1_17 : iN) => ((.mk_lane__0 .I64 c'_1_17) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_17 : iN) => ((.mk_lane__0 .I64 c'_2_17) : lane_)) c'_2_lst)))) ->
     (wf_shape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) ->
     (wf_shape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) ->
     Forall (fun (c'_1_18 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_lane__0 .I64 c'_1_18))) c'_1_lst ->
     Forall (fun (c'_2_18 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_lane__0 .I64 c'_2_18))) c'_2_lst ->
     fun_vnarrowop__ (.X .I64 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) v_sx v_1 v_2 v
   | fun_vnarrowop___case_6 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (c_1_lst : (List lane_)) (c_2_lst : (List lane_)) (c'_1_lst : (List iN)) (c'_2_lst : (List iN)) (v : vec_), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) v_1)) ->
-    (c_2_lst == (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) v_2)) ->
-    (c'_1_lst == (List.map (fun (c_1_160 : lane_) => (narrow__ (lsize (lanetype_Jnn .I8)) (lsize (lanetype_Jnn .I64)) v_sx (Option.get! (proj_lane__0 c_1_160)))) c_1_lst)) ->
-    (c'_2_lst == (List.map (fun (c_2_112 : lane_) => (narrow__ (lsize (lanetype_Jnn .I8)) (lsize (lanetype_Jnn .I64)) v_sx (Option.get! (proj_lane__0 c_2_112)))) c_2_lst)) ->
-    (v == (inv_lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ((List.map (fun (c'_1_20 : iN) => ((.mk_lane__0 .I64 c'_1_20) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_20 : iN) => ((.mk_lane__0 .I64 c'_2_20) : lane_)) c'_2_lst)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) v_1)) ->
+    (c_2_lst = (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) v_2)) ->
+    (c'_1_lst = (List.map (fun (c_1_160 : lane_) => (narrow__ (lsize (lanetype_Jnn .I8)) (lsize (lanetype_Jnn .I64)) v_sx (Option.get! (proj_lane__0 c_1_160)))) c_1_lst)) ->
+    (c'_2_lst = (List.map (fun (c_2_112 : lane_) => (narrow__ (lsize (lanetype_Jnn .I8)) (lsize (lanetype_Jnn .I64)) v_sx (Option.get! (proj_lane__0 c_2_112)))) c_2_lst)) ->
+    (v = (inv_lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ((List.map (fun (c'_1_20 : iN) => ((.mk_lane__0 .I64 c'_1_20) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_20 : iN) => ((.mk_lane__0 .I64 c'_2_20) : lane_)) c'_2_lst)))) ->
     (wf_shape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) ->
     (wf_shape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) ->
     Forall (fun (c'_1_21 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_lane__0 .I64 c'_1_21))) c'_1_lst ->
     Forall (fun (c'_2_21 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_lane__0 .I64 c'_2_21))) c'_2_lst ->
     fun_vnarrowop__ (.X .I8 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) v_sx v_1 v_2 v
   | fun_vnarrowop___case_7 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (c_1_lst : (List lane_)) (c_2_lst : (List lane_)) (c'_1_lst : (List iN)) (c'_2_lst : (List iN)) (v : vec_), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) v_1)) ->
-    (c_2_lst == (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) v_2)) ->
-    (c'_1_lst == (List.map (fun (c_1_162 : lane_) => (narrow__ (lsize (lanetype_Jnn .I16)) (lsize (lanetype_Jnn .I64)) v_sx (Option.get! (proj_lane__0 c_1_162)))) c_1_lst)) ->
-    (c'_2_lst == (List.map (fun (c_2_114 : lane_) => (narrow__ (lsize (lanetype_Jnn .I16)) (lsize (lanetype_Jnn .I64)) v_sx (Option.get! (proj_lane__0 c_2_114)))) c_2_lst)) ->
-    (v == (inv_lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ((List.map (fun (c'_1_23 : iN) => ((.mk_lane__0 .I64 c'_1_23) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_23 : iN) => ((.mk_lane__0 .I64 c'_2_23) : lane_)) c'_2_lst)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) v_1)) ->
+    (c_2_lst = (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) v_2)) ->
+    (c'_1_lst = (List.map (fun (c_1_162 : lane_) => (narrow__ (lsize (lanetype_Jnn .I16)) (lsize (lanetype_Jnn .I64)) v_sx (Option.get! (proj_lane__0 c_1_162)))) c_1_lst)) ->
+    (c'_2_lst = (List.map (fun (c_2_114 : lane_) => (narrow__ (lsize (lanetype_Jnn .I16)) (lsize (lanetype_Jnn .I64)) v_sx (Option.get! (proj_lane__0 c_2_114)))) c_2_lst)) ->
+    (v = (inv_lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ((List.map (fun (c'_1_23 : iN) => ((.mk_lane__0 .I64 c'_1_23) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_23 : iN) => ((.mk_lane__0 .I64 c'_2_23) : lane_)) c'_2_lst)))) ->
     (wf_shape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) ->
     (wf_shape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) ->
     Forall (fun (c'_1_24 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_lane__0 .I64 c'_1_24))) c'_1_lst ->
     Forall (fun (c'_2_24 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_lane__0 .I64 c'_2_24))) c'_2_lst ->
     fun_vnarrowop__ (.X .I16 (.mk_dim M_1)) (.X .I64 (.mk_dim M_2)) v_sx v_1 v_2 v
   | fun_vnarrowop___case_8 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (c_1_lst : (List lane_)) (c_2_lst : (List lane_)) (c'_1_lst : (List iN)) (c'_2_lst : (List iN)) (v : vec_), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) v_1)) ->
-    (c_2_lst == (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) v_2)) ->
-    (c'_1_lst == (List.map (fun (c_1_164 : lane_) => (narrow__ (lsize (lanetype_Jnn .I32)) (lsize (lanetype_Jnn .I8)) v_sx (Option.get! (proj_lane__0 c_1_164)))) c_1_lst)) ->
-    (c'_2_lst == (List.map (fun (c_2_116 : lane_) => (narrow__ (lsize (lanetype_Jnn .I32)) (lsize (lanetype_Jnn .I8)) v_sx (Option.get! (proj_lane__0 c_2_116)))) c_2_lst)) ->
-    (v == (inv_lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ((List.map (fun (c'_1_26 : iN) => ((.mk_lane__0 .I8 c'_1_26) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_26 : iN) => ((.mk_lane__0 .I8 c'_2_26) : lane_)) c'_2_lst)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) v_1)) ->
+    (c_2_lst = (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) v_2)) ->
+    (c'_1_lst = (List.map (fun (c_1_164 : lane_) => (narrow__ (lsize (lanetype_Jnn .I32)) (lsize (lanetype_Jnn .I8)) v_sx (Option.get! (proj_lane__0 c_1_164)))) c_1_lst)) ->
+    (c'_2_lst = (List.map (fun (c_2_116 : lane_) => (narrow__ (lsize (lanetype_Jnn .I32)) (lsize (lanetype_Jnn .I8)) v_sx (Option.get! (proj_lane__0 c_2_116)))) c_2_lst)) ->
+    (v = (inv_lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ((List.map (fun (c'_1_26 : iN) => ((.mk_lane__0 .I8 c'_1_26) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_26 : iN) => ((.mk_lane__0 .I8 c'_2_26) : lane_)) c'_2_lst)))) ->
     (wf_shape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) ->
     (wf_shape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) ->
     Forall (fun (c'_1_27 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_lane__0 .I8 c'_1_27))) c'_1_lst ->
     Forall (fun (c'_2_27 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_lane__0 .I8 c'_2_27))) c'_2_lst ->
     fun_vnarrowop__ (.X .I32 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) v_sx v_1 v_2 v
   | fun_vnarrowop___case_9 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (c_1_lst : (List lane_)) (c_2_lst : (List lane_)) (c'_1_lst : (List iN)) (c'_2_lst : (List iN)) (v : vec_), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) v_1)) ->
-    (c_2_lst == (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) v_2)) ->
-    (c'_1_lst == (List.map (fun (c_1_166 : lane_) => (narrow__ (lsize (lanetype_Jnn .I64)) (lsize (lanetype_Jnn .I8)) v_sx (Option.get! (proj_lane__0 c_1_166)))) c_1_lst)) ->
-    (c'_2_lst == (List.map (fun (c_2_118 : lane_) => (narrow__ (lsize (lanetype_Jnn .I64)) (lsize (lanetype_Jnn .I8)) v_sx (Option.get! (proj_lane__0 c_2_118)))) c_2_lst)) ->
-    (v == (inv_lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ((List.map (fun (c'_1_29 : iN) => ((.mk_lane__0 .I8 c'_1_29) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_29 : iN) => ((.mk_lane__0 .I8 c'_2_29) : lane_)) c'_2_lst)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) v_1)) ->
+    (c_2_lst = (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) v_2)) ->
+    (c'_1_lst = (List.map (fun (c_1_166 : lane_) => (narrow__ (lsize (lanetype_Jnn .I64)) (lsize (lanetype_Jnn .I8)) v_sx (Option.get! (proj_lane__0 c_1_166)))) c_1_lst)) ->
+    (c'_2_lst = (List.map (fun (c_2_118 : lane_) => (narrow__ (lsize (lanetype_Jnn .I64)) (lsize (lanetype_Jnn .I8)) v_sx (Option.get! (proj_lane__0 c_2_118)))) c_2_lst)) ->
+    (v = (inv_lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ((List.map (fun (c'_1_29 : iN) => ((.mk_lane__0 .I8 c'_1_29) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_29 : iN) => ((.mk_lane__0 .I8 c'_2_29) : lane_)) c'_2_lst)))) ->
     (wf_shape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) ->
     (wf_shape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) ->
     Forall (fun (c'_1_30 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_lane__0 .I8 c'_1_30))) c'_1_lst ->
     Forall (fun (c'_2_30 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_lane__0 .I8 c'_2_30))) c'_2_lst ->
     fun_vnarrowop__ (.X .I64 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) v_sx v_1 v_2 v
   | fun_vnarrowop___case_10 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (c_1_lst : (List lane_)) (c_2_lst : (List lane_)) (c'_1_lst : (List iN)) (c'_2_lst : (List iN)) (v : vec_), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) v_1)) ->
-    (c_2_lst == (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) v_2)) ->
-    (c'_1_lst == (List.map (fun (c_1_168 : lane_) => (narrow__ (lsize (lanetype_Jnn .I8)) (lsize (lanetype_Jnn .I8)) v_sx (Option.get! (proj_lane__0 c_1_168)))) c_1_lst)) ->
-    (c'_2_lst == (List.map (fun (c_2_120 : lane_) => (narrow__ (lsize (lanetype_Jnn .I8)) (lsize (lanetype_Jnn .I8)) v_sx (Option.get! (proj_lane__0 c_2_120)))) c_2_lst)) ->
-    (v == (inv_lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ((List.map (fun (c'_1_32 : iN) => ((.mk_lane__0 .I8 c'_1_32) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_32 : iN) => ((.mk_lane__0 .I8 c'_2_32) : lane_)) c'_2_lst)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) v_1)) ->
+    (c_2_lst = (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) v_2)) ->
+    (c'_1_lst = (List.map (fun (c_1_168 : lane_) => (narrow__ (lsize (lanetype_Jnn .I8)) (lsize (lanetype_Jnn .I8)) v_sx (Option.get! (proj_lane__0 c_1_168)))) c_1_lst)) ->
+    (c'_2_lst = (List.map (fun (c_2_120 : lane_) => (narrow__ (lsize (lanetype_Jnn .I8)) (lsize (lanetype_Jnn .I8)) v_sx (Option.get! (proj_lane__0 c_2_120)))) c_2_lst)) ->
+    (v = (inv_lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ((List.map (fun (c'_1_32 : iN) => ((.mk_lane__0 .I8 c'_1_32) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_32 : iN) => ((.mk_lane__0 .I8 c'_2_32) : lane_)) c'_2_lst)))) ->
     (wf_shape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) ->
     (wf_shape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) ->
     Forall (fun (c'_1_33 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_lane__0 .I8 c'_1_33))) c'_1_lst ->
     Forall (fun (c'_2_33 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_lane__0 .I8 c'_2_33))) c'_2_lst ->
     fun_vnarrowop__ (.X .I8 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) v_sx v_1 v_2 v
   | fun_vnarrowop___case_11 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (c_1_lst : (List lane_)) (c_2_lst : (List lane_)) (c'_1_lst : (List iN)) (c'_2_lst : (List iN)) (v : vec_), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) v_1)) ->
-    (c_2_lst == (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) v_2)) ->
-    (c'_1_lst == (List.map (fun (c_1_170 : lane_) => (narrow__ (lsize (lanetype_Jnn .I16)) (lsize (lanetype_Jnn .I8)) v_sx (Option.get! (proj_lane__0 c_1_170)))) c_1_lst)) ->
-    (c'_2_lst == (List.map (fun (c_2_122 : lane_) => (narrow__ (lsize (lanetype_Jnn .I16)) (lsize (lanetype_Jnn .I8)) v_sx (Option.get! (proj_lane__0 c_2_122)))) c_2_lst)) ->
-    (v == (inv_lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ((List.map (fun (c'_1_35 : iN) => ((.mk_lane__0 .I8 c'_1_35) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_35 : iN) => ((.mk_lane__0 .I8 c'_2_35) : lane_)) c'_2_lst)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) v_1)) ->
+    (c_2_lst = (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) v_2)) ->
+    (c'_1_lst = (List.map (fun (c_1_170 : lane_) => (narrow__ (lsize (lanetype_Jnn .I16)) (lsize (lanetype_Jnn .I8)) v_sx (Option.get! (proj_lane__0 c_1_170)))) c_1_lst)) ->
+    (c'_2_lst = (List.map (fun (c_2_122 : lane_) => (narrow__ (lsize (lanetype_Jnn .I16)) (lsize (lanetype_Jnn .I8)) v_sx (Option.get! (proj_lane__0 c_2_122)))) c_2_lst)) ->
+    (v = (inv_lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ((List.map (fun (c'_1_35 : iN) => ((.mk_lane__0 .I8 c'_1_35) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_35 : iN) => ((.mk_lane__0 .I8 c'_2_35) : lane_)) c'_2_lst)))) ->
     (wf_shape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) ->
     (wf_shape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) ->
     Forall (fun (c'_1_36 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_lane__0 .I8 c'_1_36))) c'_1_lst ->
     Forall (fun (c'_2_36 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_lane__0 .I8 c'_2_36))) c'_2_lst ->
     fun_vnarrowop__ (.X .I16 (.mk_dim M_1)) (.X .I8 (.mk_dim M_2)) v_sx v_1 v_2 v
   | fun_vnarrowop___case_12 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (c_1_lst : (List lane_)) (c_2_lst : (List lane_)) (c'_1_lst : (List iN)) (c'_2_lst : (List iN)) (v : vec_), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) v_1)) ->
-    (c_2_lst == (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) v_2)) ->
-    (c'_1_lst == (List.map (fun (c_1_172 : lane_) => (narrow__ (lsize (lanetype_Jnn .I32)) (lsize (lanetype_Jnn .I16)) v_sx (Option.get! (proj_lane__0 c_1_172)))) c_1_lst)) ->
-    (c'_2_lst == (List.map (fun (c_2_124 : lane_) => (narrow__ (lsize (lanetype_Jnn .I32)) (lsize (lanetype_Jnn .I16)) v_sx (Option.get! (proj_lane__0 c_2_124)))) c_2_lst)) ->
-    (v == (inv_lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ((List.map (fun (c'_1_38 : iN) => ((.mk_lane__0 .I16 c'_1_38) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_38 : iN) => ((.mk_lane__0 .I16 c'_2_38) : lane_)) c'_2_lst)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) v_1)) ->
+    (c_2_lst = (lanes_ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) v_2)) ->
+    (c'_1_lst = (List.map (fun (c_1_172 : lane_) => (narrow__ (lsize (lanetype_Jnn .I32)) (lsize (lanetype_Jnn .I16)) v_sx (Option.get! (proj_lane__0 c_1_172)))) c_1_lst)) ->
+    (c'_2_lst = (List.map (fun (c_2_124 : lane_) => (narrow__ (lsize (lanetype_Jnn .I32)) (lsize (lanetype_Jnn .I16)) v_sx (Option.get! (proj_lane__0 c_2_124)))) c_2_lst)) ->
+    (v = (inv_lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ((List.map (fun (c'_1_38 : iN) => ((.mk_lane__0 .I16 c'_1_38) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_38 : iN) => ((.mk_lane__0 .I16 c'_2_38) : lane_)) c'_2_lst)))) ->
     (wf_shape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) ->
     (wf_shape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) ->
     Forall (fun (c'_1_39 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_lane__0 .I16 c'_1_39))) c'_1_lst ->
     Forall (fun (c'_2_39 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_lane__0 .I16 c'_2_39))) c'_2_lst ->
     fun_vnarrowop__ (.X .I32 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) v_sx v_1 v_2 v
   | fun_vnarrowop___case_13 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (c_1_lst : (List lane_)) (c_2_lst : (List lane_)) (c'_1_lst : (List iN)) (c'_2_lst : (List iN)) (v : vec_), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) v_1)) ->
-    (c_2_lst == (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) v_2)) ->
-    (c'_1_lst == (List.map (fun (c_1_174 : lane_) => (narrow__ (lsize (lanetype_Jnn .I64)) (lsize (lanetype_Jnn .I16)) v_sx (Option.get! (proj_lane__0 c_1_174)))) c_1_lst)) ->
-    (c'_2_lst == (List.map (fun (c_2_126 : lane_) => (narrow__ (lsize (lanetype_Jnn .I64)) (lsize (lanetype_Jnn .I16)) v_sx (Option.get! (proj_lane__0 c_2_126)))) c_2_lst)) ->
-    (v == (inv_lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ((List.map (fun (c'_1_41 : iN) => ((.mk_lane__0 .I16 c'_1_41) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_41 : iN) => ((.mk_lane__0 .I16 c'_2_41) : lane_)) c'_2_lst)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) v_1)) ->
+    (c_2_lst = (lanes_ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) v_2)) ->
+    (c'_1_lst = (List.map (fun (c_1_174 : lane_) => (narrow__ (lsize (lanetype_Jnn .I64)) (lsize (lanetype_Jnn .I16)) v_sx (Option.get! (proj_lane__0 c_1_174)))) c_1_lst)) ->
+    (c'_2_lst = (List.map (fun (c_2_126 : lane_) => (narrow__ (lsize (lanetype_Jnn .I64)) (lsize (lanetype_Jnn .I16)) v_sx (Option.get! (proj_lane__0 c_2_126)))) c_2_lst)) ->
+    (v = (inv_lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ((List.map (fun (c'_1_41 : iN) => ((.mk_lane__0 .I16 c'_1_41) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_41 : iN) => ((.mk_lane__0 .I16 c'_2_41) : lane_)) c'_2_lst)))) ->
     (wf_shape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) ->
     (wf_shape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) ->
     Forall (fun (c'_1_42 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_lane__0 .I16 c'_1_42))) c'_1_lst ->
     Forall (fun (c'_2_42 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_lane__0 .I16 c'_2_42))) c'_2_lst ->
     fun_vnarrowop__ (.X .I64 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) v_sx v_1 v_2 v
   | fun_vnarrowop___case_14 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (c_1_lst : (List lane_)) (c_2_lst : (List lane_)) (c'_1_lst : (List iN)) (c'_2_lst : (List iN)) (v : vec_), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) v_1)) ->
-    (c_2_lst == (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) v_2)) ->
-    (c'_1_lst == (List.map (fun (c_1_176 : lane_) => (narrow__ (lsize (lanetype_Jnn .I8)) (lsize (lanetype_Jnn .I16)) v_sx (Option.get! (proj_lane__0 c_1_176)))) c_1_lst)) ->
-    (c'_2_lst == (List.map (fun (c_2_128 : lane_) => (narrow__ (lsize (lanetype_Jnn .I8)) (lsize (lanetype_Jnn .I16)) v_sx (Option.get! (proj_lane__0 c_2_128)))) c_2_lst)) ->
-    (v == (inv_lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ((List.map (fun (c'_1_44 : iN) => ((.mk_lane__0 .I16 c'_1_44) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_44 : iN) => ((.mk_lane__0 .I16 c'_2_44) : lane_)) c'_2_lst)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) v_1)) ->
+    (c_2_lst = (lanes_ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) v_2)) ->
+    (c'_1_lst = (List.map (fun (c_1_176 : lane_) => (narrow__ (lsize (lanetype_Jnn .I8)) (lsize (lanetype_Jnn .I16)) v_sx (Option.get! (proj_lane__0 c_1_176)))) c_1_lst)) ->
+    (c'_2_lst = (List.map (fun (c_2_128 : lane_) => (narrow__ (lsize (lanetype_Jnn .I8)) (lsize (lanetype_Jnn .I16)) v_sx (Option.get! (proj_lane__0 c_2_128)))) c_2_lst)) ->
+    (v = (inv_lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ((List.map (fun (c'_1_44 : iN) => ((.mk_lane__0 .I16 c'_1_44) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_44 : iN) => ((.mk_lane__0 .I16 c'_2_44) : lane_)) c'_2_lst)))) ->
     (wf_shape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) ->
     (wf_shape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) ->
     Forall (fun (c'_1_45 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_lane__0 .I16 c'_1_45))) c'_1_lst ->
     Forall (fun (c'_2_45 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_lane__0 .I16 c'_2_45))) c'_2_lst ->
     fun_vnarrowop__ (.X .I8 (.mk_dim M_1)) (.X .I16 (.mk_dim M_2)) v_sx v_1 v_2 v
   | fun_vnarrowop___case_15 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (v_2 : uN) (c_1_lst : (List lane_)) (c_2_lst : (List lane_)) (c'_1_lst : (List iN)) (c'_2_lst : (List iN)) (v : vec_), 
-    (c_1_lst == (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) v_1)) ->
-    (c_2_lst == (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) v_2)) ->
-    (c'_1_lst == (List.map (fun (c_1_178 : lane_) => (narrow__ (lsize (lanetype_Jnn .I16)) (lsize (lanetype_Jnn .I16)) v_sx (Option.get! (proj_lane__0 c_1_178)))) c_1_lst)) ->
-    (c'_2_lst == (List.map (fun (c_2_130 : lane_) => (narrow__ (lsize (lanetype_Jnn .I16)) (lsize (lanetype_Jnn .I16)) v_sx (Option.get! (proj_lane__0 c_2_130)))) c_2_lst)) ->
-    (v == (inv_lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ((List.map (fun (c'_1_47 : iN) => ((.mk_lane__0 .I16 c'_1_47) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_47 : iN) => ((.mk_lane__0 .I16 c'_2_47) : lane_)) c'_2_lst)))) ->
+    (c_1_lst = (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) v_1)) ->
+    (c_2_lst = (lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) v_2)) ->
+    (c'_1_lst = (List.map (fun (c_1_178 : lane_) => (narrow__ (lsize (lanetype_Jnn .I16)) (lsize (lanetype_Jnn .I16)) v_sx (Option.get! (proj_lane__0 c_1_178)))) c_1_lst)) ->
+    (c'_2_lst = (List.map (fun (c_2_130 : lane_) => (narrow__ (lsize (lanetype_Jnn .I16)) (lsize (lanetype_Jnn .I16)) v_sx (Option.get! (proj_lane__0 c_2_130)))) c_2_lst)) ->
+    (v = (inv_lanes_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ((List.map (fun (c'_1_47 : iN) => ((.mk_lane__0 .I16 c'_1_47) : lane_)) c'_1_lst) ++ (List.map (fun (c'_2_47 : iN) => ((.mk_lane__0 .I16 c'_2_47) : lane_)) c'_2_lst)))) ->
     (wf_shape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) ->
     (wf_shape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) ->
     Forall (fun (c'_1_48 : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_lane__0 .I16 c'_1_48))) c'_1_lst ->
@@ -12969,7 +12997,7 @@ inductive vnarrowop___is_wf : shape -> shape -> sx -> vec_ -> vec_ -> vec_ -> Pr
     (wf_shape shape_2) ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_uN 128 ret_val) ->
     vnarrowop___is_wf shape_1 shape_2 v_sx v_vec_ vec__0 ret_val
 
@@ -12980,7 +13008,7 @@ opaque ivadd_pairwise_ : forall (v_N : N) (var_0_lst : (List iN)), (List iN) := 
 inductive ivadd_pairwise__is_wf : N -> (List iN) -> (List iN) -> Prop where
   | ivadd_pairwise__is_wf_0 : forall (v_N : N) (var_0_lst : (List iN)) (ret_val_lst : (List iN)), 
     Forall (fun (var_0 : iN) => (wf_uN v_N var_0)) var_0_lst ->
-    (ret_val_lst == (ivadd_pairwise_ v_N var_0_lst)) ->
+    (ret_val_lst = (ivadd_pairwise_ v_N var_0_lst)) ->
     Forall (fun (ret_val : iN) => (wf_uN v_N ret_val)) ret_val_lst ->
     ivadd_pairwise__is_wf v_N var_0_lst ret_val_lst
 
@@ -12993,142 +13021,142 @@ inductive ivextunop___is_wf (f_ : N -> (List iN) -> (List iN)) : shape -> shape 
     (wf_shape shape_1) ->
     (wf_shape shape_2) ->
     (wf_uN 128 v_vec_) ->
-    (ret_val == (ivextunop__ shape_1 shape_2 f_ v_sx v_vec_)) ->
+    (ret_val = (ivextunop__ shape_1 shape_2 f_ v_sx v_vec_)) ->
     (wf_uN 128 ret_val) ->
     ivextunop___is_wf f_ shape_1 shape_2 v_sx v_vec_ ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:198.6-198.17 -/
 inductive fun_vextunop___before_fun_vextunop___case_16 : ishape -> ishape -> vextunop__ -> vec_ -> Prop where
   | fun_vextunop___case_15 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop___before_fun_vextunop___case_16 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextunop___0 .I16 M_1_0 .I16 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1
   | fun_vextunop___case_14 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop___before_fun_vextunop___case_16 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextunop___0 .I8 M_1_0 .I16 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1
   | fun_vextunop___case_13 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop___before_fun_vextunop___case_16 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextunop___0 .I64 M_1_0 .I16 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1
   | fun_vextunop___case_12 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop___before_fun_vextunop___case_16 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextunop___0 .I32 M_1_0 .I16 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1
   | fun_vextunop___case_11 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop___before_fun_vextunop___case_16 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextunop___0 .I16 M_1_0 .I8 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1
   | fun_vextunop___case_10 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop___before_fun_vextunop___case_16 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextunop___0 .I8 M_1_0 .I8 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1
   | fun_vextunop___case_9 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop___before_fun_vextunop___case_16 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextunop___0 .I64 M_1_0 .I8 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1
   | fun_vextunop___case_8 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop___before_fun_vextunop___case_16 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextunop___0 .I32 M_1_0 .I8 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1
   | fun_vextunop___case_7 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop___before_fun_vextunop___case_16 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextunop___0 .I16 M_1_0 .I64 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1
   | fun_vextunop___case_6 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop___before_fun_vextunop___case_16 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextunop___0 .I8 M_1_0 .I64 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1
   | fun_vextunop___case_5 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop___before_fun_vextunop___case_16 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextunop___0 .I64 M_1_0 .I64 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1
   | fun_vextunop___case_4 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop___before_fun_vextunop___case_16 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextunop___0 .I32 M_1_0 .I64 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1
   | fun_vextunop___case_3 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop___before_fun_vextunop___case_16 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextunop___0 .I16 M_1_0 .I32 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1
   | fun_vextunop___case_2 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop___before_fun_vextunop___case_16 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextunop___0 .I8 M_1_0 .I32 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1
   | fun_vextunop___case_1 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop___before_fun_vextunop___case_16 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextunop___0 .I64 M_1_0 .I32 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1
   | fun_vextunop___case_0 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop___before_fun_vextunop___case_16 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextunop___0 .I32 M_1_0 .I32 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:198.6-198.17 -/
 inductive fun_vextunop__ : ishape -> ishape -> vextunop__ -> vec_ -> (Option vec_) -> Prop where
   | fun_vextunop___case_0 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextunop___0 .I32 M_1_0 .I32 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1 (some (ivextunop__ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ivadd_pairwise_ v_sx v_1))
   | fun_vextunop___case_1 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextunop___0 .I64 M_1_0 .I32 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1 (some (ivextunop__ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ivadd_pairwise_ v_sx v_1))
   | fun_vextunop___case_2 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextunop___0 .I8 M_1_0 .I32 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1 (some (ivextunop__ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ivadd_pairwise_ v_sx v_1))
   | fun_vextunop___case_3 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextunop___0 .I16 M_1_0 .I32 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1 (some (ivextunop__ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ivadd_pairwise_ v_sx v_1))
   | fun_vextunop___case_4 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextunop___0 .I32 M_1_0 .I64 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1 (some (ivextunop__ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ivadd_pairwise_ v_sx v_1))
   | fun_vextunop___case_5 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextunop___0 .I64 M_1_0 .I64 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1 (some (ivextunop__ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ivadd_pairwise_ v_sx v_1))
   | fun_vextunop___case_6 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextunop___0 .I8 M_1_0 .I64 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1 (some (ivextunop__ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ivadd_pairwise_ v_sx v_1))
   | fun_vextunop___case_7 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextunop___0 .I16 M_1_0 .I64 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1 (some (ivextunop__ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ivadd_pairwise_ v_sx v_1))
   | fun_vextunop___case_8 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextunop___0 .I32 M_1_0 .I8 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1 (some (ivextunop__ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ivadd_pairwise_ v_sx v_1))
   | fun_vextunop___case_9 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextunop___0 .I64 M_1_0 .I8 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1 (some (ivextunop__ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ivadd_pairwise_ v_sx v_1))
   | fun_vextunop___case_10 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextunop___0 .I8 M_1_0 .I8 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1 (some (ivextunop__ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ivadd_pairwise_ v_sx v_1))
   | fun_vextunop___case_11 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextunop___0 .I16 M_1_0 .I8 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1 (some (ivextunop__ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ivadd_pairwise_ v_sx v_1))
   | fun_vextunop___case_12 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextunop___0 .I32 M_1_0 .I16 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1 (some (ivextunop__ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ivadd_pairwise_ v_sx v_1))
   | fun_vextunop___case_13 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextunop___0 .I64 M_1_0 .I16 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1 (some (ivextunop__ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ivadd_pairwise_ v_sx v_1))
   | fun_vextunop___case_14 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextunop___0 .I8 M_1_0 .I16 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1 (some (ivextunop__ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ivadd_pairwise_ v_sx v_1))
   | fun_vextunop___case_15 : forall (M_1 : Nat) (M_2 : Nat) (v_sx : sx) (v_1 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextunop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextunop___0 .I16 M_1_0 .I16 M_2_0 (.EXTADD_PAIRWISE v_sx)) v_1 (some (ivextunop__ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ivadd_pairwise_ v_sx v_1))
   | fun_vextunop___case_16 : forall (x0 : ishape) (x1 : ishape) (x2 : vextunop__) (x3 : vec_), 
     (¬(fun_vextunop___before_fun_vextunop___case_16 x0 x1 x2 x3)) ->
@@ -13142,8 +13170,8 @@ inductive vextunop___is_wf : ishape -> ishape -> vextunop__ -> vec_ -> vec_ -> P
     (wf_ishape ishape_2) ->
     (wf_vextunop__ ishape_1 ishape_2 v_vextunop__) ->
     (wf_uN 128 v_vec_) ->
-    (var_0 != none) ->
-    (ret_val == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val = (Option.get! var_0)) ->
     (wf_uN 128 ret_val) ->
     vextunop___is_wf ishape_1 ishape_2 v_vextunop__ v_vec_ ret_val
 
@@ -13155,7 +13183,7 @@ inductive ivdot__is_wf : N -> (List iN) -> (List iN) -> (List iN) -> Prop where
   | ivdot__is_wf_0 : forall (v_N : N) (var_0_lst : (List iN)) (var_1_lst : (List iN)) (ret_val_lst : (List iN)), 
     Forall (fun (var_0 : iN) => (wf_uN v_N var_0)) var_0_lst ->
     Forall (fun (var_1 : iN) => (wf_uN v_N var_1)) var_1_lst ->
-    (ret_val_lst == (ivdot_ v_N var_0_lst var_1_lst)) ->
+    (ret_val_lst = (ivdot_ v_N var_0_lst var_1_lst)) ->
     Forall (fun (ret_val : iN) => (wf_uN v_N ret_val)) ret_val_lst ->
     ivdot__is_wf v_N var_0_lst var_1_lst ret_val_lst
 
@@ -13167,7 +13195,7 @@ inductive ivdot_sat__is_wf : N -> (List iN) -> (List iN) -> (List iN) -> Prop wh
   | ivdot_sat__is_wf_0 : forall (v_N : N) (var_0_lst : (List iN)) (var_1_lst : (List iN)) (ret_val_lst : (List iN)), 
     Forall (fun (var_0 : iN) => (wf_uN v_N var_0)) var_0_lst ->
     Forall (fun (var_1 : iN) => (wf_uN v_N var_1)) var_1_lst ->
-    (ret_val_lst == (ivdot_sat_ v_N var_0_lst var_1_lst)) ->
+    (ret_val_lst = (ivdot_sat_ v_N var_0_lst var_1_lst)) ->
     Forall (fun (ret_val : iN) => (wf_uN v_N ret_val)) ret_val_lst ->
     ivdot_sat__is_wf v_N var_0_lst var_1_lst ret_val_lst
 
@@ -13183,7 +13211,7 @@ inductive ivextbinop___is_wf (f_ : N -> (List iN) -> (List iN) -> (List iN)) : s
     (wf_uN 8 laneidx_0) ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
-    (ret_val == (ivextbinop__ shape_1 shape_2 f_ v_sx sx_0 v_laneidx laneidx_0 v_vec_ vec__0)) ->
+    (ret_val = (ivextbinop__ shape_1 shape_2 f_ v_sx sx_0 v_laneidx laneidx_0 v_vec_ vec__0)) ->
     (wf_uN 128 ret_val) ->
     ivextbinop___is_wf f_ shape_1 shape_2 v_sx sx_0 v_laneidx laneidx_0 v_vec_ vec__0 ret_val
 
@@ -13198,398 +13226,398 @@ inductive ivmul__is_wf : N -> (List iN) -> (List iN) -> (List iN) -> Prop where
   | ivmul__is_wf_0 : forall (v_N : N) (var_0_lst : (List iN)) (var_1_lst : (List iN)) (ret_val_lst : (List iN)), 
     Forall (fun (var_0 : iN) => (wf_uN v_N var_0)) var_0_lst ->
     Forall (fun (var_1 : iN) => (wf_uN v_N var_1)) var_1_lst ->
-    (ret_val_lst == (ivmul_ v_N var_0_lst var_1_lst)) ->
+    (ret_val_lst = (ivmul_ v_N var_0_lst var_1_lst)) ->
     Forall (fun (ret_val : iN) => (wf_uN v_N ret_val)) ret_val_lst ->
     ivmul__is_wf v_N var_0_lst var_1_lst ret_val_lst
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:200.6-200.18 -/
 inductive fun_vextbinop___before_fun_vextbinop___case_48 : ishape -> ishape -> vextbinop__ -> vec_ -> vec_ -> Prop where
   | fun_vextbinop___case_47 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I16 M_2_0 .RELAXED_DOTS) v_1 v_2
   | fun_vextbinop___case_46 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I16 M_2_0 .RELAXED_DOTS) v_1 v_2
   | fun_vextbinop___case_45 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I16 M_2_0 .RELAXED_DOTS) v_1 v_2
   | fun_vextbinop___case_44 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I16 M_2_0 .RELAXED_DOTS) v_1 v_2
   | fun_vextbinop___case_43 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I8 M_2_0 .RELAXED_DOTS) v_1 v_2
   | fun_vextbinop___case_42 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I8 M_2_0 .RELAXED_DOTS) v_1 v_2
   | fun_vextbinop___case_41 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I8 M_2_0 .RELAXED_DOTS) v_1 v_2
   | fun_vextbinop___case_40 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I8 M_2_0 .RELAXED_DOTS) v_1 v_2
   | fun_vextbinop___case_39 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I64 M_2_0 .RELAXED_DOTS) v_1 v_2
   | fun_vextbinop___case_38 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I64 M_2_0 .RELAXED_DOTS) v_1 v_2
   | fun_vextbinop___case_37 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I64 M_2_0 .RELAXED_DOTS) v_1 v_2
   | fun_vextbinop___case_36 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I64 M_2_0 .RELAXED_DOTS) v_1 v_2
   | fun_vextbinop___case_35 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I32 M_2_0 .RELAXED_DOTS) v_1 v_2
   | fun_vextbinop___case_34 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I32 M_2_0 .RELAXED_DOTS) v_1 v_2
   | fun_vextbinop___case_33 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I32 M_2_0 .RELAXED_DOTS) v_1 v_2
   | fun_vextbinop___case_32 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I32 M_2_0 .RELAXED_DOTS) v_1 v_2
   | fun_vextbinop___case_31 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I16 M_2_0 .DOTS) v_1 v_2
   | fun_vextbinop___case_30 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I16 M_2_0 .DOTS) v_1 v_2
   | fun_vextbinop___case_29 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I16 M_2_0 .DOTS) v_1 v_2
   | fun_vextbinop___case_28 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I16 M_2_0 .DOTS) v_1 v_2
   | fun_vextbinop___case_27 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I8 M_2_0 .DOTS) v_1 v_2
   | fun_vextbinop___case_26 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I8 M_2_0 .DOTS) v_1 v_2
   | fun_vextbinop___case_25 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I8 M_2_0 .DOTS) v_1 v_2
   | fun_vextbinop___case_24 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I8 M_2_0 .DOTS) v_1 v_2
   | fun_vextbinop___case_23 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I64 M_2_0 .DOTS) v_1 v_2
   | fun_vextbinop___case_22 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I64 M_2_0 .DOTS) v_1 v_2
   | fun_vextbinop___case_21 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I64 M_2_0 .DOTS) v_1 v_2
   | fun_vextbinop___case_20 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I64 M_2_0 .DOTS) v_1 v_2
   | fun_vextbinop___case_19 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I32 M_2_0 .DOTS) v_1 v_2
   | fun_vextbinop___case_18 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I32 M_2_0 .DOTS) v_1 v_2
   | fun_vextbinop___case_17 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I32 M_2_0 .DOTS) v_1 v_2
   | fun_vextbinop___case_16 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I32 M_2_0 .DOTS) v_1 v_2
   | fun_vextbinop___case_15 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I16 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2
   | fun_vextbinop___case_14 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I16 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2
   | fun_vextbinop___case_13 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I16 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2
   | fun_vextbinop___case_12 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I16 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2
   | fun_vextbinop___case_11 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I8 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2
   | fun_vextbinop___case_10 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I8 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2
   | fun_vextbinop___case_9 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I8 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2
   | fun_vextbinop___case_8 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I8 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2
   | fun_vextbinop___case_7 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I64 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2
   | fun_vextbinop___case_6 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I64 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2
   | fun_vextbinop___case_5 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I64 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2
   | fun_vextbinop___case_4 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I64 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2
   | fun_vextbinop___case_3 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I32 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2
   | fun_vextbinop___case_2 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I32 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2
   | fun_vextbinop___case_1 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I32 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2
   | fun_vextbinop___case_0 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop___before_fun_vextbinop___case_48 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I32 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:200.6-200.18 -/
 inductive fun_vextbinop__ : ishape -> ishape -> vextbinop__ -> vec_ -> vec_ -> (Option vec_) -> Prop where
   | fun_vextbinop___case_0 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I32 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ivmul_ v_sx v_sx (.mk_uN (fun_half v_half 0 M_2)) (.mk_uN M_2) v_1 v_2))
   | fun_vextbinop___case_1 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I32 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ivmul_ v_sx v_sx (.mk_uN (fun_half v_half 0 M_2)) (.mk_uN M_2) v_1 v_2))
   | fun_vextbinop___case_2 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I32 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ivmul_ v_sx v_sx (.mk_uN (fun_half v_half 0 M_2)) (.mk_uN M_2) v_1 v_2))
   | fun_vextbinop___case_3 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I32 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ivmul_ v_sx v_sx (.mk_uN (fun_half v_half 0 M_2)) (.mk_uN M_2) v_1 v_2))
   | fun_vextbinop___case_4 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I64 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ivmul_ v_sx v_sx (.mk_uN (fun_half v_half 0 M_2)) (.mk_uN M_2) v_1 v_2))
   | fun_vextbinop___case_5 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I64 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ivmul_ v_sx v_sx (.mk_uN (fun_half v_half 0 M_2)) (.mk_uN M_2) v_1 v_2))
   | fun_vextbinop___case_6 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I64 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ivmul_ v_sx v_sx (.mk_uN (fun_half v_half 0 M_2)) (.mk_uN M_2) v_1 v_2))
   | fun_vextbinop___case_7 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I64 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ivmul_ v_sx v_sx (.mk_uN (fun_half v_half 0 M_2)) (.mk_uN M_2) v_1 v_2))
   | fun_vextbinop___case_8 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I8 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ivmul_ v_sx v_sx (.mk_uN (fun_half v_half 0 M_2)) (.mk_uN M_2) v_1 v_2))
   | fun_vextbinop___case_9 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I8 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ivmul_ v_sx v_sx (.mk_uN (fun_half v_half 0 M_2)) (.mk_uN M_2) v_1 v_2))
   | fun_vextbinop___case_10 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I8 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ivmul_ v_sx v_sx (.mk_uN (fun_half v_half 0 M_2)) (.mk_uN M_2) v_1 v_2))
   | fun_vextbinop___case_11 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I8 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ivmul_ v_sx v_sx (.mk_uN (fun_half v_half 0 M_2)) (.mk_uN M_2) v_1 v_2))
   | fun_vextbinop___case_12 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I16 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ivmul_ v_sx v_sx (.mk_uN (fun_half v_half 0 M_2)) (.mk_uN M_2) v_1 v_2))
   | fun_vextbinop___case_13 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I16 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ivmul_ v_sx v_sx (.mk_uN (fun_half v_half 0 M_2)) (.mk_uN M_2) v_1 v_2))
   | fun_vextbinop___case_14 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I16 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ivmul_ v_sx v_sx (.mk_uN (fun_half v_half 0 M_2)) (.mk_uN M_2) v_1 v_2))
   | fun_vextbinop___case_15 : forall (M_1 : Nat) (M_2 : Nat) (v_half : half) (v_sx : sx) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I16 M_2_0 (.EXTMUL v_half v_sx)) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ivmul_ v_sx v_sx (.mk_uN (fun_half v_half 0 M_2)) (.mk_uN M_2) v_1 v_2))
   | fun_vextbinop___case_16 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I32 M_2_0 .DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ivdot_ .S .S (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_17 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I32 M_2_0 .DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ivdot_ .S .S (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_18 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I32 M_2_0 .DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ivdot_ .S .S (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_19 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I32 M_2_0 .DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ivdot_ .S .S (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_20 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I64 M_2_0 .DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ivdot_ .S .S (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_21 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I64 M_2_0 .DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ivdot_ .S .S (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_22 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I64 M_2_0 .DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ivdot_ .S .S (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_23 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I64 M_2_0 .DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ivdot_ .S .S (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_24 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I8 M_2_0 .DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ivdot_ .S .S (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_25 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I8 M_2_0 .DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ivdot_ .S .S (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_26 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I8 M_2_0 .DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ivdot_ .S .S (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_27 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I8 M_2_0 .DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ivdot_ .S .S (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_28 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I16 M_2_0 .DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ivdot_ .S .S (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_29 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I16 M_2_0 .DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ivdot_ .S .S (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_30 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I16 M_2_0 .DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ivdot_ .S .S (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_31 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I16 M_2_0 .DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ivdot_ .S .S (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_32 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I32 M_2_0 .RELAXED_DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ivdot_sat_ .S (fun_relaxed2 (R_idot ) sx .S .U) (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_33 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I32 M_2_0 .RELAXED_DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ivdot_sat_ .S (fun_relaxed2 (R_idot ) sx .S .U) (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_34 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I32 M_2_0 .RELAXED_DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ivdot_sat_ .S (fun_relaxed2 (R_idot ) sx .S .U) (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_35 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I32 M_2_0 .RELAXED_DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) (.X (lanetype_Jnn .I32) (.mk_dim M_2)) ivdot_sat_ .S (fun_relaxed2 (R_idot ) sx .S .U) (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_36 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I64 M_2_0 .RELAXED_DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ivdot_sat_ .S (fun_relaxed2 (R_idot ) sx .S .U) (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_37 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I64 M_2_0 .RELAXED_DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ivdot_sat_ .S (fun_relaxed2 (R_idot ) sx .S .U) (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_38 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I64 M_2_0 .RELAXED_DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ivdot_sat_ .S (fun_relaxed2 (R_idot ) sx .S .U) (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_39 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I64 M_2_0 .RELAXED_DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) (.X (lanetype_Jnn .I64) (.mk_dim M_2)) ivdot_sat_ .S (fun_relaxed2 (R_idot ) sx .S .U) (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_40 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I8 M_2_0 .RELAXED_DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ivdot_sat_ .S (fun_relaxed2 (R_idot ) sx .S .U) (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_41 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I8 M_2_0 .RELAXED_DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ivdot_sat_ .S (fun_relaxed2 (R_idot ) sx .S .U) (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_42 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I8 M_2_0 .RELAXED_DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ivdot_sat_ .S (fun_relaxed2 (R_idot ) sx .S .U) (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_43 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I8 M_2_0 .RELAXED_DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) (.X (lanetype_Jnn .I8) (.mk_dim M_2)) ivdot_sat_ .S (fun_relaxed2 (R_idot ) sx .S .U) (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_44 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I32 M_1_0 .I16 M_2_0 .RELAXED_DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I32) (.mk_dim M_1)) (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ivdot_sat_ .S (fun_relaxed2 (R_idot ) sx .S .U) (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_45 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I64 M_1_0 .I16 M_2_0 .RELAXED_DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I64) (.mk_dim M_1)) (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ivdot_sat_ .S (fun_relaxed2 (R_idot ) sx .S .U) (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_46 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I8 M_1_0 .I16 M_2_0 .RELAXED_DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I8) (.mk_dim M_1)) (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ivdot_sat_ .S (fun_relaxed2 (R_idot ) sx .S .U) (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_47 : forall (M_1 : Nat) (M_2 : Nat) (v_1 : uN) (v_2 : uN) (M_1_0 : Nat) (M_2_0 : Nat), 
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextbinop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextbinop___0 .I16 M_1_0 .I16 M_2_0 .RELAXED_DOTS) v_1 v_2 (some (ivextbinop__ (.X (lanetype_Jnn .I16) (.mk_dim M_1)) (.X (lanetype_Jnn .I16) (.mk_dim M_2)) ivdot_sat_ .S (fun_relaxed2 (R_idot ) sx .S .U) (.mk_uN 0) (.mk_uN M_1) v_1 v_2))
   | fun_vextbinop___case_48 : forall (x0 : ishape) (x1 : ishape) (x2 : vextbinop__) (x3 : vec_) (x4 : vec_), 
     (¬(fun_vextbinop___before_fun_vextbinop___case_48 x0 x1 x2 x3 x4)) ->
@@ -13604,8 +13632,8 @@ inductive vextbinop___is_wf : ishape -> ishape -> vextbinop__ -> vec_ -> vec_ ->
     (wf_vextbinop__ ishape_1 ishape_2 v_vextbinop__) ->
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
-    (var_0 != none) ->
-    (ret_val == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val = (Option.get! var_0)) ->
     (wf_uN 128 ret_val) ->
     vextbinop___is_wf ishape_1 ishape_2 v_vextbinop__ v_vec_ vec__0 ret_val
 
@@ -13615,11 +13643,11 @@ inductive fun_vextternop___before_fun_vextternop___case_16 : ishape -> ishape ->
     (fun_vbinop_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) (.mk_vbinop__0 .I16 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I16 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I16 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I16)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I16)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I16 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13627,18 +13655,18 @@ inductive fun_vextternop___before_fun_vextternop___case_16 : ishape -> ishape ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I16 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) (.mk_vbinop__0 .I16 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop___before_fun_vextternop___case_16 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextternop___0 .I16 M_1_0 .I16 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3
   | fun_vextternop___case_14 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) (.mk_vbinop__0 .I16 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I16 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I8 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I8)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I8)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I8 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13646,18 +13674,18 @@ inductive fun_vextternop___before_fun_vextternop___case_16 : ishape -> ishape ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I16 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) (.mk_vbinop__0 .I16 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop___before_fun_vextternop___case_16 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextternop___0 .I8 M_1_0 .I16 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3
   | fun_vextternop___case_13 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) (.mk_vbinop__0 .I16 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I16 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I64 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I64)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I64)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I64 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13665,18 +13693,18 @@ inductive fun_vextternop___before_fun_vextternop___case_16 : ishape -> ishape ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I16 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) (.mk_vbinop__0 .I16 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop___before_fun_vextternop___case_16 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextternop___0 .I64 M_1_0 .I16 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3
   | fun_vextternop___case_12 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) (.mk_vbinop__0 .I16 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I16 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I32 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I32)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I32)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I32 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13684,18 +13712,18 @@ inductive fun_vextternop___before_fun_vextternop___case_16 : ishape -> ishape ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I16 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) (.mk_vbinop__0 .I16 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop___before_fun_vextternop___case_16 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextternop___0 .I32 M_1_0 .I16 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3
   | fun_vextternop___case_11 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) (.mk_vbinop__0 .I8 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I8 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I16 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I16)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I16)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I16 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13703,18 +13731,18 @@ inductive fun_vextternop___before_fun_vextternop___case_16 : ishape -> ishape ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I8 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) (.mk_vbinop__0 .I8 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop___before_fun_vextternop___case_16 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextternop___0 .I16 M_1_0 .I8 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3
   | fun_vextternop___case_10 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) (.mk_vbinop__0 .I8 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I8 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I8 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I8)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I8)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I8 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13722,18 +13750,18 @@ inductive fun_vextternop___before_fun_vextternop___case_16 : ishape -> ishape ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I8 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) (.mk_vbinop__0 .I8 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop___before_fun_vextternop___case_16 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextternop___0 .I8 M_1_0 .I8 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3
   | fun_vextternop___case_9 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) (.mk_vbinop__0 .I8 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I8 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I64 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I64)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I64)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I64 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13741,18 +13769,18 @@ inductive fun_vextternop___before_fun_vextternop___case_16 : ishape -> ishape ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I8 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) (.mk_vbinop__0 .I8 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop___before_fun_vextternop___case_16 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextternop___0 .I64 M_1_0 .I8 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3
   | fun_vextternop___case_8 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) (.mk_vbinop__0 .I8 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I8 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I32 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I32)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I32)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I32 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13760,18 +13788,18 @@ inductive fun_vextternop___before_fun_vextternop___case_16 : ishape -> ishape ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I8 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) (.mk_vbinop__0 .I8 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop___before_fun_vextternop___case_16 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextternop___0 .I32 M_1_0 .I8 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3
   | fun_vextternop___case_7 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) (.mk_vbinop__0 .I64 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I64 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I16 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I16)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I16)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I16 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13779,18 +13807,18 @@ inductive fun_vextternop___before_fun_vextternop___case_16 : ishape -> ishape ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I64 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) (.mk_vbinop__0 .I64 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop___before_fun_vextternop___case_16 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextternop___0 .I16 M_1_0 .I64 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3
   | fun_vextternop___case_6 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) (.mk_vbinop__0 .I64 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I64 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I8 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I8)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I8)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I8 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13798,18 +13826,18 @@ inductive fun_vextternop___before_fun_vextternop___case_16 : ishape -> ishape ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I64 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) (.mk_vbinop__0 .I64 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop___before_fun_vextternop___case_16 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextternop___0 .I8 M_1_0 .I64 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3
   | fun_vextternop___case_5 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) (.mk_vbinop__0 .I64 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I64 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I64 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I64)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I64)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I64 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13817,18 +13845,18 @@ inductive fun_vextternop___before_fun_vextternop___case_16 : ishape -> ishape ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I64 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) (.mk_vbinop__0 .I64 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop___before_fun_vextternop___case_16 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextternop___0 .I64 M_1_0 .I64 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3
   | fun_vextternop___case_4 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) (.mk_vbinop__0 .I64 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I64 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I32 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I32)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I32)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I32 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13836,18 +13864,18 @@ inductive fun_vextternop___before_fun_vextternop___case_16 : ishape -> ishape ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I64 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) (.mk_vbinop__0 .I64 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop___before_fun_vextternop___case_16 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextternop___0 .I32 M_1_0 .I64 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3
   | fun_vextternop___case_3 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) (.mk_vbinop__0 .I32 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I32 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I16 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I16)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I16)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I16 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13855,18 +13883,18 @@ inductive fun_vextternop___before_fun_vextternop___case_16 : ishape -> ishape ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I32 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) (.mk_vbinop__0 .I32 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop___before_fun_vextternop___case_16 (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextternop___0 .I16 M_1_0 .I32 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3
   | fun_vextternop___case_2 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) (.mk_vbinop__0 .I32 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I32 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I8 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I8)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I8)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I8 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13874,18 +13902,18 @@ inductive fun_vextternop___before_fun_vextternop___case_16 : ishape -> ishape ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I32 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) (.mk_vbinop__0 .I32 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop___before_fun_vextternop___case_16 (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextternop___0 .I8 M_1_0 .I32 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3
   | fun_vextternop___case_1 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) (.mk_vbinop__0 .I32 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I32 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I64 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I64)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I64)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I64 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13893,18 +13921,18 @@ inductive fun_vextternop___before_fun_vextternop___case_16 : ishape -> ishape ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I32 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) (.mk_vbinop__0 .I32 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop___before_fun_vextternop___case_16 (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextternop___0 .I64 M_1_0 .I32 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3
   | fun_vextternop___case_0 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) (.mk_vbinop__0 .I32 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I32 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I32 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I32)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I32)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I32 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13912,8 +13940,8 @@ inductive fun_vextternop___before_fun_vextternop___case_16 : ishape -> ishape ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I32 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) (.mk_vbinop__0 .I32 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop___before_fun_vextternop___case_16 (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextternop___0 .I32 M_1_0 .I32 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:202.6-202.19 -/
@@ -13922,11 +13950,11 @@ inductive fun_vextternop__ : ishape -> ishape -> vextternop__ -> vec_ -> vec_ ->
     (fun_vbinop_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) (.mk_vbinop__0 .I32 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I32 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I32 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I32)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I32)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I32 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13934,18 +13962,18 @@ inductive fun_vextternop__ : ishape -> ishape -> vextternop__ -> vec_ -> vec_ ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I32 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) (.mk_vbinop__0 .I32 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextternop___0 .I32 M_1_0 .I32 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3 (some c)
   | fun_vextternop___case_1 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) (.mk_vbinop__0 .I32 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I32 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I64 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I64)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I64)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I64 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13953,18 +13981,18 @@ inductive fun_vextternop__ : ishape -> ishape -> vextternop__ -> vec_ -> vec_ ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I32 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) (.mk_vbinop__0 .I32 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextternop___0 .I64 M_1_0 .I32 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3 (some c)
   | fun_vextternop___case_2 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) (.mk_vbinop__0 .I32 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I32 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I8 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I8)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I8)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I8 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13972,18 +14000,18 @@ inductive fun_vextternop__ : ishape -> ishape -> vextternop__ -> vec_ -> vec_ ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I32 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) (.mk_vbinop__0 .I32 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextternop___0 .I8 M_1_0 .I32 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3 (some c)
   | fun_vextternop___case_3 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) (.mk_vbinop__0 .I32 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I32 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I16 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I16)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I16)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I16 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -13991,18 +14019,18 @@ inductive fun_vextternop__ : ishape -> ishape -> vextternop__ -> vec_ -> vec_ ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I32 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I32) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I32) (.mk_dim M_2)) (.mk_vbinop__0 .I32 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I32 (.mk_dim M_2))) (.mk_vextternop___0 .I16 M_1_0 .I32 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3 (some c)
   | fun_vextternop___case_4 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) (.mk_vbinop__0 .I64 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I64 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I32 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I32)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I32)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I32 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -14010,18 +14038,18 @@ inductive fun_vextternop__ : ishape -> ishape -> vextternop__ -> vec_ -> vec_ ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I64 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) (.mk_vbinop__0 .I64 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextternop___0 .I32 M_1_0 .I64 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3 (some c)
   | fun_vextternop___case_5 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) (.mk_vbinop__0 .I64 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I64 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I64 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I64)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I64)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I64 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -14029,18 +14057,18 @@ inductive fun_vextternop__ : ishape -> ishape -> vextternop__ -> vec_ -> vec_ ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I64 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) (.mk_vbinop__0 .I64 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextternop___0 .I64 M_1_0 .I64 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3 (some c)
   | fun_vextternop___case_6 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) (.mk_vbinop__0 .I64 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I64 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I8 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I8)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I8)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I8 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -14048,18 +14076,18 @@ inductive fun_vextternop__ : ishape -> ishape -> vextternop__ -> vec_ -> vec_ ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I64 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) (.mk_vbinop__0 .I64 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextternop___0 .I8 M_1_0 .I64 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3 (some c)
   | fun_vextternop___case_7 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) (.mk_vbinop__0 .I64 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I64 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I16 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I16)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I16)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I16 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -14067,18 +14095,18 @@ inductive fun_vextternop__ : ishape -> ishape -> vextternop__ -> vec_ -> vec_ ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I64 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I64) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I64) (.mk_dim M_2)) (.mk_vbinop__0 .I64 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I64 (.mk_dim M_2))) (.mk_vextternop___0 .I16 M_1_0 .I64 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3 (some c)
   | fun_vextternop___case_8 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) (.mk_vbinop__0 .I8 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I8 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I32 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I32)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I32)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I32 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -14086,18 +14114,18 @@ inductive fun_vextternop__ : ishape -> ishape -> vextternop__ -> vec_ -> vec_ ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I8 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) (.mk_vbinop__0 .I8 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextternop___0 .I32 M_1_0 .I8 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3 (some c)
   | fun_vextternop___case_9 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) (.mk_vbinop__0 .I8 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I8 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I64 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I64)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I64)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I64 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -14105,18 +14133,18 @@ inductive fun_vextternop__ : ishape -> ishape -> vextternop__ -> vec_ -> vec_ ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I8 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) (.mk_vbinop__0 .I8 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextternop___0 .I64 M_1_0 .I8 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3 (some c)
   | fun_vextternop___case_10 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) (.mk_vbinop__0 .I8 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I8 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I8 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I8)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I8)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I8 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -14124,18 +14152,18 @@ inductive fun_vextternop__ : ishape -> ishape -> vextternop__ -> vec_ -> vec_ ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I8 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) (.mk_vbinop__0 .I8 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextternop___0 .I8 M_1_0 .I8 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3 (some c)
   | fun_vextternop___case_11 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) (.mk_vbinop__0 .I8 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I8 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I16 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I16)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I16)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I16 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -14143,18 +14171,18 @@ inductive fun_vextternop__ : ishape -> ishape -> vextternop__ -> vec_ -> vec_ ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I8 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I8) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I8) (.mk_dim M_2)) (.mk_vbinop__0 .I8 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I8 (.mk_dim M_2))) (.mk_vextternop___0 .I16 M_1_0 .I8 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3 (some c)
   | fun_vextternop___case_12 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) (.mk_vbinop__0 .I16 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I16 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I32 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I32)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I32)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I32) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I32 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -14162,18 +14190,18 @@ inductive fun_vextternop__ : ishape -> ishape -> vextternop__ -> vec_ -> vec_ ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I16 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) (.mk_vbinop__0 .I16 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop__ (.mk_ishape (.X .I32 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextternop___0 .I32 M_1_0 .I16 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3 (some c)
   | fun_vextternop___case_13 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) (.mk_vbinop__0 .I16 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I16 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I64 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I64)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I64)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I64) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I64 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -14181,18 +14209,18 @@ inductive fun_vextternop__ : ishape -> ishape -> vextternop__ -> vec_ -> vec_ ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I16 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) (.mk_vbinop__0 .I16 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop__ (.mk_ishape (.X .I64 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextternop___0 .I64 M_1_0 .I16 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3 (some c)
   | fun_vextternop___case_14 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) (.mk_vbinop__0 .I16 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I16 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I8 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I8)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I8)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I8) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I8 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -14200,18 +14228,18 @@ inductive fun_vextternop__ : ishape -> ishape -> vextternop__ -> vec_ -> vec_ ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I16 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) (.mk_vbinop__0 .I16 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop__ (.mk_ishape (.X .I8 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextternop___0 .I8 M_1_0 .I16 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3 (some c)
   | fun_vextternop___case_15 : forall (M_1 : Nat) (M_2 : Nat) (c_1 : uN) (c_2 : uN) (c_3 : uN) (c : uN) (v_Jnn : Jnn) (M_1_0 : Nat) (M_2_0 : Nat) (v_M : M) (c' : vec_) (c'' : vec_) (var_2 : (Option (List vec_))) (var_1 : (Option vec_)) (var_0 : (Option vec_)), 
     (fun_vbinop_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) (.mk_vbinop__0 .I16 M_2 .ADD) c'' c_3 var_2) ->
     (fun_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I16 M_2 (.EXTADD_PAIRWISE .S)) c' var_1) ->
     (fun_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I16 M_1 v_Jnn v_M .RELAXED_DOTS) c_1 c_2 var_0) ->
-    ((jsizenn v_Jnn) == (2 * (lsizenn1 (lanetype_Jnn .I16)))) ->
-    (v_M == (2 * M_2)) ->
-    (c' == (Option.get! var_0)) ->
-    (c'' == (Option.get! var_1)) ->
-    (List.contains (Option.get! var_2) c) ->
+    ((jsizenn v_Jnn) = (2 * (lsizenn1 (lanetype_Jnn .I16)))) ->
+    (v_M = (2 * M_2)) ->
+    (c' = (Option.get! var_0)) ->
+    (c'' = (Option.get! var_1)) ->
+    (c ∈ (Option.get! var_2)) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1)))) ->
     (wf_ishape (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)))) ->
     (wf_vextbinop__ (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_1))) (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_vextbinop___0 .I16 M_1 v_Jnn v_M .RELAXED_DOTS)) ->
@@ -14219,8 +14247,8 @@ inductive fun_vextternop__ : ishape -> ishape -> vextternop__ -> vec_ -> vec_ ->
     (wf_vextunop__ (.mk_ishape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_ishape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) (.mk_vextunop___0 v_Jnn v_M .I16 M_2 (.EXTADD_PAIRWISE .S))) ->
     (wf_shape (.X (lanetype_Jnn .I16) (.mk_dim M_2))) ->
     (wf_vbinop_ (.X (lanetype_Jnn .I16) (.mk_dim M_2)) (.mk_vbinop__0 .I16 M_2 .ADD)) ->
-    (M_1 == M_1_0) ->
-    (M_2 == M_2_0) ->
+    (M_1 = M_1_0) ->
+    (M_2 = M_2_0) ->
     fun_vextternop__ (.mk_ishape (.X .I16 (.mk_dim M_1))) (.mk_ishape (.X .I16 (.mk_dim M_2))) (.mk_vextternop___0 .I16 M_1_0 .I16 M_2_0 .RELAXED_DOT_ADDS) c_1 c_2 c_3 (some c)
   | fun_vextternop___case_16 : forall (x0 : ishape) (x1 : ishape) (x2 : vextternop__) (x3 : vec_) (x4 : vec_) (x5 : vec_), 
     (¬(fun_vextternop___before_fun_vextternop___case_16 x0 x1 x2 x3 x4 x5)) ->
@@ -14236,15 +14264,15 @@ inductive vextternop___is_wf : ishape -> ishape -> vextternop__ -> vec_ -> vec_ 
     (wf_uN 128 v_vec_) ->
     (wf_uN 128 vec__0) ->
     (wf_uN 128 vec__1) ->
-    (var_0 != none) ->
-    (ret_val == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val = (Option.get! var_0)) ->
     (wf_uN 128 ret_val) ->
     vextternop___is_wf ishape_1 ishape_2 v_vextternop__ v_vec_ vec__0 vec__1 ret_val
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:29.1-30.63 -/
 inductive num : Type where
   | CONST (v_numtype : numtype) (_ : num_) : num
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at:  -/
@@ -14262,7 +14290,7 @@ inductive wf_num : num -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:32.1-33.87 -/
 inductive vec : Type where
   | VCONST (v_vectype : vectype) (_ : vec_) : vec
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at:  -/
@@ -14282,7 +14310,7 @@ inductive result : Type where
   | _VALS (val_lst : (List val)) : result
   | REF_EXN_ADDRTHROW_REF (v_exnaddr : exnaddr) : result
   | TRAP : result
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:48.8-48.14 -/
@@ -14296,14 +14324,14 @@ inductive wf_result : result -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:57.1-57.72 -/
 inductive hostfunc : Type where
   | mk_hostfunc : hostfunc
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:58.1-58.73 -/
 inductive funccode : Type where
   | FUNC (v_typeidx : typeidx) (local_lst : (List «local»)) (v_expr : expr) : funccode
   | mk_funccode : funccode
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at:  -/
@@ -14324,7 +14352,7 @@ inductive wf_funccode : funccode -> Prop where
 /- Record Creation Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:60.1-61.19 -/
 structure taginst where MKtaginst ::
   TYPE : tagtype
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_taginst (arg1 arg2 : (taginst)) : taginst where
   TYPE := arg1.TYPE /- FIXME - Non-trivial append -/
@@ -14343,7 +14371,7 @@ inductive wf_taginst : taginst -> Prop where
 structure globalinst where MKglobalinst ::
   TYPE : globaltype
   VALUE : val
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_globalinst (arg1 arg2 : (globalinst)) : globalinst where
   TYPE := arg1.TYPE /- FIXME - Non-trivial append -/
@@ -14364,7 +14392,7 @@ inductive wf_globalinst : globalinst -> Prop where
 structure meminst where MKmeminst ::
   TYPE : memtype
   BYTES : (List byte)
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_meminst (arg1 arg2 : (meminst)) : meminst where
   TYPE := arg1.TYPE /- FIXME - Non-trivial append -/
@@ -14385,7 +14413,7 @@ inductive wf_meminst : meminst -> Prop where
 structure tableinst where MKtableinst ::
   TYPE : tabletype
   REFS : (List ref)
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_tableinst (arg1 arg2 : (tableinst)) : tableinst where
   TYPE := arg1.TYPE /- FIXME - Non-trivial append -/
@@ -14407,7 +14435,7 @@ structure funcinst where MKfuncinst ::
   TYPE : deftype
   MODULE : moduleinst
   CODE : funccode
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_funcinst (arg1 arg2 : (funcinst)) : funcinst where
   TYPE := arg1.TYPE /- FIXME - Non-trivial append -/
@@ -14428,7 +14456,7 @@ inductive wf_funcinst : funcinst -> Prop where
 /- Record Creation Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:75.1-76.18 -/
 structure datainst where MKdatainst ::
   BYTES : (List byte)
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_datainst (arg1 arg2 : (datainst)) : datainst where
   BYTES := arg1.BYTES ++ arg2.BYTES
@@ -14447,7 +14475,7 @@ inductive wf_datainst : datainst -> Prop where
 structure eleminst where MKeleminst ::
   TYPE : elemtype
   REFS : (List ref)
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_eleminst (arg1 arg2 : (eleminst)) : eleminst where
   TYPE := arg1.TYPE /- FIXME - Non-trivial append -/
@@ -14467,7 +14495,7 @@ inductive wf_eleminst : eleminst -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:85.1-86.64 -/
 inductive packval : Type where
   | PACK (v_packtype : packtype) (_ : iN) : packval
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:85.8-85.15 -/
@@ -14489,7 +14517,7 @@ inductive fieldval : Type where
   | REF_HOST_ADDR (v_hostaddr : hostaddr) : fieldval
   | REF_EXTERN (v_ref : ref) : fieldval
   | PACK (v_packtype : packtype) (_ : iN) : fieldval
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at:  -/
@@ -14570,7 +14598,7 @@ inductive wf_fieldval : fieldval -> Prop where
 structure structinst where MKstructinst ::
   TYPE : deftype
   FIELDS : (List fieldval)
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_structinst (arg1 arg2 : (structinst)) : structinst where
   TYPE := arg1.TYPE /- FIXME - Non-trivial append -/
@@ -14590,7 +14618,7 @@ inductive wf_structinst : structinst -> Prop where
 structure arrayinst where MKarrayinst ::
   TYPE : deftype
   FIELDS : (List fieldval)
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_arrayinst (arg1 arg2 : (arrayinst)) : arrayinst where
   TYPE := arg1.TYPE /- FIXME - Non-trivial append -/
@@ -14610,7 +14638,7 @@ inductive wf_arrayinst : arrayinst -> Prop where
 structure exninst where MKexninst ::
   TAG : tagaddr
   FIELDS : (List val)
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_exninst (arg1 arg2 : (exninst)) : exninst where
   TAG := arg1.TAG /- FIXME - Non-trivial append -/
@@ -14638,7 +14666,7 @@ structure store where MKstore ::
   STRUCTS : (List structinst)
   ARRAYS : (List arrayinst)
   EXNS : (List exninst)
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_store (arg1 arg2 : (store)) : store where
   TAGS := arg1.TAGS ++ arg2.TAGS
@@ -14674,7 +14702,7 @@ inductive wf_store : store -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:144.1-144.47 -/
 inductive state : Type where
   | mk_state (v_store : store) (v_frame : frame) : state
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:144.8-144.13 -/
@@ -14687,7 +14715,7 @@ inductive wf_state : state -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:145.1-145.57 -/
 inductive config : Type where
   | mk_config (v_state : state) (instr_lst : (List instr)) : config
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:145.8-145.14 -/
@@ -14708,8 +14736,8 @@ inductive packfield__is_wf : storagetype -> val -> fieldval -> Prop where
   | packfield__is_wf_0 : forall (v_storagetype : storagetype) (v_val : val) (ret_val : fieldval), 
     (wf_storagetype v_storagetype) ->
     (wf_val v_val) ->
-    ((packfield_ v_storagetype v_val) != none) ->
-    (ret_val == (Option.get! (packfield_ v_storagetype v_val))) ->
+    ((packfield_ v_storagetype v_val) ≠ none) ->
+    (ret_val = (Option.get! (packfield_ v_storagetype v_val))) ->
     (wf_fieldval ret_val) ->
     packfield__is_wf v_storagetype v_val ret_val
 
@@ -14721,8 +14749,8 @@ inductive unpackfield__is_wf : storagetype -> (Option sx) -> fieldval -> val -> 
   | unpackfield__is_wf_0 : forall (v_storagetype : storagetype) (var_0_opt : (Option sx)) (v_fieldval : fieldval) (ret_val : val), 
     (wf_storagetype v_storagetype) ->
     (wf_fieldval v_fieldval) ->
-    ((unpackfield_ v_storagetype var_0_opt v_fieldval) != none) ->
-    (ret_val == (Option.get! (unpackfield_ v_storagetype var_0_opt v_fieldval))) ->
+    ((unpackfield_ v_storagetype var_0_opt v_fieldval) ≠ none) ->
+    (ret_val = (Option.get! (unpackfield_ v_storagetype var_0_opt v_fieldval))) ->
     (wf_val ret_val) ->
     unpackfield__is_wf v_storagetype var_0_opt v_fieldval ret_val
 
@@ -14791,7 +14819,7 @@ def fun_store : ∀  (v_state : state) , store
 inductive store_is_wf : state -> store -> Prop where
   | store_is_wf_0 : forall (v_state : state) (ret_val : store), 
     (wf_state v_state) ->
-    (ret_val == (fun_store v_state)) ->
+    (ret_val = (fun_store v_state)) ->
     (wf_store ret_val) ->
     store_is_wf v_state ret_val
 
@@ -14805,7 +14833,7 @@ def fun_frame : ∀  (v_state : state) , frame
 inductive frame_is_wf : state -> frame -> Prop where
   | frame_is_wf_0 : forall (v_state : state) (ret_val : frame), 
     (wf_state v_state) ->
-    (ret_val == (fun_frame v_state)) ->
+    (ret_val = (fun_frame v_state)) ->
     (wf_frame ret_val) ->
     frame_is_wf v_state ret_val
 
@@ -14825,7 +14853,7 @@ def fun_moduleinst : ∀  (v_state : state) , moduleinst
 inductive moduleinst_is_wf : state -> moduleinst -> Prop where
   | moduleinst_is_wf_0 : forall (v_state : state) (ret_val : moduleinst), 
     (wf_state v_state) ->
-    (ret_val == (fun_moduleinst v_state)) ->
+    (ret_val = (fun_moduleinst v_state)) ->
     (wf_moduleinst ret_val) ->
     moduleinst_is_wf v_state ret_val
 
@@ -14839,7 +14867,7 @@ def fun_taginst : ∀  (v_state : state) , (List taginst)
 inductive taginst_is_wf : state -> (List taginst) -> Prop where
   | taginst_is_wf_0 : forall (v_state : state) (ret_val_lst : (List taginst)), 
     (wf_state v_state) ->
-    (ret_val_lst == (fun_taginst v_state)) ->
+    (ret_val_lst = (fun_taginst v_state)) ->
     Forall (fun (ret_val : taginst) => (wf_taginst ret_val)) ret_val_lst ->
     taginst_is_wf v_state ret_val_lst
 
@@ -14853,7 +14881,7 @@ def fun_globalinst : ∀  (v_state : state) , (List globalinst)
 inductive globalinst_is_wf : state -> (List globalinst) -> Prop where
   | globalinst_is_wf_0 : forall (v_state : state) (ret_val_lst : (List globalinst)), 
     (wf_state v_state) ->
-    (ret_val_lst == (fun_globalinst v_state)) ->
+    (ret_val_lst = (fun_globalinst v_state)) ->
     Forall (fun (ret_val : globalinst) => (wf_globalinst ret_val)) ret_val_lst ->
     globalinst_is_wf v_state ret_val_lst
 
@@ -14867,7 +14895,7 @@ def fun_meminst : ∀  (v_state : state) , (List meminst)
 inductive meminst_is_wf : state -> (List meminst) -> Prop where
   | meminst_is_wf_0 : forall (v_state : state) (ret_val_lst : (List meminst)), 
     (wf_state v_state) ->
-    (ret_val_lst == (fun_meminst v_state)) ->
+    (ret_val_lst = (fun_meminst v_state)) ->
     Forall (fun (ret_val : meminst) => (wf_meminst ret_val)) ret_val_lst ->
     meminst_is_wf v_state ret_val_lst
 
@@ -14881,7 +14909,7 @@ def fun_tableinst : ∀  (v_state : state) , (List tableinst)
 inductive tableinst_is_wf : state -> (List tableinst) -> Prop where
   | tableinst_is_wf_0 : forall (v_state : state) (ret_val_lst : (List tableinst)), 
     (wf_state v_state) ->
-    (ret_val_lst == (fun_tableinst v_state)) ->
+    (ret_val_lst = (fun_tableinst v_state)) ->
     Forall (fun (ret_val : tableinst) => (wf_tableinst ret_val)) ret_val_lst ->
     tableinst_is_wf v_state ret_val_lst
 
@@ -14895,7 +14923,7 @@ def fun_funcinst : ∀  (v_state : state) , (List funcinst)
 inductive funcinst_is_wf : state -> (List funcinst) -> Prop where
   | funcinst_is_wf_0 : forall (v_state : state) (ret_val_lst : (List funcinst)), 
     (wf_state v_state) ->
-    (ret_val_lst == (fun_funcinst v_state)) ->
+    (ret_val_lst = (fun_funcinst v_state)) ->
     Forall (fun (ret_val : funcinst) => (wf_funcinst ret_val)) ret_val_lst ->
     funcinst_is_wf v_state ret_val_lst
 
@@ -14909,7 +14937,7 @@ def fun_datainst : ∀  (v_state : state) , (List datainst)
 inductive datainst_is_wf : state -> (List datainst) -> Prop where
   | datainst_is_wf_0 : forall (v_state : state) (ret_val_lst : (List datainst)), 
     (wf_state v_state) ->
-    (ret_val_lst == (fun_datainst v_state)) ->
+    (ret_val_lst = (fun_datainst v_state)) ->
     Forall (fun (ret_val : datainst) => (wf_datainst ret_val)) ret_val_lst ->
     datainst_is_wf v_state ret_val_lst
 
@@ -14923,7 +14951,7 @@ def fun_eleminst : ∀  (v_state : state) , (List eleminst)
 inductive eleminst_is_wf : state -> (List eleminst) -> Prop where
   | eleminst_is_wf_0 : forall (v_state : state) (ret_val_lst : (List eleminst)), 
     (wf_state v_state) ->
-    (ret_val_lst == (fun_eleminst v_state)) ->
+    (ret_val_lst = (fun_eleminst v_state)) ->
     Forall (fun (ret_val : eleminst) => (wf_eleminst ret_val)) ret_val_lst ->
     eleminst_is_wf v_state ret_val_lst
 
@@ -14937,7 +14965,7 @@ def fun_structinst : ∀  (v_state : state) , (List structinst)
 inductive structinst_is_wf : state -> (List structinst) -> Prop where
   | structinst_is_wf_0 : forall (v_state : state) (ret_val_lst : (List structinst)), 
     (wf_state v_state) ->
-    (ret_val_lst == (fun_structinst v_state)) ->
+    (ret_val_lst = (fun_structinst v_state)) ->
     Forall (fun (ret_val : structinst) => (wf_structinst ret_val)) ret_val_lst ->
     structinst_is_wf v_state ret_val_lst
 
@@ -14951,7 +14979,7 @@ def fun_arrayinst : ∀  (v_state : state) , (List arrayinst)
 inductive arrayinst_is_wf : state -> (List arrayinst) -> Prop where
   | arrayinst_is_wf_0 : forall (v_state : state) (ret_val_lst : (List arrayinst)), 
     (wf_state v_state) ->
-    (ret_val_lst == (fun_arrayinst v_state)) ->
+    (ret_val_lst = (fun_arrayinst v_state)) ->
     Forall (fun (ret_val : arrayinst) => (wf_arrayinst ret_val)) ret_val_lst ->
     arrayinst_is_wf v_state ret_val_lst
 
@@ -14965,7 +14993,7 @@ def fun_exninst : ∀  (v_state : state) , (List exninst)
 inductive exninst_is_wf : state -> (List exninst) -> Prop where
   | exninst_is_wf_0 : forall (v_state : state) (ret_val_lst : (List exninst)), 
     (wf_state v_state) ->
-    (ret_val_lst == (fun_exninst v_state)) ->
+    (ret_val_lst = (fun_exninst v_state)) ->
     Forall (fun (ret_val : exninst) => (wf_exninst ret_val)) ret_val_lst ->
     exninst_is_wf v_state ret_val_lst
 
@@ -14979,7 +15007,7 @@ def fof : ∀  (v_state : state) , frame
 inductive fof_is_wf : state -> frame -> Prop where
   | fof_is_wf_0 : forall (v_state : state) (ret_val : frame), 
     (wf_state v_state) ->
-    (ret_val == (fof v_state)) ->
+    (ret_val = (fof v_state)) ->
     (wf_frame ret_val) ->
     fof_is_wf v_state ret_val
 
@@ -14999,7 +15027,7 @@ def sof : ∀  (v_state : state) , store
 inductive sof_is_wf : state -> store -> Prop where
   | sof_is_wf_0 : forall (v_state : state) (ret_val : store), 
     (wf_state v_state) ->
-    (ret_val == (sof v_state)) ->
+    (ret_val = (sof v_state)) ->
     (wf_store ret_val) ->
     sof_is_wf v_state ret_val
 
@@ -15014,7 +15042,7 @@ inductive tag_is_wf : state -> tagidx -> taginst -> Prop where
   | tag_is_wf_0 : forall (v_state : state) (v_tagidx : tagidx) (ret_val : taginst), 
     (wf_state v_state) ->
     (wf_uN 32 v_tagidx) ->
-    (ret_val == (fun_tag v_state v_tagidx)) ->
+    (ret_val = (fun_tag v_state v_tagidx)) ->
     (wf_taginst ret_val) ->
     tag_is_wf v_state v_tagidx ret_val
 
@@ -15029,7 +15057,7 @@ inductive global_is_wf : state -> globalidx -> globalinst -> Prop where
   | global_is_wf_0 : forall (v_state : state) (v_globalidx : globalidx) (ret_val : globalinst), 
     (wf_state v_state) ->
     (wf_uN 32 v_globalidx) ->
-    (ret_val == (fun_global v_state v_globalidx)) ->
+    (ret_val = (fun_global v_state v_globalidx)) ->
     (wf_globalinst ret_val) ->
     global_is_wf v_state v_globalidx ret_val
 
@@ -15044,7 +15072,7 @@ inductive mem_is_wf : state -> memidx -> meminst -> Prop where
   | mem_is_wf_0 : forall (v_state : state) (v_memidx : memidx) (ret_val : meminst), 
     (wf_state v_state) ->
     (wf_uN 32 v_memidx) ->
-    (ret_val == (fun_mem v_state v_memidx)) ->
+    (ret_val = (fun_mem v_state v_memidx)) ->
     (wf_meminst ret_val) ->
     mem_is_wf v_state v_memidx ret_val
 
@@ -15059,7 +15087,7 @@ inductive table_is_wf : state -> tableidx -> tableinst -> Prop where
   | table_is_wf_0 : forall (v_state : state) (v_tableidx : tableidx) (ret_val : tableinst), 
     (wf_state v_state) ->
     (wf_uN 32 v_tableidx) ->
-    (ret_val == (fun_table v_state v_tableidx)) ->
+    (ret_val = (fun_table v_state v_tableidx)) ->
     (wf_tableinst ret_val) ->
     table_is_wf v_state v_tableidx ret_val
 
@@ -15074,7 +15102,7 @@ inductive func_is_wf : state -> funcidx -> funcinst -> Prop where
   | func_is_wf_0 : forall (v_state : state) (v_funcidx : funcidx) (ret_val : funcinst), 
     (wf_state v_state) ->
     (wf_uN 32 v_funcidx) ->
-    (ret_val == (fun_func v_state v_funcidx)) ->
+    (ret_val = (fun_func v_state v_funcidx)) ->
     (wf_funcinst ret_val) ->
     func_is_wf v_state v_funcidx ret_val
 
@@ -15089,7 +15117,7 @@ inductive data_is_wf : state -> dataidx -> datainst -> Prop where
   | data_is_wf_0 : forall (v_state : state) (v_dataidx : dataidx) (ret_val : datainst), 
     (wf_state v_state) ->
     (wf_uN 32 v_dataidx) ->
-    (ret_val == (fun_data v_state v_dataidx)) ->
+    (ret_val = (fun_data v_state v_dataidx)) ->
     (wf_datainst ret_val) ->
     data_is_wf v_state v_dataidx ret_val
 
@@ -15104,7 +15132,7 @@ inductive elem_is_wf : state -> tableidx -> eleminst -> Prop where
   | elem_is_wf_0 : forall (v_state : state) (v_tableidx : tableidx) (ret_val : eleminst), 
     (wf_state v_state) ->
     (wf_uN 32 v_tableidx) ->
-    (ret_val == (fun_elem v_state v_tableidx)) ->
+    (ret_val = (fun_elem v_state v_tableidx)) ->
     (wf_eleminst ret_val) ->
     elem_is_wf v_state v_tableidx ret_val
 
@@ -15119,7 +15147,7 @@ inductive local_is_wf : state -> localidx -> (Option val) -> Prop where
   | local_is_wf_0 : forall (v_state : state) (v_localidx : localidx) (ret_val_opt : (Option val)), 
     (wf_state v_state) ->
     (wf_uN 32 v_localidx) ->
-    (ret_val_opt == (fun_local v_state v_localidx)) ->
+    (ret_val_opt = (fun_local v_state v_localidx)) ->
     Forall (fun (ret_val : val) => (wf_val ret_val)) (Option.toList ret_val_opt) ->
     local_is_wf v_state v_localidx ret_val_opt
 
@@ -15135,7 +15163,7 @@ inductive with_local_is_wf : state -> localidx -> val -> state -> Prop where
     (wf_state v_state) ->
     (wf_uN 32 v_localidx) ->
     (wf_val v_val) ->
-    (ret_val == (with_local v_state v_localidx v_val)) ->
+    (ret_val = (with_local v_state v_localidx v_val)) ->
     (wf_state ret_val) ->
     with_local_is_wf v_state v_localidx v_val ret_val
 
@@ -15151,7 +15179,7 @@ inductive with_global_is_wf : state -> globalidx -> val -> state -> Prop where
     (wf_state v_state) ->
     (wf_uN 32 v_globalidx) ->
     (wf_val v_val) ->
-    (ret_val == (with_global v_state v_globalidx v_val)) ->
+    (ret_val = (with_global v_state v_globalidx v_val)) ->
     (wf_state ret_val) ->
     with_global_is_wf v_state v_globalidx v_val ret_val
 
@@ -15167,7 +15195,7 @@ inductive with_table_is_wf : state -> tableidx -> Nat -> ref -> state -> Prop wh
     (wf_state v_state) ->
     (wf_uN 32 v_tableidx) ->
     (wf_ref v_ref) ->
-    (ret_val == (with_table v_state v_tableidx nat v_ref)) ->
+    (ret_val = (with_table v_state v_tableidx nat v_ref)) ->
     (wf_state ret_val) ->
     with_table_is_wf v_state v_tableidx nat v_ref ret_val
 
@@ -15183,7 +15211,7 @@ inductive with_tableinst_is_wf : state -> tableidx -> tableinst -> state -> Prop
     (wf_state v_state) ->
     (wf_uN 32 v_tableidx) ->
     (wf_tableinst v_tableinst) ->
-    (ret_val == (with_tableinst v_state v_tableidx v_tableinst)) ->
+    (ret_val = (with_tableinst v_state v_tableidx v_tableinst)) ->
     (wf_state ret_val) ->
     with_tableinst_is_wf v_state v_tableidx v_tableinst ret_val
 
@@ -15199,7 +15227,7 @@ inductive with_mem_is_wf : state -> memidx -> Nat -> Nat -> (List byte) -> state
     (wf_state v_state) ->
     (wf_uN 32 v_memidx) ->
     Forall (fun (var_0 : byte) => (wf_byte var_0)) var_0_lst ->
-    (ret_val == (with_mem v_state v_memidx nat nat_0 var_0_lst)) ->
+    (ret_val = (with_mem v_state v_memidx nat nat_0 var_0_lst)) ->
     (wf_state ret_val) ->
     with_mem_is_wf v_state v_memidx nat nat_0 var_0_lst ret_val
 
@@ -15215,7 +15243,7 @@ inductive with_meminst_is_wf : state -> memidx -> meminst -> state -> Prop where
     (wf_state v_state) ->
     (wf_uN 32 v_memidx) ->
     (wf_meminst v_meminst) ->
-    (ret_val == (with_meminst v_state v_memidx v_meminst)) ->
+    (ret_val = (with_meminst v_state v_memidx v_meminst)) ->
     (wf_state ret_val) ->
     with_meminst_is_wf v_state v_memidx v_meminst ret_val
 
@@ -15231,7 +15259,7 @@ inductive with_elem_is_wf : state -> elemidx -> (List ref) -> state -> Prop wher
     (wf_state v_state) ->
     (wf_uN 32 v_elemidx) ->
     Forall (fun (var_0 : ref) => (wf_ref var_0)) var_0_lst ->
-    (ret_val == (with_elem v_state v_elemidx var_0_lst)) ->
+    (ret_val = (with_elem v_state v_elemidx var_0_lst)) ->
     (wf_state ret_val) ->
     with_elem_is_wf v_state v_elemidx var_0_lst ret_val
 
@@ -15247,7 +15275,7 @@ inductive with_data_is_wf : state -> dataidx -> (List byte) -> state -> Prop whe
     (wf_state v_state) ->
     (wf_uN 32 v_dataidx) ->
     Forall (fun (var_0 : byte) => (wf_byte var_0)) var_0_lst ->
-    (ret_val == (with_data v_state v_dataidx var_0_lst)) ->
+    (ret_val = (with_data v_state v_dataidx var_0_lst)) ->
     (wf_state ret_val) ->
     with_data_is_wf v_state v_dataidx var_0_lst ret_val
 
@@ -15262,7 +15290,7 @@ inductive with_struct_is_wf : state -> structaddr -> Nat -> fieldval -> state ->
   | with_struct_is_wf_0 : forall (v_state : state) (v_structaddr : structaddr) (nat : Nat) (v_fieldval : fieldval) (ret_val : state), 
     (wf_state v_state) ->
     (wf_fieldval v_fieldval) ->
-    (ret_val == (with_struct v_state v_structaddr nat v_fieldval)) ->
+    (ret_val = (with_struct v_state v_structaddr nat v_fieldval)) ->
     (wf_state ret_val) ->
     with_struct_is_wf v_state v_structaddr nat v_fieldval ret_val
 
@@ -15277,7 +15305,7 @@ inductive with_array_is_wf : state -> arrayaddr -> Nat -> fieldval -> state -> P
   | with_array_is_wf_0 : forall (v_state : state) (v_arrayaddr : arrayaddr) (nat : Nat) (v_fieldval : fieldval) (ret_val : state), 
     (wf_state v_state) ->
     (wf_fieldval v_fieldval) ->
-    (ret_val == (with_array v_state v_arrayaddr nat v_fieldval)) ->
+    (ret_val = (with_array v_state v_arrayaddr nat v_fieldval)) ->
     (wf_state ret_val) ->
     with_array_is_wf v_state v_arrayaddr nat v_fieldval ret_val
 
@@ -15292,7 +15320,7 @@ inductive add_structinst_is_wf : state -> (List structinst) -> state -> Prop whe
   | add_structinst_is_wf_0 : forall (v_state : state) (var_0_lst : (List structinst)) (ret_val : state), 
     (wf_state v_state) ->
     Forall (fun (var_0 : structinst) => (wf_structinst var_0)) var_0_lst ->
-    (ret_val == (add_structinst v_state var_0_lst)) ->
+    (ret_val = (add_structinst v_state var_0_lst)) ->
     (wf_state ret_val) ->
     add_structinst_is_wf v_state var_0_lst ret_val
 
@@ -15307,7 +15335,7 @@ inductive add_arrayinst_is_wf : state -> (List arrayinst) -> state -> Prop where
   | add_arrayinst_is_wf_0 : forall (v_state : state) (var_0_lst : (List arrayinst)) (ret_val : state), 
     (wf_state v_state) ->
     Forall (fun (var_0 : arrayinst) => (wf_arrayinst var_0)) var_0_lst ->
-    (ret_val == (add_arrayinst v_state var_0_lst)) ->
+    (ret_val = (add_arrayinst v_state var_0_lst)) ->
     (wf_state ret_val) ->
     add_arrayinst_is_wf v_state var_0_lst ret_val
 
@@ -15322,16 +15350,16 @@ inductive add_exninst_is_wf : state -> (List exninst) -> state -> Prop where
   | add_exninst_is_wf_0 : forall (v_state : state) (var_0_lst : (List exninst)) (ret_val : state), 
     (wf_state v_state) ->
     Forall (fun (var_0 : exninst) => (wf_exninst var_0)) var_0_lst ->
-    (ret_val == (add_exninst v_state var_0_lst)) ->
+    (ret_val = (add_exninst v_state var_0_lst)) ->
     (wf_state ret_val) ->
     add_exninst_is_wf v_state var_0_lst ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:316.6-316.16 -/
 inductive fun_growtable_before_fun_growtable_case_1 : tableinst -> Nat -> ref -> Prop where
   | fun_growtable_case_0 : forall (v_tableinst : tableinst) (v_n : Nat) (r : ref) (tableinst' : tableinst) (i' : uN) («at» : addrtype) (i : u64) (j_opt : (Option u64)) (rt : reftype) (r'_lst : (List ref)), 
-    ({ TYPE := (.mk_tabletype «at» (.mk_limits i j_opt) rt), REFS := r'_lst } == v_tableinst) ->
-    (tableinst' == { TYPE := (.mk_tabletype «at» (.mk_limits i' j_opt) rt), REFS := (r'_lst ++ (List.replicate v_n r)) }) ->
-    ((proj_uN_0 i') == ((List.length r'_lst) + v_n)) ->
+    ({ TYPE := (.mk_tabletype «at» (.mk_limits i j_opt) rt), REFS := r'_lst } = v_tableinst) ->
+    (tableinst' = { TYPE := (.mk_tabletype «at» (.mk_limits i' j_opt) rt), REFS := (r'_lst ++ (List.replicate v_n r)) }) ->
+    ((proj_uN_0 i') = ((List.length r'_lst) + v_n)) ->
     Forall (fun (j_3 : u64) => ((proj_uN_0 i') <= (proj_uN_0 j_3))) (Option.toList j_opt) ->
     ((Int.ofNat (proj_uN_0 i')) <= ((Int.ofNat (2 ^ (size (numtype_addrtype «at»)))) - (Int.ofNat 1))) ->
     (wf_tableinst { TYPE := (.mk_tabletype «at» (.mk_limits i j_opt) rt), REFS := r'_lst }) ->
@@ -15341,9 +15369,9 @@ inductive fun_growtable_before_fun_growtable_case_1 : tableinst -> Nat -> ref ->
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:316.6-316.16 -/
 inductive fun_growtable : tableinst -> Nat -> ref -> (Option tableinst) -> Prop where
   | fun_growtable_case_0 : forall (v_tableinst : tableinst) (v_n : Nat) (r : ref) (tableinst' : tableinst) (i' : uN) («at» : addrtype) (i : u64) (j_opt : (Option u64)) (rt : reftype) (r'_lst : (List ref)), 
-    ({ TYPE := (.mk_tabletype «at» (.mk_limits i j_opt) rt), REFS := r'_lst } == v_tableinst) ->
-    (tableinst' == { TYPE := (.mk_tabletype «at» (.mk_limits i' j_opt) rt), REFS := (r'_lst ++ (List.replicate v_n r)) }) ->
-    ((proj_uN_0 i') == ((List.length r'_lst) + v_n)) ->
+    ({ TYPE := (.mk_tabletype «at» (.mk_limits i j_opt) rt), REFS := r'_lst } = v_tableinst) ->
+    (tableinst' = { TYPE := (.mk_tabletype «at» (.mk_limits i' j_opt) rt), REFS := (r'_lst ++ (List.replicate v_n r)) }) ->
+    ((proj_uN_0 i') = ((List.length r'_lst) + v_n)) ->
     Forall (fun (j_3 : u64) => ((proj_uN_0 i') <= (proj_uN_0 j_3))) (Option.toList j_opt) ->
     ((Int.ofNat (proj_uN_0 i')) <= ((Int.ofNat (2 ^ (size (numtype_addrtype «at»)))) - (Int.ofNat 1))) ->
     (wf_tableinst { TYPE := (.mk_tabletype «at» (.mk_limits i j_opt) rt), REFS := r'_lst }) ->
@@ -15359,17 +15387,17 @@ inductive growtable_is_wf : tableinst -> Nat -> ref -> tableinst -> Prop where
     (fun_growtable v_tableinst nat v_ref var_0) ->
     (wf_tableinst v_tableinst) ->
     (wf_ref v_ref) ->
-    (var_0 != none) ->
-    (ret_val == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val = (Option.get! var_0)) ->
     (wf_tableinst ret_val) ->
     growtable_is_wf v_tableinst nat v_ref ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:317.6-317.14 -/
 inductive fun_growmem_before_fun_growmem_case_1 : meminst -> Nat -> Prop where
   | fun_growmem_case_0 : forall (v_meminst : meminst) (v_n : Nat) (meminst' : meminst) (i' : uN) («at» : addrtype) (i : u64) (j_opt : (Option u64)) (b_lst : (List byte)), 
-    ({ TYPE := (.PAGE «at» (.mk_limits i j_opt)), BYTES := b_lst } == v_meminst) ->
-    (meminst' == { TYPE := (.PAGE «at» (.mk_limits i' j_opt)), BYTES := (b_lst ++ (List.replicate (v_n * (64 * (Ki ))) (.mk_byte 0))) }) ->
-    ((Rat.ofInt (Int.ofNat (proj_uN_0 i'))) == (((Rat.ofInt (Int.ofNat (List.length b_lst))) / (Rat.ofInt (Int.ofNat (64 * (Ki ))))) + (Rat.ofInt (Int.ofNat v_n)))) ->
+    ({ TYPE := (.PAGE «at» (.mk_limits i j_opt)), BYTES := b_lst } = v_meminst) ->
+    (meminst' = { TYPE := (.PAGE «at» (.mk_limits i' j_opt)), BYTES := (b_lst ++ (List.replicate (v_n * (64 * (Ki ))) (.mk_byte 0))) }) ->
+    ((Rat.ofInt (Int.ofNat (proj_uN_0 i'))) = (((Rat.ofInt (Int.ofNat (List.length b_lst))) / (Rat.ofInt (Int.ofNat (64 * (Ki ))))) + (Rat.ofInt (Int.ofNat v_n)))) ->
     Forall (fun (j_8 : u64) => ((proj_uN_0 i') <= (proj_uN_0 j_8))) (Option.toList j_opt) ->
     ((proj_uN_0 i') <= (2 ^ (Int.toNat ((Int.ofNat (size (numtype_addrtype «at»))) - (Int.ofNat 16))))) ->
     (wf_meminst { TYPE := (.PAGE «at» (.mk_limits i j_opt)), BYTES := b_lst }) ->
@@ -15379,9 +15407,9 @@ inductive fun_growmem_before_fun_growmem_case_1 : meminst -> Nat -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:317.6-317.14 -/
 inductive fun_growmem : meminst -> Nat -> (Option meminst) -> Prop where
   | fun_growmem_case_0 : forall (v_meminst : meminst) (v_n : Nat) (meminst' : meminst) (i' : uN) («at» : addrtype) (i : u64) (j_opt : (Option u64)) (b_lst : (List byte)), 
-    ({ TYPE := (.PAGE «at» (.mk_limits i j_opt)), BYTES := b_lst } == v_meminst) ->
-    (meminst' == { TYPE := (.PAGE «at» (.mk_limits i' j_opt)), BYTES := (b_lst ++ (List.replicate (v_n * (64 * (Ki ))) (.mk_byte 0))) }) ->
-    ((Rat.ofInt (Int.ofNat (proj_uN_0 i'))) == (((Rat.ofInt (Int.ofNat (List.length b_lst))) / (Rat.ofInt (Int.ofNat (64 * (Ki ))))) + (Rat.ofInt (Int.ofNat v_n)))) ->
+    ({ TYPE := (.PAGE «at» (.mk_limits i j_opt)), BYTES := b_lst } = v_meminst) ->
+    (meminst' = { TYPE := (.PAGE «at» (.mk_limits i' j_opt)), BYTES := (b_lst ++ (List.replicate (v_n * (64 * (Ki ))) (.mk_byte 0))) }) ->
+    ((Rat.ofInt (Int.ofNat (proj_uN_0 i'))) = (((Rat.ofInt (Int.ofNat (List.length b_lst))) / (Rat.ofInt (Int.ofNat (64 * (Ki ))))) + (Rat.ofInt (Int.ofNat v_n)))) ->
     Forall (fun (j_8 : u64) => ((proj_uN_0 i') <= (proj_uN_0 j_8))) (Option.toList j_opt) ->
     ((proj_uN_0 i') <= (2 ^ (Int.toNat ((Int.ofNat (size (numtype_addrtype «at»))) - (Int.ofNat 16))))) ->
     (wf_meminst { TYPE := (.PAGE «at» (.mk_limits i j_opt)), BYTES := b_lst }) ->
@@ -15396,8 +15424,8 @@ inductive growmem_is_wf : meminst -> Nat -> meminst -> Prop where
   | growmem_is_wf_0 : forall (v_meminst : meminst) (nat : Nat) (ret_val : meminst) (var_0 : (Option meminst)), 
     (fun_growmem v_meminst nat var_0) ->
     (wf_meminst v_meminst) ->
-    (var_0 != none) ->
-    (ret_val == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ret_val = (Option.get! var_0)) ->
     (wf_meminst ret_val) ->
     growmem_is_wf v_meminst nat ret_val
 
@@ -15430,28 +15458,28 @@ inductive Ref_ok : store -> ref -> reftype -> Prop where
     Ref_ok s (.REF_I31_NUM i) (.REF none .I31)
   | struct : forall (s : store) (a : addr) (dt : deftype), 
     (a < (List.length (s.STRUCTS))) ->
-    ((((s.STRUCTS)[a]!).TYPE) == dt) ->
+    ((((s.STRUCTS)[a]!).TYPE) = dt) ->
     (wf_store s) ->
     (wf_ref (.REF_STRUCT_ADDR a)) ->
     (wf_reftype (.REF none (heaptype_deftype dt))) ->
     Ref_ok s (.REF_STRUCT_ADDR a) (.REF none (heaptype_deftype dt))
   | array : forall (s : store) (a : addr) (dt : deftype), 
     (a < (List.length (s.ARRAYS))) ->
-    ((((s.ARRAYS)[a]!).TYPE) == dt) ->
+    ((((s.ARRAYS)[a]!).TYPE) = dt) ->
     (wf_store s) ->
     (wf_ref (.REF_ARRAY_ADDR a)) ->
     (wf_reftype (.REF none (heaptype_deftype dt))) ->
     Ref_ok s (.REF_ARRAY_ADDR a) (.REF none (heaptype_deftype dt))
   | func : forall (s : store) (a : addr) (dt : deftype), 
     (a < (List.length (s.FUNCS))) ->
-    ((((s.FUNCS)[a]!).TYPE) == dt) ->
+    ((((s.FUNCS)[a]!).TYPE) = dt) ->
     (wf_store s) ->
     (wf_ref (.REF_FUNC_ADDR a)) ->
     (wf_reftype (.REF none (heaptype_deftype dt))) ->
     Ref_ok s (.REF_FUNC_ADDR a) (.REF none (heaptype_deftype dt))
   | exn : forall (s : store) (a : addr) (exn : exninst), 
     (a < (List.length (s.EXNS))) ->
-    (((s.EXNS)[a]!) == exn) ->
+    (((s.EXNS)[a]!) = exn) ->
     (wf_store s) ->
     (wf_exninst exn) ->
     (wf_ref (.REF_EXN_ADDR a)) ->
@@ -15464,7 +15492,7 @@ inductive Ref_ok : store -> ref -> reftype -> Prop where
     Ref_ok s (.REF_HOST_ADDR a) (.REF none .ANY)
   | extern : forall (s : store) (v_ref : ref), 
     (Ref_ok s v_ref (.REF none .ANY)) ->
-    (v_ref != .REF_NULL_ADDR) ->
+    (v_ref ≠ .REF_NULL_ADDR) ->
     (wf_store s) ->
     (wf_ref (.REF_EXTERN v_ref)) ->
     (wf_reftype (.REF none .EXTERN)) ->
@@ -15527,31 +15555,31 @@ inductive Fieldval_ok : store -> fieldval -> storagetype -> Prop where
 inductive Externaddr_ok : store -> externaddr -> externtype -> Prop where
   | tag : forall (s : store) (a : addr) (v_taginst : taginst), 
     (a < (List.length (s.TAGS))) ->
-    (((s.TAGS)[a]!) == v_taginst) ->
+    (((s.TAGS)[a]!) = v_taginst) ->
     (wf_store s) ->
     (wf_externtype (.TAG (v_taginst.TYPE))) ->
     Externaddr_ok s (.TAG a) (.TAG (v_taginst.TYPE))
   | global : forall (s : store) (a : addr) (v_globalinst : globalinst), 
     (a < (List.length (s.GLOBALS))) ->
-    (((s.GLOBALS)[a]!) == v_globalinst) ->
+    (((s.GLOBALS)[a]!) = v_globalinst) ->
     (wf_store s) ->
     (wf_externtype (.GLOBAL (v_globalinst.TYPE))) ->
     Externaddr_ok s (.GLOBAL a) (.GLOBAL (v_globalinst.TYPE))
   | mem : forall (s : store) (a : addr) (v_meminst : meminst), 
     (a < (List.length (s.MEMS))) ->
-    (((s.MEMS)[a]!) == v_meminst) ->
+    (((s.MEMS)[a]!) = v_meminst) ->
     (wf_store s) ->
     (wf_externtype (.MEM (v_meminst.TYPE))) ->
     Externaddr_ok s (.MEM a) (.MEM (v_meminst.TYPE))
   | table : forall (s : store) (a : addr) (v_tableinst : tableinst), 
     (a < (List.length (s.TABLES))) ->
-    (((s.TABLES)[a]!) == v_tableinst) ->
+    (((s.TABLES)[a]!) = v_tableinst) ->
     (wf_store s) ->
     (wf_externtype (.TABLE (v_tableinst.TYPE))) ->
     Externaddr_ok s (.TABLE a) (.TABLE (v_tableinst.TYPE))
   | func : forall (s : store) (a : addr) (v_funcinst : funcinst), 
     (a < (List.length (s.FUNCS))) ->
-    (((s.FUNCS)[a]!) == v_funcinst) ->
+    (((s.FUNCS)[a]!) = v_funcinst) ->
     (wf_store s) ->
     (wf_externtype (.FUNC (typeuse_deftype (v_funcinst.TYPE)))) ->
     Externaddr_ok s (.FUNC a) (.FUNC (typeuse_deftype (v_funcinst.TYPE)))
@@ -15577,7 +15605,7 @@ inductive inst_valtype_is_wf : moduleinst -> valtype -> valtype -> Prop where
     (fun_inst_valtype v_moduleinst v_valtype var_0) ->
     (wf_moduleinst v_moduleinst) ->
     (wf_valtype v_valtype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_valtype ret_val) ->
     inst_valtype_is_wf v_moduleinst v_valtype ret_val
 
@@ -15593,7 +15621,7 @@ inductive inst_reftype_is_wf : moduleinst -> reftype -> reftype -> Prop where
     (fun_inst_reftype v_moduleinst v_reftype var_0) ->
     (wf_moduleinst v_moduleinst) ->
     (wf_reftype v_reftype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_reftype ret_val) ->
     inst_reftype_is_wf v_moduleinst v_reftype ret_val
 
@@ -15609,7 +15637,7 @@ inductive inst_globaltype_is_wf : moduleinst -> globaltype -> globaltype -> Prop
     (fun_inst_globaltype v_moduleinst v_globaltype var_0) ->
     (wf_moduleinst v_moduleinst) ->
     (wf_globaltype v_globaltype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_globaltype ret_val) ->
     inst_globaltype_is_wf v_moduleinst v_globaltype ret_val
 
@@ -15625,7 +15653,7 @@ inductive inst_memtype_is_wf : moduleinst -> memtype -> memtype -> Prop where
     (fun_inst_memtype v_moduleinst v_memtype var_0) ->
     (wf_moduleinst v_moduleinst) ->
     (wf_memtype v_memtype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_memtype ret_val) ->
     inst_memtype_is_wf v_moduleinst v_memtype ret_val
 
@@ -15641,14 +15669,14 @@ inductive inst_tabletype_is_wf : moduleinst -> tabletype -> tabletype -> Prop wh
     (fun_inst_tabletype v_moduleinst v_tabletype var_0) ->
     (wf_moduleinst v_moduleinst) ->
     (wf_tabletype v_tabletype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_tabletype ret_val) ->
     inst_tabletype_is_wf v_moduleinst v_tabletype ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:653.1-656.22 -/
 inductive Step_pure_before_ref_eq_true : (List instr) -> Prop where
   | ref_eq_null_0 : forall (ref_1 : ref) (ref_2 : ref), 
-    ((ref_1 == .REF_NULL_ADDR) && (ref_2 == .REF_NULL_ADDR)) ->
+    ((ref_1 = .REF_NULL_ADDR) ∧ (ref_2 = .REF_NULL_ADDR)) ->
     (wf_ref ref_1) ->
     (wf_ref ref_2) ->
     (wf_instr .REF_EQ) ->
@@ -15670,31 +15698,31 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     (wf_instr .DROP) ->
     Step_pure ([(instr_val v_val), .DROP] : (List instr)) []
   | select_true : forall (val_1 : val) (val_2 : val) (c : num_) (t_lst_opt : (Option (List valtype))), 
-    ((proj_num__0 c) != none) ->
-    ((proj_uN_0 (Option.get! (proj_num__0 c))) != 0) ->
+    ((proj_num__0 c) ≠ none) ->
+    ((proj_uN_0 (Option.get! (proj_num__0 c))) ≠ 0) ->
     (wf_val val_1) ->
     (wf_val val_2) ->
     (wf_instr (.CONST .I32 c)) ->
     (wf_instr (.SELECT t_lst_opt)) ->
     Step_pure ([(instr_val val_1), (instr_val val_2), (.CONST .I32 c), (.SELECT t_lst_opt)] : (List instr)) ([(instr_val val_1)] : (List instr))
   | select_false : forall (val_1 : val) (val_2 : val) (c : num_) (t_lst_opt : (Option (List valtype))), 
-    ((proj_num__0 c) != none) ->
-    ((proj_uN_0 (Option.get! (proj_num__0 c))) == 0) ->
+    ((proj_num__0 c) ≠ none) ->
+    ((proj_uN_0 (Option.get! (proj_num__0 c))) = 0) ->
     (wf_val val_1) ->
     (wf_val val_2) ->
     (wf_instr (.CONST .I32 c)) ->
     (wf_instr (.SELECT t_lst_opt)) ->
     Step_pure ([(instr_val val_1), (instr_val val_2), (.CONST .I32 c), (.SELECT t_lst_opt)] : (List instr)) ([(instr_val val_2)] : (List instr))
   | if_true : forall (c : num_) (bt : blocktype) (instr_1_lst : (List instr)) (instr_2_lst : (List instr)), 
-    ((proj_num__0 c) != none) ->
-    ((proj_uN_0 (Option.get! (proj_num__0 c))) != 0) ->
+    ((proj_num__0 c) ≠ none) ->
+    ((proj_uN_0 (Option.get! (proj_num__0 c))) ≠ 0) ->
     (wf_instr (.CONST .I32 c)) ->
     (wf_instr (.IFELSE bt instr_1_lst instr_2_lst)) ->
     (wf_instr (.BLOCK bt instr_1_lst)) ->
     Step_pure ([(.CONST .I32 c), (.IFELSE bt instr_1_lst instr_2_lst)] : (List instr)) ([(.BLOCK bt instr_1_lst)] : (List instr))
   | if_false : forall (c : num_) (bt : blocktype) (instr_1_lst : (List instr)) (instr_2_lst : (List instr)), 
-    ((proj_num__0 c) != none) ->
-    ((proj_uN_0 (Option.get! (proj_num__0 c))) == 0) ->
+    ((proj_num__0 c) ≠ none) ->
+    ((proj_uN_0 (Option.get! (proj_num__0 c))) = 0) ->
     (wf_instr (.CONST .I32 c)) ->
     (wf_instr (.IFELSE bt instr_1_lst instr_2_lst)) ->
     (wf_instr (.BLOCK bt instr_2_lst)) ->
@@ -15703,9 +15731,9 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     (wf_instr (.LABEL_ v_n instr_lst (List.map (fun (v_val : val) => (instr_val v_val)) val_lst))) ->
     Step_pure ([(.LABEL_ v_n instr_lst (List.map (fun (v_val : val) => (instr_val v_val)) val_lst))] : (List instr)) (List.map (fun (v_val : val) => (instr_val v_val)) val_lst)
   | br_label_zero : forall (v_n : n) (instr'_lst : (List instr)) (val'_lst : (List val)) (val_lst : (List val)) (l : labelidx) (instr_lst : (List instr)), 
-    ((proj_uN_0 l) == 0) ->
+    ((proj_uN_0 l) = 0) ->
     (wf_instr (.LABEL_ v_n instr'_lst ((((List.map (fun (val' : val) => (instr_val val')) val'_lst) ++ (List.map (fun (v_val : val) => (instr_val v_val)) val_lst)) ++ ([(.BR l)] : (List instr))) ++ instr_lst))) ->
-    (v_n == (List.length val_lst)) ->
+    (v_n = (List.length val_lst)) ->
     ((List.length val_lst) = v_n) ->
     Step_pure ([(.LABEL_ v_n instr'_lst ((((List.map (fun (val' : val) => (instr_val val')) val'_lst) ++ (List.map (fun (v_val : val) => (instr_val v_val)) val_lst)) ++ ([(.BR l)] : (List instr))) ++ instr_lst))] : (List instr)) ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ instr'_lst)
   | br_label_succ : forall (v_n : n) (instr'_lst : (List instr)) (val_lst : (List val)) (l : labelidx) (instr_lst : (List instr)), 
@@ -15718,52 +15746,52 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     (wf_instr (.BR l)) ->
     Step_pure ([(.HANDLER_ v_n catch_lst (((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.BR l)] : (List instr))) ++ instr_lst))] : (List instr)) ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.BR l)] : (List instr)))
   | br_if_true : forall (c : num_) (l : labelidx), 
-    ((proj_num__0 c) != none) ->
-    ((proj_uN_0 (Option.get! (proj_num__0 c))) != 0) ->
+    ((proj_num__0 c) ≠ none) ->
+    ((proj_uN_0 (Option.get! (proj_num__0 c))) ≠ 0) ->
     (wf_instr (.CONST .I32 c)) ->
     (wf_instr (.BR_IF l)) ->
     (wf_instr (.BR l)) ->
     Step_pure ([(.CONST .I32 c), (.BR_IF l)] : (List instr)) ([(.BR l)] : (List instr))
   | br_if_false : forall (c : num_) (l : labelidx), 
-    ((proj_num__0 c) != none) ->
-    ((proj_uN_0 (Option.get! (proj_num__0 c))) == 0) ->
+    ((proj_num__0 c) ≠ none) ->
+    ((proj_uN_0 (Option.get! (proj_num__0 c))) = 0) ->
     (wf_instr (.CONST .I32 c)) ->
     (wf_instr (.BR_IF l)) ->
     Step_pure ([(.CONST .I32 c), (.BR_IF l)] : (List instr)) []
   | br_table_lt : forall (i : num_) (l_lst : (List labelidx)) (l' : labelidx), 
     ((proj_uN_0 (Option.get! (proj_num__0 i))) < (List.length l_lst)) ->
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (wf_instr (.CONST .I32 i)) ->
     (wf_instr (.BR_TABLE l_lst l')) ->
     (wf_instr (.BR (l_lst[(proj_uN_0 (Option.get! (proj_num__0 i)))]!))) ->
     Step_pure ([(.CONST .I32 i), (.BR_TABLE l_lst l')] : (List instr)) ([(.BR (l_lst[(proj_uN_0 (Option.get! (proj_num__0 i)))]!))] : (List instr))
   | br_table_ge : forall (i : num_) (l_lst : (List labelidx)) (l' : labelidx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     ((proj_uN_0 (Option.get! (proj_num__0 i))) >= (List.length l_lst)) ->
     (wf_instr (.CONST .I32 i)) ->
     (wf_instr (.BR_TABLE l_lst l')) ->
     (wf_instr (.BR l')) ->
     Step_pure ([(.CONST .I32 i), (.BR_TABLE l_lst l')] : (List instr)) ([(.BR l')] : (List instr))
   | br_on_null_null : forall (v_val : val) (l : labelidx), 
-    (v_val == .REF_NULL_ADDR) ->
+    (v_val = .REF_NULL_ADDR) ->
     (wf_val v_val) ->
     (wf_instr (.BR_ON_NULL l)) ->
     (wf_instr (.BR l)) ->
     (wf_val .REF_NULL_ADDR) ->
     Step_pure ([(instr_val v_val), (.BR_ON_NULL l)] : (List instr)) ([(.BR l)] : (List instr))
   | br_on_null_addr : forall (v_val : val) (l : labelidx), 
-    (v_val != .REF_NULL_ADDR) ->
+    (v_val ≠ .REF_NULL_ADDR) ->
     (wf_val v_val) ->
     (wf_instr (.BR_ON_NULL l)) ->
     Step_pure ([(instr_val v_val), (.BR_ON_NULL l)] : (List instr)) ([(instr_val v_val)] : (List instr))
   | br_on_non_null_null : forall (v_val : val) (l : labelidx), 
-    (v_val == .REF_NULL_ADDR) ->
+    (v_val = .REF_NULL_ADDR) ->
     (wf_val v_val) ->
     (wf_instr (.BR_ON_NON_NULL l)) ->
     (wf_val .REF_NULL_ADDR) ->
     Step_pure ([(instr_val v_val), (.BR_ON_NON_NULL l)] : (List instr)) []
   | br_on_non_null_addr : forall (v_val : val) (l : labelidx), 
-    (v_val != .REF_NULL_ADDR) ->
+    (v_val ≠ .REF_NULL_ADDR) ->
     (wf_val v_val) ->
     (wf_instr (.BR_ON_NON_NULL l)) ->
     (wf_instr (.BR l)) ->
@@ -15782,12 +15810,12 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.RETURN_CALL_INDIRECT x yy)] : (List instr)) ([(.TABLE_GET x), (.REF_CAST (.REF (some .NULL) (heaptype_typeuse yy))), (.RETURN_CALL_REF yy)] : (List instr))
   | frame_vals : forall (v_n : n) (f : frame) (val_lst : (List val)), 
     (wf_instr (.FRAME_ v_n f (List.map (fun (v_val : val) => (instr_val v_val)) val_lst))) ->
-    (v_n == (List.length val_lst)) ->
+    (v_n = (List.length val_lst)) ->
     ((List.length val_lst) = v_n) ->
     Step_pure ([(.FRAME_ v_n f (List.map (fun (v_val : val) => (instr_val v_val)) val_lst))] : (List instr)) (List.map (fun (v_val : val) => (instr_val v_val)) val_lst)
   | return_frame : forall (v_n : n) (f : frame) (val'_lst : (List val)) (val_lst : (List val)) (instr_lst : (List instr)), 
     (wf_instr (.FRAME_ v_n f ((((List.map (fun (val' : val) => (instr_val val')) val'_lst) ++ (List.map (fun (v_val : val) => (instr_val v_val)) val_lst)) ++ ([.RETURN] : (List instr))) ++ instr_lst))) ->
-    (v_n == (List.length val_lst)) ->
+    (v_n = (List.length val_lst)) ->
     ((List.length val_lst) = v_n) ->
     Step_pure ([(.FRAME_ v_n f ((((List.map (fun (val' : val) => (instr_val val')) val'_lst) ++ (List.map (fun (v_val : val) => (instr_val v_val)) val_lst)) ++ ([.RETURN] : (List instr))) ++ instr_lst))] : (List instr)) (List.map (fun (v_val : val) => (instr_val v_val)) val_lst)
   | return_label : forall (v_n : n) (instr'_lst : (List instr)) (val_lst : (List val)) (instr_lst : (List instr)), 
@@ -15802,7 +15830,7 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     (wf_instr (.HANDLER_ v_n catch_lst (List.map (fun (v_val : val) => (instr_val v_val)) val_lst))) ->
     Step_pure ([(.HANDLER_ v_n catch_lst (List.map (fun (v_val : val) => (instr_val v_val)) val_lst))] : (List instr)) (List.map (fun (v_val : val) => (instr_val v_val)) val_lst)
   | trap_instrs : forall (val_lst : (List val)) (instr_lst : (List instr)), 
-    ((val_lst != []) || (instr_lst != [])) ->
+    ((val_lst ≠ []) ∨ (instr_lst ≠ [])) ->
     Forall (fun (v_val : val) => (wf_val v_val)) val_lst ->
     Forall (fun (v_instr : instr) => (wf_instr v_instr)) instr_lst ->
     (wf_instr .TRAP) ->
@@ -15825,38 +15853,38 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     (wf_instr (.LOCAL_SET x)) ->
     Step_pure ([(instr_val v_val), (.LOCAL_TEE x)] : (List instr)) ([(instr_val v_val), (instr_val v_val), (.LOCAL_SET x)] : (List instr))
   | ref_i31 : forall (i : num_), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (wf_instr (.CONST .I32 i)) ->
     (wf_instr .REF_I31) ->
     (wf_instr (.REF_I31_NUM (wrap__ 32 31 (Option.get! (proj_num__0 i))))) ->
     Step_pure ([(.CONST .I32 i), .REF_I31] : (List instr)) ([(.REF_I31_NUM (wrap__ 32 31 (Option.get! (proj_num__0 i))))] : (List instr))
   | ref_is_null_true : forall (v_ref : ref), 
-    (v_ref == .REF_NULL_ADDR) ->
+    (v_ref = .REF_NULL_ADDR) ->
     (wf_ref v_ref) ->
     (wf_instr .REF_IS_NULL) ->
     (wf_instr (.CONST .I32 (.mk_num__0 .I32 (.mk_uN 1)))) ->
     (wf_ref .REF_NULL_ADDR) ->
     Step_pure ([(instr_ref v_ref), .REF_IS_NULL] : (List instr)) ([(.CONST .I32 (.mk_num__0 .I32 (.mk_uN 1)))] : (List instr))
   | ref_is_null_false : forall (v_ref : ref), 
-    (v_ref != .REF_NULL_ADDR) ->
+    (v_ref ≠ .REF_NULL_ADDR) ->
     (wf_ref v_ref) ->
     (wf_instr .REF_IS_NULL) ->
     (wf_instr (.CONST .I32 (.mk_num__0 .I32 (.mk_uN 0)))) ->
     Step_pure ([(instr_ref v_ref), .REF_IS_NULL] : (List instr)) ([(.CONST .I32 (.mk_num__0 .I32 (.mk_uN 0)))] : (List instr))
   | ref_as_non_null_null : forall (v_ref : ref), 
-    (v_ref == .REF_NULL_ADDR) ->
+    (v_ref = .REF_NULL_ADDR) ->
     (wf_ref v_ref) ->
     (wf_instr .REF_AS_NON_NULL) ->
     (wf_instr .TRAP) ->
     (wf_ref .REF_NULL_ADDR) ->
     Step_pure ([(instr_ref v_ref), .REF_AS_NON_NULL] : (List instr)) ([.TRAP] : (List instr))
   | ref_as_non_null_addr : forall (v_ref : ref), 
-    (v_ref != .REF_NULL_ADDR) ->
+    (v_ref ≠ .REF_NULL_ADDR) ->
     (wf_ref v_ref) ->
     (wf_instr .REF_AS_NON_NULL) ->
     Step_pure ([(instr_ref v_ref), .REF_AS_NON_NULL] : (List instr)) ([(instr_ref v_ref)] : (List instr))
   | ref_eq_null : forall (ref_1 : ref) (ref_2 : ref), 
-    ((ref_1 == .REF_NULL_ADDR) && (ref_2 == .REF_NULL_ADDR)) ->
+    ((ref_1 = .REF_NULL_ADDR) ∧ (ref_2 = .REF_NULL_ADDR)) ->
     (wf_ref ref_1) ->
     (wf_ref ref_2) ->
     (wf_instr .REF_EQ) ->
@@ -15864,16 +15892,16 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     (wf_ref .REF_NULL_ADDR) ->
     Step_pure ([(instr_ref ref_1), (instr_ref ref_2), .REF_EQ] : (List instr)) ([(.CONST .I32 (.mk_num__0 .I32 (.mk_uN 1)))] : (List instr))
   | ref_eq_true : forall (ref_1 : ref) (ref_2 : ref), 
-    ((ref_1 != .REF_NULL_ADDR) || (ref_2 != .REF_NULL_ADDR)) ->
-    (ref_1 == ref_2) ->
+    ((ref_1 ≠ .REF_NULL_ADDR) ∨ (ref_2 ≠ .REF_NULL_ADDR)) ->
+    (ref_1 = ref_2) ->
     (wf_ref ref_1) ->
     (wf_ref ref_2) ->
     (wf_instr .REF_EQ) ->
     (wf_instr (.CONST .I32 (.mk_num__0 .I32 (.mk_uN 1)))) ->
     Step_pure ([(instr_ref ref_1), (instr_ref ref_2), .REF_EQ] : (List instr)) ([(.CONST .I32 (.mk_num__0 .I32 (.mk_uN 1)))] : (List instr))
   | ref_eq_false : forall (ref_1 : ref) (ref_2 : ref), 
-    (ref_1 != ref_2) ->
-    ((ref_1 != .REF_NULL_ADDR) || (ref_2 != .REF_NULL_ADDR)) ->
+    (ref_1 ≠ ref_2) ->
+    ((ref_1 ≠ .REF_NULL_ADDR) ∨ (ref_2 ≠ .REF_NULL_ADDR)) ->
     (wf_ref ref_1) ->
     (wf_ref ref_2) ->
     (wf_instr .REF_EQ) ->
@@ -15896,13 +15924,13 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     (wf_instr (.ARRAY_NEW_FIXED x (.mk_uN v_n))) ->
     Step_pure ([(instr_val v_val), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW x)] : (List instr)) ((List.replicate v_n (instr_val v_val)) ++ ([(.ARRAY_NEW_FIXED x (.mk_uN v_n))] : (List instr)))
   | extern_convert_any_null : forall (v_ref : ref), 
-    (v_ref == .REF_NULL_ADDR) ->
+    (v_ref = .REF_NULL_ADDR) ->
     (wf_ref v_ref) ->
     (wf_instr .EXTERN_CONVERT_ANY) ->
     (wf_instr .REF_NULL_ADDR) ->
     Step_pure ([(instr_ref v_ref), .EXTERN_CONVERT_ANY] : (List instr)) ([.REF_NULL_ADDR] : (List instr))
   | extern_convert_any_addr : forall (v_ref : ref), 
-    (v_ref != .REF_NULL_ADDR) ->
+    (v_ref ≠ .REF_NULL_ADDR) ->
     (wf_instr .EXTERN_CONVERT_ANY) ->
     (wf_instr (.REF_EXTERN v_ref)) ->
     Step_pure ([(instr_ref v_ref), .EXTERN_CONVERT_ANY] : (List instr)) ([(.REF_EXTERN v_ref)] : (List instr))
@@ -15917,8 +15945,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
   | unop_val : forall (nt : numtype) (c_1 : num_) (unop : unop_) (c : num_) (var_0 : (Option (List num_))), 
     (fun_unop_ nt unop c_1 var_0) ->
     ((List.length (Option.get! var_0)) > 0) ->
-    (var_0 != none) ->
-    (List.contains (Option.get! var_0) c) ->
+    (var_0 ≠ none) ->
+    (c ∈ (Option.get! var_0)) ->
     Forall (fun (iter : num_) => (wf_num_ nt iter)) (Option.get! var_0) ->
     (wf_instr (.CONST nt c_1)) ->
     (wf_instr (.UNOP nt unop)) ->
@@ -15926,8 +15954,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.CONST nt c_1), (.UNOP nt unop)] : (List instr)) ([(.CONST nt c)] : (List instr))
   | unop_trap : forall (nt : numtype) (c_1 : num_) (unop : unop_) (var_0 : (Option (List num_))), 
     (fun_unop_ nt unop c_1 var_0) ->
-    (var_0 != none) ->
-    ((Option.get! var_0) == []) ->
+    (var_0 ≠ none) ->
+    ((Option.get! var_0) = []) ->
     Forall (fun (iter : num_) => (wf_num_ nt iter)) (Option.get! var_0) ->
     (wf_instr (.CONST nt c_1)) ->
     (wf_instr (.UNOP nt unop)) ->
@@ -15936,8 +15964,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
   | binop_val : forall (nt : numtype) (c_1 : num_) (c_2 : num_) (binop : binop_) (c : num_) (var_0 : (Option (List num_))), 
     (fun_binop_ nt binop c_1 c_2 var_0) ->
     ((List.length (Option.get! var_0)) > 0) ->
-    (var_0 != none) ->
-    (List.contains (Option.get! var_0) c) ->
+    (var_0 ≠ none) ->
+    (c ∈ (Option.get! var_0)) ->
     Forall (fun (iter : num_) => (wf_num_ nt iter)) (Option.get! var_0) ->
     (wf_instr (.CONST nt c_1)) ->
     (wf_instr (.CONST nt c_2)) ->
@@ -15946,8 +15974,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.CONST nt c_1), (.CONST nt c_2), (.BINOP nt binop)] : (List instr)) ([(.CONST nt c)] : (List instr))
   | binop_trap : forall (nt : numtype) (c_1 : num_) (c_2 : num_) (binop : binop_) (var_0 : (Option (List num_))), 
     (fun_binop_ nt binop c_1 c_2 var_0) ->
-    (var_0 != none) ->
-    ((Option.get! var_0) == []) ->
+    (var_0 ≠ none) ->
+    ((Option.get! var_0) = []) ->
     Forall (fun (iter : num_) => (wf_num_ nt iter)) (Option.get! var_0) ->
     (wf_instr (.CONST nt c_1)) ->
     (wf_instr (.CONST nt c_2)) ->
@@ -15955,18 +15983,18 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     (wf_instr .TRAP) ->
     Step_pure ([(.CONST nt c_1), (.CONST nt c_2), (.BINOP nt binop)] : (List instr)) ([.TRAP] : (List instr))
   | testop : forall (nt : numtype) (c_1 : num_) (testop : testop_) (c : num_), 
-    ((proj_num__0 c) != none) ->
-    ((fun_testop_ nt testop c_1) != none) ->
-    ((Option.get! (proj_num__0 c)) == (Option.get! (fun_testop_ nt testop c_1))) ->
+    ((proj_num__0 c) ≠ none) ->
+    ((fun_testop_ nt testop c_1) ≠ none) ->
+    ((Option.get! (proj_num__0 c)) = (Option.get! (fun_testop_ nt testop c_1))) ->
     (wf_uN 32 (Option.get! (fun_testop_ nt testop c_1))) ->
     (wf_instr (.CONST nt c_1)) ->
     (wf_instr (.TESTOP nt testop)) ->
     (wf_instr (.CONST .I32 c)) ->
     Step_pure ([(.CONST nt c_1), (.TESTOP nt testop)] : (List instr)) ([(.CONST .I32 c)] : (List instr))
   | relop : forall (nt : numtype) (c_1 : num_) (c_2 : num_) (relop : relop_) (c : num_), 
-    ((proj_num__0 c) != none) ->
-    ((fun_relop_ nt relop c_1 c_2) != none) ->
-    ((Option.get! (proj_num__0 c)) == (Option.get! (fun_relop_ nt relop c_1 c_2))) ->
+    ((proj_num__0 c) ≠ none) ->
+    ((fun_relop_ nt relop c_1 c_2) ≠ none) ->
+    ((Option.get! (proj_num__0 c)) = (Option.get! (fun_relop_ nt relop c_1 c_2))) ->
     (wf_uN 32 (Option.get! (fun_relop_ nt relop c_1 c_2))) ->
     (wf_instr (.CONST nt c_1)) ->
     (wf_instr (.CONST nt c_2)) ->
@@ -15976,8 +16004,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
   | cvtop_val : forall (nt_1 : numtype) (c_1 : num_) (nt_2 : numtype) (cvtop : cvtop__) (c : num_) (var_0 : (Option (List num_))), 
     (fun_cvtop__ nt_1 nt_2 cvtop c_1 var_0) ->
     ((List.length (Option.get! var_0)) > 0) ->
-    (var_0 != none) ->
-    (List.contains (Option.get! var_0) c) ->
+    (var_0 ≠ none) ->
+    (c ∈ (Option.get! var_0)) ->
     Forall (fun (iter : num_) => (wf_num_ nt_2 iter)) (Option.get! var_0) ->
     (wf_instr (.CONST nt_1 c_1)) ->
     (wf_instr (.CVTOP nt_2 nt_1 cvtop)) ->
@@ -15985,8 +16013,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.CONST nt_1 c_1), (.CVTOP nt_2 nt_1 cvtop)] : (List instr)) ([(.CONST nt_2 c)] : (List instr))
   | cvtop_trap : forall (nt_1 : numtype) (c_1 : num_) (nt_2 : numtype) (cvtop : cvtop__) (var_0 : (Option (List num_))), 
     (fun_cvtop__ nt_1 nt_2 cvtop c_1 var_0) ->
-    (var_0 != none) ->
-    ((Option.get! var_0) == []) ->
+    (var_0 ≠ none) ->
+    ((Option.get! var_0) = []) ->
     Forall (fun (iter : num_) => (wf_num_ nt_2 iter)) (Option.get! var_0) ->
     (wf_instr (.CONST nt_1 c_1)) ->
     (wf_instr (.CVTOP nt_2 nt_1 cvtop)) ->
@@ -15994,7 +16022,7 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.CONST nt_1 c_1), (.CVTOP nt_2 nt_1 cvtop)] : (List instr)) ([.TRAP] : (List instr))
   | vvunop : forall (c_1 : vec_) (v_vvunop : vvunop) (c : vec_), 
     ((List.length (vvunop_ .V128 v_vvunop c_1)) > 0) ->
-    (List.contains (vvunop_ .V128 v_vvunop c_1) c) ->
+    (c ∈ (vvunop_ .V128 v_vvunop c_1)) ->
     Forall (fun (iter : vec_) => (wf_uN 128 iter)) (vvunop_ .V128 v_vvunop c_1) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VVUNOP .V128 v_vvunop)) ->
@@ -16002,7 +16030,7 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.VCONST .V128 c_1), (.VVUNOP .V128 v_vvunop)] : (List instr)) ([(.VCONST .V128 c)] : (List instr))
   | vvbinop : forall (c_1 : vec_) (c_2 : vec_) (v_vvbinop : vvbinop) (c : vec_), 
     ((List.length (vvbinop_ .V128 v_vvbinop c_1 c_2)) > 0) ->
-    (List.contains (vvbinop_ .V128 v_vvbinop c_1 c_2) c) ->
+    (c ∈ (vvbinop_ .V128 v_vvbinop c_1 c_2)) ->
     Forall (fun (iter : vec_) => (wf_uN 128 iter)) (vvbinop_ .V128 v_vvbinop c_1 c_2) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VCONST .V128 c_2)) ->
@@ -16011,7 +16039,7 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.VCONST .V128 c_1), (.VCONST .V128 c_2), (.VVBINOP .V128 v_vvbinop)] : (List instr)) ([(.VCONST .V128 c)] : (List instr))
   | vvternop : forall (c_1 : vec_) (c_2 : vec_) (c_3 : vec_) (v_vvternop : vvternop) (c : vec_), 
     ((List.length (vvternop_ .V128 v_vvternop c_1 c_2 c_3)) > 0) ->
-    (List.contains (vvternop_ .V128 v_vvternop c_1 c_2 c_3) c) ->
+    (c ∈ (vvternop_ .V128 v_vvternop c_1 c_2 c_3)) ->
     Forall (fun (iter : vec_) => (wf_uN 128 iter)) (vvternop_ .V128 v_vvternop c_1 c_2 c_3) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VCONST .V128 c_2)) ->
@@ -16020,8 +16048,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     (wf_instr (.VCONST .V128 c)) ->
     Step_pure ([(.VCONST .V128 c_1), (.VCONST .V128 c_2), (.VCONST .V128 c_3), (.VVTERNOP .V128 v_vvternop)] : (List instr)) ([(.VCONST .V128 c)] : (List instr))
   | vvtestop : forall (c_1 : vec_) (c : num_), 
-    ((proj_num__0 c) != none) ->
-    ((Option.get! (proj_num__0 c)) == (inez_ (vsize .V128) c_1)) ->
+    ((proj_num__0 c) ≠ none) ->
+    ((Option.get! (proj_num__0 c)) = (inez_ (vsize .V128) c_1)) ->
     (wf_uN 32 (inez_ (vsize .V128) c_1)) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VVTESTOP .V128 .ANY_TRUE)) ->
@@ -16030,8 +16058,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
   | vunop_val : forall (c_1 : vec_) (sh : shape) (vunop : vunop_) (c : vec_) (var_0 : (Option (List vec_))), 
     (fun_vunop_ sh vunop c_1 var_0) ->
     ((List.length (Option.get! var_0)) > 0) ->
-    (var_0 != none) ->
-    (List.contains (Option.get! var_0) c) ->
+    (var_0 ≠ none) ->
+    (c ∈ (Option.get! var_0)) ->
     Forall (fun (iter : vec_) => (wf_uN 128 iter)) (Option.get! var_0) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VUNOP sh vunop)) ->
@@ -16039,8 +16067,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.VCONST .V128 c_1), (.VUNOP sh vunop)] : (List instr)) ([(.VCONST .V128 c)] : (List instr))
   | vunop_trap : forall (c_1 : vec_) (sh : shape) (vunop : vunop_) (var_0 : (Option (List vec_))), 
     (fun_vunop_ sh vunop c_1 var_0) ->
-    (var_0 != none) ->
-    ((Option.get! var_0) == []) ->
+    (var_0 ≠ none) ->
+    ((Option.get! var_0) = []) ->
     Forall (fun (iter : vec_) => (wf_uN 128 iter)) (Option.get! var_0) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VUNOP sh vunop)) ->
@@ -16049,8 +16077,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
   | vbinop_val : forall (c_1 : vec_) (c_2 : vec_) (sh : shape) (vbinop : vbinop_) (c : vec_) (var_0 : (Option (List vec_))), 
     (fun_vbinop_ sh vbinop c_1 c_2 var_0) ->
     ((List.length (Option.get! var_0)) > 0) ->
-    (var_0 != none) ->
-    (List.contains (Option.get! var_0) c) ->
+    (var_0 ≠ none) ->
+    (c ∈ (Option.get! var_0)) ->
     Forall (fun (iter : vec_) => (wf_uN 128 iter)) (Option.get! var_0) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VCONST .V128 c_2)) ->
@@ -16059,8 +16087,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.VCONST .V128 c_1), (.VCONST .V128 c_2), (.VBINOP sh vbinop)] : (List instr)) ([(.VCONST .V128 c)] : (List instr))
   | vbinop_trap : forall (c_1 : vec_) (c_2 : vec_) (sh : shape) (vbinop : vbinop_) (var_0 : (Option (List vec_))), 
     (fun_vbinop_ sh vbinop c_1 c_2 var_0) ->
-    (var_0 != none) ->
-    ((Option.get! var_0) == []) ->
+    (var_0 ≠ none) ->
+    ((Option.get! var_0) = []) ->
     Forall (fun (iter : vec_) => (wf_uN 128 iter)) (Option.get! var_0) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VCONST .V128 c_2)) ->
@@ -16070,8 +16098,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
   | vternop_val : forall (c_1 : vec_) (c_2 : vec_) (c_3 : vec_) (sh : shape) (vternop : vternop_) (c : vec_) (var_0 : (Option (List vec_))), 
     (fun_vternop_ sh vternop c_1 c_2 c_3 var_0) ->
     ((List.length (Option.get! var_0)) > 0) ->
-    (var_0 != none) ->
-    (List.contains (Option.get! var_0) c) ->
+    (var_0 ≠ none) ->
+    (c ∈ (Option.get! var_0)) ->
     Forall (fun (iter : vec_) => (wf_uN 128 iter)) (Option.get! var_0) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VCONST .V128 c_2)) ->
@@ -16081,8 +16109,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.VCONST .V128 c_1), (.VCONST .V128 c_2), (.VCONST .V128 c_3), (.VTERNOP sh vternop)] : (List instr)) ([(.VCONST .V128 c)] : (List instr))
   | vternop_trap : forall (c_1 : vec_) (c_2 : vec_) (c_3 : vec_) (sh : shape) (vternop : vternop_) (var_0 : (Option (List vec_))), 
     (fun_vternop_ sh vternop c_1 c_2 c_3 var_0) ->
-    (var_0 != none) ->
-    ((Option.get! var_0) == []) ->
+    (var_0 ≠ none) ->
+    ((Option.get! var_0) = []) ->
     Forall (fun (iter : vec_) => (wf_uN 128 iter)) (Option.get! var_0) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VCONST .V128 c_2)) ->
@@ -16092,10 +16120,10 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.VCONST .V128 c_1), (.VCONST .V128 c_2), (.VCONST .V128 c_3), (.VTERNOP sh vternop)] : (List instr)) ([.TRAP] : (List instr))
   | vtestop : forall (c_1 : vec_) (v_Jnn : Jnn) (v_M : M) (c : num_) (i_lst : (List lane_)) (var_0 : Nat), 
     (fun_prod (List.map (fun (i : lane_) => (proj_uN_0 (inez_ (jsizenn v_Jnn) (Option.get! (proj_lane__0 i))))) i_lst) var_0) ->
-    (i_lst == (lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c_1)) ->
-    ((proj_num__0 c) != none) ->
-    Forall (fun (i : lane_) => ((proj_lane__0 i) != none)) i_lst ->
-    ((proj_uN_0 (Option.get! (proj_num__0 c))) == var_0) ->
+    (i_lst = (lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c_1)) ->
+    ((proj_num__0 c) ≠ none) ->
+    Forall (fun (i : lane_) => ((proj_lane__0 i) ≠ none)) i_lst ->
+    ((proj_uN_0 (Option.get! (proj_num__0 c))) = var_0) ->
     Forall (fun (i : lane_) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) i)) i_lst ->
     Forall (fun (iter : lane_) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) iter)) (lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c_1) ->
     Forall (fun (i : lane_) => (wf_uN 32 (inez_ (jsizenn v_Jnn) (Option.get! (proj_lane__0 i))))) i_lst ->
@@ -16106,8 +16134,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.VCONST .V128 c_1), (.VTESTOP (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) (.mk_vtestop__0 v_Jnn v_M .ALL_TRUE))] : (List instr)) ([(.CONST .I32 c)] : (List instr))
   | vrelop : forall (c_1 : vec_) (c_2 : vec_) (sh : shape) (vrelop : vrelop_) (c : vec_) (var_0 : (Option vec_)), 
     (fun_vrelop_ sh vrelop c_1 c_2 var_0) ->
-    (var_0 != none) ->
-    (c == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (c = (Option.get! var_0)) ->
     (wf_uN 128 (Option.get! var_0)) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VCONST .V128 c_2)) ->
@@ -16116,9 +16144,9 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.VCONST .V128 c_1), (.VCONST .V128 c_2), (.VRELOP sh vrelop)] : (List instr)) ([(.VCONST .V128 c)] : (List instr))
   | vshiftop : forall (c_1 : vec_) (i : num_) (sh : ishape) (vshiftop : vshiftop_) (c : vec_) (var_0 : (Option vec_)), 
     (fun_vshiftop_ sh vshiftop c_1 (Option.get! (proj_num__0 i)) var_0) ->
-    (var_0 != none) ->
-    ((proj_num__0 i) != none) ->
-    (c == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    ((proj_num__0 i) ≠ none) ->
+    (c = (Option.get! var_0)) ->
     (wf_uN 128 (Option.get! var_0)) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.CONST .I32 i)) ->
@@ -16127,8 +16155,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.VCONST .V128 c_1), (.CONST .I32 i), (.VSHIFTOP sh vshiftop)] : (List instr)) ([(.VCONST .V128 c)] : (List instr))
   | vbitmask : forall (c_1 : vec_) (sh : ishape) (c : num_) (var_0 : u32), 
     (fun_vbitmaskop_ sh c_1 var_0) ->
-    ((proj_num__0 c) != none) ->
-    ((Option.get! (proj_num__0 c)) == var_0) ->
+    ((proj_num__0 c) ≠ none) ->
+    ((Option.get! (proj_num__0 c)) = var_0) ->
     (wf_uN 32 var_0) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VBITMASK sh)) ->
@@ -16136,8 +16164,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.VCONST .V128 c_1), (.VBITMASK sh)] : (List instr)) ([(.CONST .I32 c)] : (List instr))
   | vswizzlop : forall (c_1 : vec_) (c_2 : vec_) (sh : bshape) (swizzlop : vswizzlop_) (c : vec_) (var_0 : (Option vec_)), 
     (fun_vswizzlop_ sh swizzlop c_1 c_2 var_0) ->
-    (var_0 != none) ->
-    (c == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (c = (Option.get! var_0)) ->
     (wf_uN 128 (Option.get! var_0)) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VCONST .V128 c_2)) ->
@@ -16145,8 +16173,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     (wf_instr (.VCONST .V128 c)) ->
     Step_pure ([(.VCONST .V128 c_1), (.VCONST .V128 c_2), (.VSWIZZLOP sh swizzlop)] : (List instr)) ([(.VCONST .V128 c)] : (List instr))
   | vshuffle : forall (c_1 : vec_) (c_2 : vec_) (sh : bshape) (i_lst : (List laneidx)) (c : vec_), 
-    ((vshufflop_ sh i_lst c_1 c_2) != none) ->
-    (c == (Option.get! (vshufflop_ sh i_lst c_1 c_2))) ->
+    ((vshufflop_ sh i_lst c_1 c_2) ≠ none) ->
+    (c = (Option.get! (vshufflop_ sh i_lst c_1 c_2))) ->
     (wf_uN 128 (Option.get! (vshufflop_ sh i_lst c_1 c_2))) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VCONST .V128 c_2)) ->
@@ -16154,10 +16182,10 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     (wf_instr (.VCONST .V128 c)) ->
     Step_pure ([(.VCONST .V128 c_1), (.VCONST .V128 c_2), (.VSHUFFLE sh i_lst)] : (List instr)) ([(.VCONST .V128 c)] : (List instr))
   | vsplat : forall (v_Lnn : Lnn) (c_1 : num_) (v_M : M) (c : vec_), 
-    ((lpacknum_ v_Lnn c_1) != none) ->
-    (c == (inv_lanes_ (.X v_Lnn (.mk_dim v_M)) (List.replicate v_M (Option.get! (lpacknum_ v_Lnn c_1))))) ->
+    ((lpacknum_ v_Lnn c_1) ≠ none) ->
+    (c = (inv_lanes_ (.X v_Lnn (.mk_dim v_M)) (List.replicate v_M (Option.get! (lpacknum_ v_Lnn c_1))))) ->
     (wf_uN 128 (inv_lanes_ (.X v_Lnn (.mk_dim v_M)) (List.replicate v_M (Option.get! (lpacknum_ v_Lnn c_1))))) ->
-    ((lpacknum_ v_Lnn c_1) != none) ->
+    ((lpacknum_ v_Lnn c_1) ≠ none) ->
     (wf_lane_ (fun_lanetype (.X v_Lnn (.mk_dim v_M))) (Option.get! (lpacknum_ v_Lnn c_1))) ->
     (wf_instr (.CONST (lunpack v_Lnn) c_1)) ->
     (wf_instr (.VSPLAT (.X v_Lnn (.mk_dim v_M)))) ->
@@ -16165,9 +16193,9 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     (wf_shape (.X v_Lnn (.mk_dim v_M))) ->
     Step_pure ([(.CONST (lunpack v_Lnn) c_1), (.VSPLAT (.X v_Lnn (.mk_dim v_M)))] : (List instr)) ([(.VCONST .V128 c)] : (List instr))
   | vextract_lane_num : forall (c_1 : vec_) (nt : numtype) (v_M : M) (i : laneidx) (c_2 : num_), 
-    ((lunpacknum_ (lanetype_numtype nt) ((lanes_ (.X (lanetype_numtype nt) (.mk_dim v_M)) c_1)[(proj_uN_0 i)]!)) != none) ->
+    ((lunpacknum_ (lanetype_numtype nt) ((lanes_ (.X (lanetype_numtype nt) (.mk_dim v_M)) c_1)[(proj_uN_0 i)]!)) ≠ none) ->
     ((proj_uN_0 i) < (List.length (lanes_ (.X (lanetype_numtype nt) (.mk_dim v_M)) c_1))) ->
-    (c_2 == (Option.get! (lunpacknum_ (lanetype_numtype nt) ((lanes_ (.X (lanetype_numtype nt) (.mk_dim v_M)) c_1)[(proj_uN_0 i)]!)))) ->
+    (c_2 = (Option.get! (lunpacknum_ (lanetype_numtype nt) ((lanes_ (.X (lanetype_numtype nt) (.mk_dim v_M)) c_1)[(proj_uN_0 i)]!)))) ->
     (wf_num_ (lunpack (lanetype_numtype nt)) (Option.get! (lunpacknum_ (lanetype_numtype nt) ((lanes_ (.X (lanetype_numtype nt) (.mk_dim v_M)) c_1)[(proj_uN_0 i)]!)))) ->
     Forall (fun (iter : lane_) => (wf_lane_ (fun_lanetype (.X (lanetype_numtype nt) (.mk_dim v_M))) iter)) (lanes_ (.X (lanetype_numtype nt) (.mk_dim v_M)) c_1) ->
     (wf_instr (.VCONST .V128 c_1)) ->
@@ -16176,10 +16204,10 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     (wf_shape (.X (lanetype_numtype nt) (.mk_dim v_M))) ->
     Step_pure ([(.VCONST .V128 c_1), (.VEXTRACT_LANE (.X (lanetype_numtype nt) (.mk_dim v_M)) none i)] : (List instr)) ([(.CONST nt c_2)] : (List instr))
   | vextract_lane_pack : forall (c_1 : vec_) (pt : packtype) (v_M : M) (v_sx : sx) (i : laneidx) (c_2 : num_), 
-    ((proj_num__0 c_2) != none) ->
-    ((proj_lane__0 ((lanes_ (.X (lanetype_packtype pt) (.mk_dim v_M)) c_1)[(proj_uN_0 i)]!)) != none) ->
+    ((proj_num__0 c_2) ≠ none) ->
+    ((proj_lane__0 ((lanes_ (.X (lanetype_packtype pt) (.mk_dim v_M)) c_1)[(proj_uN_0 i)]!)) ≠ none) ->
     ((proj_uN_0 i) < (List.length (lanes_ (.X (lanetype_packtype pt) (.mk_dim v_M)) c_1))) ->
-    ((Option.get! (proj_num__0 c_2)) == (extend__ (psize pt) 32 v_sx (Option.get! (proj_lane__0 ((lanes_ (.X (lanetype_packtype pt) (.mk_dim v_M)) c_1)[(proj_uN_0 i)]!))))) ->
+    ((Option.get! (proj_num__0 c_2)) = (extend__ (psize pt) 32 v_sx (Option.get! (proj_lane__0 ((lanes_ (.X (lanetype_packtype pt) (.mk_dim v_M)) c_1)[(proj_uN_0 i)]!))))) ->
     (wf_uN 32 (extend__ (psize pt) 32 v_sx (Option.get! (proj_lane__0 ((lanes_ (.X (lanetype_packtype pt) (.mk_dim v_M)) c_1)[(proj_uN_0 i)]!))))) ->
     Forall (fun (iter : lane_) => (wf_lane_ (fun_lanetype (.X (lanetype_packtype pt) (.mk_dim v_M))) iter)) (lanes_ (.X (lanetype_packtype pt) (.mk_dim v_M)) c_1) ->
     (wf_instr (.VCONST .V128 c_1)) ->
@@ -16188,8 +16216,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     (wf_shape (.X (lanetype_packtype pt) (.mk_dim v_M))) ->
     Step_pure ([(.VCONST .V128 c_1), (.VEXTRACT_LANE (.X (lanetype_packtype pt) (.mk_dim v_M)) (some v_sx) i)] : (List instr)) ([(.CONST .I32 c_2)] : (List instr))
   | vreplace_lane : forall (c_1 : vec_) (v_Lnn : Lnn) (c_2 : num_) (v_M : M) (i : laneidx) (c : vec_), 
-    ((lpacknum_ v_Lnn c_2) != none) ->
-    (c == (inv_lanes_ (.X v_Lnn (.mk_dim v_M)) (List.modify (lanes_ (.X v_Lnn (.mk_dim v_M)) c_1) (proj_uN_0 i) (fun (_ : lane_) => (Option.get! (lpacknum_ v_Lnn c_2)))))) ->
+    ((lpacknum_ v_Lnn c_2) ≠ none) ->
+    (c = (inv_lanes_ (.X v_Lnn (.mk_dim v_M)) (List.modify (lanes_ (.X v_Lnn (.mk_dim v_M)) c_1) (proj_uN_0 i) (fun (_ : lane_) => (Option.get! (lpacknum_ v_Lnn c_2)))))) ->
     (wf_uN 128 (inv_lanes_ (.X v_Lnn (.mk_dim v_M)) (List.modify (lanes_ (.X v_Lnn (.mk_dim v_M)) c_1) (proj_uN_0 i) (fun (_ : lane_) => (Option.get! (lpacknum_ v_Lnn c_2)))))) ->
     Forall (fun (iter : lane_) => (wf_lane_ (fun_lanetype (.X v_Lnn (.mk_dim v_M))) iter)) (lanes_ (.X v_Lnn (.mk_dim v_M)) c_1) ->
     (wf_lane_ (fun_lanetype (.X v_Lnn (.mk_dim v_M))) (Option.get! (lpacknum_ v_Lnn c_2))) ->
@@ -16201,8 +16229,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.VCONST .V128 c_1), (.CONST (lunpack v_Lnn) c_2), (.VREPLACE_LANE (.X v_Lnn (.mk_dim v_M)) i)] : (List instr)) ([(.VCONST .V128 c)] : (List instr))
   | vextunop : forall (c_1 : vec_) (sh_2 : ishape) (sh_1 : ishape) (vextunop : vextunop__) (c : vec_) (var_0 : (Option vec_)), 
     (fun_vextunop__ sh_1 sh_2 vextunop c_1 var_0) ->
-    (var_0 != none) ->
-    ((Option.get! var_0) == c) ->
+    (var_0 ≠ none) ->
+    ((Option.get! var_0) = c) ->
     (wf_uN 128 (Option.get! var_0)) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VEXTUNOP sh_2 sh_1 vextunop)) ->
@@ -16210,8 +16238,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.VCONST .V128 c_1), (.VEXTUNOP sh_2 sh_1 vextunop)] : (List instr)) ([(.VCONST .V128 c)] : (List instr))
   | vextbinop : forall (c_1 : vec_) (c_2 : vec_) (sh_2 : ishape) (sh_1 : ishape) (vextbinop : vextbinop__) (c : vec_) (var_0 : (Option vec_)), 
     (fun_vextbinop__ sh_1 sh_2 vextbinop c_1 c_2 var_0) ->
-    (var_0 != none) ->
-    ((Option.get! var_0) == c) ->
+    (var_0 ≠ none) ->
+    ((Option.get! var_0) = c) ->
     (wf_uN 128 (Option.get! var_0)) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VCONST .V128 c_2)) ->
@@ -16220,8 +16248,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.VCONST .V128 c_1), (.VCONST .V128 c_2), (.VEXTBINOP sh_2 sh_1 vextbinop)] : (List instr)) ([(.VCONST .V128 c)] : (List instr))
   | vextternop : forall (c_1 : vec_) (c_2 : vec_) (c_3 : vec_) (sh_2 : ishape) (sh_1 : ishape) (vextternop : vextternop__) (c : vec_) (var_0 : (Option vec_)), 
     (fun_vextternop__ sh_1 sh_2 vextternop c_1 c_2 c_3 var_0) ->
-    (var_0 != none) ->
-    ((Option.get! var_0) == c) ->
+    (var_0 ≠ none) ->
+    ((Option.get! var_0) = c) ->
     (wf_uN 128 (Option.get! var_0)) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VCONST .V128 c_2)) ->
@@ -16231,7 +16259,7 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.VCONST .V128 c_1), (.VCONST .V128 c_2), (.VCONST .V128 c_3), (.VEXTTERNOP sh_2 sh_1 vextternop)] : (List instr)) ([(.VCONST .V128 c)] : (List instr))
   | vnarrow : forall (c_1 : vec_) (c_2 : vec_) (sh_2 : ishape) (sh_1 : ishape) (v_sx : sx) (c : vec_) (var_0 : vec_), 
     (fun_vnarrowop__ (proj_ishape_0 sh_1) (proj_ishape_0 sh_2) v_sx c_1 c_2 var_0) ->
-    (c == var_0) ->
+    (c = var_0) ->
     (wf_uN 128 var_0) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VCONST .V128 c_2)) ->
@@ -16240,8 +16268,8 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     Step_pure ([(.VCONST .V128 c_1), (.VCONST .V128 c_2), (.VNARROW sh_2 sh_1 v_sx)] : (List instr)) ([(.VCONST .V128 c)] : (List instr))
   | vcvtop : forall (c_1 : vec_) (sh_2 : shape) (sh_1 : shape) (vcvtop : vcvtop__) (c : vec_) (var_0 : (Option vec_)), 
     (fun_vcvtop__ sh_1 sh_2 vcvtop c_1 var_0) ->
-    (var_0 != none) ->
-    (c == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (c = (Option.get! var_0)) ->
     (wf_uN 128 (Option.get! var_0)) ->
     (wf_instr (.VCONST .V128 c_1)) ->
     (wf_instr (.VCVTOP sh_2 sh_1 vcvtop)) ->
@@ -16263,7 +16291,7 @@ inductive blocktype__is_wf : state -> blocktype -> instrtype -> Prop where
     (fun_blocktype_ v_state v_blocktype var_0) ->
     (wf_state v_state) ->
     (wf_blocktype v_blocktype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_instrtype ret_val) ->
     blocktype__is_wf v_state v_blocktype ret_val
 
@@ -16300,8 +16328,8 @@ inductive Step_read_before_throw_ref_handler_next : config -> Prop where
   | throw_ref_handler_catch_ref_0 : forall (z : state) (v_n : n) (x : idx) (l : labelidx) (catch'_lst : (List «catch»)) (a : addr) (val_lst : (List val)), 
     (a < (List.length (fun_exninst z))) ->
     ((proj_uN_0 x) < (List.length (fun_tagaddr z))) ->
-    ((((fun_exninst z)[a]!).TAG) == ((fun_tagaddr z)[(proj_uN_0 x)]!)) ->
-    (val_lst == (((fun_exninst z)[a]!).FIELDS)) ->
+    ((((fun_exninst z)[a]!).TAG) = ((fun_tagaddr z)[(proj_uN_0 x)]!)) ->
+    (val_lst = (((fun_exninst z)[a]!).FIELDS)) ->
     Forall (fun (v_val : val) => (wf_val v_val)) val_lst ->
     Forall (fun (iter : exninst) => (wf_exninst iter)) (fun_exninst z) ->
     (wf_config (.mk_config z ([(.HANDLER_ v_n (([(.CATCH_REF x l)] : (List «catch»)) ++ catch'_lst) ([(.REF_EXN_ADDR a), .THROW_REF] : (List instr)))] : (List instr)))) ->
@@ -16311,8 +16339,8 @@ inductive Step_read_before_throw_ref_handler_next : config -> Prop where
   | throw_ref_handler_catch_0 : forall (z : state) (v_n : n) (x : idx) (l : labelidx) (catch'_lst : (List «catch»)) (a : addr) (val_lst : (List val)), 
     (a < (List.length (fun_exninst z))) ->
     ((proj_uN_0 x) < (List.length (fun_tagaddr z))) ->
-    ((((fun_exninst z)[a]!).TAG) == ((fun_tagaddr z)[(proj_uN_0 x)]!)) ->
-    (val_lst == (((fun_exninst z)[a]!).FIELDS)) ->
+    ((((fun_exninst z)[a]!).TAG) = ((fun_tagaddr z)[(proj_uN_0 x)]!)) ->
+    (val_lst = (((fun_exninst z)[a]!).FIELDS)) ->
     Forall (fun (v_val : val) => (wf_val v_val)) val_lst ->
     Forall (fun (iter : exninst) => (wf_exninst iter)) (fun_exninst z) ->
     (wf_config (.mk_config z ([(.HANDLER_ v_n (([(.CATCH x l)] : (List «catch»)) ++ catch'_lst) ([(.REF_EXN_ADDR a), .THROW_REF] : (List instr)))] : (List instr)))) ->
@@ -16322,7 +16350,7 @@ inductive Step_read_before_throw_ref_handler_next : config -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:360.1-363.14 -/
 inductive Step_read_before_table_fill_zero : config -> Prop where
   | table_fill_oob_0 : forall (z : state) («at» : addrtype) (i : num_) (v_val : val) (v_n : n) (x : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length ((fun_table z x).REFS))) ->
     (wf_tableinst (fun_table z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.TABLE_FILL x)] : (List instr)))) ->
@@ -16332,9 +16360,9 @@ inductive Step_read_before_table_fill_zero : config -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:377.1-380.14 -/
 inductive Step_read_before_table_copy_zero : config -> Prop where
   | table_copy_oob_0 : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_1) != none) ->
-    ((proj_num__0 i_2) != none) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length ((fun_table z x_1).REFS))) || (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length ((fun_table z x_2).REFS)))) ->
+    ((proj_num__0 i_1) ≠ none) ->
+    ((proj_num__0 i_2) ≠ none) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length ((fun_table z x_1).REFS))) ∨ (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length ((fun_table z x_2).REFS)))) ->
     (wf_tableinst (fun_table z x_1)) ->
     (wf_tableinst (fun_table z x_2)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x_1 x_2)] : (List instr)))) ->
@@ -16345,13 +16373,13 @@ inductive Step_read_before_table_copy_zero : config -> Prop where
 inductive Step_read_before_table_copy_le : config -> Prop where
   | table_copy_zero_0 : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x : idx) (y : idx), 
     (¬(Step_read_before_table_copy_zero (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr))))) ->
-    (v_n == 0) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr)))) ->
     Step_read_before_table_copy_le (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr)))
   | table_copy_oob_1 : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_1) != none) ->
-    ((proj_num__0 i_2) != none) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length ((fun_table z x_1).REFS))) || (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length ((fun_table z x_2).REFS)))) ->
+    ((proj_num__0 i_1) ≠ none) ->
+    ((proj_num__0 i_2) ≠ none) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length ((fun_table z x_1).REFS))) ∨ (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length ((fun_table z x_2).REFS)))) ->
     (wf_tableinst (fun_table z x_1)) ->
     (wf_tableinst (fun_table z x_2)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x_1 x_2)] : (List instr)))) ->
@@ -16362,8 +16390,8 @@ inductive Step_read_before_table_copy_le : config -> Prop where
 inductive Step_read_before_table_copy_gt : config -> Prop where
   | table_copy_le_0 : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x : idx) (y : idx), 
     (¬(Step_read_before_table_copy_le (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr))))) ->
-    ((proj_num__0 i_1) != none) ->
-    ((proj_num__0 i_2) != none) ->
+    ((proj_num__0 i_1) ≠ none) ->
+    ((proj_num__0 i_2) ≠ none) ->
     ((proj_uN_0 (Option.get! (proj_num__0 i_1))) <= (proj_uN_0 (Option.get! (proj_num__0 i_2)))) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr)))) ->
     (wf_instr (.CONST (numtype_addrtype at_1) i_1)) ->
@@ -16377,13 +16405,13 @@ inductive Step_read_before_table_copy_gt : config -> Prop where
     Step_read_before_table_copy_gt (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr)))
   | table_copy_zero_1 : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x : idx) (y : idx), 
     (¬(Step_read_before_table_copy_zero (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr))))) ->
-    (v_n == 0) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr)))) ->
     Step_read_before_table_copy_gt (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr)))
   | table_copy_oob_2 : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_1) != none) ->
-    ((proj_num__0 i_2) != none) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length ((fun_table z x_1).REFS))) || (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length ((fun_table z x_2).REFS)))) ->
+    ((proj_num__0 i_1) ≠ none) ->
+    ((proj_num__0 i_2) ≠ none) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length ((fun_table z x_1).REFS))) ∨ (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length ((fun_table z x_2).REFS)))) ->
     (wf_tableinst (fun_table z x_1)) ->
     (wf_tableinst (fun_table z x_2)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x_1 x_2)] : (List instr)))) ->
@@ -16393,9 +16421,9 @@ inductive Step_read_before_table_copy_gt : config -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:401.1-404.14 -/
 inductive Step_read_before_table_init_zero : config -> Prop where
   | table_init_oob_0 : forall (z : state) («at» : addrtype) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 i) != none) ->
-    ((proj_num__0 j) != none) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length ((fun_table z x).REFS))) || (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) > (List.length ((fun_elem z y).REFS)))) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((proj_num__0 j) ≠ none) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length ((fun_table z x).REFS))) ∨ (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) > (List.length ((fun_elem z y).REFS)))) ->
     (wf_tableinst (fun_table z x)) ->
     (wf_eleminst (fun_elem z y)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.TABLE_INIT x y)] : (List instr)))) ->
@@ -16405,7 +16433,7 @@ inductive Step_read_before_table_init_zero : config -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:562.1-565.14 -/
 inductive Step_read_before_memory_fill_zero : config -> Prop where
   | memory_fill_oob_0 : forall (z : state) («at» : addrtype) (i : num_) (v_val : val) (v_n : n) (x : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length ((fun_mem z x).BYTES))) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.MEMORY_FILL x)] : (List instr)))) ->
@@ -16415,9 +16443,9 @@ inductive Step_read_before_memory_fill_zero : config -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:579.1-582.14 -/
 inductive Step_read_before_memory_copy_zero : config -> Prop where
   | memory_copy_oob_0 : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_1) != none) ->
-    ((proj_num__0 i_2) != none) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length ((fun_mem z x_1).BYTES))) || (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length ((fun_mem z x_2).BYTES)))) ->
+    ((proj_num__0 i_1) ≠ none) ->
+    ((proj_num__0 i_2) ≠ none) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length ((fun_mem z x_1).BYTES))) ∨ (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length ((fun_mem z x_2).BYTES)))) ->
     (wf_meminst (fun_mem z x_1)) ->
     (wf_meminst (fun_mem z x_2)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr)))) ->
@@ -16428,13 +16456,13 @@ inductive Step_read_before_memory_copy_zero : config -> Prop where
 inductive Step_read_before_memory_copy_le : config -> Prop where
   | memory_copy_zero_0 : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x_1 : idx) (x_2 : idx), 
     (¬(Step_read_before_memory_copy_zero (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr))))) ->
-    (v_n == 0) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr)))) ->
     Step_read_before_memory_copy_le (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr)))
   | memory_copy_oob_1 : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_1) != none) ->
-    ((proj_num__0 i_2) != none) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length ((fun_mem z x_1).BYTES))) || (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length ((fun_mem z x_2).BYTES)))) ->
+    ((proj_num__0 i_1) ≠ none) ->
+    ((proj_num__0 i_2) ≠ none) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length ((fun_mem z x_1).BYTES))) ∨ (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length ((fun_mem z x_2).BYTES)))) ->
     (wf_meminst (fun_mem z x_1)) ->
     (wf_meminst (fun_mem z x_2)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr)))) ->
@@ -16444,9 +16472,9 @@ inductive Step_read_before_memory_copy_le : config -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:603.1-606.14 -/
 inductive Step_read_before_memory_init_zero : config -> Prop where
   | memory_init_oob_0 : forall (z : state) («at» : addrtype) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 i) != none) ->
-    ((proj_num__0 j) != none) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length ((fun_mem z x).BYTES))) || (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) > (List.length ((fun_data z y).BYTES)))) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((proj_num__0 j) ≠ none) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length ((fun_mem z x).BYTES))) ∨ (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) > (List.length ((fun_data z y).BYTES)))) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_datainst (fun_data z y)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.MEMORY_INIT x y)] : (List instr)))) ->
@@ -16475,7 +16503,7 @@ inductive Step_read_before_ref_cast_fail : config -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:804.1-807.14 -/
 inductive Step_read_before_array_fill_zero : config -> Prop where
   | array_fill_oob_0 : forall (z : state) (a : addr) (i : num_) (v_val : val) (v_n : n) (x : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (a < (List.length (fun_arrayinst z))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length (((fun_arrayinst z)[a]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -16487,11 +16515,11 @@ inductive Step_read_before_array_fill_zero : config -> Prop where
 inductive Step_read_before_array_fill_succ : config -> Prop where
   | array_fill_zero_0 : forall (z : state) (a : addr) (i : num_) (v_val : val) (v_n : n) (x : idx), 
     (¬(Step_read_before_array_fill_zero (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (instr_val v_val), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_FILL x)] : (List instr))))) ->
-    (v_n == 0) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (instr_val v_val), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_FILL x)] : (List instr)))) ->
     Step_read_before_array_fill_succ (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (instr_val v_val), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_FILL x)] : (List instr)))
   | array_fill_oob_1 : forall (z : state) (a : addr) (i : num_) (v_val : val) (v_n : n) (x : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (a < (List.length (fun_arrayinst z))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length (((fun_arrayinst z)[a]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -16502,7 +16530,7 @@ inductive Step_read_before_array_fill_succ : config -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:831.1-835.14 -/
 inductive Step_read_before_array_copy_zero : config -> Prop where
   | array_copy_oob2_0 : forall (z : state) (a_1 : addr) (i_1 : num_) (a_2 : addr) (i_2 : num_) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_2) != none) ->
+    ((proj_num__0 i_2) ≠ none) ->
     (a_2 < (List.length (fun_arrayinst z))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length (((fun_arrayinst z)[a_2]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -16510,7 +16538,7 @@ inductive Step_read_before_array_copy_zero : config -> Prop where
     (wf_instr .TRAP) ->
     Step_read_before_array_copy_zero (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr)))
   | array_copy_oob1_0 : forall (z : state) (a_1 : addr) (i_1 : num_) (a_2 : addr) (i_2 : num_) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_1) != none) ->
+    ((proj_num__0 i_1) ≠ none) ->
     (a_1 < (List.length (fun_arrayinst z))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length (((fun_arrayinst z)[a_1]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -16522,11 +16550,11 @@ inductive Step_read_before_array_copy_zero : config -> Prop where
 inductive Step_read_before_array_copy_le : config -> Prop where
   | array_copy_zero_0 : forall (z : state) (a_1 : addr) (i_1 : num_) (a_2 : addr) (i_2 : num_) (v_n : n) (x_1 : idx) (x_2 : idx), 
     (¬(Step_read_before_array_copy_zero (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr))))) ->
-    (v_n == 0) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr)))) ->
     Step_read_before_array_copy_le (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr)))
   | array_copy_oob2_1 : forall (z : state) (a_1 : addr) (i_1 : num_) (a_2 : addr) (i_2 : num_) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_2) != none) ->
+    ((proj_num__0 i_2) ≠ none) ->
     (a_2 < (List.length (fun_arrayinst z))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length (((fun_arrayinst z)[a_2]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -16534,7 +16562,7 @@ inductive Step_read_before_array_copy_le : config -> Prop where
     (wf_instr .TRAP) ->
     Step_read_before_array_copy_le (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr)))
   | array_copy_oob1_1 : forall (z : state) (a_1 : addr) (i_1 : num_) (a_2 : addr) (i_2 : num_) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_1) != none) ->
+    ((proj_num__0 i_1) ≠ none) ->
     (a_1 < (List.length (fun_arrayinst z))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length (((fun_arrayinst z)[a_1]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -16548,10 +16576,10 @@ inductive Step_read_before_array_copy_gt : config -> Prop where
     (fun_type z x_2 var_0) ->
     (¬(Step_read_before_array_copy_le (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr))))) ->
     (Expand var_0 (.ARRAY (.mk_fieldtype mut_opt zt_2))) ->
-    ((proj_num__0 i_1) != none) ->
-    ((proj_num__0 i_2) != none) ->
-    ((fun_sx zt_2) != none) ->
-    (((proj_uN_0 (Option.get! (proj_num__0 i_1))) <= (proj_uN_0 (Option.get! (proj_num__0 i_2)))) && (sx_opt == (Option.get! (fun_sx zt_2)))) ->
+    ((proj_num__0 i_1) ≠ none) ->
+    ((proj_num__0 i_2) ≠ none) ->
+    ((fun_sx zt_2) ≠ none) ->
+    (((proj_uN_0 (Option.get! (proj_num__0 i_1))) <= (proj_uN_0 (Option.get! (proj_num__0 i_2)))) ∧ (sx_opt = (Option.get! (fun_sx zt_2)))) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr)))) ->
     (wf_instr (.REF_ARRAY_ADDR a_1)) ->
     (wf_instr (.CONST .I32 i_1)) ->
@@ -16567,11 +16595,11 @@ inductive Step_read_before_array_copy_gt : config -> Prop where
     Step_read_before_array_copy_gt (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr)))
   | array_copy_zero_1 : forall (z : state) (a_1 : addr) (i_1 : num_) (a_2 : addr) (i_2 : num_) (v_n : n) (x_1 : idx) (x_2 : idx), 
     (¬(Step_read_before_array_copy_zero (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr))))) ->
-    (v_n == 0) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr)))) ->
     Step_read_before_array_copy_gt (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr)))
   | array_copy_oob2_2 : forall (z : state) (a_1 : addr) (i_1 : num_) (a_2 : addr) (i_2 : num_) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_2) != none) ->
+    ((proj_num__0 i_2) ≠ none) ->
     (a_2 < (List.length (fun_arrayinst z))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length (((fun_arrayinst z)[a_2]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -16579,7 +16607,7 @@ inductive Step_read_before_array_copy_gt : config -> Prop where
     (wf_instr .TRAP) ->
     Step_read_before_array_copy_gt (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr)))
   | array_copy_oob1_2 : forall (z : state) (a_1 : addr) (i_1 : num_) (a_2 : addr) (i_2 : num_) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_1) != none) ->
+    ((proj_num__0 i_1) ≠ none) ->
     (a_1 < (List.length (fun_arrayinst z))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length (((fun_arrayinst z)[a_1]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -16590,14 +16618,14 @@ inductive Step_read_before_array_copy_gt : config -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:874.1-878.14 -/
 inductive Step_read_before_array_init_elem_zero : config -> Prop where
   | array_init_elem_oob2_0 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 j) != none) ->
+    ((proj_num__0 j) ≠ none) ->
     (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) > (List.length ((fun_elem z y).REFS))) ->
     (wf_eleminst (fun_elem z y)) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr)))) ->
     (wf_instr .TRAP) ->
     Step_read_before_array_init_elem_zero (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr)))
   | array_init_elem_oob1_0 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (a < (List.length (fun_arrayinst z))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length (((fun_arrayinst z)[a]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -16609,18 +16637,18 @@ inductive Step_read_before_array_init_elem_zero : config -> Prop where
 inductive Step_read_before_array_init_elem_succ : config -> Prop where
   | array_init_elem_zero_0 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     (¬(Step_read_before_array_init_elem_zero (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr))))) ->
-    (v_n == 0) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr)))) ->
     Step_read_before_array_init_elem_succ (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr)))
   | array_init_elem_oob2_1 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 j) != none) ->
+    ((proj_num__0 j) ≠ none) ->
     (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) > (List.length ((fun_elem z y).REFS))) ->
     (wf_eleminst (fun_elem z y)) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr)))) ->
     (wf_instr .TRAP) ->
     Step_read_before_array_init_elem_succ (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr)))
   | array_init_elem_oob1_1 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (a < (List.length (fun_arrayinst z))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length (((fun_arrayinst z)[a]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -16633,8 +16661,8 @@ inductive Step_read_before_array_init_data_zero : config -> Prop where
   | array_init_data_oob2_0 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx) (mut_opt : (Option «mut»)) (zt : storagetype) (var_0 : deftype), 
     (fun_type z x var_0) ->
     (Expand var_0 (.ARRAY (.mk_fieldtype mut_opt zt))) ->
-    ((proj_num__0 j) != none) ->
-    ((zsize zt) != none) ->
+    ((proj_num__0 j) ≠ none) ->
+    ((zsize zt) ≠ none) ->
     (((proj_uN_0 (Option.get! (proj_num__0 j))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (v_n * (Option.get! (zsize zt))))) / (Rat.ofInt (Int.ofNat 8)))))) > (List.length ((fun_data z y).BYTES))) ->
     (wf_datainst (fun_data z y)) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr)))) ->
@@ -16642,7 +16670,7 @@ inductive Step_read_before_array_init_data_zero : config -> Prop where
     (wf_comptype (.ARRAY (.mk_fieldtype mut_opt zt))) ->
     Step_read_before_array_init_data_zero (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr)))
   | array_init_data_oob1_0 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (a < (List.length (fun_arrayinst z))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length (((fun_arrayinst z)[a]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -16654,14 +16682,14 @@ inductive Step_read_before_array_init_data_zero : config -> Prop where
 inductive Step_read_before_array_init_data_num : config -> Prop where
   | array_init_data_zero_0 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     (¬(Step_read_before_array_init_data_zero (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr))))) ->
-    (v_n == 0) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr)))) ->
     Step_read_before_array_init_data_num (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr)))
   | array_init_data_oob2_1 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx) (mut_opt : (Option «mut»)) (zt : storagetype) (var_0 : deftype), 
     (fun_type z x var_0) ->
     (Expand var_0 (.ARRAY (.mk_fieldtype mut_opt zt))) ->
-    ((proj_num__0 j) != none) ->
-    ((zsize zt) != none) ->
+    ((proj_num__0 j) ≠ none) ->
+    ((zsize zt) ≠ none) ->
     (((proj_uN_0 (Option.get! (proj_num__0 j))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (v_n * (Option.get! (zsize zt))))) / (Rat.ofInt (Int.ofNat 8)))))) > (List.length ((fun_data z y).BYTES))) ->
     (wf_datainst (fun_data z y)) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr)))) ->
@@ -16669,7 +16697,7 @@ inductive Step_read_before_array_init_data_num : config -> Prop where
     (wf_comptype (.ARRAY (.mk_fieldtype mut_opt zt))) ->
     Step_read_before_array_init_data_num (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr)))
   | array_init_data_oob1_1 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (a < (List.length (fun_arrayinst z))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length (((fun_arrayinst z)[a]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -16681,26 +16709,26 @@ inductive Step_read_before_array_init_data_num : config -> Prop where
 inductive Step_read : config -> (List instr) -> Prop where
   | block : forall (z : state) (v_m : m) (val_lst : (List val)) (bt : blocktype) (instr_lst : (List instr)) (v_n : n) (t_1_lst : (List valtype)) (t_2_lst : (List valtype)) (var_0 : instrtype), 
     (fun_blocktype_ z bt var_0) ->
-    (var_0 == (.mk_instrtype (.mk_list t_1_lst) [] (.mk_list t_2_lst))) ->
+    (var_0 = (.mk_instrtype (.mk_list t_1_lst) [] (.mk_list t_2_lst))) ->
     (wf_instrtype var_0) ->
     (wf_config (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.BLOCK bt instr_lst)] : (List instr))))) ->
     (wf_instr (.LABEL_ v_n [] ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ instr_lst))) ->
     (wf_instrtype (.mk_instrtype (.mk_list t_1_lst) [] (.mk_list t_2_lst))) ->
-    (v_m == (List.length val_lst)) ->
-    (v_m == (List.length t_1_lst)) ->
-    (v_n == (List.length t_2_lst)) ->
+    (v_m = (List.length val_lst)) ->
+    (v_m = (List.length t_1_lst)) ->
+    (v_n = (List.length t_2_lst)) ->
     ((List.length val_lst) = v_m) ->
     Step_read (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.BLOCK bt instr_lst)] : (List instr)))) ([(.LABEL_ v_n [] ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ instr_lst))] : (List instr))
   | loop : forall (z : state) (v_m : m) (val_lst : (List val)) (bt : blocktype) (instr_lst : (List instr)) (t_1_lst : (List valtype)) (v_n : n) (t_2_lst : (List valtype)) (var_0 : instrtype), 
     (fun_blocktype_ z bt var_0) ->
-    (var_0 == (.mk_instrtype (.mk_list t_1_lst) [] (.mk_list t_2_lst))) ->
+    (var_0 = (.mk_instrtype (.mk_list t_1_lst) [] (.mk_list t_2_lst))) ->
     (wf_instrtype var_0) ->
     (wf_config (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.LOOP bt instr_lst)] : (List instr))))) ->
     (wf_instr (.LABEL_ v_m ([(.LOOP bt instr_lst)] : (List instr)) ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ instr_lst))) ->
     (wf_instrtype (.mk_instrtype (.mk_list t_1_lst) [] (.mk_list t_2_lst))) ->
-    (v_m == (List.length val_lst)) ->
-    (v_m == (List.length t_1_lst)) ->
-    (v_n == (List.length t_2_lst)) ->
+    (v_m = (List.length val_lst)) ->
+    (v_m = (List.length t_1_lst)) ->
+    (v_n = (List.length t_2_lst)) ->
     ((List.length val_lst) = v_m) ->
     Step_read (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.LOOP bt instr_lst)] : (List instr)))) ([(.LABEL_ v_m ([(.LOOP bt instr_lst)] : (List instr)) ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ instr_lst))] : (List instr))
   | br_on_cast_succeed : forall (s : store) (f : frame) (v_ref : ref) (l : labelidx) (rt_1 : reftype) (rt_2 : reftype) (var_0 : reftype), 
@@ -16728,7 +16756,7 @@ inductive Step_read : config -> (List instr) -> Prop where
   | call : forall (z : state) (x : idx) (a : addr), 
     (a < (List.length (fun_funcinst z))) ->
     ((proj_uN_0 x) < (List.length ((fun_moduleinst z).FUNCS))) ->
-    ((((fun_moduleinst z).FUNCS)[(proj_uN_0 x)]!) == a) ->
+    ((((fun_moduleinst z).FUNCS)[(proj_uN_0 x)]!) = a) ->
     (wf_moduleinst (fun_moduleinst z)) ->
     (wf_config (.mk_config z ([(.CALL x)] : (List instr)))) ->
     (wf_instr (.REF_FUNC_ADDR a)) ->
@@ -16741,27 +16769,27 @@ inductive Step_read : config -> (List instr) -> Prop where
   | call_ref_func : forall (z : state) (v_n : n) (val_lst : (List val)) (a : addr) (yy : typeuse) (v_m : m) (f : frame) (instr_lst : (List instr)) (fi : funcinst) (t_1_lst : (List valtype)) (t_2_lst : (List valtype)) (x : idx) (t_lst : (List valtype)) (var_0_lst : (List (Option (Option val)))), 
     Forall₂ (fun (var_0 : (Option (Option val))) (t : valtype) => (fun_default_ t var_0)) var_0_lst t_lst ->
     (a < (List.length (fun_funcinst z))) ->
-    (((fun_funcinst z)[a]!) == fi) ->
+    (((fun_funcinst z)[a]!) = fi) ->
     (Expand (fi.TYPE) (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst))) ->
-    ((fi.CODE) == (.FUNC x (List.map (fun (t : valtype) => ((.LOCAL t) : «local»)) t_lst) instr_lst)) ->
-    Forall (fun (var_0 : (Option (Option val))) => (var_0 != none)) var_0_lst ->
-    (f == { LOCALS := ((List.map (fun (v_val : val) => (some v_val)) val_lst) ++ (List.map (fun (var_0 : (Option (Option val))) => (Option.get! var_0)) var_0_lst)), MODULE := (fi.MODULE) }) ->
+    ((fi.CODE) = (.FUNC x (List.map (fun (t : valtype) => ((.LOCAL t) : «local»)) t_lst) instr_lst)) ->
+    Forall (fun (var_0 : (Option (Option val))) => (var_0 ≠ none)) var_0_lst ->
+    (f = { LOCALS := ((List.map (fun (v_val : val) => (some v_val)) val_lst) ++ (List.map (fun (var_0 : (Option (Option val))) => (Option.get! var_0)) var_0_lst)), MODULE := (fi.MODULE) }) ->
     Forall (fun (iter : funcinst) => (wf_funcinst iter)) (fun_funcinst z) ->
     (wf_config (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.REF_FUNC_ADDR a), (.CALL_REF yy)] : (List instr))))) ->
     (wf_instr (.FRAME_ v_m f ([(.LABEL_ v_m [] instr_lst)] : (List instr)))) ->
     (wf_comptype (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst))) ->
     (wf_funccode (.FUNC x (List.map (fun (t : valtype) => ((.LOCAL t) : «local»)) t_lst) instr_lst)) ->
     (wf_frame { LOCALS := ((List.map (fun (v_val : val) => (some v_val)) val_lst) ++ (List.map (fun (var_0 : (Option (Option val))) => (Option.get! var_0)) var_0_lst)), MODULE := (fi.MODULE) }) ->
-    (v_n == (List.length val_lst)) ->
-    (v_n == (List.length t_1_lst)) ->
-    (v_m == (List.length t_2_lst)) ->
+    (v_n = (List.length val_lst)) ->
+    (v_n = (List.length t_1_lst)) ->
+    (v_m = (List.length t_2_lst)) ->
     ((List.length val_lst) = v_n) ->
     ((List.length var_0_lst) = (List.length t_lst)) ->
     Step_read (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.REF_FUNC_ADDR a), (.CALL_REF yy)] : (List instr)))) ([(.FRAME_ v_m f ([(.LABEL_ v_m [] instr_lst)] : (List instr)))] : (List instr))
   | return_call : forall (z : state) (x : idx) (a : addr), 
     (a < (List.length (fun_funcinst z))) ->
     ((proj_uN_0 x) < (List.length ((fun_moduleinst z).FUNCS))) ->
-    ((((fun_moduleinst z).FUNCS)[(proj_uN_0 x)]!) == a) ->
+    ((((fun_moduleinst z).FUNCS)[(proj_uN_0 x)]!) = a) ->
     (wf_moduleinst (fun_moduleinst z)) ->
     (wf_config (.mk_config z ([(.RETURN_CALL x)] : (List instr)))) ->
     (wf_instr (.REF_FUNC_ADDR a)) ->
@@ -16787,9 +16815,9 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr (.REF_FUNC_ADDR a)) ->
     (wf_instr (.CALL_REF yy)) ->
     (wf_comptype (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst))) ->
-    (v_n == (List.length val_lst)) ->
-    (v_n == (List.length t_1_lst)) ->
-    (v_m == (List.length t_2_lst)) ->
+    (v_n = (List.length val_lst)) ->
+    (v_n = (List.length t_1_lst)) ->
+    (v_m = (List.length t_2_lst)) ->
     ((List.length val_lst) = v_n) ->
     Step_read (.mk_config z ([(.FRAME_ k f (((((List.map (fun (val' : val) => (instr_val val')) val'_lst) ++ (List.map (fun (v_val : val) => (instr_val v_val)) val_lst)) ++ ([(.REF_FUNC_ADDR a)] : (List instr))) ++ ([(.RETURN_CALL_REF yy)] : (List instr))) ++ instr_lst))] : (List instr))) ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.REF_FUNC_ADDR a), (.CALL_REF yy)] : (List instr)))
   | throw_ref_null : forall (z : state), 
@@ -16797,7 +16825,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([.REF_NULL_ADDR, .THROW_REF] : (List instr))) ([.TRAP] : (List instr))
   | throw_ref_instrs : forall (z : state) (val_lst : (List val)) (a : addr) (instr_lst : (List instr)), 
-    ((val_lst != []) || (instr_lst != [])) ->
+    ((val_lst ≠ []) ∨ (instr_lst ≠ [])) ->
     (wf_config (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ (([(.REF_EXN_ADDR a)] : (List instr)) ++ (([.THROW_REF] : (List instr)) ++ instr_lst))))) ->
     (wf_instr (.REF_EXN_ADDR a)) ->
     (wf_instr .THROW_REF) ->
@@ -16820,8 +16848,8 @@ inductive Step_read : config -> (List instr) -> Prop where
   | throw_ref_handler_catch : forall (z : state) (v_n : n) (x : idx) (l : labelidx) (catch'_lst : (List «catch»)) (a : addr) (val_lst : (List val)), 
     (a < (List.length (fun_exninst z))) ->
     ((proj_uN_0 x) < (List.length (fun_tagaddr z))) ->
-    ((((fun_exninst z)[a]!).TAG) == ((fun_tagaddr z)[(proj_uN_0 x)]!)) ->
-    (val_lst == (((fun_exninst z)[a]!).FIELDS)) ->
+    ((((fun_exninst z)[a]!).TAG) = ((fun_tagaddr z)[(proj_uN_0 x)]!)) ->
+    (val_lst = (((fun_exninst z)[a]!).FIELDS)) ->
     Forall (fun (v_val : val) => (wf_val v_val)) val_lst ->
     Forall (fun (iter : exninst) => (wf_exninst iter)) (fun_exninst z) ->
     (wf_config (.mk_config z ([(.HANDLER_ v_n (([(.CATCH x l)] : (List «catch»)) ++ catch'_lst) ([(.REF_EXN_ADDR a), .THROW_REF] : (List instr)))] : (List instr)))) ->
@@ -16830,8 +16858,8 @@ inductive Step_read : config -> (List instr) -> Prop where
   | throw_ref_handler_catch_ref : forall (z : state) (v_n : n) (x : idx) (l : labelidx) (catch'_lst : (List «catch»)) (a : addr) (val_lst : (List val)), 
     (a < (List.length (fun_exninst z))) ->
     ((proj_uN_0 x) < (List.length (fun_tagaddr z))) ->
-    ((((fun_exninst z)[a]!).TAG) == ((fun_tagaddr z)[(proj_uN_0 x)]!)) ->
-    (val_lst == (((fun_exninst z)[a]!).FIELDS)) ->
+    ((((fun_exninst z)[a]!).TAG) = ((fun_tagaddr z)[(proj_uN_0 x)]!)) ->
+    (val_lst = (((fun_exninst z)[a]!).FIELDS)) ->
     Forall (fun (v_val : val) => (wf_val v_val)) val_lst ->
     Forall (fun (iter : exninst) => (wf_exninst iter)) (fun_exninst z) ->
     (wf_config (.mk_config z ([(.HANDLER_ v_n (([(.CATCH_REF x l)] : (List «catch»)) ++ catch'_lst) ([(.REF_EXN_ADDR a), .THROW_REF] : (List instr)))] : (List instr)))) ->
@@ -16854,30 +16882,30 @@ inductive Step_read : config -> (List instr) -> Prop where
     Step_read (.mk_config z ([(.HANDLER_ v_n (([v_catch] : (List «catch»)) ++ catch'_lst) ([(.REF_EXN_ADDR a), .THROW_REF] : (List instr)))] : (List instr))) ([(.HANDLER_ v_n catch'_lst ([(.REF_EXN_ADDR a), .THROW_REF] : (List instr)))] : (List instr))
   | try_table : forall (z : state) (v_m : m) (val_lst : (List val)) (bt : blocktype) (catch_lst : (List «catch»)) (instr_lst : (List instr)) (v_n : n) (t_1_lst : (List valtype)) (t_2_lst : (List valtype)) (var_0 : instrtype), 
     (fun_blocktype_ z bt var_0) ->
-    (var_0 == (.mk_instrtype (.mk_list t_1_lst) [] (.mk_list t_2_lst))) ->
+    (var_0 = (.mk_instrtype (.mk_list t_1_lst) [] (.mk_list t_2_lst))) ->
     (wf_instrtype var_0) ->
     (wf_config (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.TRY_TABLE bt (.mk_list catch_lst) instr_lst)] : (List instr))))) ->
     (wf_instr (.HANDLER_ v_n catch_lst ([(.LABEL_ v_n [] ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ instr_lst))] : (List instr)))) ->
     (wf_instrtype (.mk_instrtype (.mk_list t_1_lst) [] (.mk_list t_2_lst))) ->
-    (v_m == (List.length val_lst)) ->
-    (v_m == (List.length t_1_lst)) ->
-    (v_n == (List.length t_2_lst)) ->
+    (v_m = (List.length val_lst)) ->
+    (v_m = (List.length t_1_lst)) ->
+    (v_n = (List.length t_2_lst)) ->
     ((List.length val_lst) = v_m) ->
     Step_read (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.TRY_TABLE bt (.mk_list catch_lst) instr_lst)] : (List instr)))) ([(.HANDLER_ v_n catch_lst ([(.LABEL_ v_n [] ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ instr_lst))] : (List instr)))] : (List instr))
   | local_get : forall (z : state) (x : idx) (v_val : val), 
-    ((fun_local z x) == (some v_val)) ->
+    ((fun_local z x) = (some v_val)) ->
     (wf_val v_val) ->
     Forall (fun (iter : val) => (wf_val iter)) (Option.toList (fun_local z x)) ->
     (wf_config (.mk_config z ([(.LOCAL_GET x)] : (List instr)))) ->
     Step_read (.mk_config z ([(.LOCAL_GET x)] : (List instr))) ([(instr_val v_val)] : (List instr))
   | global_get : forall (z : state) (x : idx) (v_val : val), 
-    (((fun_global z x).VALUE) == v_val) ->
+    (((fun_global z x).VALUE) = v_val) ->
     (wf_val v_val) ->
     (wf_globalinst (fun_global z x)) ->
     (wf_config (.mk_config z ([(.GLOBAL_GET x)] : (List instr)))) ->
     Step_read (.mk_config z ([(.GLOBAL_GET x)] : (List instr))) ([(instr_val v_val)] : (List instr))
   | table_get_oob : forall (z : state) («at» : addrtype) (i : num_) (x : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     ((proj_uN_0 (Option.get! (proj_num__0 i))) >= (List.length ((fun_table z x).REFS))) ->
     (wf_tableinst (fun_table z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.TABLE_GET x)] : (List instr)))) ->
@@ -16885,34 +16913,34 @@ inductive Step_read : config -> (List instr) -> Prop where
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.TABLE_GET x)] : (List instr))) ([.TRAP] : (List instr))
   | table_get_val : forall (z : state) («at» : addrtype) (i : num_) (x : idx), 
     ((proj_uN_0 (Option.get! (proj_num__0 i))) < (List.length ((fun_table z x).REFS))) ->
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (wf_tableinst (fun_table z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.TABLE_GET x)] : (List instr)))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.TABLE_GET x)] : (List instr))) ([(instr_ref (((fun_table z x).REFS)[(proj_uN_0 (Option.get! (proj_num__0 i)))]!))] : (List instr))
   | table_size : forall (z : state) (x : idx) («at» : addrtype) (v_n : n) (lim : limits) (rt : reftype), 
-    ((List.length ((fun_table z x).REFS)) == v_n) ->
-    (((fun_table z x).TYPE) == (.mk_tabletype «at» lim rt)) ->
+    ((List.length ((fun_table z x).REFS)) = v_n) ->
+    (((fun_table z x).TYPE) = (.mk_tabletype «at» lim rt)) ->
     (wf_tableinst (fun_table z x)) ->
     (wf_config (.mk_config z ([(.TABLE_SIZE x)] : (List instr)))) ->
     (wf_instr (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n)))) ->
     (wf_tabletype (.mk_tabletype «at» lim rt)) ->
     Step_read (.mk_config z ([(.TABLE_SIZE x)] : (List instr))) ([(.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n)))] : (List instr))
   | table_fill_oob : forall (z : state) («at» : addrtype) (i : num_) (v_val : val) (v_n : n) (x : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length ((fun_table z x).REFS))) ->
     (wf_tableinst (fun_table z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.TABLE_FILL x)] : (List instr)))) ->
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.TABLE_FILL x)] : (List instr))) ([.TRAP] : (List instr))
   | table_fill_zero : forall (z : state) («at» : addrtype) (i : num_) (v_val : val) (v_n : n) (x : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) <= (List.length ((fun_table z x).REFS))) ->
-    (v_n == 0) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.TABLE_FILL x)] : (List instr)))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.TABLE_FILL x)] : (List instr))) []
   | table_fill_succ : forall (z : state) («at» : addrtype) (i : num_) (v_val : val) (v_n : n) (x : idx), 
-    ((proj_num__0 i) != none) ->
-    (v_n != 0) ->
+    ((proj_num__0 i) ≠ none) ->
+    (v_n ≠ 0) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) <= (List.length ((fun_table z x).REFS))) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.TABLE_FILL x)] : (List instr)))) ->
     (wf_instr (.CONST (numtype_addrtype «at») i)) ->
@@ -16922,9 +16950,9 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr (.TABLE_FILL x)) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.TABLE_FILL x)] : (List instr))) ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.TABLE_SET x), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN ((proj_uN_0 (Option.get! (proj_num__0 i))) + 1)))), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1)))))), (.TABLE_FILL x)] : (List instr))
   | table_copy_oob : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_1) != none) ->
-    ((proj_num__0 i_2) != none) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length ((fun_table z x_1).REFS))) || (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length ((fun_table z x_2).REFS)))) ->
+    ((proj_num__0 i_1) ≠ none) ->
+    ((proj_num__0 i_2) ≠ none) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length ((fun_table z x_1).REFS))) ∨ (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length ((fun_table z x_2).REFS)))) ->
     (wf_tableinst (fun_table z x_1)) ->
     (wf_tableinst (fun_table z x_2)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x_1 x_2)] : (List instr)))) ->
@@ -16932,12 +16960,12 @@ inductive Step_read : config -> (List instr) -> Prop where
     Step_read (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x_1 x_2)] : (List instr))) ([.TRAP] : (List instr))
   | table_copy_zero : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x : idx) (y : idx), 
     (¬(Step_read_before_table_copy_zero (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr))))) ->
-    (v_n == 0) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr)))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr))) []
   | table_copy_le : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 i_1) != none) ->
-    ((proj_num__0 i_2) != none) ->
+    ((proj_num__0 i_1) ≠ none) ->
+    ((proj_num__0 i_2) ≠ none) ->
     (¬(Step_read_before_table_copy_le (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr))))) ->
     ((proj_uN_0 (Option.get! (proj_num__0 i_1))) <= (proj_uN_0 (Option.get! (proj_num__0 i_2)))) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr)))) ->
@@ -16951,8 +16979,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr (.TABLE_COPY x y)) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr))) ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.TABLE_GET y), (.TABLE_SET x), (.CONST (numtype_addrtype at_1) (.mk_num__0 at_1 (.mk_uN ((proj_uN_0 (Option.get! (proj_num__0 i_1))) + 1)))), (.CONST (numtype_addrtype at_2) (.mk_num__0 at_2 (.mk_uN ((proj_uN_0 (Option.get! (proj_num__0 i_2))) + 1)))), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1)))))), (.TABLE_COPY x y)] : (List instr))
   | table_copy_gt : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 i_1) != none) ->
-    ((proj_num__0 i_2) != none) ->
+    ((proj_num__0 i_1) ≠ none) ->
+    ((proj_num__0 i_2) ≠ none) ->
     (¬(Step_read_before_table_copy_gt (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr))))) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr)))) ->
     (wf_instr (.CONST (numtype_addrtype at_1) (.mk_num__0 at_1 (.mk_uN (Int.toNat ((Int.ofNat ((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n)) - (Int.ofNat 1))))))) ->
@@ -16965,27 +16993,27 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr (.TABLE_COPY x y)) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr))) ([(.CONST (numtype_addrtype at_1) (.mk_num__0 at_1 (.mk_uN (Int.toNat ((Int.ofNat ((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n)) - (Int.ofNat 1)))))), (.CONST (numtype_addrtype at_2) (.mk_num__0 at_2 (.mk_uN (Int.toNat ((Int.ofNat ((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n)) - (Int.ofNat 1)))))), (.TABLE_GET y), (.TABLE_SET x), (.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1)))))), (.TABLE_COPY x y)] : (List instr))
   | table_init_oob : forall (z : state) («at» : addrtype) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 i) != none) ->
-    ((proj_num__0 j) != none) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length ((fun_table z x).REFS))) || (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) > (List.length ((fun_elem z y).REFS)))) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((proj_num__0 j) ≠ none) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length ((fun_table z x).REFS))) ∨ (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) > (List.length ((fun_elem z y).REFS)))) ->
     (wf_tableinst (fun_table z x)) ->
     (wf_eleminst (fun_elem z y)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.TABLE_INIT x y)] : (List instr)))) ->
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.TABLE_INIT x y)] : (List instr))) ([.TRAP] : (List instr))
   | table_init_zero : forall (z : state) («at» : addrtype) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 i) != none) ->
-    ((proj_num__0 j) != none) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) <= (List.length ((fun_table z x).REFS))) && (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) <= (List.length ((fun_elem z y).REFS)))) ->
-    (v_n == 0) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((proj_num__0 j) ≠ none) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) <= (List.length ((fun_table z x).REFS))) ∧ (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) <= (List.length ((fun_elem z y).REFS)))) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.TABLE_INIT x y)] : (List instr)))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.TABLE_INIT x y)] : (List instr))) []
   | table_init_succ : forall (z : state) («at» : addrtype) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     ((proj_uN_0 (Option.get! (proj_num__0 j))) < (List.length ((fun_elem z y).REFS))) ->
-    ((proj_num__0 j) != none) ->
-    ((proj_num__0 i) != none) ->
-    (v_n != 0) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) <= (List.length ((fun_table z x).REFS))) && (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) <= (List.length ((fun_elem z y).REFS)))) ->
+    ((proj_num__0 j) ≠ none) ->
+    ((proj_num__0 i) ≠ none) ->
+    (v_n ≠ 0) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) <= (List.length ((fun_table z x).REFS))) ∧ (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) <= (List.length ((fun_elem z y).REFS)))) ->
     (wf_eleminst (fun_elem z y)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.TABLE_INIT x y)] : (List instr)))) ->
     (wf_instr (.CONST (numtype_addrtype «at») i)) ->
@@ -16996,61 +17024,61 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr (.TABLE_INIT x y)) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.TABLE_INIT x y)] : (List instr))) ([(.CONST (numtype_addrtype «at») i), (instr_ref (((fun_elem z y).REFS)[(proj_uN_0 (Option.get! (proj_num__0 j)))]!)), (.TABLE_SET x), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN ((proj_uN_0 (Option.get! (proj_num__0 i))) + 1)))), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN ((proj_uN_0 (Option.get! (proj_num__0 j))) + 1)))), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1)))))), (.TABLE_INIT x y)] : (List instr))
   | load_num_oob : forall (z : state) («at» : addrtype) (i : num_) (nt : numtype) (x : idx) (ao : memarg), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     ((((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8)))))) > (List.length ((fun_mem z x).BYTES))) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.LOAD nt none x ao)] : (List instr)))) ->
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.LOAD nt none x ao)] : (List instr))) ([.TRAP] : (List instr))
   | load_num_val : forall (z : state) («at» : addrtype) (i : num_) (nt : numtype) (x : idx) (ao : memarg) (c : num_), 
-    ((proj_num__0 i) != none) ->
-    ((nbytes_ nt c) == (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8))))) (List.drop ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) ((fun_mem z x).BYTES)))) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((nbytes_ nt c) = (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8))))) (List.drop ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) ((fun_mem z x).BYTES)))) ->
     Forall (fun (iter : byte) => (wf_byte iter)) (nbytes_ nt c) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.LOAD nt none x ao)] : (List instr)))) ->
     (wf_instr (.CONST nt c)) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.LOAD nt none x ao)] : (List instr))) ([(.CONST nt c)] : (List instr))
   | load_pack_oob : forall (z : state) («at» : addrtype) (i : num_) (v_Inn : Inn) (v_n : n) (v_sx : sx) (x : idx) (ao : memarg), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     ((((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8)))))) > (List.length ((fun_mem z x).BYTES))) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.LOAD (numtype_addrtype v_Inn) (some (.mk_loadop__0 v_Inn (.mk_loadop_Inn (.mk_sz v_n) v_sx))) x ao)] : (List instr)))) ->
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.LOAD (numtype_addrtype v_Inn) (some (.mk_loadop__0 v_Inn (.mk_loadop_Inn (.mk_sz v_n) v_sx))) x ao)] : (List instr))) ([.TRAP] : (List instr))
   | load_pack_val : forall (z : state) («at» : addrtype) (i : num_) (v_Inn : Inn) (v_n : n) (v_sx : sx) (x : idx) (ao : memarg) (c : iN), 
-    ((proj_num__0 i) != none) ->
-    ((ibytes_ v_n c) == (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8))))) (List.drop ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) ((fun_mem z x).BYTES)))) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((ibytes_ v_n c) = (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8))))) (List.drop ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) ((fun_mem z x).BYTES)))) ->
     Forall (fun (iter : byte) => (wf_byte iter)) (ibytes_ v_n c) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.LOAD (numtype_addrtype v_Inn) (some (.mk_loadop__0 v_Inn (.mk_loadop_Inn (.mk_sz v_n) v_sx))) x ao)] : (List instr)))) ->
     (wf_instr (.CONST (numtype_addrtype v_Inn) (.mk_num__0 v_Inn (extend__ v_n (size (numtype_addrtype v_Inn)) v_sx c)))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.LOAD (numtype_addrtype v_Inn) (some (.mk_loadop__0 v_Inn (.mk_loadop_Inn (.mk_sz v_n) v_sx))) x ao)] : (List instr))) ([(.CONST (numtype_addrtype v_Inn) (.mk_num__0 v_Inn (extend__ v_n (size (numtype_addrtype v_Inn)) v_sx c)))] : (List instr))
   | vload_oob : forall (z : state) («at» : addrtype) (i : num_) (x : idx) (ao : memarg), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     ((((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8)))))) > (List.length ((fun_mem z x).BYTES))) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 none x ao)] : (List instr)))) ->
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 none x ao)] : (List instr))) ([.TRAP] : (List instr))
   | vload_val : forall (z : state) («at» : addrtype) (i : num_) (x : idx) (ao : memarg) (c : vec_), 
-    ((proj_num__0 i) != none) ->
-    ((vbytes_ .V128 c) == (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8))))) (List.drop ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) ((fun_mem z x).BYTES)))) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((vbytes_ .V128 c) = (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8))))) (List.drop ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) ((fun_mem z x).BYTES)))) ->
     Forall (fun (iter : byte) => (wf_byte iter)) (vbytes_ .V128 c) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 none x ao)] : (List instr)))) ->
     (wf_instr (.VCONST .V128 c)) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 none x ao)] : (List instr))) ([(.VCONST .V128 c)] : (List instr))
   | vload_pack_oob : forall (z : state) («at» : addrtype) (i : num_) (v_M : M) (v_K : K) (v_sx : sx) (x : idx) (ao : memarg), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     ((((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (v_M * v_K))) / (Rat.ofInt (Int.ofNat 8)))))) > (List.length ((fun_mem z x).BYTES))) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.SHAPEX_ (.mk_sz v_M) v_K v_sx)) x ao)] : (List instr)))) ->
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.SHAPEX_ (.mk_sz v_M) v_K v_sx)) x ao)] : (List instr))) ([.TRAP] : (List instr))
   | vload_pack_val : forall (z : state) («at» : addrtype) (i : num_) (v_M : M) (v_K : K) (v_sx : sx) (x : idx) (ao : memarg) (c : vec_) (j_lst : (List iN)) (v_Jnn : Jnn), 
-    (∀ (k : Nat), k < v_K → ((proj_num__0 i) != none)) ->
-    (∀ (k : Nat), k < v_K → let j : iN := (j_lst)[k]!; ((ibytes_ v_M j) == (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_M)) / (Rat.ofInt (Int.ofNat 8))))) (List.drop (((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (k * v_M))) / (Rat.ofInt (Int.ofNat 8)))))) ((fun_mem z x).BYTES))))) ->
-    ((c == (inv_lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_K)) (List.map (fun (j : iN) => ((.mk_lane__0 v_Jnn (extend__ v_M (jsizenn v_Jnn) v_sx j)) : lane_)) j_lst))) && ((jsizenn v_Jnn) == (v_M * 2))) ->
+    (∀ (k : Nat), k < v_K → ((proj_num__0 i) ≠ none)) ->
+    (∀ (k : Nat), k < v_K → let j : iN := (j_lst)[k]!; ((ibytes_ v_M j) = (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_M)) / (Rat.ofInt (Int.ofNat 8))))) (List.drop (((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (k * v_M))) / (Rat.ofInt (Int.ofNat 8)))))) ((fun_mem z x).BYTES))))) ->
+    ((c = (inv_lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_K)) (List.map (fun (j : iN) => ((.mk_lane__0 v_Jnn (extend__ v_M (jsizenn v_Jnn) v_sx j)) : lane_)) j_lst))) ∧ ((jsizenn v_Jnn) = (v_M * 2))) ->
     (∀ (k : Nat), k < v_K → let j : iN := (j_lst)[k]!; Forall (fun (iter : byte) => (wf_byte iter)) (ibytes_ v_M j)) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_uN 128 (inv_lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_K)) (List.map (fun (j : iN) => ((.mk_lane__0 v_Jnn (extend__ v_M (jsizenn v_Jnn) v_sx j)) : lane_)) j_lst))) ->
@@ -17058,22 +17086,22 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr (.VCONST .V128 c)) ->
     (wf_shape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_K))) ->
     Forall (fun (j : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn v_Jnn) (.mk_dim v_K))) (.mk_lane__0 v_Jnn (extend__ v_M (jsizenn v_Jnn) v_sx j)))) j_lst ->
-    (v_K == (List.length j_lst)) ->
+    (v_K = (List.length j_lst)) ->
     ((List.length j_lst) = v_K) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.SHAPEX_ (.mk_sz v_M) v_K v_sx)) x ao)] : (List instr))) ([(.VCONST .V128 c)] : (List instr))
   | vload_splat_oob : forall (z : state) («at» : addrtype) (i : num_) (v_N : N) (x : idx) (ao : memarg), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     ((((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8)))))) > (List.length ((fun_mem z x).BYTES))) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.SPLAT (.mk_sz v_N))) x ao)] : (List instr)))) ->
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.SPLAT (.mk_sz v_N))) x ao)] : (List instr))) ([.TRAP] : (List instr))
   | vload_splat_val : forall (z : state) («at» : addrtype) (i : num_) (v_N : N) (x : idx) (ao : memarg) (c : vec_) (j : iN) (v_Jnn : Jnn) (v_M : M), 
-    ((proj_num__0 i) != none) ->
-    ((ibytes_ v_N j) == (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8))))) (List.drop ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) ((fun_mem z x).BYTES)))) ->
-    (v_N == (jsize v_Jnn)) ->
-    ((Rat.ofInt (Int.ofNat v_M)) == ((Rat.ofInt (Int.ofNat 128)) / (Rat.ofInt (Int.ofNat v_N)))) ->
-    (c == (inv_lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) (List.replicate v_M (.mk_lane__0 v_Jnn (.mk_uN (proj_uN_0 j)))))) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((ibytes_ v_N j) = (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8))))) (List.drop ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) ((fun_mem z x).BYTES)))) ->
+    (v_N = (jsize v_Jnn)) ->
+    ((Rat.ofInt (Int.ofNat v_M)) = ((Rat.ofInt (Int.ofNat 128)) / (Rat.ofInt (Int.ofNat v_N)))) ->
+    (c = (inv_lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) (List.replicate v_M (.mk_lane__0 v_Jnn (.mk_uN (proj_uN_0 j)))))) ->
     Forall (fun (iter : byte) => (wf_byte iter)) (ibytes_ v_N j) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_uN 128 (inv_lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) (List.replicate v_M (.mk_lane__0 v_Jnn (.mk_uN (proj_uN_0 j)))))) ->
@@ -17083,16 +17111,16 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_lane_ (fun_lanetype (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_lane__0 v_Jnn (.mk_uN (proj_uN_0 j)))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.SPLAT (.mk_sz v_N))) x ao)] : (List instr))) ([(.VCONST .V128 c)] : (List instr))
   | vload_zero_oob : forall (z : state) («at» : addrtype) (i : num_) (v_N : N) (x : idx) (ao : memarg), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     ((((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8)))))) > (List.length ((fun_mem z x).BYTES))) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.ZERO (.mk_sz v_N))) x ao)] : (List instr)))) ->
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.ZERO (.mk_sz v_N))) x ao)] : (List instr))) ([.TRAP] : (List instr))
   | vload_zero_val : forall (z : state) («at» : addrtype) (i : num_) (v_N : N) (x : idx) (ao : memarg) (c : vec_) (j : iN), 
-    ((proj_num__0 i) != none) ->
-    ((ibytes_ v_N j) == (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8))))) (List.drop ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) ((fun_mem z x).BYTES)))) ->
-    (c == (extend__ v_N 128 .U j)) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((ibytes_ v_N j) = (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8))))) (List.drop ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) ((fun_mem z x).BYTES)))) ->
+    (c = (extend__ v_N 128 .U j)) ->
     (wf_uN v_N j) ->
     Forall (fun (iter : byte) => (wf_byte iter)) (ibytes_ v_N j) ->
     (wf_meminst (fun_mem z x)) ->
@@ -17101,18 +17129,18 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr (.VCONST .V128 c)) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.ZERO (.mk_sz v_N))) x ao)] : (List instr))) ([(.VCONST .V128 c)] : (List instr))
   | vload_lane_oob : forall (z : state) («at» : addrtype) (i : num_) (c_1 : vec_) (v_N : N) (x : idx) (ao : memarg) (j : laneidx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     ((((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8)))))) > (List.length ((fun_mem z x).BYTES))) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VCONST .V128 c_1), (.VLOAD_LANE .V128 (.mk_sz v_N) x ao j)] : (List instr)))) ->
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VCONST .V128 c_1), (.VLOAD_LANE .V128 (.mk_sz v_N) x ao j)] : (List instr))) ([.TRAP] : (List instr))
   | vload_lane_val : forall (z : state) («at» : addrtype) (i : num_) (c_1 : vec_) (v_N : N) (x : idx) (ao : memarg) (j : laneidx) (c : vec_) (k : iN) (v_Jnn : Jnn) (v_M : M), 
-    ((proj_num__0 i) != none) ->
-    ((ibytes_ v_N k) == (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8))))) (List.drop ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) ((fun_mem z x).BYTES)))) ->
-    (v_N == (jsize v_Jnn)) ->
-    ((Rat.ofInt (Int.ofNat v_M)) == ((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat v_N)))) ->
-    (c == (inv_lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) (List.modify (lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c_1) (proj_uN_0 j) (fun (_ : lane_) => (.mk_lane__0 v_Jnn (.mk_uN (proj_uN_0 k))))))) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((ibytes_ v_N k) = (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8))))) (List.drop ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) ((fun_mem z x).BYTES)))) ->
+    (v_N = (jsize v_Jnn)) ->
+    ((Rat.ofInt (Int.ofNat v_M)) = ((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat v_N)))) ->
+    (c = (inv_lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) (List.modify (lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c_1) (proj_uN_0 j) (fun (_ : lane_) => (.mk_lane__0 v_Jnn (.mk_uN (proj_uN_0 k))))))) ->
     Forall (fun (iter : byte) => (wf_byte iter)) (ibytes_ v_N k) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_uN 128 (inv_lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) (List.modify (lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c_1) (proj_uN_0 j) (fun (_ : lane_) => (.mk_lane__0 v_Jnn (.mk_uN (proj_uN_0 k))))))) ->
@@ -17123,29 +17151,29 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_lane_ (fun_lanetype (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_lane__0 v_Jnn (.mk_uN (proj_uN_0 k)))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VCONST .V128 c_1), (.VLOAD_LANE .V128 (.mk_sz v_N) x ao j)] : (List instr))) ([(.VCONST .V128 c)] : (List instr))
   | memory_size : forall (z : state) (x : idx) («at» : addrtype) (v_n : n) (lim : limits), 
-    ((v_n * (64 * (Ki ))) == (List.length ((fun_mem z x).BYTES))) ->
-    (((fun_mem z x).TYPE) == (.PAGE «at» lim)) ->
+    ((v_n * (64 * (Ki ))) = (List.length ((fun_mem z x).BYTES))) ->
+    (((fun_mem z x).TYPE) = (.PAGE «at» lim)) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.MEMORY_SIZE x)] : (List instr)))) ->
     (wf_instr (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n)))) ->
     (wf_memtype (.PAGE «at» lim)) ->
     Step_read (.mk_config z ([(.MEMORY_SIZE x)] : (List instr))) ([(.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n)))] : (List instr))
   | memory_fill_oob : forall (z : state) («at» : addrtype) (i : num_) (v_val : val) (v_n : n) (x : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length ((fun_mem z x).BYTES))) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.MEMORY_FILL x)] : (List instr)))) ->
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.MEMORY_FILL x)] : (List instr))) ([.TRAP] : (List instr))
   | memory_fill_zero : forall (z : state) («at» : addrtype) (i : num_) (v_val : val) (v_n : n) (x : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) <= (List.length ((fun_mem z x).BYTES))) ->
-    (v_n == 0) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.MEMORY_FILL x)] : (List instr)))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.MEMORY_FILL x)] : (List instr))) []
   | memory_fill_succ : forall (z : state) («at» : addrtype) (i : num_) (v_val : val) (v_n : n) (x : idx), 
-    ((proj_num__0 i) != none) ->
-    (v_n != 0) ->
+    ((proj_num__0 i) ≠ none) ->
+    (v_n ≠ 0) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) <= (List.length ((fun_mem z x).BYTES))) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.MEMORY_FILL x)] : (List instr)))) ->
     (wf_instr (.CONST (numtype_addrtype «at») i)) ->
@@ -17155,26 +17183,26 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr (.MEMORY_FILL x)) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.MEMORY_FILL x)] : (List instr))) ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.STORE .I32 (some (.mk_storeop__0 .I32 (.mk_storeop_Inn (.mk_sz 8)))) x (memarg0 )), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (iadd_ (size (numtype_addrtype «at»)) (Option.get! (proj_num__0 i)) (.mk_uN 1)))), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1)))))), (.MEMORY_FILL x)] : (List instr))
   | memory_copy_oob : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_1) != none) ->
-    ((proj_num__0 i_2) != none) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length ((fun_mem z x_1).BYTES))) || (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length ((fun_mem z x_2).BYTES)))) ->
+    ((proj_num__0 i_1) ≠ none) ->
+    ((proj_num__0 i_2) ≠ none) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length ((fun_mem z x_1).BYTES))) ∨ (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length ((fun_mem z x_2).BYTES)))) ->
     (wf_meminst (fun_mem z x_1)) ->
     (wf_meminst (fun_mem z x_2)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr)))) ->
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr))) ([.TRAP] : (List instr))
   | memory_copy_zero : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_1) != none) ->
-    ((proj_num__0 i_2) != none) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) <= (List.length ((fun_mem z x_1).BYTES))) && (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) <= (List.length ((fun_mem z x_2).BYTES)))) ->
-    (v_n == 0) ->
+    ((proj_num__0 i_1) ≠ none) ->
+    ((proj_num__0 i_2) ≠ none) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) <= (List.length ((fun_mem z x_1).BYTES))) ∧ (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) <= (List.length ((fun_mem z x_2).BYTES)))) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr)))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr))) []
   | memory_copy_le : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_1) != none) ->
-    ((proj_num__0 i_2) != none) ->
-    (v_n != 0) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) <= (List.length ((fun_mem z x_1).BYTES))) && (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) <= (List.length ((fun_mem z x_2).BYTES)))) ->
+    ((proj_num__0 i_1) ≠ none) ->
+    ((proj_num__0 i_2) ≠ none) ->
+    (v_n ≠ 0) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) <= (List.length ((fun_mem z x_1).BYTES))) ∧ (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) <= (List.length ((fun_mem z x_2).BYTES)))) ->
     ((proj_uN_0 (Option.get! (proj_num__0 i_1))) <= (proj_uN_0 (Option.get! (proj_num__0 i_2)))) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr)))) ->
     (wf_instr (.CONST (numtype_addrtype at_1) i_1)) ->
@@ -17187,11 +17215,11 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr (.MEMORY_COPY x_1 x_2)) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr))) ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.LOAD .I32 (some (.mk_loadop__0 .I32 (.mk_loadop_Inn (.mk_sz 8) .U))) x_2 (memarg0 )), (.STORE .I32 (some (.mk_storeop__0 .I32 (.mk_storeop_Inn (.mk_sz 8)))) x_1 (memarg0 )), (.CONST (numtype_addrtype at_1) (.mk_num__0 at_1 (iadd_ (size (numtype_addrtype at_1)) (Option.get! (proj_num__0 i_1)) (.mk_uN 1)))), (.CONST (numtype_addrtype at_2) (.mk_num__0 at_2 (iadd_ (size (numtype_addrtype at_2)) (Option.get! (proj_num__0 i_2)) (.mk_uN 1)))), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1)))))), (.MEMORY_COPY x_1 x_2)] : (List instr))
   | memory_copy_gt : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_1) != none) ->
-    ((proj_num__0 i_2) != none) ->
+    ((proj_num__0 i_1) ≠ none) ->
+    ((proj_num__0 i_2) ≠ none) ->
     ((proj_uN_0 (Option.get! (proj_num__0 i_1))) > (proj_uN_0 (Option.get! (proj_num__0 i_2)))) ->
-    (v_n != 0) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) <= (List.length ((fun_mem z x_1).BYTES))) && (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) <= (List.length ((fun_mem z x_2).BYTES)))) ->
+    (v_n ≠ 0) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) <= (List.length ((fun_mem z x_1).BYTES))) ∧ (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) <= (List.length ((fun_mem z x_2).BYTES)))) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr)))) ->
     (wf_instr (.CONST (numtype_addrtype at_1) (.mk_num__0 at_1 (.mk_uN (Int.toNat ((Int.ofNat ((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n)) - (Int.ofNat 1))))))) ->
     (wf_instr (.CONST (numtype_addrtype at_2) (.mk_num__0 at_2 (.mk_uN (Int.toNat ((Int.ofNat ((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n)) - (Int.ofNat 1))))))) ->
@@ -17203,27 +17231,27 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr (.MEMORY_COPY x_1 x_2)) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr))) ([(.CONST (numtype_addrtype at_1) (.mk_num__0 at_1 (.mk_uN (Int.toNat ((Int.ofNat ((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n)) - (Int.ofNat 1)))))), (.CONST (numtype_addrtype at_2) (.mk_num__0 at_2 (.mk_uN (Int.toNat ((Int.ofNat ((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n)) - (Int.ofNat 1)))))), (.LOAD .I32 (some (.mk_loadop__0 .I32 (.mk_loadop_Inn (.mk_sz 8) .U))) x_2 (memarg0 )), (.STORE .I32 (some (.mk_storeop__0 .I32 (.mk_storeop_Inn (.mk_sz 8)))) x_1 (memarg0 )), (.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1)))))), (.MEMORY_COPY x_1 x_2)] : (List instr))
   | memory_init_oob : forall (z : state) («at» : addrtype) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 i) != none) ->
-    ((proj_num__0 j) != none) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length ((fun_mem z x).BYTES))) || (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) > (List.length ((fun_data z y).BYTES)))) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((proj_num__0 j) ≠ none) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length ((fun_mem z x).BYTES))) ∨ (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) > (List.length ((fun_data z y).BYTES)))) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_datainst (fun_data z y)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.MEMORY_INIT x y)] : (List instr)))) ->
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.MEMORY_INIT x y)] : (List instr))) ([.TRAP] : (List instr))
   | memory_init_zero : forall (z : state) («at» : addrtype) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 i) != none) ->
-    ((proj_num__0 j) != none) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) <= (List.length ((fun_mem z x).BYTES))) && (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) <= (List.length ((fun_data z y).BYTES)))) ->
-    (v_n == 0) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((proj_num__0 j) ≠ none) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) <= (List.length ((fun_mem z x).BYTES))) ∧ (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) <= (List.length ((fun_data z y).BYTES)))) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.MEMORY_INIT x y)] : (List instr)))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.MEMORY_INIT x y)] : (List instr))) []
   | memory_init_succ : forall (z : state) («at» : addrtype) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     ((proj_uN_0 (Option.get! (proj_num__0 j))) < (List.length ((fun_data z y).BYTES))) ->
-    ((proj_num__0 j) != none) ->
-    ((proj_num__0 i) != none) ->
-    (v_n != 0) ->
-    ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) <= (List.length ((fun_mem z x).BYTES))) && (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) <= (List.length ((fun_data z y).BYTES)))) ->
+    ((proj_num__0 j) ≠ none) ->
+    ((proj_num__0 i) ≠ none) ->
+    (v_n ≠ 0) ->
+    ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) <= (List.length ((fun_mem z x).BYTES))) ∧ (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) <= (List.length ((fun_data z y).BYTES)))) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.MEMORY_INIT x y)] : (List instr)))) ->
     (wf_instr (.CONST (numtype_addrtype «at») i)) ->
     (wf_instr (.CONST .I32 (.mk_num__0 .I32 (.mk_uN (proj_byte_0 (((fun_data z y).BYTES)[(proj_uN_0 (Option.get! (proj_num__0 j)))]!)))))) ->
@@ -17269,9 +17297,9 @@ inductive Step_read : config -> (List instr) -> Prop where
     Forall₂ (fun (var_1 : (Option (Option val))) (zt : storagetype) => (fun_default_ (unpack zt) var_1)) var_1_lst zt_lst ->
     (fun_type z x var_0) ->
     (Expand var_0 (.STRUCT (.mk_list (List.zipWith (fun (mut_opt : (Option «mut»)) (zt : storagetype) => ((.mk_fieldtype mut_opt zt) : fieldtype)) mut_opt_lst zt_lst)))) ->
-    ((List.length val_lst) == (List.length zt_lst)) ->
-    Forall (fun (var_1 : (Option (Option val))) => (var_1 != none)) var_1_lst ->
-    Forall₂ (fun (var_1 : (Option (Option val))) (v_val : val) => ((Option.get! var_1) == (some v_val))) var_1_lst val_lst ->
+    ((List.length val_lst) = (List.length zt_lst)) ->
+    Forall (fun (var_1 : (Option (Option val))) => (var_1 ≠ none)) var_1_lst ->
+    Forall₂ (fun (var_1 : (Option (Option val))) (v_val : val) => ((Option.get! var_1) = (some v_val))) var_1_lst val_lst ->
     Forall (fun (v_val : val) => (wf_val v_val)) val_lst ->
     Forall (fun (var_1 : (Option (Option val))) => Forall (fun (iter : val) => (wf_val iter)) (Option.toList (Option.get! var_1))) var_1_lst ->
     Forall (fun (zt : storagetype) => (wf_valtype (unpack zt))) zt_lst ->
@@ -17288,7 +17316,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     Step_read (.mk_config z ([.REF_NULL_ADDR, (.STRUCT_GET sx_opt x i)] : (List instr))) ([.TRAP] : (List instr))
   | struct_get_struct : forall (z : state) (a : addr) (sx_opt : (Option sx)) (x : idx) (i : fieldidx) (zt_lst : (List storagetype)) (mut_opt_lst : (List (Option «mut»))) (var_0 : deftype), 
     (fun_type z x var_0) ->
-    ((unpackfield_ (zt_lst[(proj_uN_0 i)]!) sx_opt ((((fun_structinst z)[a]!).FIELDS)[(proj_uN_0 i)]!)) != none) ->
+    ((unpackfield_ (zt_lst[(proj_uN_0 i)]!) sx_opt ((((fun_structinst z)[a]!).FIELDS)[(proj_uN_0 i)]!)) ≠ none) ->
     ((proj_uN_0 i) < (List.length zt_lst)) ->
     ((proj_uN_0 i) < (List.length (((fun_structinst z)[a]!).FIELDS))) ->
     (a < (List.length (fun_structinst z))) ->
@@ -17303,8 +17331,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (fun_default_ (unpack zt) var_1) ->
     (fun_type z x var_0) ->
     (Expand var_0 (.ARRAY (.mk_fieldtype mut_opt zt))) ->
-    (var_1 != none) ->
-    ((Option.get! var_1) == (some v_val)) ->
+    (var_1 ≠ none) ->
+    ((Option.get! var_1) = (some v_val)) ->
     (wf_val v_val) ->
     Forall (fun (iter : val) => (wf_val iter)) (Option.toList (Option.get! var_1)) ->
     (wf_valtype (unpack zt)) ->
@@ -17313,27 +17341,27 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_comptype (.ARRAY (.mk_fieldtype mut_opt zt))) ->
     Step_read (.mk_config z ([(.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW_DEFAULT x)] : (List instr))) ((List.replicate v_n (instr_val v_val)) ++ ([(.ARRAY_NEW_FIXED x (.mk_uN v_n))] : (List instr)))
   | array_new_elem_oob : forall (z : state) (i : num_) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length ((fun_elem z y).REFS))) ->
     (wf_eleminst (fun_elem z y)) ->
     (wf_config (.mk_config z ([(.CONST .I32 i), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW_ELEM x y)] : (List instr)))) ->
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([(.CONST .I32 i), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW_ELEM x y)] : (List instr))) ([.TRAP] : (List instr))
   | array_new_elem_alloc : forall (z : state) (i : num_) (v_n : n) (x : idx) (y : idx) (ref_lst : (List ref)), 
-    ((proj_num__0 i) != none) ->
-    (ref_lst == (List.take v_n (List.drop (proj_uN_0 (Option.get! (proj_num__0 i))) ((fun_elem z y).REFS)))) ->
+    ((proj_num__0 i) ≠ none) ->
+    (ref_lst = (List.take v_n (List.drop (proj_uN_0 (Option.get! (proj_num__0 i))) ((fun_elem z y).REFS)))) ->
     Forall (fun (v_ref : ref) => (wf_ref v_ref)) ref_lst ->
     (wf_eleminst (fun_elem z y)) ->
     (wf_config (.mk_config z ([(.CONST .I32 i), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW_ELEM x y)] : (List instr)))) ->
     (wf_instr (.ARRAY_NEW_FIXED x (.mk_uN v_n))) ->
-    (v_n == (List.length ref_lst)) ->
+    (v_n = (List.length ref_lst)) ->
     ((List.length ref_lst) = v_n) ->
     Step_read (.mk_config z ([(.CONST .I32 i), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW_ELEM x y)] : (List instr))) ((List.map (fun (v_ref : ref) => (instr_ref v_ref)) ref_lst) ++ ([(.ARRAY_NEW_FIXED x (.mk_uN v_n))] : (List instr)))
   | array_new_data_oob : forall (z : state) (i : num_) (v_n : n) (x : idx) (y : idx) (mut_opt : (Option «mut»)) (zt : storagetype) (var_0 : deftype), 
     (fun_type z x var_0) ->
     (Expand var_0 (.ARRAY (.mk_fieldtype mut_opt zt))) ->
-    ((proj_num__0 i) != none) ->
-    ((zsize zt) != none) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((zsize zt) ≠ none) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (v_n * (Option.get! (zsize zt))))) / (Rat.ofInt (Int.ofNat 8)))))) > (List.length ((fun_data z y).BYTES))) ->
     (wf_datainst (fun_data z y)) ->
     (wf_config (.mk_config z ([(.CONST .I32 i), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW_DATA x y)] : (List instr)))) ->
@@ -17342,13 +17370,13 @@ inductive Step_read : config -> (List instr) -> Prop where
     Step_read (.mk_config z ([(.CONST .I32 i), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW_DATA x y)] : (List instr))) ([.TRAP] : (List instr))
   | array_new_data_num : forall (z : state) (i : num_) (v_n : n) (x : idx) (y : idx) (zt : storagetype) (c_lst : (List lit_)) (mut_opt : (Option «mut»)) (var_0 : deftype), 
     (fun_type z x var_0) ->
-    Forall (fun (c : lit_) => ((const (Option.get! (cunpack zt)) (Option.get! (cunpacknum_ zt c))) != none)) c_lst ->
-    ((cunpack zt) != none) ->
-    Forall (fun (c : lit_) => ((cunpacknum_ zt c) != none)) c_lst ->
+    Forall (fun (c : lit_) => ((const (Option.get! (cunpack zt)) (Option.get! (cunpacknum_ zt c))) ≠ none)) c_lst ->
+    ((cunpack zt) ≠ none) ->
+    Forall (fun (c : lit_) => ((cunpacknum_ zt c) ≠ none)) c_lst ->
     (Expand var_0 (.ARRAY (.mk_fieldtype mut_opt zt))) ->
-    ((zsize zt) != none) ->
-    ((proj_num__0 i) != none) ->
-    ((concatn_ byte (List.map (fun (c : lit_) => (zbytes_ zt c)) c_lst) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (Option.get! (zsize zt)))) / (Rat.ofInt (Int.ofNat 8)))))) == (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (v_n * (Option.get! (zsize zt))))) / (Rat.ofInt (Int.ofNat 8))))) (List.drop (proj_uN_0 (Option.get! (proj_num__0 i))) ((fun_data z y).BYTES)))) ->
+    ((zsize zt) ≠ none) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((concatn_ byte (List.map (fun (c : lit_) => (zbytes_ zt c)) c_lst) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (Option.get! (zsize zt)))) / (Rat.ofInt (Int.ofNat 8)))))) = (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (v_n * (Option.get! (zsize zt))))) / (Rat.ofInt (Int.ofNat 8))))) (List.drop (proj_uN_0 (Option.get! (proj_num__0 i))) ((fun_data z y).BYTES)))) ->
     Forall (fun (c : lit_) => (wf_lit_ zt c)) c_lst ->
     Forall (fun (c : lit_) => (wf_instr (Option.get! (const (Option.get! (cunpack zt)) (Option.get! (cunpacknum_ zt c)))))) c_lst ->
     Forall (fun (c : lit_) => (wf_lit_ (storagetype_consttype (Option.get! (cunpack zt))) (Option.get! (cunpacknum_ zt c)))) c_lst ->
@@ -17358,7 +17386,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_config (.mk_config z ([(.CONST .I32 i), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW_DATA x y)] : (List instr)))) ->
     (wf_instr (.ARRAY_NEW_FIXED x (.mk_uN v_n))) ->
     (wf_comptype (.ARRAY (.mk_fieldtype mut_opt zt))) ->
-    (v_n == (List.length c_lst)) ->
+    (v_n = (List.length c_lst)) ->
     ((List.length c_lst) = v_n) ->
     Step_read (.mk_config z ([(.CONST .I32 i), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW_DATA x y)] : (List instr))) ((List.map (fun (c : lit_) => (Option.get! (const (Option.get! (cunpack zt)) (Option.get! (cunpacknum_ zt c))))) c_lst) ++ ([(.ARRAY_NEW_FIXED x (.mk_uN v_n))] : (List instr)))
   | array_get_null : forall (z : state) (i : num_) (sx_opt : (Option sx)) (x : idx), 
@@ -17366,7 +17394,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([.REF_NULL_ADDR, (.CONST .I32 i), (.ARRAY_GET sx_opt x)] : (List instr))) ([.TRAP] : (List instr))
   | array_get_oob : forall (z : state) (a : addr) (i : num_) (sx_opt : (Option sx)) (x : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (a < (List.length (fun_arrayinst z))) ->
     ((proj_uN_0 (Option.get! (proj_num__0 i))) >= (List.length (((fun_arrayinst z)[a]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -17375,10 +17403,10 @@ inductive Step_read : config -> (List instr) -> Prop where
     Step_read (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.ARRAY_GET sx_opt x)] : (List instr))) ([.TRAP] : (List instr))
   | array_get_array : forall (z : state) (a : addr) (i : num_) (sx_opt : (Option sx)) (x : idx) (zt : storagetype) (mut_opt : (Option «mut»)) (var_0 : deftype), 
     (fun_type z x var_0) ->
-    ((unpackfield_ zt sx_opt ((((fun_arrayinst z)[a]!).FIELDS)[(proj_uN_0 (Option.get! (proj_num__0 i)))]!)) != none) ->
+    ((unpackfield_ zt sx_opt ((((fun_arrayinst z)[a]!).FIELDS)[(proj_uN_0 (Option.get! (proj_num__0 i)))]!)) ≠ none) ->
     ((proj_uN_0 (Option.get! (proj_num__0 i))) < (List.length (((fun_arrayinst z)[a]!).FIELDS))) ->
     (a < (List.length (fun_arrayinst z))) ->
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (Expand var_0 (.ARRAY (.mk_fieldtype mut_opt zt))) ->
     (wf_val (Option.get! (unpackfield_ zt sx_opt ((((fun_arrayinst z)[a]!).FIELDS)[(proj_uN_0 (Option.get! (proj_num__0 i)))]!)))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -17399,7 +17427,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([.REF_NULL_ADDR, (.CONST .I32 i), (instr_val v_val), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_FILL x)] : (List instr))) ([.TRAP] : (List instr))
   | array_fill_oob : forall (z : state) (a : addr) (i : num_) (v_val : val) (v_n : n) (x : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (a < (List.length (fun_arrayinst z))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length (((fun_arrayinst z)[a]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -17408,11 +17436,11 @@ inductive Step_read : config -> (List instr) -> Prop where
     Step_read (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (instr_val v_val), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_FILL x)] : (List instr))) ([.TRAP] : (List instr))
   | array_fill_zero : forall (z : state) (a : addr) (i : num_) (v_val : val) (v_n : n) (x : idx), 
     (¬(Step_read_before_array_fill_zero (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (instr_val v_val), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_FILL x)] : (List instr))))) ->
-    (v_n == 0) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (instr_val v_val), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_FILL x)] : (List instr)))) ->
     Step_read (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (instr_val v_val), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_FILL x)] : (List instr))) []
   | array_fill_succ : forall (z : state) (a : addr) (i : num_) (v_val : val) (v_n : n) (x : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (¬(Step_read_before_array_fill_succ (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (instr_val v_val), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_FILL x)] : (List instr))))) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (instr_val v_val), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_FILL x)] : (List instr)))) ->
     (wf_instr (.REF_ARRAY_ADDR a)) ->
@@ -17431,7 +17459,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([(instr_ref v_ref), (.CONST .I32 i_1), .REF_NULL_ADDR, (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr))) ([.TRAP] : (List instr))
   | array_copy_oob1 : forall (z : state) (a_1 : addr) (i_1 : num_) (a_2 : addr) (i_2 : num_) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_1) != none) ->
+    ((proj_num__0 i_1) ≠ none) ->
     (a_1 < (List.length (fun_arrayinst z))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) > (List.length (((fun_arrayinst z)[a_1]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -17439,7 +17467,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr))) ([.TRAP] : (List instr))
   | array_copy_oob2 : forall (z : state) (a_1 : addr) (i_1 : num_) (a_2 : addr) (i_2 : num_) (v_n : n) (x_1 : idx) (x_2 : idx), 
-    ((proj_num__0 i_2) != none) ->
+    ((proj_num__0 i_2) ≠ none) ->
     (a_2 < (List.length (fun_arrayinst z))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) > (List.length (((fun_arrayinst z)[a_2]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -17448,17 +17476,17 @@ inductive Step_read : config -> (List instr) -> Prop where
     Step_read (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr))) ([.TRAP] : (List instr))
   | array_copy_zero : forall (z : state) (a_1 : addr) (i_1 : num_) (a_2 : addr) (i_2 : num_) (v_n : n) (x_1 : idx) (x_2 : idx), 
     (¬(Step_read_before_array_copy_zero (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr))))) ->
-    (v_n == 0) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr)))) ->
     Step_read (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr))) []
   | array_copy_le : forall (z : state) (a_1 : addr) (i_1 : num_) (a_2 : addr) (i_2 : num_) (v_n : n) (x_1 : idx) (x_2 : idx) (sx_opt : (Option sx)) (mut_opt : (Option «mut»)) (zt_2 : storagetype) (var_0 : deftype), 
     (fun_type z x_2 var_0) ->
-    ((proj_num__0 i_1) != none) ->
-    ((proj_num__0 i_2) != none) ->
+    ((proj_num__0 i_1) ≠ none) ->
+    ((proj_num__0 i_2) ≠ none) ->
     (¬(Step_read_before_array_copy_le (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr))))) ->
     (Expand var_0 (.ARRAY (.mk_fieldtype mut_opt zt_2))) ->
-    ((fun_sx zt_2) != none) ->
-    (((proj_uN_0 (Option.get! (proj_num__0 i_1))) <= (proj_uN_0 (Option.get! (proj_num__0 i_2)))) && (sx_opt == (Option.get! (fun_sx zt_2)))) ->
+    ((fun_sx zt_2) ≠ none) ->
+    (((proj_uN_0 (Option.get! (proj_num__0 i_1))) <= (proj_uN_0 (Option.get! (proj_num__0 i_2)))) ∧ (sx_opt = (Option.get! (fun_sx zt_2)))) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr)))) ->
     (wf_instr (.REF_ARRAY_ADDR a_1)) ->
     (wf_instr (.CONST .I32 i_1)) ->
@@ -17474,12 +17502,12 @@ inductive Step_read : config -> (List instr) -> Prop where
     Step_read (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr))) ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.ARRAY_GET sx_opt x_2), (.ARRAY_SET x_1), (.REF_ARRAY_ADDR a_1), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN ((proj_uN_0 (Option.get! (proj_num__0 i_1))) + 1)))), (.REF_ARRAY_ADDR a_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN ((proj_uN_0 (Option.get! (proj_num__0 i_2))) + 1)))), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1)))))), (.ARRAY_COPY x_1 x_2)] : (List instr))
   | array_copy_gt : forall (z : state) (a_1 : addr) (i_1 : num_) (a_2 : addr) (i_2 : num_) (v_n : n) (x_1 : idx) (x_2 : idx) (sx_opt : (Option sx)) (mut_opt : (Option «mut»)) (zt_2 : storagetype) (var_0 : deftype), 
     (fun_type z x_2 var_0) ->
-    ((proj_num__0 i_1) != none) ->
-    ((proj_num__0 i_2) != none) ->
+    ((proj_num__0 i_1) ≠ none) ->
+    ((proj_num__0 i_2) ≠ none) ->
     (¬(Step_read_before_array_copy_gt (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr))))) ->
     (Expand var_0 (.ARRAY (.mk_fieldtype mut_opt zt_2))) ->
-    ((fun_sx zt_2) != none) ->
-    (sx_opt == (Option.get! (fun_sx zt_2))) ->
+    ((fun_sx zt_2) ≠ none) ->
+    (sx_opt = (Option.get! (fun_sx zt_2))) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a_1), (.CONST .I32 i_1), (.REF_ARRAY_ADDR a_2), (.CONST .I32 i_2), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_COPY x_1 x_2)] : (List instr)))) ->
     (wf_instr (.REF_ARRAY_ADDR a_1)) ->
     (wf_instr (.CONST .I32 (.mk_num__0 .I32 (.mk_uN (Int.toNat ((Int.ofNat ((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n)) - (Int.ofNat 1))))))) ->
@@ -17498,7 +17526,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([.REF_NULL_ADDR, (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr))) ([.TRAP] : (List instr))
   | array_init_elem_oob1 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (a < (List.length (fun_arrayinst z))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length (((fun_arrayinst z)[a]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -17506,7 +17534,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr))) ([.TRAP] : (List instr))
   | array_init_elem_oob2 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 j) != none) ->
+    ((proj_num__0 j) ≠ none) ->
     (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) > (List.length ((fun_elem z y).REFS))) ->
     (wf_eleminst (fun_elem z y)) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr)))) ->
@@ -17514,15 +17542,15 @@ inductive Step_read : config -> (List instr) -> Prop where
     Step_read (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr))) ([.TRAP] : (List instr))
   | array_init_elem_zero : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     (¬(Step_read_before_array_init_elem_zero (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr))))) ->
-    (v_n == 0) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr)))) ->
     Step_read (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr))) []
   | array_init_elem_succ : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx) (v_ref : ref), 
-    ((proj_num__0 i) != none) ->
-    ((proj_num__0 j) != none) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((proj_num__0 j) ≠ none) ->
     (¬(Step_read_before_array_init_elem_succ (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr))))) ->
     ((proj_uN_0 (Option.get! (proj_num__0 j))) < (List.length ((fun_elem z y).REFS))) ->
-    (v_ref == (((fun_elem z y).REFS)[(proj_uN_0 (Option.get! (proj_num__0 j)))]!)) ->
+    (v_ref = (((fun_elem z y).REFS)[(proj_uN_0 (Option.get! (proj_num__0 j)))]!)) ->
     (wf_ref v_ref) ->
     (wf_eleminst (fun_elem z y)) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr)))) ->
@@ -17539,7 +17567,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([.REF_NULL_ADDR, (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr))) ([.TRAP] : (List instr))
   | array_init_data_oob1 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (a < (List.length (fun_arrayinst z))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) > (List.length (((fun_arrayinst z)[a]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -17549,8 +17577,8 @@ inductive Step_read : config -> (List instr) -> Prop where
   | array_init_data_oob2 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx) (mut_opt : (Option «mut»)) (zt : storagetype) (var_0 : deftype), 
     (fun_type z x var_0) ->
     (Expand var_0 (.ARRAY (.mk_fieldtype mut_opt zt))) ->
-    ((proj_num__0 j) != none) ->
-    ((zsize zt) != none) ->
+    ((proj_num__0 j) ≠ none) ->
+    ((zsize zt) ≠ none) ->
     (((proj_uN_0 (Option.get! (proj_num__0 j))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (v_n * (Option.get! (zsize zt))))) / (Rat.ofInt (Int.ofNat 8)))))) > (List.length ((fun_data z y).BYTES))) ->
     (wf_datainst (fun_data z y)) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr)))) ->
@@ -17559,20 +17587,20 @@ inductive Step_read : config -> (List instr) -> Prop where
     Step_read (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr))) ([.TRAP] : (List instr))
   | array_init_data_zero : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     (¬(Step_read_before_array_init_data_zero (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr))))) ->
-    (v_n == 0) ->
+    (v_n = 0) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr)))) ->
     Step_read (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr))) []
   | array_init_data_num : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx) (zt : storagetype) (c : lit_) (mut_opt : (Option «mut»)) (var_0 : deftype), 
     (fun_type z x var_0) ->
-    ((const (Option.get! (cunpack zt)) (Option.get! (cunpacknum_ zt c))) != none) ->
-    ((cunpack zt) != none) ->
-    ((cunpacknum_ zt c) != none) ->
-    ((proj_num__0 i) != none) ->
-    ((proj_num__0 j) != none) ->
-    ((zsize zt) != none) ->
+    ((const (Option.get! (cunpack zt)) (Option.get! (cunpacknum_ zt c))) ≠ none) ->
+    ((cunpack zt) ≠ none) ->
+    ((cunpacknum_ zt c) ≠ none) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((proj_num__0 j) ≠ none) ->
+    ((zsize zt) ≠ none) ->
     (¬(Step_read_before_array_init_data_num (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr))))) ->
     (Expand var_0 (.ARRAY (.mk_fieldtype mut_opt zt))) ->
-    ((zbytes_ zt c) == (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (Option.get! (zsize zt)))) / (Rat.ofInt (Int.ofNat 8))))) (List.drop (proj_uN_0 (Option.get! (proj_num__0 j))) ((fun_data z y).BYTES)))) ->
+    ((zbytes_ zt c) = (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (Option.get! (zsize zt)))) / (Rat.ofInt (Int.ofNat 8))))) (List.drop (proj_uN_0 (Option.get! (proj_num__0 j))) ((fun_data z y).BYTES)))) ->
     (wf_lit_ zt c) ->
     (wf_instr (Option.get! (const (Option.get! (cunpack zt)) (Option.get! (cunpacknum_ zt c))))) ->
     (wf_lit_ (storagetype_consttype (Option.get! (cunpack zt))) (Option.get! (cunpacknum_ zt c))) ->
@@ -17604,7 +17632,7 @@ inductive Step : config -> config -> Prop where
     Step (.mk_config z instr_lst) (.mk_config z instr'_lst)
   | ctxt_instrs : forall (z : state) (val_lst : (List val)) (instr_lst : (List instr)) (instr_1_lst : (List instr)) (z' : state) (instr'_lst : (List instr)), 
     (Step (.mk_config z instr_lst) (.mk_config z' instr'_lst)) ->
-    ((val_lst != []) || (instr_1_lst != [])) ->
+    ((val_lst ≠ []) ∨ (instr_1_lst ≠ [])) ->
     (wf_config (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ (instr_lst ++ instr_1_lst)))) ->
     (wf_config (.mk_config z' ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ (instr'_lst ++ instr_1_lst)))) ->
     (wf_config (.mk_config z instr_lst)) ->
@@ -17632,19 +17660,19 @@ inductive Step : config -> config -> Prop where
     (wf_config (.mk_config (.mk_state s' f'') instr'_lst)) ->
     Step (.mk_config (.mk_state s f) ([(.FRAME_ v_n f' instr_lst)] : (List instr))) (.mk_config (.mk_state s' f) ([(.FRAME_ v_n f'' instr'_lst)] : (List instr)))
   | throw : forall (z : state) (v_n : n) (val_lst : (List val)) (x : idx) (exn : exninst) (a : addr) (t_lst : (List valtype)), 
-    ((as_deftype ((fun_tag z x).TYPE)) != none) ->
+    ((as_deftype ((fun_tag z x).TYPE)) ≠ none) ->
     (Expand (Option.get! (as_deftype ((fun_tag z x).TYPE))) (.FUNC (.mk_list t_lst) (.mk_list []))) ->
-    (a == (List.length (fun_exninst z))) ->
+    (a = (List.length (fun_exninst z))) ->
     ((proj_uN_0 x) < (List.length (fun_tagaddr z))) ->
-    (exn == { TAG := ((fun_tagaddr z)[(proj_uN_0 x)]!), FIELDS := val_lst }) ->
+    (exn = { TAG := ((fun_tagaddr z)[(proj_uN_0 x)]!), FIELDS := val_lst }) ->
     (wf_taginst (fun_tag z x)) ->
     Forall (fun (iter : exninst) => (wf_exninst iter)) (fun_exninst z) ->
     (wf_config (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.THROW x)] : (List instr))))) ->
     (wf_config (.mk_config (add_exninst z ([exn] : (List exninst))) ([(.REF_EXN_ADDR a), .THROW_REF] : (List instr)))) ->
     (wf_comptype (.FUNC (.mk_list t_lst) (.mk_list []))) ->
     (wf_exninst { TAG := ((fun_tagaddr z)[(proj_uN_0 x)]!), FIELDS := val_lst }) ->
-    (v_n == (List.length val_lst)) ->
-    (v_n == (List.length t_lst)) ->
+    (v_n = (List.length val_lst)) ->
+    (v_n = (List.length t_lst)) ->
     ((List.length val_lst) = v_n) ->
     Step (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.THROW x)] : (List instr)))) (.mk_config (add_exninst z ([exn] : (List exninst))) ([(.REF_EXN_ADDR a), .THROW_REF] : (List instr)))
   | local_set : forall (z : state) (v_val : val) (x : idx), 
@@ -17656,14 +17684,14 @@ inductive Step : config -> config -> Prop where
     (wf_config (.mk_config (with_global z x v_val) [])) ->
     Step (.mk_config z ([(instr_val v_val), (.GLOBAL_SET x)] : (List instr))) (.mk_config (with_global z x v_val) [])
   | table_set_oob : forall (z : state) («at» : addrtype) (i : num_) (v_ref : ref) (x : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     ((proj_uN_0 (Option.get! (proj_num__0 i))) >= (List.length ((fun_table z x).REFS))) ->
     (wf_tableinst (fun_table z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_ref v_ref), (.TABLE_SET x)] : (List instr)))) ->
     (wf_config (.mk_config z ([.TRAP] : (List instr)))) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_ref v_ref), (.TABLE_SET x)] : (List instr))) (.mk_config z ([.TRAP] : (List instr)))
   | table_set_val : forall (z : state) («at» : addrtype) (i : num_) (v_ref : ref) (x : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     ((proj_uN_0 (Option.get! (proj_num__0 i))) < (List.length ((fun_table z x).REFS))) ->
     (wf_tableinst (fun_table z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_ref v_ref), (.TABLE_SET x)] : (List instr)))) ->
@@ -17671,8 +17699,8 @@ inductive Step : config -> config -> Prop where
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_ref v_ref), (.TABLE_SET x)] : (List instr))) (.mk_config (with_table z x (proj_uN_0 (Option.get! (proj_num__0 i))) v_ref) [])
   | table_grow_succeed : forall (z : state) (v_ref : ref) («at» : addrtype) (v_n : n) (x : idx) (ti : tableinst) (var_0 : (Option tableinst)), 
     (fun_growtable (fun_table z x) v_n v_ref var_0) ->
-    (var_0 != none) ->
-    (ti == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (ti = (Option.get! var_0)) ->
     (wf_tableinst (Option.get! var_0)) ->
     (wf_tableinst (fun_table z x)) ->
     (wf_config (.mk_config z ([(instr_ref v_ref), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.TABLE_GROW x)] : (List instr)))) ->
@@ -17688,63 +17716,63 @@ inductive Step : config -> config -> Prop where
     (wf_config (.mk_config (with_elem z x []) [])) ->
     Step (.mk_config z ([(.ELEM_DROP x)] : (List instr))) (.mk_config (with_elem z x []) [])
   | store_num_oob : forall (z : state) («at» : addrtype) (i : num_) (nt : numtype) (c : num_) (x : idx) (ao : memarg), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     ((((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8)))))) > (List.length ((fun_mem z x).BYTES))) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST nt c), (.STORE nt none x ao)] : (List instr)))) ->
     (wf_config (.mk_config z ([.TRAP] : (List instr)))) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST nt c), (.STORE nt none x ao)] : (List instr))) (.mk_config z ([.TRAP] : (List instr)))
   | store_num_val : forall (z : state) («at» : addrtype) (i : num_) (nt : numtype) (c : num_) (x : idx) (ao : memarg) (b_lst : (List byte)), 
-    ((proj_num__0 i) != none) ->
-    (b_lst == (nbytes_ nt c)) ->
+    ((proj_num__0 i) ≠ none) ->
+    (b_lst = (nbytes_ nt c)) ->
     Forall (fun (iter : byte) => (wf_byte iter)) (nbytes_ nt c) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST nt c), (.STORE nt none x ao)] : (List instr)))) ->
     (wf_config (.mk_config (with_mem z x ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8))))) b_lst) [])) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST nt c), (.STORE nt none x ao)] : (List instr))) (.mk_config (with_mem z x ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8))))) b_lst) [])
   | store_pack_oob : forall (z : state) («at» : addrtype) (i : num_) (v_Inn : Inn) (c : num_) (v_n : n) (x : idx) (ao : memarg), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     ((((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8)))))) > (List.length ((fun_mem z x).BYTES))) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST (numtype_addrtype v_Inn) c), (.STORE (numtype_addrtype v_Inn) (some (.mk_storeop__0 v_Inn (.mk_storeop_Inn (.mk_sz v_n)))) x ao)] : (List instr)))) ->
     (wf_config (.mk_config z ([.TRAP] : (List instr)))) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST (numtype_addrtype v_Inn) c), (.STORE (numtype_addrtype v_Inn) (some (.mk_storeop__0 v_Inn (.mk_storeop_Inn (.mk_sz v_n)))) x ao)] : (List instr))) (.mk_config z ([.TRAP] : (List instr)))
   | store_pack_val : forall (z : state) («at» : addrtype) (i : num_) (v_Inn : Inn) (c : num_) (v_n : n) (x : idx) (ao : memarg) (b_lst : (List byte)), 
-    ((proj_num__0 i) != none) ->
-    ((proj_num__0 c) != none) ->
-    (b_lst == (ibytes_ v_n (wrap__ (size (numtype_addrtype v_Inn)) v_n (Option.get! (proj_num__0 c))))) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((proj_num__0 c) ≠ none) ->
+    (b_lst = (ibytes_ v_n (wrap__ (size (numtype_addrtype v_Inn)) v_n (Option.get! (proj_num__0 c))))) ->
     Forall (fun (iter : byte) => (wf_byte iter)) (ibytes_ v_n (wrap__ (size (numtype_addrtype v_Inn)) v_n (Option.get! (proj_num__0 c)))) ->
     (wf_uN v_n (wrap__ (size (numtype_addrtype v_Inn)) v_n (Option.get! (proj_num__0 c)))) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST (numtype_addrtype v_Inn) c), (.STORE (numtype_addrtype v_Inn) (some (.mk_storeop__0 v_Inn (.mk_storeop_Inn (.mk_sz v_n)))) x ao)] : (List instr)))) ->
     (wf_config (.mk_config (with_mem z x ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8))))) b_lst) [])) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST (numtype_addrtype v_Inn) c), (.STORE (numtype_addrtype v_Inn) (some (.mk_storeop__0 v_Inn (.mk_storeop_Inn (.mk_sz v_n)))) x ao)] : (List instr))) (.mk_config (with_mem z x ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8))))) b_lst) [])
   | vstore_oob : forall (z : state) («at» : addrtype) (i : num_) (c : vec_) (x : idx) (ao : memarg), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     ((((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8)))))) > (List.length ((fun_mem z x).BYTES))) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VCONST .V128 c), (.VSTORE .V128 x ao)] : (List instr)))) ->
     (wf_config (.mk_config z ([.TRAP] : (List instr)))) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VCONST .V128 c), (.VSTORE .V128 x ao)] : (List instr))) (.mk_config z ([.TRAP] : (List instr)))
   | vstore_val : forall (z : state) («at» : addrtype) (i : num_) (c : vec_) (x : idx) (ao : memarg) (b_lst : (List byte)), 
-    ((proj_num__0 i) != none) ->
-    (b_lst == (vbytes_ .V128 c)) ->
+    ((proj_num__0 i) ≠ none) ->
+    (b_lst = (vbytes_ .V128 c)) ->
     Forall (fun (iter : byte) => (wf_byte iter)) (vbytes_ .V128 c) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VCONST .V128 c), (.VSTORE .V128 x ao)] : (List instr)))) ->
     (wf_config (.mk_config (with_mem z x ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8))))) b_lst) [])) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VCONST .V128 c), (.VSTORE .V128 x ao)] : (List instr))) (.mk_config (with_mem z x ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8))))) b_lst) [])
   | vstore_lane_oob : forall (z : state) («at» : addrtype) (i : num_) (c : vec_) (v_N : N) (x : idx) (ao : memarg) (j : laneidx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     ((((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + v_N) > (List.length ((fun_mem z x).BYTES))) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VCONST .V128 c), (.VSTORE_LANE .V128 (.mk_sz v_N) x ao j)] : (List instr)))) ->
     (wf_config (.mk_config z ([.TRAP] : (List instr)))) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VCONST .V128 c), (.VSTORE_LANE .V128 (.mk_sz v_N) x ao j)] : (List instr))) (.mk_config z ([.TRAP] : (List instr)))
   | vstore_lane_val : forall (z : state) («at» : addrtype) (i : num_) (c : vec_) (v_N : N) (x : idx) (ao : memarg) (j : laneidx) (b_lst : (List byte)) (v_Jnn : Jnn) (v_M : M), 
-    ((proj_num__0 i) != none) ->
-    (v_N == (jsize v_Jnn)) ->
-    ((Rat.ofInt (Int.ofNat v_M)) == ((Rat.ofInt (Int.ofNat 128)) / (Rat.ofInt (Int.ofNat v_N)))) ->
-    ((proj_lane__0 ((lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c)[(proj_uN_0 j)]!)) != none) ->
+    ((proj_num__0 i) ≠ none) ->
+    (v_N = (jsize v_Jnn)) ->
+    ((Rat.ofInt (Int.ofNat v_M)) = ((Rat.ofInt (Int.ofNat 128)) / (Rat.ofInt (Int.ofNat v_N)))) ->
+    ((proj_lane__0 ((lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c)[(proj_uN_0 j)]!)) ≠ none) ->
     ((proj_uN_0 j) < (List.length (lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c))) ->
-    (b_lst == (ibytes_ v_N (.mk_uN (proj_uN_0 (Option.get! (proj_lane__0 ((lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c)[(proj_uN_0 j)]!))))))) ->
+    (b_lst = (ibytes_ v_N (.mk_uN (proj_uN_0 (Option.get! (proj_lane__0 ((lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c)[(proj_uN_0 j)]!))))))) ->
     Forall (fun (iter : byte) => (wf_byte iter)) (ibytes_ v_N (.mk_uN (proj_uN_0 (Option.get! (proj_lane__0 ((lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c)[(proj_uN_0 j)]!)))))) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VCONST .V128 c), (.VSTORE_LANE .V128 (.mk_sz v_N) x ao j)] : (List instr)))) ->
     (wf_config (.mk_config (with_mem z x ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8))))) b_lst) [])) ->
@@ -17752,8 +17780,8 @@ inductive Step : config -> config -> Prop where
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VCONST .V128 c), (.VSTORE_LANE .V128 (.mk_sz v_N) x ao j)] : (List instr))) (.mk_config (with_mem z x ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8))))) b_lst) [])
   | memory_grow_succeed : forall (z : state) («at» : addrtype) (v_n : n) (x : idx) (mi : meminst) (var_0 : (Option meminst)), 
     (fun_growmem (fun_mem z x) v_n var_0) ->
-    (var_0 != none) ->
-    (mi == (Option.get! var_0)) ->
+    (var_0 ≠ none) ->
+    (mi = (Option.get! var_0)) ->
     (wf_meminst (Option.get! var_0)) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.MEMORY_GROW x)] : (List instr)))) ->
@@ -17771,17 +17799,17 @@ inductive Step : config -> config -> Prop where
   | struct_new : forall (z : state) (v_n : n) (val_lst : (List val)) (x : idx) (si : structinst) (a : addr) (mut_opt_lst : (List (Option «mut»))) (zt_lst : (List storagetype)) (var_0 : deftype), 
     (fun_type z x var_0) ->
     (Expand var_0 (.STRUCT (.mk_list (List.zipWith (fun (mut_opt : (Option «mut»)) (zt : storagetype) => ((.mk_fieldtype mut_opt zt) : fieldtype)) mut_opt_lst zt_lst)))) ->
-    (a == (List.length (fun_structinst z))) ->
-    Forall₂ (fun (v_val : val) (zt : storagetype) => ((packfield_ zt v_val) != none)) val_lst zt_lst ->
-    (si == { TYPE := var_0, FIELDS := (List.zipWith (fun (v_val : val) (zt : storagetype) => (Option.get! (packfield_ zt v_val))) val_lst zt_lst) }) ->
+    (a = (List.length (fun_structinst z))) ->
+    Forall₂ (fun (v_val : val) (zt : storagetype) => ((packfield_ zt v_val) ≠ none)) val_lst zt_lst ->
+    (si = { TYPE := var_0, FIELDS := (List.zipWith (fun (v_val : val) (zt : storagetype) => (Option.get! (packfield_ zt v_val))) val_lst zt_lst) }) ->
     Forall (fun (iter : structinst) => (wf_structinst iter)) (fun_structinst z) ->
     (wf_config (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.STRUCT_NEW x)] : (List instr))))) ->
     (wf_config (.mk_config (add_structinst z ([si] : (List structinst))) ([(.REF_STRUCT_ADDR a)] : (List instr)))) ->
     (wf_comptype (.STRUCT (.mk_list (List.zipWith (fun (mut_opt : (Option «mut»)) (zt : storagetype) => ((.mk_fieldtype mut_opt zt) : fieldtype)) mut_opt_lst zt_lst)))) ->
     (wf_structinst { TYPE := var_0, FIELDS := (List.zipWith (fun (v_val : val) (zt : storagetype) => (Option.get! (packfield_ zt v_val))) val_lst zt_lst) }) ->
-    (v_n == (List.length val_lst)) ->
-    (v_n == (List.length mut_opt_lst)) ->
-    (v_n == (List.length zt_lst)) ->
+    (v_n = (List.length val_lst)) ->
+    (v_n = (List.length mut_opt_lst)) ->
+    (v_n = (List.length zt_lst)) ->
     ((List.length val_lst) = v_n) ->
     ((List.length mut_opt_lst) = v_n) ->
     ((List.length zt_lst) = v_n) ->
@@ -17792,7 +17820,7 @@ inductive Step : config -> config -> Prop where
     Step (.mk_config z ([.REF_NULL_ADDR, (instr_val v_val), (.STRUCT_SET x i)] : (List instr))) (.mk_config z ([.TRAP] : (List instr)))
   | struct_set_struct : forall (z : state) (a : addr) (v_val : val) (x : idx) (i : fieldidx) (zt_lst : (List storagetype)) (mut_opt_lst : (List (Option «mut»))) (var_0 : deftype), 
     (fun_type z x var_0) ->
-    ((packfield_ (zt_lst[(proj_uN_0 i)]!) v_val) != none) ->
+    ((packfield_ (zt_lst[(proj_uN_0 i)]!) v_val) ≠ none) ->
     ((proj_uN_0 i) < (List.length zt_lst)) ->
     (Expand var_0 (.STRUCT (.mk_list (List.zipWith (fun (mut_opt : (Option «mut»)) (zt : storagetype) => ((.mk_fieldtype mut_opt zt) : fieldtype)) mut_opt_lst zt_lst)))) ->
     (wf_config (.mk_config z ([(.REF_STRUCT_ADDR a), (instr_val v_val), (.STRUCT_SET x i)] : (List instr)))) ->
@@ -17803,14 +17831,14 @@ inductive Step : config -> config -> Prop where
   | array_new_fixed : forall (z : state) (v_n : n) (val_lst : (List val)) (x : idx) (ai : arrayinst) (a : addr) (mut_opt : (Option «mut»)) (zt : storagetype) (var_0 : deftype), 
     (fun_type z x var_0) ->
     (Expand var_0 (.ARRAY (.mk_fieldtype mut_opt zt))) ->
-    Forall (fun (v_val : val) => ((packfield_ zt v_val) != none)) val_lst ->
-    ((a == (List.length (fun_arrayinst z))) && (ai == { TYPE := var_0, FIELDS := (List.map (fun (v_val : val) => (Option.get! (packfield_ zt v_val))) val_lst) })) ->
+    Forall (fun (v_val : val) => ((packfield_ zt v_val) ≠ none)) val_lst ->
+    ((a = (List.length (fun_arrayinst z))) ∧ (ai = { TYPE := var_0, FIELDS := (List.map (fun (v_val : val) => (Option.get! (packfield_ zt v_val))) val_lst) })) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
     (wf_config (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.ARRAY_NEW_FIXED x (.mk_uN v_n))] : (List instr))))) ->
     (wf_config (.mk_config (add_arrayinst z ([ai] : (List arrayinst))) ([(.REF_ARRAY_ADDR a)] : (List instr)))) ->
     (wf_comptype (.ARRAY (.mk_fieldtype mut_opt zt))) ->
     (wf_arrayinst { TYPE := var_0, FIELDS := (List.map (fun (v_val : val) => (Option.get! (packfield_ zt v_val))) val_lst) }) ->
-    (v_n == (List.length val_lst)) ->
+    (v_n = (List.length val_lst)) ->
     ((List.length val_lst) = v_n) ->
     Step (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.ARRAY_NEW_FIXED x (.mk_uN v_n))] : (List instr)))) (.mk_config (add_arrayinst z ([ai] : (List arrayinst))) ([(.REF_ARRAY_ADDR a)] : (List instr)))
   | array_set_null : forall (z : state) (i : num_) (v_val : val) (x : idx), 
@@ -17818,7 +17846,7 @@ inductive Step : config -> config -> Prop where
     (wf_config (.mk_config z ([.TRAP] : (List instr)))) ->
     Step (.mk_config z ([.REF_NULL_ADDR, (.CONST .I32 i), (instr_val v_val), (.ARRAY_SET x)] : (List instr))) (.mk_config z ([.TRAP] : (List instr)))
   | array_set_oob : forall (z : state) (a : addr) (i : num_) (v_val : val) (x : idx), 
-    ((proj_num__0 i) != none) ->
+    ((proj_num__0 i) ≠ none) ->
     (a < (List.length (fun_arrayinst z))) ->
     ((proj_uN_0 (Option.get! (proj_num__0 i))) >= (List.length (((fun_arrayinst z)[a]!).FIELDS))) ->
     Forall (fun (iter : arrayinst) => (wf_arrayinst iter)) (fun_arrayinst z) ->
@@ -17827,8 +17855,8 @@ inductive Step : config -> config -> Prop where
     Step (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (instr_val v_val), (.ARRAY_SET x)] : (List instr))) (.mk_config z ([.TRAP] : (List instr)))
   | array_set_array : forall (z : state) (a : addr) (i : num_) (v_val : val) (x : idx) (zt : storagetype) (mut_opt : (Option «mut»)) (var_0 : deftype), 
     (fun_type z x var_0) ->
-    ((proj_num__0 i) != none) ->
-    ((packfield_ zt v_val) != none) ->
+    ((proj_num__0 i) ≠ none) ->
+    ((packfield_ zt v_val) ≠ none) ->
     (Expand var_0 (.ARRAY (.mk_fieldtype mut_opt zt))) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (instr_val v_val), (.ARRAY_SET x)] : (List instr)))) ->
     (wf_config (.mk_config (with_array z a (proj_uN_0 (Option.get! (proj_num__0 i))) (Option.get! (packfield_ zt v_val))) [])) ->
@@ -17865,17 +17893,17 @@ inductive fun_alloctypes : (List type) -> (List deftype) -> Prop where
     (fun_rolldt x v_rectype var_2) ->
     (fun_subst_all_deftypes var_2 (List.map (fun (deftype'_2 : deftype) => (typeuse_deftype deftype'_2)) deftype'_lst) var_1) ->
     (fun_alloctypes type'_lst var_0) ->
-    (deftype'_lst == var_0) ->
-    ((.TYPE v_rectype) == v_type) ->
-    (deftype_lst == var_1) ->
-    ((proj_uN_0 x) == (List.length deftype'_lst)) ->
+    (deftype'_lst = var_0) ->
+    ((.TYPE v_rectype) = v_type) ->
+    (deftype_lst = var_1) ->
+    ((proj_uN_0 x) = (List.length deftype'_lst)) ->
     (wf_uN 32 x) ->
     fun_alloctypes (type'_lst ++ ([v_type] : (List type))) (deftype'_lst ++ deftype_lst)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:15.6-15.15 -/
 inductive fun_alloctag : store -> tagtype -> (store × tagaddr) -> Prop where
   | fun_alloctag_case_0 : forall (s : store) (v_tagtype : typeuse) (v_taginst : taginst), 
-    (v_taginst == { TYPE := v_tagtype }) ->
+    (v_taginst = { TYPE := v_tagtype }) ->
     (wf_taginst { TYPE := v_tagtype }) ->
     fun_alloctag s v_tagtype ((s ++ { TAGS := ([v_taginst] : (List taginst)), GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], STRUCTS := [], ARRAYS := [], EXNS := [] }), (List.length (s.TAGS)))
 
@@ -17885,7 +17913,7 @@ inductive alloctag_is_wf : store -> tagtype -> (store × tagaddr) -> Prop where
     (fun_alloctag v_store v_tagtype var_0) ->
     (wf_store v_store) ->
     (wf_typeuse v_tagtype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_store (Prod.fst ret_val)) ->
     alloctag_is_wf v_store v_tagtype ret_val
 
@@ -17896,8 +17924,8 @@ inductive fun_alloctags : store -> (List tagtype) -> (store × (List tagaddr)) -
   | fun_alloctags_case_1 : forall (s : store) (v_tagtype : typeuse) (tagtype'_lst : (List tagtype)) (ja : tagaddr) (s_1 : store) (s_2 : store) (ja'_lst : (List tagaddr)) (var_1 : (store × (List tagaddr))) (var_0 : (store × tagaddr)), 
     (fun_alloctags s_1 tagtype'_lst var_1) ->
     (fun_alloctag s v_tagtype var_0) ->
-    ((s_1, ja) == var_0) ->
-    ((s_2, ja'_lst) == var_1) ->
+    ((s_1, ja) = var_0) ->
+    ((s_2, ja'_lst) = var_1) ->
     fun_alloctags s (([v_tagtype] : (List tagtype)) ++ tagtype'_lst) (s_2, (([ja] : (List tagaddr)) ++ ja'_lst))
 
 /- Recursive Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:20.1-20.102 -/
@@ -17907,14 +17935,14 @@ inductive alloctags_is_wf : store -> (List tagtype) -> (store × (List tagaddr))
     (fun_alloctags v_store var_0_lst var_0) ->
     (wf_store v_store) ->
     Forall (fun (var_0 : tagtype) => (wf_typeuse var_0)) var_0_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_store (Prod.fst ret_val)) ->
     alloctags_is_wf v_store var_0_lst ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:26.6-26.18 -/
 inductive fun_allocglobal : store -> globaltype -> val -> (store × globaladdr) -> Prop where
   | fun_allocglobal_case_0 : forall (s : store) (v_globaltype : globaltype) (v_val : val) (v_globalinst : globalinst), 
-    (v_globalinst == { TYPE := v_globaltype, VALUE := v_val }) ->
+    (v_globalinst = { TYPE := v_globaltype, VALUE := v_val }) ->
     (wf_globalinst { TYPE := v_globaltype, VALUE := v_val }) ->
     fun_allocglobal s v_globaltype v_val ((s ++ { TAGS := [], GLOBALS := ([v_globalinst] : (List globalinst)), MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], STRUCTS := [], ARRAYS := [], EXNS := [] }), (List.length (s.GLOBALS)))
 
@@ -17925,7 +17953,7 @@ inductive allocglobal_is_wf : store -> globaltype -> val -> (store × globaladdr
     (wf_store v_store) ->
     (wf_globaltype v_globaltype) ->
     (wf_val v_val) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_store (Prod.fst ret_val)) ->
     allocglobal_is_wf v_store v_globaltype v_val ret_val
 
@@ -17936,8 +17964,8 @@ inductive fun_allocglobals : store -> (List globaltype) -> (List val) -> (store 
   | fun_allocglobals_case_1 : forall (s : store) (v_globaltype : globaltype) (globaltype'_lst : (List globaltype)) (v_val : val) (val'_lst : (List val)) (ga : globaladdr) (s_1 : store) (s_2 : store) (ga'_lst : (List globaladdr)) (var_1 : (store × (List globaladdr))) (var_0 : (store × globaladdr)), 
     (fun_allocglobals s_1 globaltype'_lst val'_lst var_1) ->
     (fun_allocglobal s v_globaltype v_val var_0) ->
-    ((s_1, ga) == var_0) ->
-    ((s_2, ga'_lst) == var_1) ->
+    ((s_1, ga) = var_0) ->
+    ((s_2, ga'_lst) = var_1) ->
     fun_allocglobals s (([v_globaltype] : (List globaltype)) ++ globaltype'_lst) (([v_val] : (List val)) ++ val'_lst) (s_2, (([ga] : (List globaladdr)) ++ ga'_lst))
 
 /- Recursive Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:31.1-31.122 -/
@@ -17948,14 +17976,14 @@ inductive allocglobals_is_wf : store -> (List globaltype) -> (List val) -> (stor
     (wf_store v_store) ->
     Forall (fun (var_0 : globaltype) => (wf_globaltype var_0)) var_0_lst ->
     Forall (fun (var_1 : val) => (wf_val var_1)) var_1_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_store (Prod.fst ret_val)) ->
     allocglobals_is_wf v_store var_0_lst var_1_lst ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:37.6-37.15 -/
 inductive fun_allocmem : store -> memtype -> (store × memaddr) -> Prop where
   | fun_allocmem_case_0 : forall (s : store) («at» : addrtype) (i : uN) (j_opt : (Option u64)) (v_meminst : meminst), 
-    (v_meminst == { TYPE := (.PAGE «at» (.mk_limits i j_opt)), BYTES := (List.replicate ((proj_uN_0 i) * (64 * (Ki ))) (.mk_byte 0)) }) ->
+    (v_meminst = { TYPE := (.PAGE «at» (.mk_limits i j_opt)), BYTES := (List.replicate ((proj_uN_0 i) * (64 * (Ki ))) (.mk_byte 0)) }) ->
     (wf_meminst { TYPE := (.PAGE «at» (.mk_limits i j_opt)), BYTES := (List.replicate ((proj_uN_0 i) * (64 * (Ki ))) (.mk_byte 0)) }) ->
     fun_allocmem s (.PAGE «at» (.mk_limits i j_opt)) ((s ++ { TAGS := [], GLOBALS := [], MEMS := ([v_meminst] : (List meminst)), TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], STRUCTS := [], ARRAYS := [], EXNS := [] }), (List.length (s.MEMS)))
 
@@ -17965,7 +17993,7 @@ inductive allocmem_is_wf : store -> memtype -> (store × memaddr) -> Prop where
     (fun_allocmem v_store v_memtype var_0) ->
     (wf_store v_store) ->
     (wf_memtype v_memtype) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_store (Prod.fst ret_val)) ->
     allocmem_is_wf v_store v_memtype ret_val
 
@@ -17976,8 +18004,8 @@ inductive fun_allocmems : store -> (List memtype) -> (store × (List memaddr)) -
   | fun_allocmems_case_1 : forall (s : store) (v_memtype : memtype) (memtype'_lst : (List memtype)) (ma : memaddr) (s_1 : store) (s_2 : store) (ma'_lst : (List memaddr)) (var_1 : (store × (List memaddr))) (var_0 : (store × memaddr)), 
     (fun_allocmems s_1 memtype'_lst var_1) ->
     (fun_allocmem s v_memtype var_0) ->
-    ((s_1, ma) == var_0) ->
-    ((s_2, ma'_lst) == var_1) ->
+    ((s_1, ma) = var_0) ->
+    ((s_2, ma'_lst) = var_1) ->
     fun_allocmems s (([v_memtype] : (List memtype)) ++ memtype'_lst) (s_2, (([ma] : (List memaddr)) ++ ma'_lst))
 
 /- Recursive Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:42.1-42.102 -/
@@ -17987,14 +18015,14 @@ inductive allocmems_is_wf : store -> (List memtype) -> (store × (List memaddr))
     (fun_allocmems v_store var_0_lst var_0) ->
     (wf_store v_store) ->
     Forall (fun (var_0 : memtype) => (wf_memtype var_0)) var_0_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_store (Prod.fst ret_val)) ->
     allocmems_is_wf v_store var_0_lst ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:48.6-48.17 -/
 inductive fun_alloctable : store -> tabletype -> ref -> (store × tableaddr) -> Prop where
   | fun_alloctable_case_0 : forall (s : store) («at» : addrtype) (i : uN) (j_opt : (Option u64)) (rt : reftype) (v_ref : ref) (v_tableinst : tableinst), 
-    (v_tableinst == { TYPE := (.mk_tabletype «at» (.mk_limits i j_opt) rt), REFS := (List.replicate (proj_uN_0 i) v_ref) }) ->
+    (v_tableinst = { TYPE := (.mk_tabletype «at» (.mk_limits i j_opt) rt), REFS := (List.replicate (proj_uN_0 i) v_ref) }) ->
     (wf_tableinst { TYPE := (.mk_tabletype «at» (.mk_limits i j_opt) rt), REFS := (List.replicate (proj_uN_0 i) v_ref) }) ->
     fun_alloctable s (.mk_tabletype «at» (.mk_limits i j_opt) rt) v_ref ((s ++ { TAGS := [], GLOBALS := [], MEMS := [], TABLES := ([v_tableinst] : (List tableinst)), FUNCS := [], DATAS := [], ELEMS := [], STRUCTS := [], ARRAYS := [], EXNS := [] }), (List.length (s.TABLES)))
 
@@ -18005,7 +18033,7 @@ inductive alloctable_is_wf : store -> tabletype -> ref -> (store × tableaddr) -
     (wf_store v_store) ->
     (wf_tabletype v_tabletype) ->
     (wf_ref v_ref) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_store (Prod.fst ret_val)) ->
     alloctable_is_wf v_store v_tabletype v_ref ret_val
 
@@ -18016,8 +18044,8 @@ inductive fun_alloctables : store -> (List tabletype) -> (List ref) -> (store ×
   | fun_alloctables_case_1 : forall (s : store) (v_tabletype : tabletype) (tabletype'_lst : (List tabletype)) (v_ref : ref) (ref'_lst : (List ref)) (ta : tableaddr) (s_1 : store) (s_2 : store) (ta'_lst : (List tableaddr)) (var_1 : (store × (List tableaddr))) (var_0 : (store × tableaddr)), 
     (fun_alloctables s_1 tabletype'_lst ref'_lst var_1) ->
     (fun_alloctable s v_tabletype v_ref var_0) ->
-    ((s_1, ta) == var_0) ->
-    ((s_2, ta'_lst) == var_1) ->
+    ((s_1, ta) = var_0) ->
+    ((s_2, ta'_lst) = var_1) ->
     fun_alloctables s (([v_tabletype] : (List tabletype)) ++ tabletype'_lst) (([v_ref] : (List ref)) ++ ref'_lst) (s_2, (([ta] : (List tableaddr)) ++ ta'_lst))
 
 /- Recursive Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:53.1-53.118 -/
@@ -18028,14 +18056,14 @@ inductive alloctables_is_wf : store -> (List tabletype) -> (List ref) -> (store 
     (wf_store v_store) ->
     Forall (fun (var_0 : tabletype) => (wf_tabletype var_0)) var_0_lst ->
     Forall (fun (var_1 : ref) => (wf_ref var_1)) var_1_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_store (Prod.fst ret_val)) ->
     alloctables_is_wf v_store var_0_lst var_1_lst ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:59.6-59.16 -/
 inductive fun_allocfunc : store -> deftype -> funccode -> moduleinst -> (store × funcaddr) -> Prop where
   | fun_allocfunc_case_0 : forall (s : store) (v_deftype : deftype) (v_funccode : funccode) (v_moduleinst : moduleinst) (v_funcinst : funcinst), 
-    (v_funcinst == { TYPE := v_deftype, MODULE := v_moduleinst, CODE := v_funccode }) ->
+    (v_funcinst = { TYPE := v_deftype, MODULE := v_moduleinst, CODE := v_funccode }) ->
     (wf_funcinst { TYPE := v_deftype, MODULE := v_moduleinst, CODE := v_funccode }) ->
     fun_allocfunc s v_deftype v_funccode v_moduleinst ((s ++ { TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := ([v_funcinst] : (List funcinst)), DATAS := [], ELEMS := [], STRUCTS := [], ARRAYS := [], EXNS := [] }), (List.length (s.FUNCS)))
 
@@ -18046,7 +18074,7 @@ inductive allocfunc_is_wf : store -> deftype -> funccode -> moduleinst -> (store
     (wf_store v_store) ->
     (wf_funccode v_funccode) ->
     (wf_moduleinst v_moduleinst) ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_store (Prod.fst ret_val)) ->
     allocfunc_is_wf v_store v_deftype v_funccode v_moduleinst ret_val
 
@@ -18057,8 +18085,8 @@ inductive fun_allocfuncs : store -> (List deftype) -> (List funccode) -> (List m
   | fun_allocfuncs_case_1 : forall (s : store) (dt : deftype) (dt'_lst : (List deftype)) (v_funccode : funccode) (funccode'_lst : (List funccode)) (v_moduleinst : moduleinst) (moduleinst'_lst : (List moduleinst)) (fa : funcaddr) (s_1 : store) (s_2 : store) (fa'_lst : (List funcaddr)) (var_1 : (store × (List funcaddr))) (var_0 : (store × funcaddr)), 
     (fun_allocfuncs s_1 dt'_lst funccode'_lst moduleinst'_lst var_1) ->
     (fun_allocfunc s dt v_funccode v_moduleinst var_0) ->
-    ((s_1, fa) == var_0) ->
-    ((s_2, fa'_lst) == var_1) ->
+    ((s_1, fa) = var_0) ->
+    ((s_2, fa'_lst) = var_1) ->
     fun_allocfuncs s (([dt] : (List deftype)) ++ dt'_lst) (([v_funccode] : (List funccode)) ++ funccode'_lst) (([v_moduleinst] : (List moduleinst)) ++ moduleinst'_lst) (s_2, (([fa] : (List funcaddr)) ++ fa'_lst))
 
 /- Recursive Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:64.1-64.133 -/
@@ -18069,14 +18097,14 @@ inductive allocfuncs_is_wf : store -> (List deftype) -> (List funccode) -> (List
     (wf_store v_store) ->
     Forall (fun (var_1 : funccode) => (wf_funccode var_1)) var_1_lst ->
     Forall (fun (var_2 : moduleinst) => (wf_moduleinst var_2)) var_2_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_store (Prod.fst ret_val)) ->
     allocfuncs_is_wf v_store var_0_lst var_1_lst var_2_lst ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:70.6-70.16 -/
 inductive fun_allocdata : store -> datatype -> (List byte) -> (store × dataaddr) -> Prop where
   | fun_allocdata_case_0 : forall (s : store) (byte_lst : (List byte)) (v_datainst : datainst), 
-    (v_datainst == { BYTES := byte_lst }) ->
+    (v_datainst = { BYTES := byte_lst }) ->
     (wf_datainst { BYTES := byte_lst }) ->
     fun_allocdata s .OK byte_lst ((s ++ { TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := ([v_datainst] : (List datainst)), ELEMS := [], STRUCTS := [], ARRAYS := [], EXNS := [] }), (List.length (s.DATAS)))
 
@@ -18086,7 +18114,7 @@ inductive allocdata_is_wf : store -> datatype -> (List byte) -> (store × dataad
     (fun_allocdata v_store v_datatype var_0_lst var_0) ->
     (wf_store v_store) ->
     Forall (fun (var_0 : byte) => (wf_byte var_0)) var_0_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_store (Prod.fst ret_val)) ->
     allocdata_is_wf v_store v_datatype var_0_lst ret_val
 
@@ -18097,8 +18125,8 @@ inductive fun_allocdatas : store -> (List datatype) -> (List (List byte)) -> (st
   | fun_allocdatas_case_1 : forall (s : store) (ok : datatype) (ok'_lst : (List datatype)) (b_lst : (List byte)) (b'_lst_lst : (List (List byte))) (da : dataaddr) (s_1 : store) (s_2 : store) (da'_lst : (List dataaddr)) (var_1 : (store × (List dataaddr))) (var_0 : (store × dataaddr)), 
     (fun_allocdatas s_1 ok'_lst b'_lst_lst var_1) ->
     (fun_allocdata s ok b_lst var_0) ->
-    ((s_1, da) == var_0) ->
-    ((s_2, da'_lst) == var_1) ->
+    ((s_1, da) = var_0) ->
+    ((s_2, da'_lst) = var_1) ->
     fun_allocdatas s (([ok] : (List datatype)) ++ ok'_lst) (([b_lst] : (List (List byte))) ++ b'_lst_lst) (s_2, (([da] : (List dataaddr)) ++ da'_lst))
 
 /- Recursive Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:75.1-75.118 -/
@@ -18108,14 +18136,14 @@ inductive allocdatas_is_wf : store -> (List datatype) -> (List (List byte)) -> (
     (fun_allocdatas v_store var_0_lst var_1_lst_lst var_0) ->
     (wf_store v_store) ->
     Forall (fun (var_1_lst : (List byte)) => Forall (fun (var_1 : byte) => (wf_byte var_1)) var_1_lst) var_1_lst_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_store (Prod.fst ret_val)) ->
     allocdatas_is_wf v_store var_0_lst var_1_lst_lst ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:81.6-81.16 -/
 inductive fun_allocelem : store -> elemtype -> (List ref) -> (store × elemaddr) -> Prop where
   | fun_allocelem_case_0 : forall (s : store) (v_elemtype : reftype) (ref_lst : (List ref)) (v_eleminst : eleminst), 
-    (v_eleminst == { TYPE := v_elemtype, REFS := ref_lst }) ->
+    (v_eleminst = { TYPE := v_elemtype, REFS := ref_lst }) ->
     (wf_eleminst { TYPE := v_elemtype, REFS := ref_lst }) ->
     fun_allocelem s v_elemtype ref_lst ((s ++ { TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := ([v_eleminst] : (List eleminst)), STRUCTS := [], ARRAYS := [], EXNS := [] }), (List.length (s.ELEMS)))
 
@@ -18126,7 +18154,7 @@ inductive allocelem_is_wf : store -> elemtype -> (List ref) -> (store × elemadd
     (wf_store v_store) ->
     (wf_reftype v_elemtype) ->
     Forall (fun (var_0 : ref) => (wf_ref var_0)) var_0_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_store (Prod.fst ret_val)) ->
     allocelem_is_wf v_store v_elemtype var_0_lst ret_val
 
@@ -18137,8 +18165,8 @@ inductive fun_allocelems : store -> (List elemtype) -> (List (List ref)) -> (sto
   | fun_allocelems_case_1 : forall (s : store) (rt : reftype) (rt'_lst : (List reftype)) (ref_lst : (List ref)) (ref'_lst_lst : (List (List ref))) (ea : elemaddr) (s_1 : store) (s_2 : store) (ea'_lst : (List elemaddr)) (var_1 : (store × (List elemaddr))) (var_0 : (store × elemaddr)), 
     (fun_allocelems s_1 rt'_lst ref'_lst_lst var_1) ->
     (fun_allocelem s rt ref_lst var_0) ->
-    ((s_1, ea) == var_0) ->
-    ((s_2, ea'_lst) == var_1) ->
+    ((s_1, ea) = var_0) ->
+    ((s_2, ea'_lst) = var_1) ->
     fun_allocelems s (([rt] : (List elemtype)) ++ rt'_lst) (([ref_lst] : (List (List ref))) ++ ref'_lst_lst) (s_2, (([ea] : (List elemaddr)) ++ ea'_lst))
 
 /- Recursive Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:86.1-86.117 -/
@@ -18149,7 +18177,7 @@ inductive allocelems_is_wf : store -> (List elemtype) -> (List (List ref)) -> (s
     (wf_store v_store) ->
     Forall (fun (var_0 : elemtype) => (wf_reftype var_0)) var_0_lst ->
     Forall (fun (var_1_lst : (List ref)) => Forall (fun (var_1 : ref) => (wf_ref var_1)) var_1_lst) var_1_lst_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_store (Prod.fst ret_val)) ->
     allocelems_is_wf v_store var_0_lst var_1_lst_lst ret_val
 
@@ -18172,7 +18200,7 @@ inductive allocexport_is_wf : moduleinst -> «export» -> exportinst -> Prop whe
   | allocexport_is_wf_0 : forall (v_moduleinst : moduleinst) (v_export : «export») (ret_val : exportinst), 
     (wf_moduleinst v_moduleinst) ->
     (wf_export v_export) ->
-    (ret_val == (allocexport v_moduleinst v_export)) ->
+    (ret_val = (allocexport v_moduleinst v_export)) ->
     (wf_exportinst ret_val) ->
     allocexport_is_wf v_moduleinst v_export ret_val
 
@@ -18187,7 +18215,7 @@ inductive allocexports_is_wf : moduleinst -> (List «export») -> (List exportin
   | allocexports_is_wf_0 : forall (v_moduleinst : moduleinst) (var_0_lst : (List «export»)) (ret_val_lst : (List exportinst)), 
     (wf_moduleinst v_moduleinst) ->
     Forall (fun (var_0 : «export») => (wf_export var_0)) var_0_lst ->
-    (ret_val_lst == (allocexports v_moduleinst var_0_lst)) ->
+    (ret_val_lst = (allocexports v_moduleinst var_0_lst)) ->
     Forall (fun (ret_val : exportinst) => (wf_exportinst ret_val)) ret_val_lst ->
     allocexports_is_wf v_moduleinst var_0_lst ret_val_lst
 
@@ -18212,30 +18240,30 @@ inductive fun_allocmodule : store -> module -> (List externaddr) -> (List val) -
     (fun_memsxa externaddr_lst var_2) ->
     (fun_globalsxa externaddr_lst var_1) ->
     (fun_tagsxa externaddr_lst var_0) ->
-    ((.MODULE (.mk_list type_lst) (.mk_list import_lst) (.mk_list tag_lst) (.mk_list global_lst) (.mk_list mem_lst) (.mk_list table_lst) (.mk_list func_lst) (.mk_list data_lst) (.mk_list elem_lst) start_opt (.mk_list export_lst)) == v_module) ->
-    (tag_lst == (List.map (fun (tagtype_78 : tagtype) => ((.TAG tagtype_78) : tag)) tagtype_lst)) ->
-    (global_lst == (List.zipWith (fun (expr_G_1 : expr) (globaltype_122 : globaltype) => ((.GLOBAL globaltype_122 expr_G_1) : global)) expr_G_lst globaltype_lst)) ->
-    (mem_lst == (List.map (fun (memtype_122 : memtype) => ((.MEMORY memtype_122) : mem)) memtype_lst)) ->
-    (table_lst == (List.zipWith (fun (expr_T_1 : expr) (tabletype_156 : tabletype) => ((.TABLE tabletype_156 expr_T_1) : table)) expr_T_lst tabletype_lst)) ->
-    (func_lst == (list_map3 (fun (expr_F_1 : expr) (local_lst_82 : (List «local»)) (x_2 : idx) => ((.FUNC x_2 local_lst_82 expr_F_1) : func)) expr_F_lst local_lst_lst x_lst)) ->
-    (data_lst == (List.zipWith (fun (byte_lst_110 : (List byte)) (datamode_110 : datamode) => ((.DATA byte_lst_110 datamode_110) : data)) byte_lst_lst datamode_lst)) ->
-    (elem_lst == (list_map3 (fun (elemmode_230 : elemmode) (elemtype_1 : elemtype) (expr_E_lst_1 : (List expr)) => ((.ELEM elemtype_1 expr_E_lst_1 elemmode_230) : elem)) elemmode_lst elemtype_lst expr_E_lst_lst)) ->
-    (aa_I_lst == var_0) ->
-    (ga_I_lst == var_1) ->
-    (ma_I_lst == var_2) ->
-    (ta_I_lst == var_3) ->
-    (fa_I_lst == var_4) ->
-    (dt_lst == var_5) ->
-    (fa_lst == ((List.range (List.length func_lst)).map (fun (i_F_1 : Nat) => ((List.length (s.FUNCS)) + i_F_1)))) ->
-    ((s_1, aa_lst) == var_6) ->
-    ((s_2, ga_lst) == var_8) ->
-    ((s_3, ma_lst) == var_10) ->
-    ((s_4, ta_lst) == var_12) ->
-    ((s_5, da_lst) == var_14) ->
-    ((s_6, ea_lst) == var_15) ->
-    ((s_7, fa_lst) == var_17) ->
-    (xi_lst == (allocexports { TYPES := [], TAGS := (aa_I_lst ++ aa_lst), GLOBALS := (ga_I_lst ++ ga_lst), MEMS := (ma_I_lst ++ ma_lst), TABLES := (ta_I_lst ++ ta_lst), FUNCS := (fa_I_lst ++ fa_lst), DATAS := [], ELEMS := [], EXPORTS := [] } export_lst)) ->
-    (v_moduleinst == { TYPES := dt_lst, TAGS := (aa_I_lst ++ aa_lst), GLOBALS := (ga_I_lst ++ ga_lst), MEMS := (ma_I_lst ++ ma_lst), TABLES := (ta_I_lst ++ ta_lst), FUNCS := (fa_I_lst ++ fa_lst), DATAS := da_lst, ELEMS := ea_lst, EXPORTS := xi_lst }) ->
+    ((.MODULE (.mk_list type_lst) (.mk_list import_lst) (.mk_list tag_lst) (.mk_list global_lst) (.mk_list mem_lst) (.mk_list table_lst) (.mk_list func_lst) (.mk_list data_lst) (.mk_list elem_lst) start_opt (.mk_list export_lst)) = v_module) ->
+    (tag_lst = (List.map (fun (tagtype_78 : tagtype) => ((.TAG tagtype_78) : tag)) tagtype_lst)) ->
+    (global_lst = (List.zipWith (fun (expr_G_1 : expr) (globaltype_122 : globaltype) => ((.GLOBAL globaltype_122 expr_G_1) : global)) expr_G_lst globaltype_lst)) ->
+    (mem_lst = (List.map (fun (memtype_122 : memtype) => ((.MEMORY memtype_122) : mem)) memtype_lst)) ->
+    (table_lst = (List.zipWith (fun (expr_T_1 : expr) (tabletype_156 : tabletype) => ((.TABLE tabletype_156 expr_T_1) : table)) expr_T_lst tabletype_lst)) ->
+    (func_lst = (list_map3 (fun (expr_F_1 : expr) (local_lst_82 : (List «local»)) (x_2 : idx) => ((.FUNC x_2 local_lst_82 expr_F_1) : func)) expr_F_lst local_lst_lst x_lst)) ->
+    (data_lst = (List.zipWith (fun (byte_lst_110 : (List byte)) (datamode_110 : datamode) => ((.DATA byte_lst_110 datamode_110) : data)) byte_lst_lst datamode_lst)) ->
+    (elem_lst = (list_map3 (fun (elemmode_230 : elemmode) (elemtype_1 : elemtype) (expr_E_lst_1 : (List expr)) => ((.ELEM elemtype_1 expr_E_lst_1 elemmode_230) : elem)) elemmode_lst elemtype_lst expr_E_lst_lst)) ->
+    (aa_I_lst = var_0) ->
+    (ga_I_lst = var_1) ->
+    (ma_I_lst = var_2) ->
+    (ta_I_lst = var_3) ->
+    (fa_I_lst = var_4) ->
+    (dt_lst = var_5) ->
+    (fa_lst = ((List.range (List.length func_lst)).map (fun (i_F_1 : Nat) => ((List.length (s.FUNCS)) + i_F_1)))) ->
+    ((s_1, aa_lst) = var_6) ->
+    ((s_2, ga_lst) = var_8) ->
+    ((s_3, ma_lst) = var_10) ->
+    ((s_4, ta_lst) = var_12) ->
+    ((s_5, da_lst) = var_14) ->
+    ((s_6, ea_lst) = var_15) ->
+    ((s_7, fa_lst) = var_17) ->
+    (xi_lst = (allocexports { TYPES := [], TAGS := (aa_I_lst ++ aa_lst), GLOBALS := (ga_I_lst ++ ga_lst), MEMS := (ma_I_lst ++ ma_lst), TABLES := (ta_I_lst ++ ta_lst), FUNCS := (fa_I_lst ++ fa_lst), DATAS := [], ELEMS := [], EXPORTS := [] } export_lst)) ->
+    (v_moduleinst = { TYPES := dt_lst, TAGS := (aa_I_lst ++ aa_lst), GLOBALS := (ga_I_lst ++ ga_lst), MEMS := (ma_I_lst ++ ma_lst), TABLES := (ta_I_lst ++ ta_lst), FUNCS := (fa_I_lst ++ fa_lst), DATAS := da_lst, ELEMS := ea_lst, EXPORTS := xi_lst }) ->
     (wf_module (.MODULE (.mk_list type_lst) (.mk_list import_lst) (.mk_list tag_lst) (.mk_list global_lst) (.mk_list mem_lst) (.mk_list table_lst) (.mk_list func_lst) (.mk_list data_lst) (.mk_list elem_lst) start_opt (.mk_list export_lst))) ->
     Forall (fun (tagtype_81 : tagtype) => (wf_tag (.TAG tagtype_81))) tagtype_lst ->
     Forall₂ (fun (expr_G_2 : expr) (globaltype_125 : globaltype) => (wf_global (.GLOBAL globaltype_125 expr_G_2))) expr_G_lst globaltype_lst ->
@@ -18269,7 +18297,7 @@ inductive allocmodule_is_wf : store -> module -> (List externaddr) -> (List val)
     Forall (fun (var_1 : val) => (wf_val var_1)) var_1_lst ->
     Forall (fun (var_2 : ref) => (wf_ref var_2)) var_2_lst ->
     Forall (fun (var_3_lst : (List ref)) => Forall (fun (var_3 : ref) => (wf_ref var_3)) var_3_lst) var_3_lst_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_store (Prod.fst ret_val)) ->
     (wf_moduleinst (Prod.snd ret_val)) ->
     allocmodule_is_wf v_store v_module var_0_lst var_1_lst var_2_lst var_3_lst_lst ret_val
@@ -18277,31 +18305,31 @@ inductive allocmodule_is_wf : store -> module -> (List externaddr) -> (List val)
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:148.6-148.15 -/
 inductive fun_rundata_ : dataidx -> data -> (List instr) -> Prop where
   | fun_rundata__case_0 : forall (x : uN) (v_n : Nat) (b_lst : (List byte)), 
-    (v_n == (List.length b_lst)) ->
+    (v_n = (List.length b_lst)) ->
     fun_rundata_ x (.DATA b_lst .PASSIVE) []
   | fun_rundata__case_1 : forall (x : uN) (v_n : Nat) (b_lst : (List byte)) (y : uN) (instr_lst : (List instr)), 
     (wf_instr (.CONST .I32 (.mk_num__0 .I32 (.mk_uN 0)))) ->
     (wf_instr (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n)))) ->
     (wf_instr (.MEMORY_INIT y x)) ->
     (wf_instr (.DATA_DROP x)) ->
-    (v_n == (List.length b_lst)) ->
+    (v_n = (List.length b_lst)) ->
     fun_rundata_ x (.DATA b_lst (.ACTIVE y instr_lst)) (instr_lst ++ ([(.CONST .I32 (.mk_num__0 .I32 (.mk_uN 0))), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.MEMORY_INIT y x), (.DATA_DROP x)] : (List instr)))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:153.6-153.15 -/
 inductive fun_runelem_ : elemidx -> elem -> (List instr) -> Prop where
   | fun_runelem__case_0 : forall (x : uN) (rt : reftype) (v_n : Nat) (e_lst : (List expr)), 
-    (v_n == (List.length e_lst)) ->
+    (v_n = (List.length e_lst)) ->
     fun_runelem_ x (.ELEM rt e_lst .PASSIVE) []
   | fun_runelem__case_1 : forall (x : uN) (rt : reftype) (v_n : Nat) (e_lst : (List expr)), 
     (wf_instr (.ELEM_DROP x)) ->
-    (v_n == (List.length e_lst)) ->
+    (v_n = (List.length e_lst)) ->
     fun_runelem_ x (.ELEM rt e_lst .DECLARE) ([(.ELEM_DROP x)] : (List instr))
   | fun_runelem__case_2 : forall (x : uN) (rt : reftype) (v_n : Nat) (e_lst : (List expr)) (y : uN) (instr_lst : (List instr)), 
     (wf_instr (.CONST .I32 (.mk_num__0 .I32 (.mk_uN 0)))) ->
     (wf_instr (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n)))) ->
     (wf_instr (.TABLE_INIT y x)) ->
     (wf_instr (.ELEM_DROP x)) ->
-    (v_n == (List.length e_lst)) ->
+    (v_n = (List.length e_lst)) ->
     fun_runelem_ x (.ELEM rt e_lst (.ACTIVE y instr_lst)) (instr_lst ++ ([(.CONST .I32 (.mk_num__0 .I32 (.mk_uN 0))), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.TABLE_INIT y x), (.ELEM_DROP x)] : (List instr)))
 
 /- Recursive Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:160.1-160.92 -/
@@ -18311,7 +18339,7 @@ inductive fun_evalexprs : state -> (List expr) -> (state × (List ref)) -> Prop 
   | fun_evalexprs_case_1 : forall (z : state) (v_expr : (List instr)) (expr'_lst : (List expr)) (v_ref : ref) (z' : state) (z'' : state) (ref'_lst : (List ref)) (var_0 : (state × (List ref))), 
     (fun_evalexprs z' expr'_lst var_0) ->
     (Eval_expr z v_expr z' ([(val_ref v_ref)] : (List val))) ->
-    ((z'', ref'_lst) == var_0) ->
+    ((z'', ref'_lst) = var_0) ->
     (wf_state z') ->
     fun_evalexprs z (([v_expr] : (List expr)) ++ expr'_lst) (z'', (([v_ref] : (List ref)) ++ ref'_lst))
 
@@ -18322,7 +18350,7 @@ inductive evalexprs_is_wf : state -> (List expr) -> (state × (List ref)) -> Pro
     (fun_evalexprs v_state var_0_lst var_0) ->
     (wf_state v_state) ->
     Forall (fun (var_0 : expr) => Forall (fun (var_0 : instr) => (wf_instr var_0)) var_0) var_0_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_state (Prod.fst ret_val)) ->
     Forall (fun (iter : ref) => (wf_ref iter)) (Prod.snd ret_val) ->
     evalexprs_is_wf v_state var_0_lst ret_val
@@ -18334,8 +18362,8 @@ inductive fun_evalexprss : state -> (List (List expr)) -> (state × (List (List 
   | fun_evalexprss_case_1 : forall (z : state) (expr_lst : (List expr)) (expr'_lst_lst : (List (List expr))) (ref_lst : (List ref)) (z' : state) (z'' : state) (ref'_lst_lst : (List (List ref))) (var_1 : (state × (List (List ref)))) (var_0 : (state × (List ref))), 
     (fun_evalexprss z' expr'_lst_lst var_1) ->
     (fun_evalexprs z expr_lst var_0) ->
-    ((z', ref_lst) == var_0) ->
-    ((z'', ref'_lst_lst) == var_1) ->
+    ((z', ref_lst) = var_0) ->
+    ((z'', ref'_lst_lst) = var_1) ->
     fun_evalexprss z (([expr_lst] : (List (List expr))) ++ expr'_lst_lst) (z'', (([ref_lst] : (List (List ref))) ++ ref'_lst_lst))
 
 /- Recursive Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:167.1-167.96 -/
@@ -18345,7 +18373,7 @@ inductive evalexprss_is_wf : state -> (List (List expr)) -> (state × (List (Lis
     (fun_evalexprss v_state var_0_lst_lst var_0) ->
     (wf_state v_state) ->
     Forall (fun (var_0_lst : (List expr)) => Forall (fun (var_0 : expr) => Forall (fun (var_0 : instr) => (wf_instr var_0)) var_0) var_0_lst) var_0_lst_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_state (Prod.fst ret_val)) ->
     Forall (fun (iter : (List ref)) => Forall (fun (iter : ref) => (wf_ref iter)) iter) (Prod.snd ret_val) ->
     evalexprss_is_wf v_state var_0_lst_lst ret_val
@@ -18358,9 +18386,9 @@ inductive fun_evalglobals : state -> (List globaltype) -> (List expr) -> (state 
     (fun_evalglobals (.mk_state s' { f with MODULE.GLOBALS := ((((f.MODULE)).GLOBALS) ++ ([a] : (List globaladdr))) }) gt'_lst expr'_lst var_1) ->
     (fun_allocglobal s gt v_val var_0) ->
     (Eval_expr z v_expr z' ([v_val] : (List val))) ->
-    ((.mk_state s f) == z') ->
-    ((s', a) == var_0) ->
-    ((z'', val'_lst) == var_1) ->
+    ((.mk_state s f) = z') ->
+    ((s', a) = var_0) ->
+    ((z'', val'_lst) = var_1) ->
     (wf_state z') ->
     (wf_state (.mk_state s f)) ->
     (wf_state (.mk_state s' { f with MODULE.GLOBALS := ((((f.MODULE)).GLOBALS) ++ ([a] : (List globaladdr))) })) ->
@@ -18374,7 +18402,7 @@ inductive evalglobals_is_wf : state -> (List globaltype) -> (List expr) -> (stat
     (wf_state v_state) ->
     Forall (fun (var_0 : globaltype) => (wf_globaltype var_0)) var_0_lst ->
     Forall (fun (var_1 : expr) => Forall (fun (var_1 : instr) => (wf_instr var_1)) var_1) var_1_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_state (Prod.fst ret_val)) ->
     Forall (fun (iter : val) => (wf_val iter)) (Prod.snd ret_val) ->
     evalglobals_is_wf v_state var_0_lst var_1_lst ret_val
@@ -18408,22 +18436,22 @@ inductive fun_instantiate : store -> module -> (List externaddr) -> config -> Pr
     (fun_alloctypes type_lst var_0) ->
     (Module_ok v_module (.mk_moduletype xt_I_lst xt_E_lst)) ->
     Forall₂ (fun (externaddr_8 : externaddr) (xt_I_2 : externtype) => (Externaddr_ok s externaddr_8 xt_I_2)) externaddr_lst xt_I_lst ->
-    ((.MODULE (.mk_list type_lst) (.mk_list import_lst) (.mk_list tag_lst) (.mk_list global_lst) (.mk_list mem_lst) (.mk_list table_lst) (.mk_list func_lst) (.mk_list data_lst) (.mk_list elem_lst) start_opt (.mk_list export_lst)) == v_module) ->
-    (global_lst == (List.zipWith (fun (expr_G_3 : expr) (globaltype_127 : globaltype) => ((.GLOBAL globaltype_127 expr_G_3) : global)) expr_G_lst globaltype_lst)) ->
-    (table_lst == (List.zipWith (fun (expr_T_3 : expr) (tabletype_161 : tabletype) => ((.TABLE tabletype_161 expr_T_3) : table)) expr_T_lst tabletype_lst)) ->
-    (data_lst == (List.zipWith (fun (byte_lst_117 : (List byte)) (datamode_116 : datamode) => ((.DATA byte_lst_117 datamode_116) : data)) byte_lst_lst datamode_lst)) ->
-    (elem_lst == (list_map3 (fun (elemmode_237 : elemmode) (expr_E_lst_3 : (List expr)) (reftype_516 : reftype) => ((.ELEM reftype_516 expr_E_lst_3 elemmode_237) : elem)) elemmode_lst expr_E_lst_lst reftype_lst)) ->
-    (start_opt == (Option.map (fun (x_6 : idx) => ((.START x_6) : start)) x_opt)) ->
-    (moduleinst_0 == { TYPES := var_0, TAGS := [], GLOBALS := var_1, MEMS := [], TABLES := [], FUNCS := (var_2 ++ ((List.range (List.length func_lst)).map (fun (i_F_2 : Nat) => ((List.length (s.FUNCS)) + i_F_2)))), DATAS := [], ELEMS := [], EXPORTS := [] }) ->
-    (z == (.mk_state s { LOCALS := [], MODULE := moduleinst_0 })) ->
-    ((z', val_G_lst) == var_3) ->
-    ((z'', ref_T_lst) == var_4) ->
-    ((z''', ref_E_lst_lst) == var_5) ->
-    ((.mk_state s''' f) == z''') ->
-    ((s'''', v_moduleinst) == var_6) ->
-    (instr_D_lst == (concat_ instr var_7_lst)) ->
-    (instr_E_lst == (concat_ instr var_8_lst)) ->
-    (instr_S_opt == (Option.map (fun (x_7 : idx) => ((.CALL x_7) : instr)) x_opt)) ->
+    ((.MODULE (.mk_list type_lst) (.mk_list import_lst) (.mk_list tag_lst) (.mk_list global_lst) (.mk_list mem_lst) (.mk_list table_lst) (.mk_list func_lst) (.mk_list data_lst) (.mk_list elem_lst) start_opt (.mk_list export_lst)) = v_module) ->
+    (global_lst = (List.zipWith (fun (expr_G_3 : expr) (globaltype_127 : globaltype) => ((.GLOBAL globaltype_127 expr_G_3) : global)) expr_G_lst globaltype_lst)) ->
+    (table_lst = (List.zipWith (fun (expr_T_3 : expr) (tabletype_161 : tabletype) => ((.TABLE tabletype_161 expr_T_3) : table)) expr_T_lst tabletype_lst)) ->
+    (data_lst = (List.zipWith (fun (byte_lst_117 : (List byte)) (datamode_116 : datamode) => ((.DATA byte_lst_117 datamode_116) : data)) byte_lst_lst datamode_lst)) ->
+    (elem_lst = (list_map3 (fun (elemmode_237 : elemmode) (expr_E_lst_3 : (List expr)) (reftype_516 : reftype) => ((.ELEM reftype_516 expr_E_lst_3 elemmode_237) : elem)) elemmode_lst expr_E_lst_lst reftype_lst)) ->
+    (start_opt = (Option.map (fun (x_6 : idx) => ((.START x_6) : start)) x_opt)) ->
+    (moduleinst_0 = { TYPES := var_0, TAGS := [], GLOBALS := var_1, MEMS := [], TABLES := [], FUNCS := (var_2 ++ ((List.range (List.length func_lst)).map (fun (i_F_2 : Nat) => ((List.length (s.FUNCS)) + i_F_2)))), DATAS := [], ELEMS := [], EXPORTS := [] }) ->
+    (z = (.mk_state s { LOCALS := [], MODULE := moduleinst_0 })) ->
+    ((z', val_G_lst) = var_3) ->
+    ((z'', ref_T_lst) = var_4) ->
+    ((z''', ref_E_lst_lst) = var_5) ->
+    ((.mk_state s''' f) = z''') ->
+    ((s'''', v_moduleinst) = var_6) ->
+    (instr_D_lst = (concat_ instr var_7_lst)) ->
+    (instr_E_lst = (concat_ instr var_8_lst)) ->
+    (instr_S_opt = (Option.map (fun (x_7 : idx) => ((.CALL x_7) : instr)) x_opt)) ->
     (wf_state z) ->
     (wf_state (Prod.fst var_9)) ->
     Forall (fun (iter_23 : val) => (wf_val iter_23)) (Prod.snd var_10) ->
@@ -18480,7 +18508,7 @@ inductive invoke_is_wf : store -> funcaddr -> (List val) -> config -> Prop where
     (fun_invoke v_store v_funcaddr var_0_lst var_0) ->
     (wf_store v_store) ->
     Forall (fun (var_0 : val) => (wf_val var_0)) var_0_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_config ret_val) ->
     invoke_is_wf v_store v_funcaddr var_0_lst ret_val
 
@@ -18505,7 +18533,7 @@ opaque ieee_ : forall (v_N : N) (rat : Rat), fNmag := opaqueDef
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/6.1-text.values.spectec:55.6-55.12 -/
 inductive ieee__is_wf : N -> Rat -> fNmag -> Prop where
   | ieee__is_wf_0 : forall (v_N : N) (rat : Rat) (ret_val : fNmag), 
-    (ret_val == (ieee_ v_N rat)) ->
+    (ret_val = (ieee_ v_N rat)) ->
     (wf_fNmag v_N ret_val) ->
     ieee__is_wf v_N rat ret_val
 
@@ -18523,7 +18551,7 @@ structure idctxt where MKidctxt ::
   LABELS : (List (Option name))
   FIELDS : (List (List (Option name)))
   TYPEDEFS : (List (Option deftype))
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_idctxt (arg1 arg2 : (idctxt)) : idctxt where
   TYPES := arg1.TYPES ++ arg2.TYPES
@@ -18576,7 +18604,7 @@ inductive concat_idctxt_is_wf : (List idctxt) -> idctxt -> Prop where
   | concat_idctxt_is_wf_0 : forall (var_0_lst : (List idctxt)) (ret_val : idctxt) (var_0 : idctxt), 
     (fun_concat_idctxt var_0_lst var_0) ->
     Forall (fun (var_0 : idctxt) => (wf_idctxt var_0)) var_0_lst ->
-    (ret_val == var_0) ->
+    (ret_val = var_0) ->
     (wf_idctxt ret_val) ->
     concat_idctxt_is_wf var_0_lst ret_val
 
@@ -18594,7 +18622,7 @@ inductive Idctxt_ok : idctxt -> Prop where
     (disjoint_ name (concatopt_ name (v_I.LOCALS))) ->
     (disjoint_ name (concatopt_ name (v_I.LABELS))) ->
     Forall (fun (field_lst : (List char)) => (disjoint_ name (concatopt_ name ([(some (.mk_name field_lst))] : (List (Option name)))))) field_lst_lst ->
-    (([(List.map (fun (field_lst : (List char)) => (some (.mk_name field_lst))) field_lst_lst)] : (List (List (Option name)))) == (v_I.FIELDS)) ->
+    (([(List.map (fun (field_lst : (List char)) => (some (.mk_name field_lst))) field_lst_lst)] : (List (List (Option name)))) = (v_I.FIELDS)) ->
     (wf_idctxt v_I) ->
     Forall (fun (iter : name) => (wf_name iter)) (concatopt_ name (v_I.TYPES)) ->
     Forall (fun (iter : name) => (wf_name iter)) (concatopt_ name (v_I.TAGS)) ->
@@ -18626,7 +18654,7 @@ inductive decl : Type where
   | ELEM (v_reftype : reftype) (expr_lst : (List expr)) (v_elemmode : elemmode) : decl
   | START (v_funcidx : funcidx) : decl
   | EXPORT (v_name : name) (v_externidx : externidx) : decl
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Auxiliary Definition at:  -/
@@ -18767,7 +18795,7 @@ inductive importsd_is_wf : (List decl) -> (List «import») -> Prop where
   | importsd_is_wf_0 : forall (var_0_lst : (List decl)) (ret_val_lst : (List «import»)) (var_0 : (List «import»)), 
     (fun_importsd var_0_lst var_0) ->
     Forall (fun (var_0 : decl) => (wf_decl var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : «import») => (wf_import ret_val)) ret_val_lst ->
     importsd_is_wf var_0_lst ret_val_lst
 
@@ -18788,7 +18816,7 @@ inductive tagsd_is_wf : (List decl) -> (List tag) -> Prop where
   | tagsd_is_wf_0 : forall (var_0_lst : (List decl)) (ret_val_lst : (List tag)) (var_0 : (List tag)), 
     (fun_tagsd var_0_lst var_0) ->
     Forall (fun (var_0 : decl) => (wf_decl var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : tag) => (wf_tag ret_val)) ret_val_lst ->
     tagsd_is_wf var_0_lst ret_val_lst
 
@@ -18809,7 +18837,7 @@ inductive globalsd_is_wf : (List decl) -> (List global) -> Prop where
   | globalsd_is_wf_0 : forall (var_0_lst : (List decl)) (ret_val_lst : (List global)) (var_0 : (List global)), 
     (fun_globalsd var_0_lst var_0) ->
     Forall (fun (var_0 : decl) => (wf_decl var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : global) => (wf_global ret_val)) ret_val_lst ->
     globalsd_is_wf var_0_lst ret_val_lst
 
@@ -18830,7 +18858,7 @@ inductive memsd_is_wf : (List decl) -> (List mem) -> Prop where
   | memsd_is_wf_0 : forall (var_0_lst : (List decl)) (ret_val_lst : (List mem)) (var_0 : (List mem)), 
     (fun_memsd var_0_lst var_0) ->
     Forall (fun (var_0 : decl) => (wf_decl var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : mem) => (wf_mem ret_val)) ret_val_lst ->
     memsd_is_wf var_0_lst ret_val_lst
 
@@ -18851,7 +18879,7 @@ inductive tablesd_is_wf : (List decl) -> (List table) -> Prop where
   | tablesd_is_wf_0 : forall (var_0_lst : (List decl)) (ret_val_lst : (List table)) (var_0 : (List table)), 
     (fun_tablesd var_0_lst var_0) ->
     Forall (fun (var_0 : decl) => (wf_decl var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : table) => (wf_table ret_val)) ret_val_lst ->
     tablesd_is_wf var_0_lst ret_val_lst
 
@@ -18872,7 +18900,7 @@ inductive funcsd_is_wf : (List decl) -> (List func) -> Prop where
   | funcsd_is_wf_0 : forall (var_0_lst : (List decl)) (ret_val_lst : (List func)) (var_0 : (List func)), 
     (fun_funcsd var_0_lst var_0) ->
     Forall (fun (var_0 : decl) => (wf_decl var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : func) => (wf_func ret_val)) ret_val_lst ->
     funcsd_is_wf var_0_lst ret_val_lst
 
@@ -18893,7 +18921,7 @@ inductive datasd_is_wf : (List decl) -> (List data) -> Prop where
   | datasd_is_wf_0 : forall (var_0_lst : (List decl)) (ret_val_lst : (List data)) (var_0 : (List data)), 
     (fun_datasd var_0_lst var_0) ->
     Forall (fun (var_0 : decl) => (wf_decl var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : data) => (wf_data ret_val)) ret_val_lst ->
     datasd_is_wf var_0_lst ret_val_lst
 
@@ -18914,7 +18942,7 @@ inductive elemsd_is_wf : (List decl) -> (List elem) -> Prop where
   | elemsd_is_wf_0 : forall (var_0_lst : (List decl)) (ret_val_lst : (List elem)) (var_0 : (List elem)), 
     (fun_elemsd var_0_lst var_0) ->
     Forall (fun (var_0 : decl) => (wf_decl var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : elem) => (wf_elem ret_val)) ret_val_lst ->
     elemsd_is_wf var_0_lst ret_val_lst
 
@@ -18935,7 +18963,7 @@ inductive startsd_is_wf : (List decl) -> (List start) -> Prop where
   | startsd_is_wf_0 : forall (var_0_lst : (List decl)) (ret_val_lst : (List start)) (var_0 : (List start)), 
     (fun_startsd var_0_lst var_0) ->
     Forall (fun (var_0 : decl) => (wf_decl var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : start) => (wf_start ret_val)) ret_val_lst ->
     startsd_is_wf var_0_lst ret_val_lst
 
@@ -18956,7 +18984,7 @@ inductive exportsd_is_wf : (List decl) -> (List «export») -> Prop where
   | exportsd_is_wf_0 : forall (var_0_lst : (List decl)) (ret_val_lst : (List «export»)) (var_0 : (List «export»)), 
     (fun_exportsd var_0_lst var_0) ->
     Forall (fun (var_0 : decl) => (wf_decl var_0)) var_0_lst ->
-    (ret_val_lst == var_0) ->
+    (ret_val_lst = var_0) ->
     Forall (fun (ret_val : «export») => (wf_export ret_val)) ret_val_lst ->
     exportsd_is_wf var_0_lst ret_val_lst
 
@@ -18965,7 +18993,7 @@ inductive fun_ordered : (List decl) -> Bool -> Prop where
   | fun_ordered_case_0 : forall (decl_lst : (List decl)) (var_1 : (List «import»)) (var_0 : (List «import»)), 
     (fun_importsd decl_lst var_1) ->
     (fun_importsd decl_lst var_0) ->
-    (var_0 == []) ->
+    (var_0 = []) ->
     Forall (fun (iter_31 : «import») => (wf_import iter_31)) var_1 ->
     fun_ordered decl_lst true
   | fun_ordered_case_1 : forall (v_name : name) (name_0 : name) (v_externtype : externtype) (decl_1_lst : (List decl)) (decl_2_lst : (List decl)) (var_11 : (List func)) (var_10 : (List table)) (var_9 : (List mem)) (var_8 : (List global)) (var_7 : (List tag)) (var_6 : (List «import»)) (var_5 : (List func)) (var_4 : (List table)) (var_3 : (List mem)) (var_2 : (List global)) (var_1 : (List tag)) (var_0 : (List «import»)), 
@@ -18992,8 +19020,8 @@ inductive fun_ordered : (List decl) -> Bool -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/7.0-soundness.contexts.spectec:3.1-3.61 -/
 inductive Context_ok : context -> Prop where
   | mk_Context_ok : forall (C : context) (v_n : n) (dt_lst : (List deftype)) (jt_lst : (List tagtype)) (gt_lst : (List globaltype)) (mt_lst : (List memtype)) (tt_lst : (List tabletype)) (dt_F_lst : (List deftype)) (ok_lst : (List datatype)) (et_lst : (List elemtype)) (lct_lst : (List localtype)) (rt_lst : (List reftype)) (rt'_opt : (Option reftype)) (x_lst : (List idx)) (v_m : m) (st_lst : (List subtype)) (C_0 : context) (t_1_lst : (List valtype)) (t_2_lst : (List valtype)), 
-    (C == { TYPES := dt_lst, TAGS := jt_lst, GLOBALS := gt_lst, MEMS := mt_lst, TABLES := tt_lst, FUNCS := dt_F_lst, DATAS := ok_lst, ELEMS := et_lst, LOCALS := lct_lst, LABELS := ([(.mk_list (List.map (fun (rt : reftype) => (valtype_reftype rt)) rt_lst))] : (List resulttype)), RETURN := (some (.mk_list (Option.toList (Option.map (fun (rt' : reftype) => (valtype_reftype rt')) rt'_opt)))), REFS := x_lst, RECS := st_lst }) ->
-    (C_0 == { TYPES := dt_lst, TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] }) ->
+    (C = { TYPES := dt_lst, TAGS := jt_lst, GLOBALS := gt_lst, MEMS := mt_lst, TABLES := tt_lst, FUNCS := dt_F_lst, DATAS := ok_lst, ELEMS := et_lst, LOCALS := lct_lst, LABELS := ([(.mk_list (List.map (fun (rt : reftype) => (valtype_reftype rt)) rt_lst))] : (List resulttype)), RETURN := (some (.mk_list (Option.toList (Option.map (fun (rt' : reftype) => (valtype_reftype rt')) rt'_opt)))), REFS := x_lst, RECS := st_lst }) ->
+    (C_0 = { TYPES := dt_lst, TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] }) ->
     (∀ (i : Nat), i < v_n → let dt : deftype := (dt_lst)[i]!; (Deftype_ok { TYPES := (List.take i (List.drop 0 dt_lst)), TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] } dt)) ->
     (∀ (i : Nat), i < v_m → let st : subtype := (st_lst)[i]!; (Subtype_ok2 { TYPES := dt_lst, TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := st_lst } st (.OK i))) ->
     Forall (fun (jt : tagtype) => (Tagtype_ok C_0 jt)) jt_lst ->
@@ -19001,8 +19029,8 @@ inductive Context_ok : context -> Prop where
     Forall (fun (mt : memtype) => (Memtype_ok C_0 mt)) mt_lst ->
     Forall (fun (tt : tabletype) => (Tabletype_ok C_0 tt)) tt_lst ->
     Forall (fun (dt_F : deftype) => (Deftype_ok C_0 dt_F)) dt_F_lst ->
-    ((List.length dt_F_lst) == (List.length t_1_lst)) ->
-    ((List.length dt_F_lst) == (List.length t_2_lst)) ->
+    ((List.length dt_F_lst) = (List.length t_1_lst)) ->
+    ((List.length dt_F_lst) = (List.length t_2_lst)) ->
     Forall₃ (fun (dt_F : deftype) (t_1 : valtype) (t_2 : valtype) => (Expand dt_F (.FUNC (.mk_list ([t_1] : (List valtype))) (.mk_list ([t_2] : (List valtype)))))) dt_F_lst t_1_lst t_2_lst ->
     Forall (fun (et : reftype) => (Reftype_ok C_0 et)) et_lst ->
     Forall (fun (lct : localtype) => (Localtype_ok C_0 lct)) lct_lst ->
@@ -19016,10 +19044,10 @@ inductive Context_ok : context -> Prop where
     (∀ (i : Nat), i < v_n → (wf_context { TYPES := (List.take i (List.drop 0 dt_lst)), TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] })) ->
     (∀ (i : Nat), i < v_n → (wf_context { TYPES := (List.take i (List.drop 0 dt_lst)), TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] })) ->
     (wf_context { TYPES := dt_lst, TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := st_lst }) ->
-    ((List.length t_1_lst) == (List.length t_2_lst)) ->
+    ((List.length t_1_lst) = (List.length t_2_lst)) ->
     Forall₂ (fun (t_1 : valtype) (t_2 : valtype) => (wf_comptype (.FUNC (.mk_list ([t_1] : (List valtype))) (.mk_list ([t_2] : (List valtype)))))) t_1_lst t_2_lst ->
-    (v_n == (List.length dt_lst)) ->
-    (v_m == (List.length st_lst)) ->
+    (v_n = (List.length dt_lst)) ->
+    (v_m = (List.length st_lst)) ->
     ((List.length dt_lst) = v_n) ->
     ((List.length st_lst) = v_m) ->
     ((List.length dt_F_lst) = (List.length t_1_lst)) ->
@@ -19072,26 +19100,26 @@ inductive Exportinst_ok : store -> exportinst -> Prop where
 inductive Moduleinst_ok : store -> moduleinst -> context -> Prop where
   | mk_Moduleinst_ok : forall (s : store) (deftype_lst : (List deftype)) (tagaddr_lst : (List tagaddr)) (globaladdr_lst : (List globaladdr)) (memaddr_lst : (List memaddr)) (tableaddr_lst : (List tableaddr)) (funcaddr_lst : (List funcaddr)) (dataaddr_lst : (List dataaddr)) (elemaddr_lst : (List elemaddr)) (exportinst_lst : (List exportinst)) (tagtype_lst : (List tagtype)) (globaltype_lst : (List globaltype)) (memtype_lst : (List memtype)) (tabletype_lst : (List tabletype)) (deftype_F_lst : (List deftype)) (datatype_lst : (List datatype)) (elemtype_lst : (List elemtype)) (subtype_lst : (List subtype)), 
     Forall (fun (v_deftype : deftype) => (Deftype_ok { TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] } v_deftype)) deftype_lst ->
-    ((List.length tagaddr_lst) == (List.length tagtype_lst)) ->
+    ((List.length tagaddr_lst) = (List.length tagtype_lst)) ->
     Forall₂ (fun (v_tagaddr : tagaddr) (v_tagtype : tagtype) => (Externaddr_ok s (.TAG v_tagaddr) (.TAG v_tagtype))) tagaddr_lst tagtype_lst ->
-    ((List.length globaladdr_lst) == (List.length globaltype_lst)) ->
+    ((List.length globaladdr_lst) = (List.length globaltype_lst)) ->
     Forall₂ (fun (v_globaladdr : globaladdr) (v_globaltype : globaltype) => (Externaddr_ok s (.GLOBAL v_globaladdr) (.GLOBAL v_globaltype))) globaladdr_lst globaltype_lst ->
-    ((List.length deftype_F_lst) == (List.length funcaddr_lst)) ->
+    ((List.length deftype_F_lst) = (List.length funcaddr_lst)) ->
     Forall₂ (fun (deftype_F : deftype) (v_funcaddr : funcaddr) => (Externaddr_ok s (.FUNC v_funcaddr) (.FUNC (typeuse_deftype deftype_F)))) deftype_F_lst funcaddr_lst ->
-    ((List.length memaddr_lst) == (List.length memtype_lst)) ->
+    ((List.length memaddr_lst) = (List.length memtype_lst)) ->
     Forall₂ (fun (v_memaddr : memaddr) (v_memtype : memtype) => (Externaddr_ok s (.MEM v_memaddr) (.MEM v_memtype))) memaddr_lst memtype_lst ->
-    ((List.length tableaddr_lst) == (List.length tabletype_lst)) ->
+    ((List.length tableaddr_lst) = (List.length tabletype_lst)) ->
     Forall₂ (fun (v_tableaddr : tableaddr) (v_tabletype : tabletype) => (Externaddr_ok s (.TABLE v_tableaddr) (.TABLE v_tabletype))) tableaddr_lst tabletype_lst ->
-    ((List.length dataaddr_lst) == (List.length datatype_lst)) ->
+    ((List.length dataaddr_lst) = (List.length datatype_lst)) ->
     Forall (fun (v_dataaddr : Nat) => (v_dataaddr < (List.length (s.DATAS)))) dataaddr_lst ->
     Forall₂ (fun (v_dataaddr : Nat) (v_datatype : datatype) => (Datainst_ok s ((s.DATAS)[v_dataaddr]!) v_datatype)) dataaddr_lst datatype_lst ->
-    ((List.length elemaddr_lst) == (List.length elemtype_lst)) ->
+    ((List.length elemaddr_lst) = (List.length elemtype_lst)) ->
     Forall (fun (v_elemaddr : Nat) => (v_elemaddr < (List.length (s.ELEMS)))) elemaddr_lst ->
     Forall₂ (fun (v_elemaddr : Nat) (v_elemtype : elemtype) => (Eleminst_ok s ((s.ELEMS)[v_elemaddr]!) v_elemtype)) elemaddr_lst elemtype_lst ->
     Forall (fun (v_exportinst : exportinst) => (Exportinst_ok s v_exportinst)) exportinst_lst ->
     (disjoint_ name (List.map (fun (v_exportinst : exportinst) => (v_exportinst.NAME)) exportinst_lst)) ->
     ((List.length ((List.map (fun (v_tagaddr : tagaddr) => ((.TAG v_tagaddr) : externaddr)) tagaddr_lst) ++ ((List.map (fun (v_globaladdr : globaladdr) => ((.GLOBAL v_globaladdr) : externaddr)) globaladdr_lst) ++ ((List.map (fun (v_memaddr : memaddr) => ((.MEM v_memaddr) : externaddr)) memaddr_lst) ++ ((List.map (fun (v_tableaddr : tableaddr) => ((.TABLE v_tableaddr) : externaddr)) tableaddr_lst) ++ (List.map (fun (v_funcaddr : funcaddr) => ((.FUNC v_funcaddr) : externaddr)) funcaddr_lst)))))) > 0) ->
-    Forall (fun (v_exportinst : exportinst) => (List.contains ((List.map (fun (v_tagaddr : tagaddr) => ((.TAG v_tagaddr) : externaddr)) tagaddr_lst) ++ ((List.map (fun (v_globaladdr : globaladdr) => ((.GLOBAL v_globaladdr) : externaddr)) globaladdr_lst) ++ ((List.map (fun (v_memaddr : memaddr) => ((.MEM v_memaddr) : externaddr)) memaddr_lst) ++ ((List.map (fun (v_tableaddr : tableaddr) => ((.TABLE v_tableaddr) : externaddr)) tableaddr_lst) ++ (List.map (fun (v_funcaddr : funcaddr) => ((.FUNC v_funcaddr) : externaddr)) funcaddr_lst))))) (v_exportinst.ADDR))) exportinst_lst ->
+    Forall (fun (v_exportinst : exportinst) => ((v_exportinst.ADDR) ∈ ((List.map (fun (v_tagaddr : tagaddr) => ((.TAG v_tagaddr) : externaddr)) tagaddr_lst) ++ ((List.map (fun (v_globaladdr : globaladdr) => ((.GLOBAL v_globaladdr) : externaddr)) globaladdr_lst) ++ ((List.map (fun (v_memaddr : memaddr) => ((.MEM v_memaddr) : externaddr)) memaddr_lst) ++ ((List.map (fun (v_tableaddr : tableaddr) => ((.TABLE v_tableaddr) : externaddr)) tableaddr_lst) ++ (List.map (fun (v_funcaddr : funcaddr) => ((.FUNC v_funcaddr) : externaddr)) funcaddr_lst))))))) exportinst_lst ->
     (wf_store s) ->
     (wf_moduleinst { TYPES := deftype_lst, TAGS := tagaddr_lst, GLOBALS := globaladdr_lst, MEMS := memaddr_lst, TABLES := tableaddr_lst, FUNCS := funcaddr_lst, DATAS := dataaddr_lst, ELEMS := elemaddr_lst, EXPORTS := exportinst_lst }) ->
     (wf_context { TYPES := deftype_lst, TAGS := tagtype_lst, GLOBALS := globaltype_lst, MEMS := memtype_lst, TABLES := tabletype_lst, FUNCS := deftype_F_lst, DATAS := datatype_lst, ELEMS := elemtype_lst, LOCALS := [], LABELS := [], RETURN := none, REFS := ((List.range (List.length funcaddr_lst)).map (fun (i : Nat) => ((.mk_uN i) : funcidx))), RECS := subtype_lst }) ->
@@ -19114,7 +19142,7 @@ inductive Moduleinst_ok : store -> moduleinst -> context -> Prop where
 inductive Frame_ok : store -> frame -> context -> Prop where
   | mk_Frame_ok : forall (s : store) (val_opt_lst : (List (Option val))) (v_moduleinst : moduleinst) (C : context) (lct_lst : (List localtype)), 
     (Moduleinst_ok s v_moduleinst C) ->
-    ((List.length lct_lst) == (List.length val_opt_lst)) ->
+    ((List.length lct_lst) = (List.length val_opt_lst)) ->
     Forall₂ (fun (lct : localtype) (val_opt : (Option val)) => (Localval_ok s val_opt lct)) lct_lst val_opt_lst ->
     (wf_store s) ->
     (wf_context C) ->
@@ -19151,7 +19179,7 @@ inductive Instr_ok2 : store -> context -> instr -> instrtype -> Prop where
     (wf_instrtype (.mk_instrtype (.mk_list t'_lst) x'_lst (.mk_list t_lst))) ->
     (wf_context { TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := ([(.mk_list t'_lst)] : (List resulttype)), RETURN := none, REFS := [], RECS := [] }) ->
     (wf_instrtype (.mk_instrtype (.mk_list []) x_lst (.mk_list t_lst))) ->
-    (v_n == (List.length t'_lst)) ->
+    (v_n = (List.length t'_lst)) ->
     Instr_ok2 s C (.LABEL_ v_n instr'_lst instr_lst) (.mk_instrtype (.mk_list []) [] (.mk_list t_lst))
   | frame : forall (s : store) (C : context) (v_n : n) (f : frame) (instr_lst : (List instr)) (t_lst : (List valtype)) (C' : context), 
     (Frame_ok s f C') ->
@@ -19162,7 +19190,7 @@ inductive Instr_ok2 : store -> context -> instr -> instrtype -> Prop where
     (wf_instr (.FRAME_ v_n f instr_lst)) ->
     (wf_instrtype (.mk_instrtype (.mk_list []) [] (.mk_list t_lst))) ->
     (wf_context { TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := (some (.mk_list t_lst)), REFS := [], RECS := [] }) ->
-    (v_n == (List.length t_lst)) ->
+    (v_n = (List.length t_lst)) ->
     Instr_ok2 s C (.FRAME_ v_n f instr_lst) (.mk_instrtype (.mk_list []) [] (.mk_list t_lst))
   | handler : forall (s : store) (C : context) (v_n : n) (catch_lst : (List «catch»)) (instr_lst : (List instr)) (t_1_lst : (List valtype)) (t_2_lst : (List valtype)) (x_lst : (List idx)), 
     Forall (fun (v_catch : «catch») => (Catch_ok C v_catch)) catch_lst ->
@@ -19198,11 +19226,11 @@ inductive Instrs_ok2 : store -> context -> (List instr) -> instrtype -> Prop whe
   | seq : forall (s : store) (C : context) (instr_1_lst : (List instr)) (instr_2_lst : (List instr)) (t_1_lst : (List valtype)) (x_1_lst : (List idx)) (x_2_lst : (List idx)) (t_3_lst : (List valtype)) (t_2_lst : (List valtype)) (init_lst : (List init)) (t_lst : (List valtype)) (var_0 : (Option context)), 
     (fun_with_locals C x_1_lst (List.map (fun (t : valtype) => ((.mk_localtype .SET t) : localtype)) t_lst) var_0) ->
     (Instrs_ok2 s C instr_1_lst (.mk_instrtype (.mk_list t_1_lst) x_1_lst (.mk_list t_2_lst))) ->
-    ((List.length init_lst) == (List.length t_lst)) ->
-    ((List.length init_lst) == (List.length x_1_lst)) ->
+    ((List.length init_lst) = (List.length t_lst)) ->
+    ((List.length init_lst) = (List.length x_1_lst)) ->
     Forall (fun (x_1 : idx) => ((proj_uN_0 x_1) < (List.length (C.LOCALS)))) x_1_lst ->
-    Forall₃ (fun (v_init : init) (t : valtype) (x_1 : idx) => (((C.LOCALS)[(proj_uN_0 x_1)]!) == (.mk_localtype v_init t))) init_lst t_lst x_1_lst ->
-    (var_0 != none) ->
+    Forall₃ (fun (v_init : init) (t : valtype) (x_1 : idx) => (((C.LOCALS)[(proj_uN_0 x_1)]!) = (.mk_localtype v_init t))) init_lst t_lst x_1_lst ->
+    (var_0 ≠ none) ->
     (Instrs_ok2 s (Option.get! var_0) instr_2_lst (.mk_instrtype (.mk_list t_2_lst) x_2_lst (.mk_list t_3_lst))) ->
     (wf_store s) ->
     (wf_context C) ->
@@ -19273,7 +19301,7 @@ inductive Globalinst_ok : store -> globalinst -> globaltype -> Prop where
 inductive Meminst_ok : store -> meminst -> memtype -> Prop where
   | mk_Meminst_ok : forall (s : store) («at» : addrtype) (v_n : n) (m_opt : (Option m)) (b_lst : (List byte)), 
     (Memtype_ok { TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] } (.PAGE «at» (.mk_limits (.mk_uN v_n) (Option.map (fun (v_m : m) => ((.mk_uN v_m) : u64)) m_opt)))) ->
-    ((List.length b_lst) == (v_n * (64 * (Ki )))) ->
+    ((List.length b_lst) = (v_n * (64 * (Ki )))) ->
     (wf_store s) ->
     (wf_meminst { TYPE := (.PAGE «at» (.mk_limits (.mk_uN v_n) (Option.map (fun (v_m : m) => ((.mk_uN v_m) : u64)) m_opt))), BYTES := b_lst }) ->
     (wf_memtype (.PAGE «at» (.mk_limits (.mk_uN v_n) (Option.map (fun (v_m : m) => ((.mk_uN v_m) : u64)) m_opt)))) ->
@@ -19284,7 +19312,7 @@ inductive Meminst_ok : store -> meminst -> memtype -> Prop where
 inductive Tableinst_ok : store -> tableinst -> tabletype -> Prop where
   | mk_Tableinst_ok : forall (s : store) («at» : addrtype) (v_n : n) (m_opt : (Option m)) (rt : reftype) (ref_lst : (List ref)), 
     (Tabletype_ok { TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] } (.mk_tabletype «at» (.mk_limits (.mk_uN v_n) (Option.map (fun (v_m : m) => ((.mk_uN v_m) : u64)) m_opt)) rt)) ->
-    ((List.length ref_lst) == v_n) ->
+    ((List.length ref_lst) = v_n) ->
     Forall (fun (v_ref : ref) => (Ref_ok s v_ref rt)) ref_lst ->
     (wf_store s) ->
     (wf_tableinst { TYPE := (.mk_tabletype «at» (.mk_limits (.mk_uN v_n) (Option.map (fun (v_m : m) => ((.mk_uN v_m) : u64)) m_opt)) rt), REFS := ref_lst }) ->
@@ -19309,7 +19337,7 @@ inductive Funcinst_ok : store -> funcinst -> deftype -> Prop where
 inductive Structinst_ok : store -> structinst -> Prop where
   | mk_Structinst_ok : forall (s : store) (dt : deftype) (fv_lst : (List fieldval)) (mut_opt_lst : (List (Option «mut»))) (zt_lst : (List storagetype)), 
     (Expand dt (.STRUCT (.mk_list (List.zipWith (fun (mut_opt : (Option «mut»)) (zt : storagetype) => ((.mk_fieldtype mut_opt zt) : fieldtype)) mut_opt_lst zt_lst)))) ->
-    ((List.length fv_lst) == (List.length zt_lst)) ->
+    ((List.length fv_lst) = (List.length zt_lst)) ->
     Forall₂ (fun (fv : fieldval) (zt : storagetype) => (Fieldval_ok s fv zt)) fv_lst zt_lst ->
     (wf_store s) ->
     (wf_structinst { TYPE := dt, FIELDS := fv_lst }) ->
@@ -19332,9 +19360,9 @@ inductive Arrayinst_ok : store -> arrayinst -> Prop where
 inductive Exninst_ok : store -> exninst -> Prop where
   | mk_Exninst_ok : forall (s : store) (ta : tagaddr) (val_lst : (List val)) (dt : deftype) (t_lst : (List valtype)), 
     (ta < (List.length (s.TAGS))) ->
-    ((typeuse_deftype dt) == (((s.TAGS)[ta]!).TYPE)) ->
+    ((typeuse_deftype dt) = (((s.TAGS)[ta]!).TYPE)) ->
     (Expand dt (.FUNC (.mk_list t_lst) (.mk_list []))) ->
-    ((List.length t_lst) == (List.length val_lst)) ->
+    ((List.length t_lst) = (List.length val_lst)) ->
     Forall₂ (fun (t : valtype) (v_val : val) => (Val_ok s v_val t)) t_lst val_lst ->
     (wf_store s) ->
     (wf_exninst { TAG := ta, FIELDS := val_lst }) ->
@@ -19358,7 +19386,7 @@ inductive ImmutReachable : fieldval -> store -> fieldval -> Prop where
     (a < (List.length (s.STRUCTS))) ->
     (Expand (((s.STRUCTS)[a]!).TYPE) (.STRUCT (.mk_list ft_lst))) ->
     (i < (List.length ft_lst)) ->
-    ((ft_lst[i]!) == (.mk_fieldtype none zt)) ->
+    ((ft_lst[i]!) = (.mk_fieldtype none zt)) ->
     (wf_store s) ->
     (wf_fieldval (.REF_STRUCT_ADDR a)) ->
     (wf_comptype (.STRUCT (.mk_list ft_lst))) ->
@@ -19411,19 +19439,19 @@ inductive NotImmutReachable : fieldval -> store -> fieldval -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/7.1-soundness.configurations.spectec:188.1-188.33 -/
 inductive Store_ok : store -> Prop where
   | mk_Store_ok : forall (s : store) (taginst_lst : (List taginst)) (tagtype_lst : (List tagtype)) (globalinst_lst : (List globalinst)) (globaltype_lst : (List globaltype)) (meminst_lst : (List meminst)) (memtype_lst : (List memtype)) (tableinst_lst : (List tableinst)) (tabletype_lst : (List tabletype)) (deftype_lst : (List deftype)) (funcinst_lst : (List funcinst)) (datainst_lst : (List datainst)) (datatype_lst : (List datatype)) (eleminst_lst : (List eleminst)) (elemtype_lst : (List elemtype)) (structinst_lst : (List structinst)) (arrayinst_lst : (List arrayinst)) (exninst_lst : (List exninst)), 
-    ((List.length taginst_lst) == (List.length tagtype_lst)) ->
+    ((List.length taginst_lst) = (List.length tagtype_lst)) ->
     Forall₂ (fun (v_taginst : taginst) (v_tagtype : tagtype) => (Taginst_ok s v_taginst v_tagtype)) taginst_lst tagtype_lst ->
-    ((List.length globalinst_lst) == (List.length globaltype_lst)) ->
+    ((List.length globalinst_lst) = (List.length globaltype_lst)) ->
     Forall₂ (fun (v_globalinst : globalinst) (v_globaltype : globaltype) => (Globalinst_ok s v_globalinst v_globaltype)) globalinst_lst globaltype_lst ->
-    ((List.length meminst_lst) == (List.length memtype_lst)) ->
+    ((List.length meminst_lst) = (List.length memtype_lst)) ->
     Forall₂ (fun (v_meminst : meminst) (v_memtype : memtype) => (Meminst_ok s v_meminst v_memtype)) meminst_lst memtype_lst ->
-    ((List.length tableinst_lst) == (List.length tabletype_lst)) ->
+    ((List.length tableinst_lst) = (List.length tabletype_lst)) ->
     Forall₂ (fun (v_tableinst : tableinst) (v_tabletype : tabletype) => (Tableinst_ok s v_tableinst v_tabletype)) tableinst_lst tabletype_lst ->
-    ((List.length deftype_lst) == (List.length funcinst_lst)) ->
+    ((List.length deftype_lst) = (List.length funcinst_lst)) ->
     Forall₂ (fun (v_deftype : deftype) (v_funcinst : funcinst) => (Funcinst_ok s v_funcinst v_deftype)) deftype_lst funcinst_lst ->
-    ((List.length datainst_lst) == (List.length datatype_lst)) ->
+    ((List.length datainst_lst) = (List.length datatype_lst)) ->
     Forall₂ (fun (v_datainst : datainst) (v_datatype : datatype) => (Datainst_ok s v_datainst v_datatype)) datainst_lst datatype_lst ->
-    ((List.length eleminst_lst) == (List.length elemtype_lst)) ->
+    ((List.length eleminst_lst) = (List.length elemtype_lst)) ->
     Forall₂ (fun (v_eleminst : eleminst) (v_elemtype : elemtype) => (Eleminst_ok s v_eleminst v_elemtype)) eleminst_lst elemtype_lst ->
     Forall (fun (v_structinst : structinst) => (Structinst_ok s v_structinst)) structinst_lst ->
     Forall (fun (v_arrayinst : arrayinst) => (Arrayinst_ok s v_arrayinst)) arrayinst_lst ->
@@ -19431,7 +19459,7 @@ inductive Store_ok : store -> Prop where
     (∀ (a : Nat), a < (List.length structinst_lst) → (NotImmutReachable (.REF_STRUCT_ADDR a) s (.REF_STRUCT_ADDR a))) ->
     (∀ (a : Nat), a < (List.length arrayinst_lst) → (NotImmutReachable (.REF_ARRAY_ADDR a) s (.REF_ARRAY_ADDR a))) ->
     (∀ (a : Nat), a < (List.length exninst_lst) → (NotImmutReachable (.REF_EXN_ADDR a) s (.REF_EXN_ADDR a))) ->
-    (s == { TAGS := taginst_lst, GLOBALS := globalinst_lst, MEMS := meminst_lst, TABLES := tableinst_lst, FUNCS := funcinst_lst, DATAS := datainst_lst, ELEMS := eleminst_lst, STRUCTS := structinst_lst, ARRAYS := arrayinst_lst, EXNS := exninst_lst }) ->
+    (s = { TAGS := taginst_lst, GLOBALS := globalinst_lst, MEMS := meminst_lst, TABLES := tableinst_lst, FUNCS := funcinst_lst, DATAS := datainst_lst, ELEMS := eleminst_lst, STRUCTS := structinst_lst, ARRAYS := arrayinst_lst, EXNS := exninst_lst }) ->
     (wf_store s) ->
     Forall (fun (v_tagtype : tagtype) => (wf_typeuse v_tagtype)) tagtype_lst ->
     Forall (fun (v_globaltype : globaltype) => (wf_globaltype v_globaltype)) globaltype_lst ->
@@ -19460,7 +19488,7 @@ inductive Extend_taginst : taginst -> taginst -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/7.1-soundness.configurations.spectec:252.1-252.54 -/
 inductive Extend_globalinst : globalinst -> globalinst -> Prop where
   | mk_Extend_globalinst : forall (mut_opt : (Option «mut»)) (t : valtype) (v_val : val) (val' : val), 
-    ((mut_opt == (some .MUT)) || (v_val == val')) ->
+    ((mut_opt = (some .MUT)) ∨ (v_val = val')) ->
     (wf_globalinst { TYPE := (.mk_globaltype mut_opt t), VALUE := v_val }) ->
     (wf_globalinst { TYPE := (.mk_globaltype mut_opt t), VALUE := val' }) ->
     Extend_globalinst { TYPE := (.mk_globaltype mut_opt t), VALUE := v_val } { TYPE := (.mk_globaltype mut_opt t), VALUE := val' }
@@ -19492,7 +19520,7 @@ inductive Extend_funcinst : funcinst -> funcinst -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/7.1-soundness.configurations.spectec:256.1-256.48 -/
 inductive Extend_datainst : datainst -> datainst -> Prop where
   | mk_Extend_datainst : forall (b_lst : (List byte)) (b'_lst : (List byte)), 
-    ((b_lst == b'_lst) || (b'_lst == [])) ->
+    ((b_lst = b'_lst) ∨ (b'_lst = [])) ->
     (wf_datainst { BYTES := b_lst }) ->
     (wf_datainst { BYTES := b'_lst }) ->
     Extend_datainst { BYTES := b_lst } { BYTES := b'_lst }
@@ -19500,7 +19528,7 @@ inductive Extend_datainst : datainst -> datainst -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/7.1-soundness.configurations.spectec:257.1-257.48 -/
 inductive Extend_eleminst : eleminst -> eleminst -> Prop where
   | mk_Extend_eleminst : forall (rt : reftype) (ref_lst : (List ref)) (ref'_lst : (List ref)), 
-    ((ref_lst == ref'_lst) || (ref'_lst == [])) ->
+    ((ref_lst = ref'_lst) ∨ (ref'_lst = [])) ->
     (wf_eleminst { TYPE := rt, REFS := ref_lst }) ->
     (wf_eleminst { TYPE := rt, REFS := ref'_lst }) ->
     Extend_eleminst { TYPE := rt, REFS := ref_lst } { TYPE := rt, REFS := ref'_lst }
@@ -19509,9 +19537,9 @@ inductive Extend_eleminst : eleminst -> eleminst -> Prop where
 inductive Extend_structinst : structinst -> structinst -> Prop where
   | mk_Extend_structinst : forall (dt : deftype) (fv_lst : (List fieldval)) (fv'_lst : (List fieldval)) (mut_opt_lst : (List (Option «mut»))) (zt_lst : (List storagetype)), 
     (Expand dt (.STRUCT (.mk_list (List.zipWith (fun (mut_opt : (Option «mut»)) (zt : storagetype) => ((.mk_fieldtype mut_opt zt) : fieldtype)) mut_opt_lst zt_lst)))) ->
-    ((List.length fv_lst) == (List.length fv'_lst)) ->
-    ((List.length fv_lst) == (List.length mut_opt_lst)) ->
-    Forall₃ (fun (fv : fieldval) (fv' : fieldval) (mut_opt : (Option «mut»)) => ((mut_opt == (some .MUT)) || (fv == fv'))) fv_lst fv'_lst mut_opt_lst ->
+    ((List.length fv_lst) = (List.length fv'_lst)) ->
+    ((List.length fv_lst) = (List.length mut_opt_lst)) ->
+    Forall₃ (fun (fv : fieldval) (fv' : fieldval) (mut_opt : (Option «mut»)) => ((mut_opt = (some .MUT)) ∨ (fv = fv'))) fv_lst fv'_lst mut_opt_lst ->
     (wf_structinst { TYPE := dt, FIELDS := fv_lst }) ->
     (wf_structinst { TYPE := dt, FIELDS := fv'_lst }) ->
     (wf_comptype (.STRUCT (.mk_list (List.zipWith (fun (mut_opt : (Option «mut»)) (zt : storagetype) => ((.mk_fieldtype mut_opt zt) : fieldtype)) mut_opt_lst zt_lst)))) ->
@@ -19524,8 +19552,8 @@ inductive Extend_structinst : structinst -> structinst -> Prop where
 inductive Extend_arrayinst : arrayinst -> arrayinst -> Prop where
   | mk_Extend_arrayinst : forall (dt : deftype) (fv_lst : (List fieldval)) (fv'_lst : (List fieldval)) (mut_opt : (Option «mut»)) (zt : storagetype), 
     (Expand dt (.ARRAY (.mk_fieldtype mut_opt zt))) ->
-    ((List.length fv_lst) == (List.length fv'_lst)) ->
-    Forall₂ (fun (fv : fieldval) (fv' : fieldval) => ((mut_opt == (some .MUT)) || (fv == fv'))) fv_lst fv'_lst ->
+    ((List.length fv_lst) = (List.length fv'_lst)) ->
+    Forall₂ (fun (fv : fieldval) (fv' : fieldval) => ((mut_opt = (some .MUT)) ∨ (fv = fv'))) fv_lst fv'_lst ->
     (wf_arrayinst { TYPE := dt, FIELDS := fv_lst }) ->
     (wf_arrayinst { TYPE := dt, FIELDS := fv'_lst }) ->
     (wf_comptype (.ARRAY (.mk_fieldtype mut_opt zt))) ->
@@ -19602,7 +19630,7 @@ opaque allocX : forall (r_X : Type) [Inhabited r_X] (Y : Type) [Inhabited Y] (v_
 inductive allocX_is_wf (r_X : Type) [Inhabited r_X] (Y : Type) [Inhabited Y] : store -> r_X -> Y -> (store × addr) -> Prop where
   | allocX_is_wf_0 : forall (v_store : store) (X_0 : r_X) (Y_0 : Y) (ret_val : (store × addr)), 
     (wf_store v_store) ->
-    (ret_val == (allocX r_X Y v_store X_0 Y_0)) ->
+    (ret_val = (allocX r_X Y v_store X_0 Y_0)) ->
     (wf_store (Prod.fst ret_val)) ->
     allocX_is_wf r_X Y v_store X_0 Y_0 ret_val
 
@@ -19615,7 +19643,7 @@ opaque allocXs : forall (r_X : Type) [Inhabited r_X] (Y : Type) [Inhabited Y] (v
 inductive allocXs_is_wf (r_X : Type) [Inhabited r_X] (Y : Type) [Inhabited Y] : store -> (List r_X) -> (List Y) -> (store × (List addr)) -> Prop where
   | allocXs_is_wf_0 : forall (v_store : store) (var_0_lst : (List r_X)) (var_1_lst : (List Y)) (ret_val : (store × (List addr))), 
     (wf_store v_store) ->
-    (ret_val == (allocXs r_X Y v_store var_0_lst var_1_lst)) ->
+    (ret_val = (allocXs r_X Y v_store var_0_lst var_1_lst)) ->
     (wf_store (Prod.fst ret_val)) ->
     allocXs_is_wf r_X Y v_store var_0_lst var_1_lst ret_val
 
@@ -19625,7 +19653,7 @@ opaque instrdots : (List instr) := opaqueDef
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/X.3-notation.execution.spectec:21.6-21.15 -/
 inductive instrdots_is_wf : (List instr) -> Prop where
   | instrdots_is_wf_0 : forall (ret_val_lst : (List instr)), 
-    (ret_val_lst == (instrdots )) ->
+    (ret_val_lst = (instrdots )) ->
     Forall (fun (ret_val : instr) => (wf_instr ret_val)) ret_val_lst ->
     instrdots_is_wf ret_val_lst
 
@@ -19640,14 +19668,14 @@ inductive sym : Type where
   | _FIRST (A_1 : A) : sym
   | _DOTS : sym
   | _LAST (A_n : A) : sym
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/X.1-notation.syntax.spectec:12.1-12.68 -/
 inductive symsplit : Type where
   | _FIRST (A_1 : A) : symsplit
   | _LAST (A_2 : A) : symsplit
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Type Alias Definition at: ../../specification/wasm-3.0/X.1-notation.syntax.spectec:14.1-14.37 -/
@@ -19658,7 +19686,7 @@ structure record where MKrecord ::
   FIELD_1 : A
   FIELD_2 : A
   mk_record : recorddots
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 def _append_record (arg1 arg2 : (record)) : record where
   FIELD_1 := arg1.FIELD_1 /- FIXME - Non-trivial append -/
@@ -19672,7 +19700,7 @@ instance : Append record where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/X.1-notation.syntax.spectec:20.1-20.71 -/
 inductive pth : Type where
   | PTHSYNTAX : pth
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Type Alias Definition at: ../../specification/wasm-3.0/X.2-notation.typing.spectec:7.1-7.32 -/
@@ -19703,7 +19731,7 @@ inductive NotationTypingInstrScheme : context -> (List instr) -> instrtype -> Pr
     NotationTypingInstrScheme C ([(.BINOP .I32 (.mk_binop__0 .I32 .ADD))] : (List instr)) (.mk_instrtype (.mk_list ([.I32, .I32] : (List valtype))) [] (.mk_list ([.I32] : (List valtype))))
   | global_get : forall (C : context) (x : idx) (t : valtype) (v_mut : «mut»), 
     ((proj_uN_0 x) < (List.length (C.GLOBALS))) ->
-    (((C.GLOBALS)[(proj_uN_0 x)]!) == (.mk_globaltype (some v_mut) t)) ->
+    (((C.GLOBALS)[(proj_uN_0 x)]!) = (.mk_globaltype (some v_mut) t)) ->
     (wf_context C) ->
     (wf_instr (.GLOBAL_GET x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list []) [] (.mk_list ([t] : (List valtype))))) ->
@@ -19739,7 +19767,7 @@ inductive NotationReduct : (List instr) -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/X.3-notation.execution.spectec:23.1-23.75 -/
 inductive label : Type where
   | LABEL_ (v_n : n) (instr_lst : (List instr)) : label
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/X.3-notation.execution.spectec:23.8-23.13 -/
@@ -19751,7 +19779,7 @@ inductive wf_label : label -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/X.3-notation.execution.spectec:24.1-24.84 -/
 inductive callframe : Type where
   | FRAME_ (v_n : n) (v_frame : frame) : callframe
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/X.3-notation.execution.spectec:24.8-24.17 -/
@@ -19763,13 +19791,13 @@ inductive wf_callframe : callframe -> Prop where
 /- Inductive Type Definition at: ../../specification/wasm-3.0/X.4-notation.binary.spectec:7.1-7.52 -/
 inductive symdots : Type where
   | mk_symdots (i : Nat) : symdots
-deriving Inhabited, BEq
+deriving Inhabited, DecidableEq
 
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/X.4-notation.binary.spectec:7.8-7.15 -/
 inductive wf_symdots : symdots -> Prop where
   | symdots_case_0 : forall (i : Nat), 
-    (i == 0) ->
+    (i = 0) ->
     wf_symdots (.mk_symdots i)
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/X.4-notation.binary.spectec:9.1-9.55 -/

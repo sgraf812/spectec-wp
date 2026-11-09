@@ -39,4 +39,10 @@ theorem utf8_length {cs : List char} {bs : List byte} (h : fun_utf8 cs bs) :
 theorem not_utf8_nil (c : char) : ¬ fun_utf8 [c] [] := fun h => by
   simpa using utf8_length h
 
+/-- Equality on the mutually recursive type group is lawful, so a `==` condition can be
+proved. -/
+example : ((valtype.I32 : valtype) == .I32) = true := by simp
+example : LawfulBEq instr := inferInstance
+example : LawfulBEq deftype := inferInstance
+
 end SpecTecWP.Regression
