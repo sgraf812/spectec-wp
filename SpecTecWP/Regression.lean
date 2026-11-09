@@ -62,4 +62,15 @@ theorem not_funcsxa_skip : ¬ fun_funcsxa [.FUNC 5] [] := by
     obtain ⟨rfl, rfl⟩ := hx
     exact hneg (.fun_funcsxa_case_1 5 [] [])
 
+/-- An unsigned remainder by zero has no result, so `i32.rem_u` traps: the second clause of
+`$irem_` divides by `i_2`, which is undefined at `0`. -/
+theorem not_irem_by_zero : ¬ fun_irem_ 32 .U (.mk_uN 5) (.mk_uN 0) (some (.mk_uN 5)) := by
+  intro h
+  generalize hr : (some (.mk_uN 5) : Option iN) = r at h
+  cases h with
+  | fun_irem__case_0 => simp at hr
+  | fun_irem__case_1 =>
+    simp only [proj_uN_0] at *
+    exact absurd rfl ‹Rat.ofInt (Int.ofNat 0) ≠ 0›
+
 end SpecTecWP.Regression
