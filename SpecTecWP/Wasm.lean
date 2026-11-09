@@ -1,15 +1,18 @@
 /- Preamble -/
+set_option autoImplicit false
 set_option linter.unusedVariables false
 set_option match.ignoreUnusedAlts true
 
-instance : Append (Option a) where
+instance {a : Type} : Append (Option a) where
   append := fun o1 o2 => match o1 with | none => o2 | _ => o1
     
-def Forall (R : α → Prop) (xs : List α) : Prop :=
+def Forall {α : Type} (R : α → Prop) (xs : List α) : Prop :=
   ∀ x ∈ xs, R x
-def Forall₂ (R : α → β → Prop) (xs : List α) (ys : List β) : Prop :=
+/- `Forall₂` and `Forall₃` relate the elements at equal positions. The rules that use them
+   carry the premises that the lists have equal lengths. -/
+def Forall₂ {α β : Type} (R : α → β → Prop) (xs : List α) (ys : List β) : Prop :=
   ∀ x y, (x,y) ∈ List.zip xs ys → R x y
-def Forall₃ (R : α → β → γ → Prop) (xs : List α) (ys : List β) (zs : List γ) : Prop :=
+def Forall₃ {α β γ : Type} (R : α → β → γ → Prop) (xs : List α) (ys : List β) (zs : List γ) : Prop :=
   ∀ x y z, (x,y,z) ∈ List.zip xs (List.zip ys zs) → R x y z
     
 macro "opaqueDef" : term => `(by first | exact Inhabited.default | (intros; exact Inhabited.default) | (intros; assumption))
@@ -25,16 +28,16 @@ def setminus_ (X : Type) [BEq X] (l1 l2 : List X) : List X :=
 
 /- Sequence primitives: `s[i] = .. f` updates element `i` with `f`, `s[i : j] = bs`
    replaces the `j` elements from `i` with `bs`. -/
-def list_update_func (l : List α) (i : Nat) (f : α → α) : List α := l.modify i f
-def list_slice_update (l : List α) (i j : Nat) (bs : List α) : List α :=
+def list_update_func {α : Type} (l : List α) (i : Nat) (f : α → α) : List α := l.modify i f
+def list_slice_update {α : Type} (l : List α) (i j : Nat) (bs : List α) : List α :=
   l.take i ++ bs ++ l.drop (i + j)
-def list_map3 (f : α → β → γ → δ) : List α → List β → List γ → List δ
+def list_map3 {α β γ δ : Type} (f : α → β → γ → δ) : List α → List β → List γ → List δ
   | a :: as, b :: bs, c :: cs => f a b c :: list_map3 f as bs cs
   | _, _, _ => []
-def option_zipWith (f : α → β → γ) : Option α → Option β → Option γ
+def option_zipWith {α β γ : Type} (f : α → β → γ) : Option α → Option β → Option γ
   | some a, some b => some (f a b)
   | _, _ => none
-def option_map3 (f : α → β → γ → δ) : Option α → Option β → Option γ → Option δ
+def option_map3 {α β γ δ : Type} (f : α → β → γ → δ) : Option α → Option β → Option γ → Option δ
   | some a, some b, some c => some (f a b c)
   | _, _, _ => none
 /- Generated Code -/
@@ -391,6 +394,9 @@ inductive fun_utf8 : (List char) -> (List byte) -> Prop where
     Forall₂ (fun (var_0 : (List byte)) (ch : char) => (fun_utf8 ([ch] : (List char)) var_0)) var_0_lst ch_lst ->
     Forall (fun (iter_1 : byte) => (wf_byte iter_1)) (concat_ byte var_1_lst) ->
     Forall (fun (var_2 : (List byte)) => Forall (fun (iter_2 : byte) => (wf_byte iter_2)) var_2) var_2_lst ->
+    ((List.length var_2_lst) = (List.length ch_lst)) ->
+    ((List.length var_1_lst) = (List.length ch_lst)) ->
+    ((List.length var_0_lst) = (List.length ch_lst)) ->
     fun_utf8 ch_lst (concat_ byte var_0_lst)
   | fun_utf8_case_1 : forall (ch : char) (b : byte), 
     ((proj_char_0 ch) < 128) ->
@@ -2135,6 +2141,7 @@ inductive fun_subst_fieldtype : fieldtype -> (List typevar) -> (List typeuse) ->
 inductive fun_subst_comptype : comptype -> (List typevar) -> (List typeuse) -> comptype -> Prop where
   | fun_subst_comptype_case_0 : forall (ft_lst : (List fieldtype)) (tv_lst : (List typevar)) (tu_lst : (List typeuse)) (var_0_lst : (List fieldtype)), 
     Forall₂ (fun (var_0 : fieldtype) (ft : fieldtype) => (fun_subst_fieldtype ft tv_lst tu_lst var_0)) var_0_lst ft_lst ->
+    ((List.length var_0_lst) = (List.length ft_lst)) ->
     fun_subst_comptype (.STRUCT (.mk_list ft_lst)) tv_lst tu_lst (.STRUCT (.mk_list var_0_lst))
   | fun_subst_comptype_case_1 : forall (ft : fieldtype) (tv_lst : (List typevar)) (tu_lst : (List typeuse)) (var_0 : fieldtype), 
     (fun_subst_fieldtype ft tv_lst tu_lst var_0) ->
@@ -2142,6 +2149,8 @@ inductive fun_subst_comptype : comptype -> (List typevar) -> (List typeuse) -> c
   | fun_subst_comptype_case_2 : forall (t_1_lst : (List valtype)) (t_2_lst : (List valtype)) (tv_lst : (List typevar)) (tu_lst : (List typeuse)) (var_1_lst : (List valtype)) (var_0_lst : (List valtype)), 
     Forall₂ (fun (var_1 : valtype) (t_2 : valtype) => (fun_subst_valtype t_2 tv_lst tu_lst var_1)) var_1_lst t_2_lst ->
     Forall₂ (fun (var_0 : valtype) (t_1 : valtype) => (fun_subst_valtype t_1 tv_lst tu_lst var_0)) var_0_lst t_1_lst ->
+    ((List.length var_1_lst) = (List.length t_2_lst)) ->
+    ((List.length var_0_lst) = (List.length t_1_lst)) ->
     fun_subst_comptype (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst)) tv_lst tu_lst (.FUNC (.mk_list var_0_lst) (.mk_list var_1_lst))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:352.6-352.20 -/
@@ -2149,6 +2158,7 @@ inductive fun_subst_subtype : subtype -> (List typevar) -> (List typeuse) -> sub
   | fun_subst_subtype_case_0 : forall (final_opt : (Option final)) (tu'_lst : (List typeuse)) (ct : comptype) (tv_lst : (List typevar)) (tu_lst : (List typeuse)) (var_1 : comptype) (var_0_lst : (List typeuse)), 
     (fun_subst_comptype ct tv_lst tu_lst var_1) ->
     Forall₂ (fun (var_0 : typeuse) (tu' : typeuse) => (fun_subst_typeuse tu' tv_lst tu_lst var_0)) var_0_lst tu'_lst ->
+    ((List.length var_0_lst) = (List.length tu'_lst)) ->
     fun_subst_subtype (.SUB final_opt tu'_lst ct) tv_lst tu_lst (.SUB final_opt var_0_lst var_1)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:353.6-353.20 -/
@@ -2158,6 +2168,7 @@ inductive fun_subst_rectype : rectype -> (List typevar) -> (List typeuse) -> rec
     ((tv'_lst, tu'_lst) == (Option.get! (minus_recs tv_lst tu_lst))) ->
     Forall (fun (iter_3 : typevar) => (wf_typevar iter_3)) (Prod.fst (Option.get! (minus_recs tv_lst tu_lst))) ->
     Forall (fun (iter_4 : typeuse) => (wf_typeuse iter_4)) (Prod.snd (Option.get! (minus_recs tv_lst tu_lst))) ->
+    ((List.length var_0_lst) = (List.length st_lst)) ->
     fun_subst_rectype (.REC (.mk_list st_lst)) tv_lst tu_lst (.REC (.mk_list var_0_lst))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:354.6-354.20 -/
@@ -2365,6 +2376,8 @@ inductive fun_subst_moduletype : moduletype -> (List typevar) -> (List typeuse) 
   | fun_subst_moduletype_case_0 : forall (xt_1_lst : (List externtype)) (xt_2_lst : (List externtype)) (tv_lst : (List typevar)) (tu_lst : (List typeuse)) (var_1_lst : (List externtype)) (var_0_lst : (List externtype)), 
     Forall₂ (fun (var_1 : externtype) (xt_2 : externtype) => (fun_subst_externtype xt_2 tv_lst tu_lst var_1)) var_1_lst xt_2_lst ->
     Forall₂ (fun (var_0 : externtype) (xt_1 : externtype) => (fun_subst_externtype xt_1 tv_lst tu_lst var_0)) var_0_lst xt_1_lst ->
+    ((List.length var_1_lst) = (List.length xt_2_lst)) ->
+    ((List.length var_0_lst) = (List.length xt_1_lst)) ->
     fun_subst_moduletype (.mk_moduletype xt_1_lst xt_2_lst) tv_lst tu_lst (.mk_moduletype var_0_lst var_1_lst)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:362.6-362.23 -/
@@ -2381,7 +2394,7 @@ inductive subst_moduletype_is_wf : moduletype -> (List typevar) -> (List typeuse
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:431.6-431.24 -/
 inductive fun_subst_all_valtype : valtype -> (List typeuse) -> valtype -> Prop where
   | fun_subst_all_valtype_case_0 : forall (t : valtype) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat) (var_0 : valtype), 
-    (fun_subst_valtype t (List.replicate v_n (._IDX (.mk_uN i))) tu_lst var_0) ->
+    (fun_subst_valtype t ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst var_0) ->
     (v_n == (List.length tu_lst)) ->
     fun_subst_all_valtype t tu_lst var_0
 
@@ -2398,7 +2411,7 @@ inductive subst_all_valtype_is_wf : valtype -> (List typeuse) -> valtype -> Prop
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:432.6-432.24 -/
 inductive fun_subst_all_reftype : reftype -> (List typeuse) -> reftype -> Prop where
   | fun_subst_all_reftype_case_0 : forall (rt : reftype) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat) (var_0 : reftype), 
-    (fun_subst_reftype rt (List.replicate v_n (._IDX (.mk_uN i))) tu_lst var_0) ->
+    (fun_subst_reftype rt ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst var_0) ->
     (v_n == (List.length tu_lst)) ->
     fun_subst_all_reftype rt tu_lst var_0
 
@@ -2415,15 +2428,15 @@ inductive subst_all_reftype_is_wf : reftype -> (List typeuse) -> reftype -> Prop
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:433.6-433.24 -/
 inductive fun_subst_all_deftype : deftype -> (List typeuse) -> deftype -> Prop where
   | fun_subst_all_deftype_case_0 : forall (dt : deftype) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat) (var_0 : deftype), 
-    (fun_subst_deftype dt (List.replicate v_n (._IDX (.mk_uN i))) tu_lst var_0) ->
-    (wf_typevar (._IDX (.mk_uN i_138931))) ->
+    (fun_subst_deftype dt ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst var_0) ->
+    (∀ (i_138931 : Nat), i_138931 < v_n → (wf_typevar (._IDX (.mk_uN i_138931)))) ->
     (v_n == (List.length tu_lst)) ->
     fun_subst_all_deftype dt tu_lst var_0
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:434.6-434.24 -/
 inductive fun_subst_all_tagtype : tagtype -> (List typeuse) -> tagtype -> Prop where
   | fun_subst_all_tagtype_case_0 : forall (jt : typeuse) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat) (var_0 : tagtype), 
-    (fun_subst_tagtype jt (List.replicate v_n (._IDX (.mk_uN i))) tu_lst var_0) ->
+    (fun_subst_tagtype jt ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst var_0) ->
     (v_n == (List.length tu_lst)) ->
     fun_subst_all_tagtype jt tu_lst var_0
 
@@ -2440,7 +2453,7 @@ inductive subst_all_tagtype_is_wf : tagtype -> (List typeuse) -> tagtype -> Prop
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:435.6-435.27 -/
 inductive fun_subst_all_globaltype : globaltype -> (List typeuse) -> globaltype -> Prop where
   | fun_subst_all_globaltype_case_0 : forall (gt : globaltype) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat) (var_0 : globaltype), 
-    (fun_subst_globaltype gt (List.replicate v_n (._IDX (.mk_uN i))) tu_lst var_0) ->
+    (fun_subst_globaltype gt ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst var_0) ->
     (v_n == (List.length tu_lst)) ->
     fun_subst_all_globaltype gt tu_lst var_0
 
@@ -2458,7 +2471,7 @@ inductive subst_all_globaltype_is_wf : globaltype -> (List typeuse) -> globaltyp
 inductive fun_subst_all_memtype : memtype -> (List typeuse) -> memtype -> Prop where
   | fun_subst_all_memtype_case_0 : forall (mt : memtype) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat), 
     (v_n == (List.length tu_lst)) ->
-    fun_subst_all_memtype mt tu_lst (subst_memtype mt (List.replicate v_n (._IDX (.mk_uN i))) tu_lst)
+    fun_subst_all_memtype mt tu_lst (subst_memtype mt ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:436.6-436.24 -/
 inductive subst_all_memtype_is_wf : memtype -> (List typeuse) -> memtype -> Prop where
@@ -2473,7 +2486,7 @@ inductive subst_all_memtype_is_wf : memtype -> (List typeuse) -> memtype -> Prop
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:437.6-437.26 -/
 inductive fun_subst_all_tabletype : tabletype -> (List typeuse) -> tabletype -> Prop where
   | fun_subst_all_tabletype_case_0 : forall (tt : tabletype) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat) (var_0 : tabletype), 
-    (fun_subst_tabletype tt (List.replicate v_n (._IDX (.mk_uN i))) tu_lst var_0) ->
+    (fun_subst_tabletype tt ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst var_0) ->
     (v_n == (List.length tu_lst)) ->
     fun_subst_all_tabletype tt tu_lst var_0
 
@@ -2490,7 +2503,7 @@ inductive subst_all_tabletype_is_wf : tabletype -> (List typeuse) -> tabletype -
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:438.6-438.27 -/
 inductive fun_subst_all_externtype : externtype -> (List typeuse) -> externtype -> Prop where
   | fun_subst_all_externtype_case_0 : forall (xt : externtype) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat) (var_0 : externtype), 
-    (fun_subst_externtype xt (List.replicate v_n (._IDX (.mk_uN i))) tu_lst var_0) ->
+    (fun_subst_externtype xt ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst var_0) ->
     (v_n == (List.length tu_lst)) ->
     fun_subst_all_externtype xt tu_lst var_0
 
@@ -2507,7 +2520,7 @@ inductive subst_all_externtype_is_wf : externtype -> (List typeuse) -> externtyp
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:439.6-439.27 -/
 inductive fun_subst_all_moduletype : moduletype -> (List typeuse) -> moduletype -> Prop where
   | fun_subst_all_moduletype_case_0 : forall (mmt : moduletype) (v_n : Nat) (tu_lst : (List typeuse)) (i : Nat) (var_0 : moduletype), 
-    (fun_subst_moduletype mmt (List.replicate v_n (._IDX (.mk_uN i))) tu_lst var_0) ->
+    (fun_subst_moduletype mmt ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar))) tu_lst var_0) ->
     (v_n == (List.length tu_lst)) ->
     fun_subst_all_moduletype mmt tu_lst var_0
 
@@ -2533,17 +2546,21 @@ inductive fun_subst_all_deftypes : (List deftype) -> (List typeuse) -> (List def
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:458.6-458.13 -/
 inductive fun_rollrt : typeidx -> rectype -> rectype -> Prop where
   | fun_rollrt_case_0 : forall (x : uN) (v_rectype : rectype) (i : Nat) (v_n : Nat) (subtype_lst : (List subtype)) (var_0_lst : (List subtype)), 
-    Forall₂ (fun (var_0 : subtype) (v_subtype : subtype) => (fun_subst_subtype v_subtype (List.replicate v_n (._IDX (.mk_uN ((proj_uN_0 x) + i)))) (List.replicate v_n (.REC i)) var_0)) var_0_lst subtype_lst ->
+    Forall₂ (fun (var_0 : subtype) (v_subtype : subtype) => (fun_subst_subtype v_subtype ((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN ((proj_uN_0 x) + i))) : typevar))) ((List.range v_n).map (fun (i : Nat) => ((.REC i) : typeuse))) var_0)) var_0_lst subtype_lst ->
     (v_rectype == (.REC (.mk_list subtype_lst))) ->
     Forall (fun (subtype_2 : subtype) => (wf_subtype subtype_2)) subtype_lst ->
+    ((List.length var_0_lst) = v_n) ->
+    ((List.length subtype_lst) = v_n) ->
     fun_rollrt x v_rectype (.REC (.mk_list var_0_lst))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:459.6-459.15 -/
 inductive fun_unrollrt : rectype -> rectype -> Prop where
   | fun_unrollrt_case_0 : forall (v_rectype : rectype) (i : Nat) (v_n : Nat) (subtype_lst : (List subtype)) (var_0_lst : (List subtype)), 
-    Forall₂ (fun (var_0 : subtype) (v_subtype : subtype) => (fun_subst_subtype v_subtype (List.replicate v_n (.REC i)) (List.replicate v_n (._DEF v_rectype i)) var_0)) var_0_lst subtype_lst ->
+    Forall₂ (fun (var_0 : subtype) (v_subtype : subtype) => (fun_subst_subtype v_subtype ((List.range v_n).map (fun (i : Nat) => ((.REC i) : typevar))) ((List.range v_n).map (fun (i : Nat) => ((._DEF v_rectype i) : typeuse))) var_0)) var_0_lst subtype_lst ->
     (v_rectype == (.REC (.mk_list subtype_lst))) ->
     Forall (fun (subtype_4 : subtype) => (wf_subtype subtype_4)) subtype_lst ->
+    ((List.length var_0_lst) = v_n) ->
+    ((List.length subtype_lst) = v_n) ->
     fun_unrollrt v_rectype (.REC (.mk_list var_0_lst))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:460.6-460.13 -/
@@ -2552,7 +2569,7 @@ inductive fun_rolldt : typeidx -> rectype -> (List deftype) -> Prop where
     (fun_rollrt x v_rectype var_0) ->
     (var_0 == (.REC (.mk_list subtype_lst))) ->
     Forall (fun (subtype_6 : subtype) => (wf_subtype subtype_6)) subtype_lst ->
-    fun_rolldt x v_rectype (List.replicate v_n (._DEF (.REC (.mk_list subtype_lst)) i))
+    fun_rolldt x v_rectype ((List.range v_n).map (fun (i : Nat) => ((._DEF (.REC (.mk_list subtype_lst)) i) : deftype)))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:461.6-461.15 -/
 inductive fun_unrolldt : deftype -> subtype -> Prop where
@@ -2752,6 +2769,7 @@ inductive fun_free_resulttype : resulttype -> free -> Prop where
   | fun_free_resulttype_case_0 : forall (valtype_lst : (List valtype)) (var_1_lst : (List free)) (var_0 : free), 
     Forall₂ (fun (var_1 : free) (v_valtype : valtype) => (fun_free_valtype v_valtype var_1)) var_1_lst valtype_lst ->
     (fun_free_list var_1_lst var_0) ->
+    ((List.length var_1_lst) = (List.length valtype_lst)) ->
     fun_free_resulttype (.mk_list valtype_lst) var_0
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:488.6-488.23 -/
@@ -2791,6 +2809,7 @@ inductive fun_free_comptype : comptype -> free -> Prop where
   | fun_free_comptype_case_0 : forall (fieldtype_lst : (List fieldtype)) (var_1_lst : (List free)) (var_0 : free), 
     Forall₂ (fun (var_1 : free) (v_fieldtype : fieldtype) => (fun_free_fieldtype v_fieldtype var_1)) var_1_lst fieldtype_lst ->
     (fun_free_list var_1_lst var_0) ->
+    ((List.length var_1_lst) = (List.length fieldtype_lst)) ->
     fun_free_comptype (.STRUCT (.mk_list fieldtype_lst)) var_0
   | fun_free_comptype_case_1 : forall (v_fieldtype : fieldtype) (var_0 : free), 
     (fun_free_fieldtype v_fieldtype var_0) ->
@@ -2806,6 +2825,7 @@ inductive fun_free_subtype : subtype -> free -> Prop where
     (fun_free_comptype v_comptype var_2) ->
     Forall₂ (fun (var_1 : free) (v_typeuse : typeuse) => (fun_free_typeuse v_typeuse var_1)) var_1_lst typeuse_lst ->
     (fun_free_list var_1_lst var_0) ->
+    ((List.length var_1_lst) = (List.length typeuse_lst)) ->
     fun_free_subtype (.SUB final_opt typeuse_lst v_comptype) (var_0 ++ var_2)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:492.6-492.19 -/
@@ -2813,6 +2833,7 @@ inductive fun_free_rectype : rectype -> free -> Prop where
   | fun_free_rectype_case_0 : forall (subtype_lst : (List subtype)) (var_1_lst : (List free)) (var_0 : free), 
     Forall₂ (fun (var_1 : free) (v_subtype : subtype) => (fun_free_subtype v_subtype var_1)) var_1_lst subtype_lst ->
     (fun_free_list var_1_lst var_0) ->
+    ((List.length var_1_lst) = (List.length subtype_lst)) ->
     fun_free_rectype (.REC (.mk_list subtype_lst)) var_0
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:520.6-520.19 -/
@@ -3042,6 +3063,8 @@ inductive fun_free_moduletype : moduletype -> free -> Prop where
     (fun_free_list var_3_lst var_2) ->
     Forall₂ (fun (var_1 : free) (externtype_1 : externtype) => (fun_free_externtype externtype_1 var_1)) var_1_lst externtype_1_lst ->
     (fun_free_list var_1_lst var_0) ->
+    ((List.length var_3_lst) = (List.length externtype_2_lst)) ->
+    ((List.length var_1_lst) = (List.length externtype_1_lst)) ->
     fun_free_moduletype (.mk_moduletype externtype_1_lst externtype_2_lst) (var_0 ++ var_2)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:501.6-501.22 -/
@@ -5161,6 +5184,7 @@ inductive free_shape_is_wf : shape -> free -> Prop where
 inductive fun_free_blocktype : blocktype -> free -> Prop where
   | fun_free_blocktype_case_0 : forall (valtype_opt : (Option valtype)) (var_0_opt : (Option free)), 
     Forall₂ (fun (var_0 : free) (v_valtype : valtype) => (fun_free_valtype v_valtype var_0)) (Option.toList var_0_opt) (Option.toList valtype_opt) ->
+    ((var_0_opt).isSome = (valtype_opt).isSome) ->
     fun_free_blocktype (._RESULT valtype_opt) (free_opt var_0_opt)
   | fun_free_blocktype_case_1 : forall (v_typeidx : uN), fun_free_blocktype (._IDX v_typeidx) (free_typeidx v_typeidx)
 
@@ -5224,6 +5248,8 @@ inductive fun_free_instr : instr -> free -> Prop where
   | fun_free_instr_case_3 : forall (valtype_lst_opt : (Option (List valtype))) (var_1_lst_opt : (Option (List free))) (var_0_opt : (Option free)), 
     Forall₂ (fun (var_1_lst : (List free)) (valtype_lst : (List valtype)) => Forall₂ (fun (var_1 : free) (v_valtype : valtype) => (fun_free_valtype v_valtype var_1)) var_1_lst valtype_lst) (Option.toList var_1_lst_opt) (Option.toList valtype_lst_opt) ->
     Forall₂ (fun (var_1_lst : (List free)) (var_0 : free) => (fun_free_list var_1_lst var_0)) (Option.toList var_1_lst_opt) (Option.toList var_0_opt) ->
+    ((var_1_lst_opt).isSome = (valtype_lst_opt).isSome) ->
+    ((var_1_lst_opt).isSome = (var_0_opt).isSome) ->
     fun_free_instr (.SELECT valtype_lst_opt) (free_opt var_0_opt)
   | fun_free_instr_case_4 : forall (v_blocktype : blocktype) (instr_lst : (List instr)) (var_1 : free) (var_0 : free), 
     (fun_free_block instr_lst var_1) ->
@@ -5275,6 +5301,7 @@ inductive fun_free_instr : instr -> free -> Prop where
     (fun_free_list var_3_lst var_2) ->
     (fun_free_list (List.map (fun (v_catch : «catch») => (free_catch v_catch)) catch_lst) var_1) ->
     (fun_free_blocktype v_blocktype var_0) ->
+    ((List.length var_3_lst) = (List.length instr_lst)) ->
     fun_free_instr (.TRY_TABLE v_blocktype (.mk_list catch_lst) instr_lst) ((var_0 ++ var_1) ++ var_2)
   | fun_free_instr_case_24 : forall (v_numtype : numtype) (numlit : num_), fun_free_instr (.CONST v_numtype numlit) (free_numtype v_numtype)
   | fun_free_instr_case_25 : forall (v_numtype : numtype) (unop : unop_), fun_free_instr (.UNOP v_numtype unop) (free_numtype v_numtype)
@@ -5370,6 +5397,7 @@ inductive fun_free_block : (List instr) -> free -> Prop where
     (fun_free_list var_2_lst var_1) ->
     (fun_shift_labelidxs (v_free.LABELS) var_0) ->
     (v_free == var_1) ->
+    ((List.length var_2_lst) = (List.length instr_lst)) ->
     fun_free_block instr_lst { v_free with LABELS := var_0 }
 
 end
@@ -5401,6 +5429,7 @@ inductive fun_free_expr : expr -> free -> Prop where
   | fun_free_expr_case_0 : forall (instr_lst : (List instr)) (var_1_lst : (List free)) (var_0 : free), 
     Forall₂ (fun (var_1 : free) (v_instr : instr) => (fun_free_instr v_instr var_1)) var_1_lst instr_lst ->
     (fun_free_list var_1_lst var_0) ->
+    ((List.length var_1_lst) = (List.length instr_lst)) ->
     fun_free_expr instr_lst var_0
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.3-syntax.instructions.spectec:428.6-428.16 -/
@@ -5700,6 +5729,7 @@ inductive fun_free_func : func -> free -> Prop where
     (fun_free_block v_expr var_2) ->
     Forall₂ (fun (var_1 : free) (v_local : «local») => (fun_free_local v_local var_1)) var_1_lst local_lst ->
     (fun_free_list var_1_lst var_0) ->
+    ((List.length var_1_lst) = (List.length local_lst)) ->
     fun_free_func (.FUNC v_typeidx local_lst v_expr) (((free_typeidx v_typeidx) ++ var_0) ++ { var_2 with LOCALS := [] })
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:79.6-79.16 -/
@@ -5766,6 +5796,7 @@ inductive fun_free_elem : elem -> free -> Prop where
     Forall₂ (fun (var_2 : free) (v_expr : expr) => (fun_free_expr v_expr var_2)) var_2_lst expr_lst ->
     (fun_free_list var_2_lst var_1) ->
     (fun_free_reftype v_reftype var_0) ->
+    ((List.length var_2_lst) = (List.length expr_lst)) ->
     fun_free_elem (.ELEM v_reftype expr_lst v_elemmode) ((var_0 ++ var_1) ++ var_3)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:81.6-81.16 -/
@@ -5841,6 +5872,14 @@ inductive fun_free_module : module -> free -> Prop where
     (fun_free_list var_3_lst var_2) ->
     Forall₂ (fun (var_1 : free) (v_type : type) => (fun_free_type v_type var_1)) var_1_lst type_lst ->
     (fun_free_list var_1_lst var_0) ->
+    ((List.length var_16_lst) = (List.length import_lst)) ->
+    ((List.length var_14_lst) = (List.length elem_lst)) ->
+    ((List.length var_12_lst) = (List.length data_lst)) ->
+    ((List.length var_10_lst) = (List.length func_lst)) ->
+    ((List.length var_8_lst) = (List.length table_lst)) ->
+    ((List.length var_5_lst) = (List.length global_lst)) ->
+    ((List.length var_3_lst) = (List.length tag_lst)) ->
+    ((List.length var_1_lst) = (List.length type_lst)) ->
     fun_free_module (.MODULE (.mk_list type_lst) (.mk_list import_lst) (.mk_list tag_lst) (.mk_list global_lst) (.mk_list mem_lst) (.mk_list table_lst) (.mk_list func_lst) (.mk_list data_lst) (.mk_list elem_lst) start_opt (.mk_list export_lst)) ((((((((((var_0 ++ var_2) ++ var_4) ++ var_6) ++ var_7) ++ var_9) ++ var_11) ++ var_13) ++ (free_opt (Option.map (fun (v_start : start) => (free_start v_start)) start_opt))) ++ var_15) ++ var_17)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:87.6-87.18 -/
@@ -5872,6 +5911,7 @@ inductive fun_dataidx_funcs : (List func) -> (List dataidx) -> Prop where
   | fun_dataidx_funcs_case_0 : forall (func_lst : (List func)) (var_1_lst : (List free)) (var_0 : free), 
     Forall₂ (fun (var_1 : free) (v_func : func) => (fun_free_func v_func var_1)) var_1_lst func_lst ->
     (fun_free_list var_1_lst var_0) ->
+    ((List.length var_1_lst) = (List.length func_lst)) ->
     fun_dataidx_funcs func_lst (var_0.DATAS)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/1.4-syntax.modules.spectec:144.6-144.20 -/
@@ -6289,6 +6329,10 @@ inductive Subtype_ok2 : context -> subtype -> oktypenat -> Prop where
     Forall (fun (var_0 : subtype) => (wf_subtype var_0)) var_0_lst ->
     (wf_subtype (.SUB (some .FINAL) typeuse_lst v_comptype)) ->
     Forall₂ (fun (comptype' : comptype) (typeuse'_lst : (List typeuse)) => (wf_subtype (.SUB none typeuse'_lst comptype'))) comptype'_lst typeuse'_lst_lst ->
+    ((List.length var_0_lst) = (List.length typeuse_lst)) ->
+    ((List.length var_0_lst) = (List.length comptype'_lst)) ->
+    ((List.length var_0_lst) = (List.length typeuse'_lst_lst)) ->
+    ((List.length comptype'_lst) = (List.length typeuse'_lst_lst)) ->
     Subtype_ok2 C (.SUB (some .FINAL) typeuse_lst v_comptype) (.OK i)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.1-validation.types.spectec:98.1-98.126 -/
@@ -6323,6 +6367,7 @@ inductive Comptype_sub : context -> comptype -> comptype -> Prop where
     (wf_context C) ->
     (wf_comptype (.STRUCT (.mk_list (ft_1_lst ++ ft'_1_lst)))) ->
     (wf_comptype (.STRUCT (.mk_list ft_2_lst))) ->
+    ((List.length ft_1_lst) = (List.length ft_2_lst)) ->
     Comptype_sub C (.STRUCT (.mk_list (ft_1_lst ++ ft'_1_lst))) (.STRUCT (.mk_list ft_2_lst))
   | array : forall (C : context) (ft_1 : fieldtype) (ft_2 : fieldtype), 
     (Fieldtype_sub C ft_1 ft_2) ->
@@ -6546,6 +6591,7 @@ inductive Resulttype_sub : context -> resulttype -> resulttype -> Prop where
     (wf_context C) ->
     Forall (fun (t_1 : valtype) => (wf_valtype t_1)) t_1_lst ->
     Forall (fun (t_2 : valtype) => (wf_valtype t_2)) t_2_lst ->
+    ((List.length t_1_lst) = (List.length t_2_lst)) ->
     Resulttype_sub C (.mk_list t_1_lst) (.mk_list t_2_lst)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.2-validation.subtyping.spectec:150.1-150.119 -/
@@ -6598,6 +6644,7 @@ inductive Instrtype_ok : context -> instrtype -> Prop where
     (wf_context C) ->
     Forall (fun (lct : localtype) => (wf_localtype lct)) lct_lst ->
     (wf_instrtype (.mk_instrtype (.mk_list t_1_lst) x_lst (.mk_list t_2_lst))) ->
+    ((List.length lct_lst) = (List.length x_lst)) ->
     Instrtype_ok C (.mk_instrtype (.mk_list t_1_lst) x_lst (.mk_list t_2_lst))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.1-validation.types.spectec:75.1-76.70 -/
@@ -6644,6 +6691,10 @@ inductive Subtype_ok : context -> subtype -> oktypeidx -> Prop where
     (wf_subtype (.SUB (some .FINAL) (List.map (fun (x : idx) => ((._IDX x) : typeuse)) x_lst) v_comptype)) ->
     (wf_oktypeidx (.OK x_0)) ->
     Forall₂ (fun (comptype' : comptype) (yy_lst : (List typeuse)) => (wf_subtype (.SUB none yy_lst comptype'))) comptype'_lst yy_lst_lst ->
+    ((List.length var_0_lst) = (List.length x_lst)) ->
+    ((List.length var_0_lst) = (List.length comptype'_lst)) ->
+    ((List.length var_0_lst) = (List.length yy_lst_lst)) ->
+    ((List.length comptype'_lst) = (List.length yy_lst_lst)) ->
     Subtype_ok C (.SUB (some .FINAL) (List.map (fun (x : idx) => ((._IDX x) : typeuse)) x_lst) v_comptype) (.OK x_0)
 
 /- Recursive Definition at: ../../specification/wasm-3.0/2.1-validation.types.spectec:96.1-96.126 -/
@@ -6752,6 +6803,7 @@ inductive Instrtype_sub : context -> instrtype -> instrtype -> Prop where
     (wf_instrtype (.mk_instrtype (.mk_list t_11_lst) x_1_lst (.mk_list t_12_lst))) ->
     (wf_instrtype (.mk_instrtype (.mk_list t_21_lst) x_2_lst (.mk_list t_22_lst))) ->
     Forall (fun (t : valtype) => (wf_localtype (.mk_localtype .SET t))) t_lst ->
+    ((List.length t_lst) = (List.length x_lst)) ->
     Instrtype_sub C (.mk_instrtype (.mk_list t_11_lst) x_1_lst (.mk_list t_12_lst)) (.mk_instrtype (.mk_list t_21_lst) x_2_lst (.mk_list t_22_lst))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.2-validation.subtyping.spectec:207.1-207.110 -/
@@ -7266,6 +7318,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     (wf_instr (.STRUCT_NEW x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list (List.map (fun (zt : storagetype) => (unpack zt)) zt_lst)) [] (.mk_list ([(.REF none (._IDX x))] : (List valtype))))) ->
     (wf_comptype (.STRUCT (.mk_list (List.zipWith (fun (mut_opt : (Option «mut»)) (zt : storagetype) => ((.mk_fieldtype mut_opt zt) : fieldtype)) mut_opt_lst zt_lst)))) ->
+    ((List.length mut_opt_lst) = (List.length zt_lst)) ->
     Instr_ok C (.STRUCT_NEW x) (.mk_instrtype (.mk_list (List.map (fun (zt : storagetype) => (unpack zt)) zt_lst)) [] (.mk_list ([(.REF none (._IDX x))] : (List valtype))))
   | struct_new_default : forall (C : context) (x : idx) (mut_opt_lst : (List (Option «mut»))) (zt_lst : (List storagetype)), 
     ((proj_uN_0 x) < (List.length (C.TYPES))) ->
@@ -7276,6 +7329,7 @@ inductive Instr_ok : context -> instr -> instrtype -> Prop where
     (wf_instr (.STRUCT_NEW_DEFAULT x)) ->
     (wf_instrtype (.mk_instrtype (.mk_list []) [] (.mk_list ([(.REF none (._IDX x))] : (List valtype))))) ->
     (wf_comptype (.STRUCT (.mk_list (List.zipWith (fun (mut_opt : (Option «mut»)) (zt : storagetype) => ((.mk_fieldtype mut_opt zt) : fieldtype)) mut_opt_lst zt_lst)))) ->
+    ((List.length mut_opt_lst) = (List.length zt_lst)) ->
     Instr_ok C (.STRUCT_NEW_DEFAULT x) (.mk_instrtype (.mk_list []) [] (.mk_list ([(.REF none (._IDX x))] : (List valtype))))
   | struct_get : forall (C : context) (sx_opt : (Option sx)) (x : idx) (i : fieldidx) (zt : storagetype) (ft_lst : (List fieldtype)) (mut_opt : (Option «mut»)) (var_0 : Bool), 
     (fun_is_packtype zt var_0) ->
@@ -7868,6 +7922,8 @@ inductive Instrs_ok : context -> (List instr) -> instrtype -> Prop where
     Forall₂ (fun (v_init : init) (t : valtype) => (wf_localtype (.mk_localtype v_init t))) init_lst t_lst ->
     Forall (fun (t : valtype) => (wf_localtype (.mk_localtype .SET t))) t_lst ->
     (wf_instrtype (.mk_instrtype (.mk_list t_2_lst) x_2_lst (.mk_list t_3_lst))) ->
+    ((List.length init_lst) = (List.length t_lst)) ->
+    ((List.length init_lst) = (List.length x_1_lst)) ->
     Instrs_ok C (instr_1_lst ++ instr_2_lst) (.mk_instrtype (.mk_list t_1_lst) (x_1_lst ++ x_2_lst) (.mk_list t_3_lst))
   | sub : forall (C : context) (instr_lst : (List instr)) (it' : instrtype) (it : instrtype), 
     (Instrs_ok C instr_lst it) ->
@@ -8074,6 +8130,7 @@ inductive Func_ok : context -> func -> deftype -> Prop where
     (wf_func (.FUNC x local_lst v_expr)) ->
     (wf_comptype (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst))) ->
     (wf_context { TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := ((List.map (fun (t_1 : valtype) => ((.mk_localtype .SET t_1) : localtype)) t_1_lst) ++ lct_lst), LABELS := ([(.mk_list t_2_lst)] : (List resulttype)), RETURN := (some (.mk_list t_2_lst)), REFS := [], RECS := [] }) ->
+    ((List.length lct_lst) = (List.length local_lst)) ->
     Func_ok C (.FUNC x local_lst v_expr) ((C.TYPES)[(proj_uN_0 x)]!)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/2.4-validation.modules.spectec:15.1-15.118 -/
@@ -8315,6 +8372,15 @@ inductive Module_ok : module -> moduletype -> Prop where
     (wf_context { TYPES := [], TAGS := (jt_I_lst ++ jt_lst), GLOBALS := gt_lst, MEMS := (mt_I_lst ++ mt_lst), TABLES := (tt_I_lst ++ tt_lst), FUNCS := [], DATAS := ok_lst, ELEMS := rt_lst, LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] }) ->
     (wf_context { TYPES := dt'_lst, TAGS := [], GLOBALS := gt_I_lst, MEMS := [], TABLES := [], FUNCS := (dt_I_lst ++ dt_lst), DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := x_lst, RECS := [] }) ->
     (wf_nonfuncs (.mk_nonfuncs global_lst mem_lst table_lst elem_lst start_opt export_lst)) ->
+    ((List.length import_lst) = (List.length xt_I_lst)) ->
+    ((List.length jt_lst) = (List.length tag_lst)) ->
+    ((List.length mem_lst) = (List.length mt_lst)) ->
+    ((List.length table_lst) = (List.length tt_lst)) ->
+    ((List.length dt_lst) = (List.length func_lst)) ->
+    ((List.length data_lst) = (List.length ok_lst)) ->
+    ((List.length elem_lst) = (List.length rt_lst)) ->
+    ((List.length export_lst) = (List.length nm_lst)) ->
+    ((List.length export_lst) = (List.length xt_E_lst)) ->
     Module_ok (.MODULE (.mk_list type_lst) (.mk_list import_lst) (.mk_list tag_lst) (.mk_list global_lst) (.mk_list mem_lst) (.mk_list table_lst) (.mk_list func_lst) (.mk_list data_lst) (.mk_list elem_lst) start_opt (.mk_list export_lst)) var_0
 
 /- Inductive Type Definition at: ../../specification/wasm-3.0/3.0-numerics.relaxed.spectec:5.1-5.24 -/
@@ -12490,6 +12556,7 @@ inductive fun_vcvtop___before_fun_vcvtop___case_3 : shape -> shape -> vcvtop__ -
     (List.contains (List.map (fun (c_lst_34 : (List lane_)) => (inv_lanes_ (.X Lnn_2 (.mk_dim M_2)) c_lst_34)) c_lst_lst) v) ->
     (wf_shape (.X Lnn_1 (.mk_dim M_1))) ->
     (wf_shape (.X Lnn_2 (.mk_dim M_2))) ->
+    ((List.length var_1_lst) = (List.length c_1_lst)) ->
     fun_vcvtop___before_fun_vcvtop___case_3 (.X Lnn_1 (.mk_dim M_1)) (.X Lnn_2 (.mk_dim M_2)) vcvtop v_1
   | fun_vcvtop___case_1 : forall (Lnn_1 : lanetype) (M_1 : Nat) (Lnn_2 : lanetype) (M_2 : Nat) (vcvtop : vcvtop__) (v_1 : uN) (v : uN) (v_half : half) (c_1_lst : (List lane_)) (c_lst_lst : (List (List lane_))) (var_1_lst : (List (Option (List lane_)))) (var_0 : (Option (Option half))), 
     Forall₂ (fun (var_1 : (Option (List lane_))) (c_1_144 : lane_) => (fun_lcvtop__ (.X Lnn_1 (.mk_dim M_1)) (.X Lnn_2 (.mk_dim M_2)) vcvtop c_1_144 var_1)) var_1_lst c_1_lst ->
@@ -12500,6 +12567,7 @@ inductive fun_vcvtop___before_fun_vcvtop___case_3 : shape -> shape -> vcvtop__ -
     (List.contains (List.map (fun (c_lst_32 : (List lane_)) => (inv_lanes_ (.X Lnn_2 (.mk_dim M_2)) c_lst_32)) c_lst_lst) v) ->
     (wf_shape (.X Lnn_1 (.mk_dim M_1))) ->
     (wf_shape (.X Lnn_2 (.mk_dim M_2))) ->
+    ((List.length var_1_lst) = (List.length c_1_lst)) ->
     fun_vcvtop___before_fun_vcvtop___case_3 (.X Lnn_1 (.mk_dim M_1)) (.X Lnn_2 (.mk_dim M_2)) vcvtop v_1
   | fun_vcvtop___case_0 : forall (Lnn_1 : lanetype) (v_M : Nat) (Lnn_2 : lanetype) (vcvtop : vcvtop__) (v_1 : uN) (v : uN) (M_0 : Nat) (c_1_lst : (List lane_)) (c_lst_lst : (List (List lane_))) (var_2_lst : (List (Option (List lane_)))) (var_1 : (Option (Option zero))) (var_0 : (Option (Option half))), 
     Forall₂ (fun (var_2 : (Option (List lane_))) (c_1_142 : lane_) => (fun_lcvtop__ (.X Lnn_1 (.mk_dim v_M)) (.X Lnn_2 (.mk_dim v_M)) vcvtop c_1_142 var_2)) var_2_lst c_1_lst ->
@@ -12512,6 +12580,7 @@ inductive fun_vcvtop___before_fun_vcvtop___case_3 : shape -> shape -> vcvtop__ -
     (wf_shape (.X Lnn_1 (.mk_dim v_M))) ->
     (wf_shape (.X Lnn_2 (.mk_dim v_M))) ->
     (v_M == M_0) ->
+    ((List.length var_2_lst) = (List.length c_1_lst)) ->
     fun_vcvtop___before_fun_vcvtop___case_3 (.X Lnn_1 (.mk_dim v_M)) (.X Lnn_2 (.mk_dim M_0)) vcvtop v_1
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.2-numerics.vector.spectec:183.6-183.15 -/
@@ -12527,6 +12596,7 @@ inductive fun_vcvtop__ : shape -> shape -> vcvtop__ -> vec_ -> (Option vec_) -> 
     (wf_shape (.X Lnn_1 (.mk_dim v_M))) ->
     (wf_shape (.X Lnn_2 (.mk_dim v_M))) ->
     (v_M == M_0) ->
+    ((List.length var_2_lst) = (List.length c_1_lst)) ->
     fun_vcvtop__ (.X Lnn_1 (.mk_dim v_M)) (.X Lnn_2 (.mk_dim M_0)) vcvtop v_1 (some v)
   | fun_vcvtop___case_1 : forall (Lnn_1 : lanetype) (M_1 : Nat) (Lnn_2 : lanetype) (M_2 : Nat) (vcvtop : vcvtop__) (v_1 : uN) (v : uN) (v_half : half) (c_1_lst : (List lane_)) (c_lst_lst : (List (List lane_))) (var_1_lst : (List (Option (List lane_)))) (var_0 : (Option (Option half))), 
     Forall₂ (fun (var_1 : (Option (List lane_))) (c_1_144 : lane_) => (fun_lcvtop__ (.X Lnn_1 (.mk_dim M_1)) (.X Lnn_2 (.mk_dim M_2)) vcvtop c_1_144 var_1)) var_1_lst c_1_lst ->
@@ -12537,6 +12607,7 @@ inductive fun_vcvtop__ : shape -> shape -> vcvtop__ -> vec_ -> (Option vec_) -> 
     (List.contains (List.map (fun (c_lst_32 : (List lane_)) => (inv_lanes_ (.X Lnn_2 (.mk_dim M_2)) c_lst_32)) c_lst_lst) v) ->
     (wf_shape (.X Lnn_1 (.mk_dim M_1))) ->
     (wf_shape (.X Lnn_2 (.mk_dim M_2))) ->
+    ((List.length var_1_lst) = (List.length c_1_lst)) ->
     fun_vcvtop__ (.X Lnn_1 (.mk_dim M_1)) (.X Lnn_2 (.mk_dim M_2)) vcvtop v_1 (some v)
   | fun_vcvtop___case_2 : forall (Lnn_1 : lanetype) (M_1 : Nat) (Lnn_2 : lanetype) (M_2 : Nat) (vcvtop : vcvtop__) (v_1 : uN) (v : uN) (c_1_lst : (List lane_)) (c_lst_lst : (List (List lane_))) (var_2 : lane_) (var_1_lst : (List (Option (List lane_)))) (var_0 : (Option (Option zero))), 
     (fun_zero Lnn_2 var_2) ->
@@ -12548,6 +12619,7 @@ inductive fun_vcvtop__ : shape -> shape -> vcvtop__ -> vec_ -> (Option vec_) -> 
     (List.contains (List.map (fun (c_lst_34 : (List lane_)) => (inv_lanes_ (.X Lnn_2 (.mk_dim M_2)) c_lst_34)) c_lst_lst) v) ->
     (wf_shape (.X Lnn_1 (.mk_dim M_1))) ->
     (wf_shape (.X Lnn_2 (.mk_dim M_2))) ->
+    ((List.length var_1_lst) = (List.length c_1_lst)) ->
     fun_vcvtop__ (.X Lnn_1 (.mk_dim M_1)) (.X Lnn_2 (.mk_dim M_2)) vcvtop v_1 (some v)
   | fun_vcvtop___case_3 : forall (x0 : shape) (x1 : shape) (x2 : vcvtop__) (x3 : vec_), 
     (¬(fun_vcvtop___before_fun_vcvtop___case_3 x0 x1 x2 x3)) ->
@@ -15634,6 +15706,7 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
     ((proj_uN_0 l) == 0) ->
     (wf_instr (.LABEL_ v_n instr'_lst ((((List.map (fun (val' : val) => (instr_val val')) val'_lst) ++ (List.map (fun (v_val : val) => (instr_val v_val)) val_lst)) ++ ([(.BR l)] : (List instr))) ++ instr_lst))) ->
     (v_n == (List.length val_lst)) ->
+    ((List.length val_lst) = v_n) ->
     Step_pure ([(.LABEL_ v_n instr'_lst ((((List.map (fun (val' : val) => (instr_val val')) val'_lst) ++ (List.map (fun (v_val : val) => (instr_val v_val)) val_lst)) ++ ([(.BR l)] : (List instr))) ++ instr_lst))] : (List instr)) ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ instr'_lst)
   | br_label_succ : forall (v_n : n) (instr'_lst : (List instr)) (val_lst : (List val)) (l : labelidx) (instr_lst : (List instr)), 
     ((proj_uN_0 l) > 0) ->
@@ -15710,10 +15783,12 @@ inductive Step_pure : (List instr) -> (List instr) -> Prop where
   | frame_vals : forall (v_n : n) (f : frame) (val_lst : (List val)), 
     (wf_instr (.FRAME_ v_n f (List.map (fun (v_val : val) => (instr_val v_val)) val_lst))) ->
     (v_n == (List.length val_lst)) ->
+    ((List.length val_lst) = v_n) ->
     Step_pure ([(.FRAME_ v_n f (List.map (fun (v_val : val) => (instr_val v_val)) val_lst))] : (List instr)) (List.map (fun (v_val : val) => (instr_val v_val)) val_lst)
   | return_frame : forall (v_n : n) (f : frame) (val'_lst : (List val)) (val_lst : (List val)) (instr_lst : (List instr)), 
     (wf_instr (.FRAME_ v_n f ((((List.map (fun (val' : val) => (instr_val val')) val'_lst) ++ (List.map (fun (v_val : val) => (instr_val v_val)) val_lst)) ++ ([.RETURN] : (List instr))) ++ instr_lst))) ->
     (v_n == (List.length val_lst)) ->
+    ((List.length val_lst) = v_n) ->
     Step_pure ([(.FRAME_ v_n f ((((List.map (fun (val' : val) => (instr_val val')) val'_lst) ++ (List.map (fun (v_val : val) => (instr_val v_val)) val_lst)) ++ ([.RETURN] : (List instr))) ++ instr_lst))] : (List instr)) (List.map (fun (v_val : val) => (instr_val v_val)) val_lst)
   | return_label : forall (v_n : n) (instr'_lst : (List instr)) (val_lst : (List val)) (instr_lst : (List instr)), 
     (wf_instr (.LABEL_ v_n instr'_lst (((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([.RETURN] : (List instr))) ++ instr_lst))) ->
@@ -16614,6 +16689,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     (v_m == (List.length val_lst)) ->
     (v_m == (List.length t_1_lst)) ->
     (v_n == (List.length t_2_lst)) ->
+    ((List.length val_lst) = v_m) ->
     Step_read (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.BLOCK bt instr_lst)] : (List instr)))) ([(.LABEL_ v_n [] ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ instr_lst))] : (List instr))
   | loop : forall (z : state) (v_m : m) (val_lst : (List val)) (bt : blocktype) (instr_lst : (List instr)) (t_1_lst : (List valtype)) (v_n : n) (t_2_lst : (List valtype)) (var_0 : instrtype), 
     (fun_blocktype_ z bt var_0) ->
@@ -16625,6 +16701,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     (v_m == (List.length val_lst)) ->
     (v_m == (List.length t_1_lst)) ->
     (v_n == (List.length t_2_lst)) ->
+    ((List.length val_lst) = v_m) ->
     Step_read (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.LOOP bt instr_lst)] : (List instr)))) ([(.LABEL_ v_m ([(.LOOP bt instr_lst)] : (List instr)) ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ instr_lst))] : (List instr))
   | br_on_cast_succeed : forall (s : store) (f : frame) (v_ref : ref) (l : labelidx) (rt_1 : reftype) (rt_2 : reftype) (var_0 : reftype), 
     (fun_inst_reftype (f.MODULE) rt_2 var_0) ->
@@ -16678,6 +16755,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (v_n == (List.length val_lst)) ->
     (v_n == (List.length t_1_lst)) ->
     (v_m == (List.length t_2_lst)) ->
+    ((List.length val_lst) = v_n) ->
+    ((List.length var_0_lst) = (List.length t_lst)) ->
     Step_read (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.REF_FUNC_ADDR a), (.CALL_REF yy)] : (List instr)))) ([(.FRAME_ v_m f ([(.LABEL_ v_m [] instr_lst)] : (List instr)))] : (List instr))
   | return_call : forall (z : state) (x : idx) (a : addr), 
     (a < (List.length (fun_funcinst z))) ->
@@ -16711,6 +16790,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     (v_n == (List.length val_lst)) ->
     (v_n == (List.length t_1_lst)) ->
     (v_m == (List.length t_2_lst)) ->
+    ((List.length val_lst) = v_n) ->
     Step_read (.mk_config z ([(.FRAME_ k f (((((List.map (fun (val' : val) => (instr_val val')) val'_lst) ++ (List.map (fun (v_val : val) => (instr_val v_val)) val_lst)) ++ ([(.REF_FUNC_ADDR a)] : (List instr))) ++ ([(.RETURN_CALL_REF yy)] : (List instr))) ++ instr_lst))] : (List instr))) ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.REF_FUNC_ADDR a), (.CALL_REF yy)] : (List instr)))
   | throw_ref_null : forall (z : state), 
     (wf_config (.mk_config z ([.REF_NULL_ADDR, .THROW_REF] : (List instr)))) ->
@@ -16782,6 +16862,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     (v_m == (List.length val_lst)) ->
     (v_m == (List.length t_1_lst)) ->
     (v_n == (List.length t_2_lst)) ->
+    ((List.length val_lst) = v_m) ->
     Step_read (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.TRY_TABLE bt (.mk_list catch_lst) instr_lst)] : (List instr)))) ([(.HANDLER_ v_n catch_lst ([(.LABEL_ v_n [] ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ instr_lst))] : (List instr)))] : (List instr))
   | local_get : forall (z : state) (x : idx) (v_val : val), 
     ((fun_local z x) == (some v_val)) ->
@@ -16967,10 +17048,10 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr .TRAP) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.SHAPEX_ (.mk_sz v_M) v_K v_sx)) x ao)] : (List instr))) ([.TRAP] : (List instr))
   | vload_pack_val : forall (z : state) («at» : addrtype) (i : num_) (v_M : M) (v_K : K) (v_sx : sx) (x : idx) (ao : memarg) (c : vec_) (j_lst : (List iN)) (v_Jnn : Jnn), 
-    ((proj_num__0 i) != none) ->
-    Forall (fun (j : iN) => ((ibytes_ v_M j) == (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_M)) / (Rat.ofInt (Int.ofNat 8))))) (List.drop (((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (k * v_M))) / (Rat.ofInt (Int.ofNat 8)))))) ((fun_mem z x).BYTES))))) j_lst ->
+    (∀ (k : Nat), k < v_K → ((proj_num__0 i) != none)) ->
+    (∀ (k : Nat), k < v_K → let j : iN := (j_lst)[k]!; ((ibytes_ v_M j) == (List.take (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_M)) / (Rat.ofInt (Int.ofNat 8))))) (List.drop (((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (k * v_M))) / (Rat.ofInt (Int.ofNat 8)))))) ((fun_mem z x).BYTES))))) ->
     ((c == (inv_lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_K)) (List.map (fun (j : iN) => ((.mk_lane__0 v_Jnn (extend__ v_M (jsizenn v_Jnn) v_sx j)) : lane_)) j_lst))) && ((jsizenn v_Jnn) == (v_M * 2))) ->
-    Forall (fun (j : iN) => Forall (fun (iter : byte) => (wf_byte iter)) (ibytes_ v_M j)) j_lst ->
+    (∀ (k : Nat), k < v_K → let j : iN := (j_lst)[k]!; Forall (fun (iter : byte) => (wf_byte iter)) (ibytes_ v_M j)) ->
     (wf_meminst (fun_mem z x)) ->
     (wf_uN 128 (inv_lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_K)) (List.map (fun (j : iN) => ((.mk_lane__0 v_Jnn (extend__ v_M (jsizenn v_Jnn) v_sx j)) : lane_)) j_lst))) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.SHAPEX_ (.mk_sz v_M) v_K v_sx)) x ao)] : (List instr)))) ->
@@ -16978,6 +17059,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_shape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_K))) ->
     Forall (fun (j : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn v_Jnn) (.mk_dim v_K))) (.mk_lane__0 v_Jnn (extend__ v_M (jsizenn v_Jnn) v_sx j)))) j_lst ->
     (v_K == (List.length j_lst)) ->
+    ((List.length j_lst) = v_K) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.SHAPEX_ (.mk_sz v_M) v_K v_sx)) x ao)] : (List instr))) ([(.VCONST .V128 c)] : (List instr))
   | vload_splat_oob : forall (z : state) («at» : addrtype) (i : num_) (v_N : N) (x : idx) (ao : memarg), 
     ((proj_num__0 i) != none) ->
@@ -17196,6 +17278,9 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_config (.mk_config z ([(.STRUCT_NEW_DEFAULT x)] : (List instr)))) ->
     (wf_instr (.STRUCT_NEW x)) ->
     (wf_comptype (.STRUCT (.mk_list (List.zipWith (fun (mut_opt : (Option «mut»)) (zt : storagetype) => ((.mk_fieldtype mut_opt zt) : fieldtype)) mut_opt_lst zt_lst)))) ->
+    ((List.length var_1_lst) = (List.length zt_lst)) ->
+    ((List.length mut_opt_lst) = (List.length zt_lst)) ->
+    ((List.length var_1_lst) = (List.length val_lst)) ->
     Step_read (.mk_config z ([(.STRUCT_NEW_DEFAULT x)] : (List instr))) ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.STRUCT_NEW x)] : (List instr)))
   | struct_get_null : forall (z : state) (sx_opt : (Option sx)) (x : idx) (i : fieldidx), 
     (wf_config (.mk_config z ([.REF_NULL_ADDR, (.STRUCT_GET sx_opt x i)] : (List instr)))) ->
@@ -17212,6 +17297,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     Forall (fun (iter : structinst) => (wf_structinst iter)) (fun_structinst z) ->
     (wf_config (.mk_config z ([(.REF_STRUCT_ADDR a), (.STRUCT_GET sx_opt x i)] : (List instr)))) ->
     (wf_comptype (.STRUCT (.mk_list (List.zipWith (fun (mut_opt : (Option «mut»)) (zt : storagetype) => ((.mk_fieldtype mut_opt zt) : fieldtype)) mut_opt_lst zt_lst)))) ->
+    ((List.length mut_opt_lst) = (List.length zt_lst)) ->
     Step_read (.mk_config z ([(.REF_STRUCT_ADDR a), (.STRUCT_GET sx_opt x i)] : (List instr))) ([(instr_val (Option.get! (unpackfield_ (zt_lst[(proj_uN_0 i)]!) sx_opt ((((fun_structinst z)[a]!).FIELDS)[(proj_uN_0 i)]!))))] : (List instr))
   | array_new_default : forall (z : state) (v_n : n) (x : idx) (v_val : val) (mut_opt : (Option «mut»)) (zt : storagetype) (var_1 : (Option (Option val))) (var_0 : deftype), 
     (fun_default_ (unpack zt) var_1) ->
@@ -17241,6 +17327,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_config (.mk_config z ([(.CONST .I32 i), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW_ELEM x y)] : (List instr)))) ->
     (wf_instr (.ARRAY_NEW_FIXED x (.mk_uN v_n))) ->
     (v_n == (List.length ref_lst)) ->
+    ((List.length ref_lst) = v_n) ->
     Step_read (.mk_config z ([(.CONST .I32 i), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW_ELEM x y)] : (List instr))) ((List.map (fun (v_ref : ref) => (instr_ref v_ref)) ref_lst) ++ ([(.ARRAY_NEW_FIXED x (.mk_uN v_n))] : (List instr)))
   | array_new_data_oob : forall (z : state) (i : num_) (v_n : n) (x : idx) (y : idx) (mut_opt : (Option «mut»)) (zt : storagetype) (var_0 : deftype), 
     (fun_type z x var_0) ->
@@ -17272,6 +17359,7 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr (.ARRAY_NEW_FIXED x (.mk_uN v_n))) ->
     (wf_comptype (.ARRAY (.mk_fieldtype mut_opt zt))) ->
     (v_n == (List.length c_lst)) ->
+    ((List.length c_lst) = v_n) ->
     Step_read (.mk_config z ([(.CONST .I32 i), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW_DATA x y)] : (List instr))) ((List.map (fun (c : lit_) => (Option.get! (const (Option.get! (cunpack zt)) (Option.get! (cunpacknum_ zt c))))) c_lst) ++ ([(.ARRAY_NEW_FIXED x (.mk_uN v_n))] : (List instr)))
   | array_get_null : forall (z : state) (i : num_) (sx_opt : (Option sx)) (x : idx), 
     (wf_config (.mk_config z ([.REF_NULL_ADDR, (.CONST .I32 i), (.ARRAY_GET sx_opt x)] : (List instr)))) ->
@@ -17557,6 +17645,7 @@ inductive Step : config -> config -> Prop where
     (wf_exninst { TAG := ((fun_tagaddr z)[(proj_uN_0 x)]!), FIELDS := val_lst }) ->
     (v_n == (List.length val_lst)) ->
     (v_n == (List.length t_lst)) ->
+    ((List.length val_lst) = v_n) ->
     Step (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.THROW x)] : (List instr)))) (.mk_config (add_exninst z ([exn] : (List exninst))) ([(.REF_EXN_ADDR a), .THROW_REF] : (List instr)))
   | local_set : forall (z : state) (v_val : val) (x : idx), 
     (wf_config (.mk_config z ([(instr_val v_val), (.LOCAL_SET x)] : (List instr)))) ->
@@ -17693,6 +17782,9 @@ inductive Step : config -> config -> Prop where
     (v_n == (List.length val_lst)) ->
     (v_n == (List.length mut_opt_lst)) ->
     (v_n == (List.length zt_lst)) ->
+    ((List.length val_lst) = v_n) ->
+    ((List.length mut_opt_lst) = v_n) ->
+    ((List.length zt_lst) = v_n) ->
     Step (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.STRUCT_NEW x)] : (List instr)))) (.mk_config (add_structinst z ([si] : (List structinst))) ([(.REF_STRUCT_ADDR a)] : (List instr)))
   | struct_set_null : forall (z : state) (v_val : val) (x : idx) (i : fieldidx), 
     (wf_config (.mk_config z ([.REF_NULL_ADDR, (instr_val v_val), (.STRUCT_SET x i)] : (List instr)))) ->
@@ -17706,6 +17798,7 @@ inductive Step : config -> config -> Prop where
     (wf_config (.mk_config z ([(.REF_STRUCT_ADDR a), (instr_val v_val), (.STRUCT_SET x i)] : (List instr)))) ->
     (wf_config (.mk_config (with_struct z a (proj_uN_0 i) (Option.get! (packfield_ (zt_lst[(proj_uN_0 i)]!) v_val))) [])) ->
     (wf_comptype (.STRUCT (.mk_list (List.zipWith (fun (mut_opt : (Option «mut»)) (zt : storagetype) => ((.mk_fieldtype mut_opt zt) : fieldtype)) mut_opt_lst zt_lst)))) ->
+    ((List.length mut_opt_lst) = (List.length zt_lst)) ->
     Step (.mk_config z ([(.REF_STRUCT_ADDR a), (instr_val v_val), (.STRUCT_SET x i)] : (List instr))) (.mk_config (with_struct z a (proj_uN_0 i) (Option.get! (packfield_ (zt_lst[(proj_uN_0 i)]!) v_val))) [])
   | array_new_fixed : forall (z : state) (v_n : n) (val_lst : (List val)) (x : idx) (ai : arrayinst) (a : addr) (mut_opt : (Option «mut»)) (zt : storagetype) (var_0 : deftype), 
     (fun_type z x var_0) ->
@@ -17718,6 +17811,7 @@ inductive Step : config -> config -> Prop where
     (wf_comptype (.ARRAY (.mk_fieldtype mut_opt zt))) ->
     (wf_arrayinst { TYPE := var_0, FIELDS := (List.map (fun (v_val : val) => (Option.get! (packfield_ zt v_val))) val_lst) }) ->
     (v_n == (List.length val_lst)) ->
+    ((List.length val_lst) = v_n) ->
     Step (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.ARRAY_NEW_FIXED x (.mk_uN v_n))] : (List instr)))) (.mk_config (add_arrayinst z ([ai] : (List arrayinst))) ([(.REF_ARRAY_ADDR a)] : (List instr)))
   | array_set_null : forall (z : state) (i : num_) (v_val : val) (x : idx), 
     (wf_config (.mk_config z ([.REF_NULL_ADDR, (.CONST .I32 i), (instr_val v_val), (.ARRAY_SET x)] : (List instr)))) ->
@@ -18132,7 +18226,7 @@ inductive fun_allocmodule : store -> module -> (List externaddr) -> (List val) -
     (ta_I_lst == var_3) ->
     (fa_I_lst == var_4) ->
     (dt_lst == var_5) ->
-    (fa_lst == (List.replicate (List.length func_lst) ((List.length (s.FUNCS)) + i_F_1))) ->
+    (fa_lst == ((List.range (List.length func_lst)).map (fun (i_F_1 : Nat) => ((List.length (s.FUNCS)) + i_F_1)))) ->
     ((s_1, aa_lst) == var_6) ->
     ((s_2, ga_lst) == var_8) ->
     ((s_3, ma_lst) == var_10) ->
@@ -18152,6 +18246,18 @@ inductive fun_allocmodule : store -> module -> (List externaddr) -> (List val) -
     Forall₃ (fun (elemmode_232 : elemmode) (elemtype_3 : elemtype) (expr_E_lst_2 : (List expr)) => (wf_elem (.ELEM elemtype_3 expr_E_lst_2 elemmode_232))) elemmode_lst elemtype_lst expr_E_lst_lst ->
     (wf_moduleinst { TYPES := [], TAGS := (aa_I_lst ++ aa_lst), GLOBALS := (ga_I_lst ++ ga_lst), MEMS := (ma_I_lst ++ ma_lst), TABLES := (ta_I_lst ++ ta_lst), FUNCS := (fa_I_lst ++ fa_lst), DATAS := [], ELEMS := [], EXPORTS := [] }) ->
     (wf_moduleinst { TYPES := dt_lst, TAGS := (aa_I_lst ++ aa_lst), GLOBALS := (ga_I_lst ++ ga_lst), MEMS := (ma_I_lst ++ ma_lst), TABLES := (ta_I_lst ++ ta_lst), FUNCS := (fa_I_lst ++ fa_lst), DATAS := da_lst, ELEMS := ea_lst, EXPORTS := xi_lst }) ->
+    ((List.length expr_F_lst) = (List.length local_lst_lst)) ->
+    ((List.length expr_F_lst) = (List.length x_lst)) ->
+    ((List.length var_16_lst) = (List.length elemtype_lst)) ->
+    ((List.length var_13_lst) = (List.length tabletype_lst)) ->
+    ((List.length var_11_lst) = (List.length memtype_lst)) ->
+    ((List.length var_9_lst) = (List.length globaltype_lst)) ->
+    ((List.length var_7_lst) = (List.length tagtype_lst)) ->
+    ((List.length expr_G_lst) = (List.length globaltype_lst)) ->
+    ((List.length expr_T_lst) = (List.length tabletype_lst)) ->
+    ((List.length byte_lst_lst) = (List.length datamode_lst)) ->
+    ((List.length elemmode_lst) = (List.length elemtype_lst)) ->
+    ((List.length elemmode_lst) = (List.length expr_E_lst_lst)) ->
     fun_allocmodule s v_module externaddr_lst val_G_lst ref_T_lst ref_E_lst_lst (s_7, v_moduleinst)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:103.6-103.18 -/
@@ -18279,10 +18385,10 @@ inductive fun_instantiate : store -> module -> (List externaddr) -> config -> Pr
     (fun_funcsxa externaddr_lst var_23) ->
     (fun_globalsxa externaddr_lst var_22) ->
     (fun_alloctypes type_lst var_21) ->
-    Forall (fun (var_20 : (List instr)) => (fun_runelem_ (.mk_uN i_E_3) (elem_lst[i_E_3]!) var_20)) var_20_lst ->
-    Forall (fun (var_19 : (List instr)) => (fun_runelem_ (.mk_uN i_E_2) (elem_lst[i_E_2]!) var_19)) var_19_lst ->
-    Forall (fun (var_18 : (List instr)) => (fun_rundata_ (.mk_uN i_D_3) (data_lst[i_D_3]!) var_18)) var_18_lst ->
-    Forall (fun (var_17 : (List instr)) => (fun_rundata_ (.mk_uN i_D_2) (data_lst[i_D_2]!) var_17)) var_17_lst ->
+    (∀ (i_E_3 : Nat), i_E_3 < (List.length elem_lst) → let var_20 : (List instr) := (var_20_lst)[i_E_3]!; (fun_runelem_ (.mk_uN i_E_3) (elem_lst[i_E_3]!) var_20)) ->
+    (∀ (i_E_2 : Nat), i_E_2 < (List.length elem_lst) → let var_19 : (List instr) := (var_19_lst)[i_E_2]!; (fun_runelem_ (.mk_uN i_E_2) (elem_lst[i_E_2]!) var_19)) ->
+    (∀ (i_D_3 : Nat), i_D_3 < (List.length data_lst) → let var_18 : (List instr) := (var_18_lst)[i_D_3]!; (fun_rundata_ (.mk_uN i_D_3) (data_lst[i_D_3]!) var_18)) ->
+    (∀ (i_D_2 : Nat), i_D_2 < (List.length data_lst) → let var_17 : (List instr) := (var_17_lst)[i_D_2]!; (fun_rundata_ (.mk_uN i_D_2) (data_lst[i_D_2]!) var_17)) ->
     (fun_allocmodule s''' v_module externaddr_lst val_G_lst ref_T_lst ref_E_lst_lst var_16) ->
     (fun_allocmodule s''' v_module externaddr_lst val_G_lst ref_T_lst ref_E_lst_lst var_15) ->
     (fun_evalexprss z'' expr_E_lst_lst var_14) ->
@@ -18291,8 +18397,8 @@ inductive fun_instantiate : store -> module -> (List externaddr) -> config -> Pr
     (fun_evalexprs z' expr_T_lst var_11) ->
     (fun_evalglobals z globaltype_lst expr_G_lst var_10) ->
     (fun_evalglobals z globaltype_lst expr_G_lst var_9) ->
-    Forall (fun (var_8 : (List instr)) => (fun_runelem_ (.mk_uN i_E_1) (elem_lst[i_E_1]!) var_8)) var_8_lst ->
-    Forall (fun (var_7 : (List instr)) => (fun_rundata_ (.mk_uN i_D_1) (data_lst[i_D_1]!) var_7)) var_7_lst ->
+    (∀ (i_E_1 : Nat), i_E_1 < (List.length elem_lst) → let var_8 : (List instr) := (var_8_lst)[i_E_1]!; (fun_runelem_ (.mk_uN i_E_1) (elem_lst[i_E_1]!) var_8)) ->
+    (∀ (i_D_1 : Nat), i_D_1 < (List.length data_lst) → let var_7 : (List instr) := (var_7_lst)[i_D_1]!; (fun_rundata_ (.mk_uN i_D_1) (data_lst[i_D_1]!) var_7)) ->
     (fun_allocmodule s''' v_module externaddr_lst val_G_lst ref_T_lst ref_E_lst_lst var_6) ->
     (fun_evalexprss z'' expr_E_lst_lst var_5) ->
     (fun_evalexprs z' expr_T_lst var_4) ->
@@ -18308,7 +18414,7 @@ inductive fun_instantiate : store -> module -> (List externaddr) -> config -> Pr
     (data_lst == (List.zipWith (fun (byte_lst_117 : (List byte)) (datamode_116 : datamode) => ((.DATA byte_lst_117 datamode_116) : data)) byte_lst_lst datamode_lst)) ->
     (elem_lst == (list_map3 (fun (elemmode_237 : elemmode) (expr_E_lst_3 : (List expr)) (reftype_516 : reftype) => ((.ELEM reftype_516 expr_E_lst_3 elemmode_237) : elem)) elemmode_lst expr_E_lst_lst reftype_lst)) ->
     (start_opt == (Option.map (fun (x_6 : idx) => ((.START x_6) : start)) x_opt)) ->
-    (moduleinst_0 == { TYPES := var_0, TAGS := [], GLOBALS := var_1, MEMS := [], TABLES := [], FUNCS := (var_2 ++ (List.replicate (List.length func_lst) ((List.length (s.FUNCS)) + i_F_2))), DATAS := [], ELEMS := [], EXPORTS := [] }) ->
+    (moduleinst_0 == { TYPES := var_0, TAGS := [], GLOBALS := var_1, MEMS := [], TABLES := [], FUNCS := (var_2 ++ ((List.range (List.length func_lst)).map (fun (i_F_2 : Nat) => ((List.length (s.FUNCS)) + i_F_2)))), DATAS := [], ELEMS := [], EXPORTS := [] }) ->
     (z == (.mk_state s { LOCALS := [], MODULE := moduleinst_0 })) ->
     ((z', val_G_lst) == var_3) ->
     ((z'', ref_T_lst) == var_4) ->
@@ -18328,9 +18434,9 @@ inductive fun_instantiate : store -> module -> (List externaddr) -> config -> Pr
     (wf_store (Prod.fst var_15)) ->
     (wf_moduleinst (Prod.snd var_16)) ->
     Forall (fun (iter_27 : instr) => (wf_instr iter_27)) (concat_ instr var_17_lst) ->
-    Forall (fun (var_18 : (List instr)) => Forall (fun (iter_28 : instr) => (wf_instr iter_28)) var_18) var_18_lst ->
+    (∀ (i_D_3 : Nat), i_D_3 < (List.length data_lst) → let var_18 : (List instr) := (var_18_lst)[i_D_3]!; Forall (fun (iter_28 : instr) => (wf_instr iter_28)) var_18) ->
     Forall (fun (iter_29 : instr) => (wf_instr iter_29)) (concat_ instr var_19_lst) ->
-    Forall (fun (var_20 : (List instr)) => Forall (fun (iter_30 : instr) => (wf_instr iter_30)) var_20) var_20_lst ->
+    (∀ (i_E_3 : Nat), i_E_3 < (List.length elem_lst) → let var_20 : (List instr) := (var_20_lst)[i_E_3]!; Forall (fun (iter_30 : instr) => (wf_instr iter_30)) var_20) ->
     (wf_config (.mk_config (.mk_state s'''' { LOCALS := [], MODULE := v_moduleinst }) (instr_E_lst ++ (instr_D_lst ++ (Option.toList instr_S_opt))))) ->
     (wf_moduletype (.mk_moduletype xt_I_lst xt_E_lst)) ->
     (wf_module (.MODULE (.mk_list type_lst) (.mk_list import_lst) (.mk_list tag_lst) (.mk_list global_lst) (.mk_list mem_lst) (.mk_list table_lst) (.mk_list func_lst) (.mk_list data_lst) (.mk_list elem_lst) start_opt (.mk_list export_lst))) ->
@@ -18339,12 +18445,24 @@ inductive fun_instantiate : store -> module -> (List externaddr) -> config -> Pr
     Forall₂ (fun (byte_lst_119 : (List byte)) (datamode_118 : datamode) => (wf_data (.DATA byte_lst_119 datamode_118))) byte_lst_lst datamode_lst ->
     Forall₃ (fun (elemmode_239 : elemmode) (expr_E_lst_7 : (List expr)) (reftype_518 : reftype) => (wf_elem (.ELEM reftype_518 expr_E_lst_7 elemmode_239))) elemmode_lst expr_E_lst_lst reftype_lst ->
     Forall (fun (x_8 : idx) => (wf_start (.START x_8))) (Option.toList x_opt) ->
-    (wf_moduleinst { TYPES := var_21, TAGS := [], GLOBALS := var_22, MEMS := [], TABLES := [], FUNCS := (var_23 ++ (List.replicate (List.length func_lst) ((List.length (s.FUNCS)) + i_F_3))), DATAS := [], ELEMS := [], EXPORTS := [] }) ->
+    (wf_moduleinst { TYPES := var_21, TAGS := [], GLOBALS := var_22, MEMS := [], TABLES := [], FUNCS := (var_23 ++ ((List.range (List.length func_lst)).map (fun (i_F_3 : Nat) => ((List.length (s.FUNCS)) + i_F_3)))), DATAS := [], ELEMS := [], EXPORTS := [] }) ->
     (wf_state (.mk_state s { LOCALS := [], MODULE := moduleinst_0 })) ->
     (wf_state (.mk_state s''' f)) ->
-    (wf_uN 32 (.mk_uN i_D_4)) ->
-    (wf_uN 32 (.mk_uN i_E_4)) ->
+    (∀ (i_D_4 : Nat), i_D_4 < (List.length data_lst) → (wf_uN 32 (.mk_uN i_D_4))) ->
+    (∀ (i_E_4 : Nat), i_E_4 < (List.length elem_lst) → (wf_uN 32 (.mk_uN i_E_4))) ->
     Forall (fun (x_9 : idx) => (wf_instr (.CALL x_9))) (Option.toList x_opt) ->
+    ((List.length var_20_lst) = (List.length elem_lst)) ->
+    ((List.length var_19_lst) = (List.length elem_lst)) ->
+    ((List.length var_18_lst) = (List.length data_lst)) ->
+    ((List.length var_17_lst) = (List.length data_lst)) ->
+    ((List.length var_8_lst) = (List.length elem_lst)) ->
+    ((List.length var_7_lst) = (List.length data_lst)) ->
+    ((List.length externaddr_lst) = (List.length xt_I_lst)) ->
+    ((List.length expr_G_lst) = (List.length globaltype_lst)) ->
+    ((List.length expr_T_lst) = (List.length tabletype_lst)) ->
+    ((List.length byte_lst_lst) = (List.length datamode_lst)) ->
+    ((List.length elemmode_lst) = (List.length expr_E_lst_lst)) ->
+    ((List.length elemmode_lst) = (List.length reftype_lst)) ->
     fun_instantiate s v_module externaddr_lst (.mk_config (.mk_state s'''' { LOCALS := [], MODULE := v_moduleinst }) (instr_E_lst ++ (instr_D_lst ++ (Option.toList instr_S_opt))))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:214.6-214.13 -/
@@ -18353,6 +18471,7 @@ inductive fun_invoke : store -> funcaddr -> (List val) -> config -> Prop where
     (Expand (((s.FUNCS)[v_funcaddr]!).TYPE) (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst))) ->
     Forall₂ (fun (t_1_5 : valtype) (val_2 : val) => (Val_ok s val_2 t_1_5)) t_1_lst val_lst ->
     (wf_comptype (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst))) ->
+    ((List.length t_1_lst) = (List.length val_lst)) ->
     fun_invoke s v_funcaddr val_lst (.mk_config (.mk_state s { LOCALS := [], MODULE := { TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], EXPORTS := [] } }) ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.REF_FUNC_ADDR v_funcaddr), (.CALL_REF (typeuse_deftype (((s.FUNCS)[v_funcaddr]!).TYPE)))] : (List instr))))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.4-execution.modules.spectec:214.6-214.13 -/
@@ -18875,8 +18994,8 @@ inductive Context_ok : context -> Prop where
   | mk_Context_ok : forall (C : context) (v_n : n) (dt_lst : (List deftype)) (jt_lst : (List tagtype)) (gt_lst : (List globaltype)) (mt_lst : (List memtype)) (tt_lst : (List tabletype)) (dt_F_lst : (List deftype)) (ok_lst : (List datatype)) (et_lst : (List elemtype)) (lct_lst : (List localtype)) (rt_lst : (List reftype)) (rt'_opt : (Option reftype)) (x_lst : (List idx)) (v_m : m) (st_lst : (List subtype)) (C_0 : context) (t_1_lst : (List valtype)) (t_2_lst : (List valtype)), 
     (C == { TYPES := dt_lst, TAGS := jt_lst, GLOBALS := gt_lst, MEMS := mt_lst, TABLES := tt_lst, FUNCS := dt_F_lst, DATAS := ok_lst, ELEMS := et_lst, LOCALS := lct_lst, LABELS := ([(.mk_list (List.map (fun (rt : reftype) => (valtype_reftype rt)) rt_lst))] : (List resulttype)), RETURN := (some (.mk_list (Option.toList (Option.map (fun (rt' : reftype) => (valtype_reftype rt')) rt'_opt)))), REFS := x_lst, RECS := st_lst }) ->
     (C_0 == { TYPES := dt_lst, TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] }) ->
-    Forall (fun (dt : deftype) => (Deftype_ok { TYPES := (List.take i (List.drop 0 dt_lst)), TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] } dt)) dt_lst ->
-    Forall (fun (st : subtype) => (Subtype_ok2 { TYPES := dt_lst, TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := st_lst } st (.OK i))) st_lst ->
+    (∀ (i : Nat), i < v_n → let dt : deftype := (dt_lst)[i]!; (Deftype_ok { TYPES := (List.take i (List.drop 0 dt_lst)), TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] } dt)) ->
+    (∀ (i : Nat), i < v_m → let st : subtype := (st_lst)[i]!; (Subtype_ok2 { TYPES := dt_lst, TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := st_lst } st (.OK i))) ->
     Forall (fun (jt : tagtype) => (Tagtype_ok C_0 jt)) jt_lst ->
     Forall (fun (gt : globaltype) => (Globaltype_ok C_0 gt)) gt_lst ->
     Forall (fun (mt : memtype) => (Memtype_ok C_0 mt)) mt_lst ->
@@ -18894,13 +19013,18 @@ inductive Context_ok : context -> Prop where
     (wf_context C_0) ->
     (wf_context { TYPES := dt_lst, TAGS := jt_lst, GLOBALS := gt_lst, MEMS := mt_lst, TABLES := tt_lst, FUNCS := dt_F_lst, DATAS := ok_lst, ELEMS := et_lst, LOCALS := lct_lst, LABELS := ([(.mk_list (List.map (fun (rt : reftype) => (valtype_reftype rt)) rt_lst))] : (List resulttype)), RETURN := (some (.mk_list (Option.toList (Option.map (fun (rt' : reftype) => (valtype_reftype rt')) rt'_opt)))), REFS := x_lst, RECS := st_lst }) ->
     (wf_context { TYPES := dt_lst, TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] }) ->
-    (wf_context { TYPES := (List.take i (List.drop 0 dt_lst)), TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] }) ->
-    (wf_context { TYPES := (List.take i (List.drop 0 dt_lst)), TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] }) ->
+    (∀ (i : Nat), i < v_n → (wf_context { TYPES := (List.take i (List.drop 0 dt_lst)), TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] })) ->
+    (∀ (i : Nat), i < v_n → (wf_context { TYPES := (List.take i (List.drop 0 dt_lst)), TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] })) ->
     (wf_context { TYPES := dt_lst, TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := st_lst }) ->
     ((List.length t_1_lst) == (List.length t_2_lst)) ->
     Forall₂ (fun (t_1 : valtype) (t_2 : valtype) => (wf_comptype (.FUNC (.mk_list ([t_1] : (List valtype))) (.mk_list ([t_2] : (List valtype)))))) t_1_lst t_2_lst ->
     (v_n == (List.length dt_lst)) ->
     (v_m == (List.length st_lst)) ->
+    ((List.length dt_lst) = v_n) ->
+    ((List.length st_lst) = v_m) ->
+    ((List.length dt_F_lst) = (List.length t_1_lst)) ->
+    ((List.length dt_F_lst) = (List.length t_2_lst)) ->
+    ((List.length t_1_lst) = (List.length t_2_lst)) ->
     Context_ok C
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/7.1-soundness.configurations.spectec:325.1-325.48 -/
@@ -18970,14 +19094,21 @@ inductive Moduleinst_ok : store -> moduleinst -> context -> Prop where
     Forall (fun (v_exportinst : exportinst) => (List.contains ((List.map (fun (v_tagaddr : tagaddr) => ((.TAG v_tagaddr) : externaddr)) tagaddr_lst) ++ ((List.map (fun (v_globaladdr : globaladdr) => ((.GLOBAL v_globaladdr) : externaddr)) globaladdr_lst) ++ ((List.map (fun (v_memaddr : memaddr) => ((.MEM v_memaddr) : externaddr)) memaddr_lst) ++ ((List.map (fun (v_tableaddr : tableaddr) => ((.TABLE v_tableaddr) : externaddr)) tableaddr_lst) ++ (List.map (fun (v_funcaddr : funcaddr) => ((.FUNC v_funcaddr) : externaddr)) funcaddr_lst))))) (v_exportinst.ADDR))) exportinst_lst ->
     (wf_store s) ->
     (wf_moduleinst { TYPES := deftype_lst, TAGS := tagaddr_lst, GLOBALS := globaladdr_lst, MEMS := memaddr_lst, TABLES := tableaddr_lst, FUNCS := funcaddr_lst, DATAS := dataaddr_lst, ELEMS := elemaddr_lst, EXPORTS := exportinst_lst }) ->
-    (wf_context { TYPES := deftype_lst, TAGS := tagtype_lst, GLOBALS := globaltype_lst, MEMS := memtype_lst, TABLES := tabletype_lst, FUNCS := deftype_F_lst, DATAS := datatype_lst, ELEMS := elemtype_lst, LOCALS := [], LABELS := [], RETURN := none, REFS := (List.replicate (List.length funcaddr_lst) (.mk_uN i)), RECS := subtype_lst }) ->
+    (wf_context { TYPES := deftype_lst, TAGS := tagtype_lst, GLOBALS := globaltype_lst, MEMS := memtype_lst, TABLES := tabletype_lst, FUNCS := deftype_F_lst, DATAS := datatype_lst, ELEMS := elemtype_lst, LOCALS := [], LABELS := [], RETURN := none, REFS := ((List.range (List.length funcaddr_lst)).map (fun (i : Nat) => ((.mk_uN i) : funcidx))), RECS := subtype_lst }) ->
     (wf_context { TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] }) ->
     Forall (fun (v_tagtype : tagtype) => (wf_externtype (.TAG v_tagtype))) tagtype_lst ->
     Forall (fun (v_globaltype : globaltype) => (wf_externtype (.GLOBAL v_globaltype))) globaltype_lst ->
     Forall (fun (deftype_F : deftype) => (wf_externtype (.FUNC (typeuse_deftype deftype_F)))) deftype_F_lst ->
     Forall (fun (v_memtype : memtype) => (wf_externtype (.MEM v_memtype))) memtype_lst ->
     Forall (fun (v_tabletype : tabletype) => (wf_externtype (.TABLE v_tabletype))) tabletype_lst ->
-    Moduleinst_ok s { TYPES := deftype_lst, TAGS := tagaddr_lst, GLOBALS := globaladdr_lst, MEMS := memaddr_lst, TABLES := tableaddr_lst, FUNCS := funcaddr_lst, DATAS := dataaddr_lst, ELEMS := elemaddr_lst, EXPORTS := exportinst_lst } { TYPES := deftype_lst, TAGS := tagtype_lst, GLOBALS := globaltype_lst, MEMS := memtype_lst, TABLES := tabletype_lst, FUNCS := deftype_F_lst, DATAS := datatype_lst, ELEMS := elemtype_lst, LOCALS := [], LABELS := [], RETURN := none, REFS := (List.replicate (List.length funcaddr_lst) (.mk_uN i)), RECS := subtype_lst }
+    ((List.length tagaddr_lst) = (List.length tagtype_lst)) ->
+    ((List.length globaladdr_lst) = (List.length globaltype_lst)) ->
+    ((List.length deftype_F_lst) = (List.length funcaddr_lst)) ->
+    ((List.length memaddr_lst) = (List.length memtype_lst)) ->
+    ((List.length tableaddr_lst) = (List.length tabletype_lst)) ->
+    ((List.length dataaddr_lst) = (List.length datatype_lst)) ->
+    ((List.length elemaddr_lst) = (List.length elemtype_lst)) ->
+    Moduleinst_ok s { TYPES := deftype_lst, TAGS := tagaddr_lst, GLOBALS := globaladdr_lst, MEMS := memaddr_lst, TABLES := tableaddr_lst, FUNCS := funcaddr_lst, DATAS := dataaddr_lst, ELEMS := elemaddr_lst, EXPORTS := exportinst_lst } { TYPES := deftype_lst, TAGS := tagtype_lst, GLOBALS := globaltype_lst, MEMS := memtype_lst, TABLES := tabletype_lst, FUNCS := deftype_F_lst, DATAS := datatype_lst, ELEMS := elemtype_lst, LOCALS := [], LABELS := [], RETURN := none, REFS := ((List.range (List.length funcaddr_lst)).map (fun (i : Nat) => ((.mk_uN i) : funcidx))), RECS := subtype_lst }
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/7.1-soundness.configurations.spectec:326.1-326.44 -/
 inductive Frame_ok : store -> frame -> context -> Prop where
@@ -18989,6 +19120,7 @@ inductive Frame_ok : store -> frame -> context -> Prop where
     (wf_context C) ->
     (wf_frame { LOCALS := val_opt_lst, MODULE := v_moduleinst }) ->
     (wf_context { TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := lct_lst, LABELS := [], RETURN := none, REFS := [], RECS := [] }) ->
+    ((List.length lct_lst) = (List.length val_opt_lst)) ->
     Frame_ok s { LOCALS := val_opt_lst, MODULE := v_moduleinst } (C ++ { TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := lct_lst, LABELS := [], RETURN := none, REFS := [], RECS := [] })
 
 /- Recursive Definitions at: ../../specification/wasm-3.0/7.1-soundness.configurations.spectec:3.1-8.36 -/
@@ -19082,6 +19214,8 @@ inductive Instrs_ok2 : store -> context -> (List instr) -> instrtype -> Prop whe
     Forall₂ (fun (v_init : init) (t : valtype) => (wf_localtype (.mk_localtype v_init t))) init_lst t_lst ->
     Forall (fun (t : valtype) => (wf_localtype (.mk_localtype .SET t))) t_lst ->
     (wf_instrtype (.mk_instrtype (.mk_list t_2_lst) x_2_lst (.mk_list t_3_lst))) ->
+    ((List.length init_lst) = (List.length t_lst)) ->
+    ((List.length init_lst) = (List.length x_1_lst)) ->
     Instrs_ok2 s C (instr_1_lst ++ instr_2_lst) (.mk_instrtype (.mk_list t_1_lst) (x_1_lst ++ x_2_lst) (.mk_list t_3_lst))
   | sub : forall (s : store) (C : context) (instr_lst : (List instr)) (it' : instrtype) (it : instrtype), 
     (Instrs_ok2 s C instr_lst it) ->
@@ -19180,6 +19314,8 @@ inductive Structinst_ok : store -> structinst -> Prop where
     (wf_store s) ->
     (wf_structinst { TYPE := dt, FIELDS := fv_lst }) ->
     (wf_comptype (.STRUCT (.mk_list (List.zipWith (fun (mut_opt : (Option «mut»)) (zt : storagetype) => ((.mk_fieldtype mut_opt zt) : fieldtype)) mut_opt_lst zt_lst)))) ->
+    ((List.length mut_opt_lst) = (List.length zt_lst)) ->
+    ((List.length fv_lst) = (List.length zt_lst)) ->
     Structinst_ok s { TYPE := dt, FIELDS := fv_lst }
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/7.1-soundness.configurations.spectec:80.1-80.47 -/
@@ -19203,6 +19339,7 @@ inductive Exninst_ok : store -> exninst -> Prop where
     (wf_store s) ->
     (wf_exninst { TAG := ta, FIELDS := val_lst }) ->
     (wf_comptype (.FUNC (.mk_list t_lst) (.mk_list []))) ->
+    ((List.length t_lst) = (List.length val_lst)) ->
     Exninst_ok s { TAG := ta, FIELDS := val_lst }
 
 /- Recursive Definition at: ../../specification/wasm-3.0/7.1-soundness.configurations.spectec:214.1-215.50 -/
@@ -19291,9 +19428,9 @@ inductive Store_ok : store -> Prop where
     Forall (fun (v_structinst : structinst) => (Structinst_ok s v_structinst)) structinst_lst ->
     Forall (fun (v_arrayinst : arrayinst) => (Arrayinst_ok s v_arrayinst)) arrayinst_lst ->
     Forall (fun (v_exninst : exninst) => (Exninst_ok s v_exninst)) exninst_lst ->
-    (NotImmutReachable (.REF_STRUCT_ADDR a) s (.REF_STRUCT_ADDR a)) ->
-    (NotImmutReachable (.REF_ARRAY_ADDR a) s (.REF_ARRAY_ADDR a)) ->
-    (NotImmutReachable (.REF_EXN_ADDR a) s (.REF_EXN_ADDR a)) ->
+    (∀ (a : Nat), a < (List.length structinst_lst) → (NotImmutReachable (.REF_STRUCT_ADDR a) s (.REF_STRUCT_ADDR a))) ->
+    (∀ (a : Nat), a < (List.length arrayinst_lst) → (NotImmutReachable (.REF_ARRAY_ADDR a) s (.REF_ARRAY_ADDR a))) ->
+    (∀ (a : Nat), a < (List.length exninst_lst) → (NotImmutReachable (.REF_EXN_ADDR a) s (.REF_EXN_ADDR a))) ->
     (s == { TAGS := taginst_lst, GLOBALS := globalinst_lst, MEMS := meminst_lst, TABLES := tableinst_lst, FUNCS := funcinst_lst, DATAS := datainst_lst, ELEMS := eleminst_lst, STRUCTS := structinst_lst, ARRAYS := arrayinst_lst, EXNS := exninst_lst }) ->
     (wf_store s) ->
     Forall (fun (v_tagtype : tagtype) => (wf_typeuse v_tagtype)) tagtype_lst ->
@@ -19301,10 +19438,17 @@ inductive Store_ok : store -> Prop where
     Forall (fun (v_memtype : memtype) => (wf_memtype v_memtype)) memtype_lst ->
     Forall (fun (v_tabletype : tabletype) => (wf_tabletype v_tabletype)) tabletype_lst ->
     Forall (fun (v_elemtype : elemtype) => (wf_reftype v_elemtype)) elemtype_lst ->
-    (wf_fieldval (.REF_STRUCT_ADDR a)) ->
-    (wf_fieldval (.REF_ARRAY_ADDR a)) ->
-    (wf_fieldval (.REF_EXN_ADDR a)) ->
+    (∀ (a : Nat), a < (List.length structinst_lst) → (wf_fieldval (.REF_STRUCT_ADDR a))) ->
+    (∀ (a : Nat), a < (List.length arrayinst_lst) → (wf_fieldval (.REF_ARRAY_ADDR a))) ->
+    (∀ (a : Nat), a < (List.length exninst_lst) → (wf_fieldval (.REF_EXN_ADDR a))) ->
     (wf_store { TAGS := taginst_lst, GLOBALS := globalinst_lst, MEMS := meminst_lst, TABLES := tableinst_lst, FUNCS := funcinst_lst, DATAS := datainst_lst, ELEMS := eleminst_lst, STRUCTS := structinst_lst, ARRAYS := arrayinst_lst, EXNS := exninst_lst }) ->
+    ((List.length taginst_lst) = (List.length tagtype_lst)) ->
+    ((List.length globalinst_lst) = (List.length globaltype_lst)) ->
+    ((List.length meminst_lst) = (List.length memtype_lst)) ->
+    ((List.length tableinst_lst) = (List.length tabletype_lst)) ->
+    ((List.length deftype_lst) = (List.length funcinst_lst)) ->
+    ((List.length datainst_lst) = (List.length datatype_lst)) ->
+    ((List.length eleminst_lst) = (List.length elemtype_lst)) ->
     Store_ok s
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/7.1-soundness.configurations.spectec:251.1-251.45 -/
@@ -19371,6 +19515,9 @@ inductive Extend_structinst : structinst -> structinst -> Prop where
     (wf_structinst { TYPE := dt, FIELDS := fv_lst }) ->
     (wf_structinst { TYPE := dt, FIELDS := fv'_lst }) ->
     (wf_comptype (.STRUCT (.mk_list (List.zipWith (fun (mut_opt : (Option «mut»)) (zt : storagetype) => ((.mk_fieldtype mut_opt zt) : fieldtype)) mut_opt_lst zt_lst)))) ->
+    ((List.length mut_opt_lst) = (List.length zt_lst)) ->
+    ((List.length fv_lst) = (List.length fv'_lst)) ->
+    ((List.length fv_lst) = (List.length mut_opt_lst)) ->
     Extend_structinst { TYPE := dt, FIELDS := fv_lst } { TYPE := dt, FIELDS := fv'_lst }
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/7.1-soundness.configurations.spectec:259.1-259.51 -/
@@ -19382,6 +19529,7 @@ inductive Extend_arrayinst : arrayinst -> arrayinst -> Prop where
     (wf_arrayinst { TYPE := dt, FIELDS := fv_lst }) ->
     (wf_arrayinst { TYPE := dt, FIELDS := fv'_lst }) ->
     (wf_comptype (.ARRAY (.mk_fieldtype mut_opt zt))) ->
+    ((List.length fv_lst) = (List.length fv'_lst)) ->
     Extend_arrayinst { TYPE := dt, FIELDS := fv_lst } { TYPE := dt, FIELDS := fv'_lst }
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/7.1-soundness.configurations.spectec:260.1-260.45 -/
@@ -19393,36 +19541,36 @@ inductive Extend_exninst : exninst -> exninst -> Prop where
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/7.1-soundness.configurations.spectec:261.1-261.39 -/
 inductive Extend_store : store -> store -> Prop where
   | mk_Extend_store : forall (s : store) (s' : store), 
-    (a < (List.length (s.TAGS))) ->
-    (a < (List.length (s'.TAGS))) ->
-    (Extend_taginst ((s.TAGS)[a]!) ((s'.TAGS)[a]!)) ->
-    (a < (List.length (s.GLOBALS))) ->
-    (a < (List.length (s'.GLOBALS))) ->
-    (Extend_globalinst ((s.GLOBALS)[a]!) ((s'.GLOBALS)[a]!)) ->
-    (a < (List.length (s.MEMS))) ->
-    (a < (List.length (s'.MEMS))) ->
-    (Extend_meminst ((s.MEMS)[a]!) ((s'.MEMS)[a]!)) ->
-    (a < (List.length (s.TABLES))) ->
-    (a < (List.length (s'.TABLES))) ->
-    (Extend_tableinst ((s.TABLES)[a]!) ((s'.TABLES)[a]!)) ->
-    (a < (List.length (s.FUNCS))) ->
-    (a < (List.length (s'.FUNCS))) ->
-    (Extend_funcinst ((s.FUNCS)[a]!) ((s'.FUNCS)[a]!)) ->
-    (a < (List.length (s.DATAS))) ->
-    (a < (List.length (s'.DATAS))) ->
-    (Extend_datainst ((s.DATAS)[a]!) ((s'.DATAS)[a]!)) ->
-    (a < (List.length (s.ELEMS))) ->
-    (a < (List.length (s'.ELEMS))) ->
-    (Extend_eleminst ((s.ELEMS)[a]!) ((s'.ELEMS)[a]!)) ->
-    (a < (List.length (s.STRUCTS))) ->
-    (a < (List.length (s'.STRUCTS))) ->
-    (Extend_structinst ((s.STRUCTS)[a]!) ((s'.STRUCTS)[a]!)) ->
-    (a < (List.length (s.ARRAYS))) ->
-    (a < (List.length (s'.ARRAYS))) ->
-    (Extend_arrayinst ((s.ARRAYS)[a]!) ((s'.ARRAYS)[a]!)) ->
-    (a < (List.length (s.EXNS))) ->
-    (a < (List.length (s'.EXNS))) ->
-    (Extend_exninst ((s.EXNS)[a]!) ((s'.EXNS)[a]!)) ->
+    (∀ (a : Nat), a < (List.length (s.TAGS)) → (a < (List.length (s.TAGS)))) ->
+    (∀ (a : Nat), a < (List.length (s.TAGS)) → (a < (List.length (s'.TAGS)))) ->
+    (∀ (a : Nat), a < (List.length (s.TAGS)) → (Extend_taginst ((s.TAGS)[a]!) ((s'.TAGS)[a]!))) ->
+    (∀ (a : Nat), a < (List.length (s.GLOBALS)) → (a < (List.length (s.GLOBALS)))) ->
+    (∀ (a : Nat), a < (List.length (s.GLOBALS)) → (a < (List.length (s'.GLOBALS)))) ->
+    (∀ (a : Nat), a < (List.length (s.GLOBALS)) → (Extend_globalinst ((s.GLOBALS)[a]!) ((s'.GLOBALS)[a]!))) ->
+    (∀ (a : Nat), a < (List.length (s.MEMS)) → (a < (List.length (s.MEMS)))) ->
+    (∀ (a : Nat), a < (List.length (s.MEMS)) → (a < (List.length (s'.MEMS)))) ->
+    (∀ (a : Nat), a < (List.length (s.MEMS)) → (Extend_meminst ((s.MEMS)[a]!) ((s'.MEMS)[a]!))) ->
+    (∀ (a : Nat), a < (List.length (s.TABLES)) → (a < (List.length (s.TABLES)))) ->
+    (∀ (a : Nat), a < (List.length (s.TABLES)) → (a < (List.length (s'.TABLES)))) ->
+    (∀ (a : Nat), a < (List.length (s.TABLES)) → (Extend_tableinst ((s.TABLES)[a]!) ((s'.TABLES)[a]!))) ->
+    (∀ (a : Nat), a < (List.length (s.FUNCS)) → (a < (List.length (s.FUNCS)))) ->
+    (∀ (a : Nat), a < (List.length (s.FUNCS)) → (a < (List.length (s'.FUNCS)))) ->
+    (∀ (a : Nat), a < (List.length (s.FUNCS)) → (Extend_funcinst ((s.FUNCS)[a]!) ((s'.FUNCS)[a]!))) ->
+    (∀ (a : Nat), a < (List.length (s.DATAS)) → (a < (List.length (s.DATAS)))) ->
+    (∀ (a : Nat), a < (List.length (s.DATAS)) → (a < (List.length (s'.DATAS)))) ->
+    (∀ (a : Nat), a < (List.length (s.DATAS)) → (Extend_datainst ((s.DATAS)[a]!) ((s'.DATAS)[a]!))) ->
+    (∀ (a : Nat), a < (List.length (s.ELEMS)) → (a < (List.length (s.ELEMS)))) ->
+    (∀ (a : Nat), a < (List.length (s.ELEMS)) → (a < (List.length (s'.ELEMS)))) ->
+    (∀ (a : Nat), a < (List.length (s.ELEMS)) → (Extend_eleminst ((s.ELEMS)[a]!) ((s'.ELEMS)[a]!))) ->
+    (∀ (a : Nat), a < (List.length (s.STRUCTS)) → (a < (List.length (s.STRUCTS)))) ->
+    (∀ (a : Nat), a < (List.length (s.STRUCTS)) → (a < (List.length (s'.STRUCTS)))) ->
+    (∀ (a : Nat), a < (List.length (s.STRUCTS)) → (Extend_structinst ((s.STRUCTS)[a]!) ((s'.STRUCTS)[a]!))) ->
+    (∀ (a : Nat), a < (List.length (s.ARRAYS)) → (a < (List.length (s.ARRAYS)))) ->
+    (∀ (a : Nat), a < (List.length (s.ARRAYS)) → (a < (List.length (s'.ARRAYS)))) ->
+    (∀ (a : Nat), a < (List.length (s.ARRAYS)) → (Extend_arrayinst ((s.ARRAYS)[a]!) ((s'.ARRAYS)[a]!))) ->
+    (∀ (a : Nat), a < (List.length (s.EXNS)) → (a < (List.length (s.EXNS)))) ->
+    (∀ (a : Nat), a < (List.length (s.EXNS)) → (a < (List.length (s'.EXNS)))) ->
+    (∀ (a : Nat), a < (List.length (s.EXNS)) → (Extend_exninst ((s.EXNS)[a]!) ((s'.EXNS)[a]!))) ->
     (wf_store s) ->
     (wf_store s') ->
     Extend_store s s'
