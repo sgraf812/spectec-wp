@@ -1,4 +1,5 @@
-import Adequacy.Arith
+import Adequacy.Translate
+import SpecTecWP.Arith
 
 /-!
 # Adequacy on the straight-line fragment

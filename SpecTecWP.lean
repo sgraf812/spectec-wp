@@ -5,4 +5,7 @@ import SpecTecWP.Redex
 import SpecTecWP.Exits
 import SpecTecWP.Instr
 import SpecTecWP.InstrLocal
+import SpecTecWP.Arith
+import SpecTecWP.Specs
+import SpecTecWP.Examples
 import SpecTecWP.Regression

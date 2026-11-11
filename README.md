@@ -41,9 +41,11 @@ The script builds SpecTec, writes `SpecTecWP/Wasm.lean` and elaborates it.
 | `SpecTecWP/Redex.lean` | `Step.redex_pure`, `Step.redex_read`: a step of a redex of a pure or reading instruction is a `Step_pure` or `Step_read` step of a suffix. |
 | `SpecTecWP/Exits.lean` | Trap and exception configurations, `Safe.trap_inv`, `Safe.throw_inv`, and the sequencing law `Code.wp_append`. |
 | `SpecTecWP/Instr.lean`, `InstrLocal.lean` | Weakest preconditions of the straight-line instructions. |
+| `SpecTecWP/Arith.lean` | The integer operations of the model on `UInt32`, including the hand-written built-ins. |
+| `SpecTecWP/Specs.lean` | `@[spec]` triples for `vcgen`: `nil`, `cons`, constants, `i32.add`/`sub`/`mul`, `local.get`. |
+| `SpecTecWP/Examples.lean` | Programs proved with `vcgen`: `(a + b) - b = a` from two locals, and two programs that compute `(x + 1) * (x + 1)` in different ways. |
 | `SpecTecWP/Regression.lean` | Facts of the specification that earlier versions of the model contradicted. |
 | `Adequacy/Translate.lean` | The translation from Talos values, frames and instructions. |
-| `Adequacy/Arith.lean` | The integer operations of Talos and of the model agree. |
 | `Adequacy/Straight.lean` | `adequacy_straight`. |
 
 ## Semantics of `wp`

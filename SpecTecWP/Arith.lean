@@ -1,16 +1,14 @@
-import Adequacy.Translate
+import SpecTecWP.Basic
 
 /-!
-# The integer operations of Talos and of the SpecTec model agree
+# The integer operations of the model on `UInt32`
 
-For `a b : UInt32`, each lemma equates the SpecTec operation on `mk_uN a.toNat` and
-`mk_uN b.toNat` with the `toNat` of the Talos result. The bitwise operations and the signed
-comparison are hand-written in `Builtins`.
+For `a b : UInt32`, each lemma equates an operation of the model on `u a = mk_uN a.toNat` and
+`u b` with `u` of the corresponding `UInt32` operation. The bitwise operations and the signed
+comparison are the hand-written definitions of `Builtins`.
 -/
 
-namespace Adequacy
-
-open SpecTecWP
+namespace SpecTecWP
 
 def u (a : UInt32) : uN := .mk_uN a.toNat
 
@@ -90,4 +88,4 @@ theorem ilt_s_eq (a b : UInt32) :
   · have h2 : ¬ Builtins.signed_ 32 a.toNat < Builtins.signed_ 32 b.toNat := fun h2 => hab (h.mpr h2)
     simp [ilt_, u, proj_uN_0, Builtins.bool, hab, h2]
 
-end Adequacy
+end SpecTecWP
