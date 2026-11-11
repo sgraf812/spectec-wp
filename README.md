@@ -12,14 +12,18 @@ lake build SpecTecWP Adequacy.Straight
 ```
 
 Toolchain: `leanprover/lean4:nightly-2026-11-08`. The libraries `Interpreter` and `WasmWP`
-are symbolic links into `~/code/lean/talos` (the Talos interpreter and its `Std.WP`
-instance); they are needed only for `Adequacy`.
+are symbolic links into `~/code/lean/talos`, a checkout of
+[Talos](https://github.com/cajal-technologies/talos) with its `wp/` package (the `Std.WP`
+instance for the Talos interpreter). They are needed only for `Adequacy`; adjust the links to
+your checkout.
 
 ## Regenerate the model
 
-The generator is the Lean 4 backend of SpecTec on the branch `lean4-fixes` of `spectec/` (a
-worktree of a clone of `Wasm-DSL/spectec`, based on `rocq-backend`). `shell.nix` provides
-OCaml.
+The generator is the Lean 4 backend of SpecTec on the branch `lean4-fixes` of
+[sgraf812/spectec](https://github.com/sgraf812/spectec/tree/lean4-fixes), a fork of
+`Wasm-DSL/spectec`: Joachim Breitner's `lean4-wip` commit on top of `rocq-backend`, ported to
+the current IL and fixed after two reviews. Check it out as `spectec/` next to this README.
+`shell.nix` provides OCaml.
 
 ```
 ./regen.sh
