@@ -88,4 +88,81 @@ theorem ilt_s_eq (a b : UInt32) :
   · have h2 : ¬ Builtins.signed_ 32 a.toNat < Builtins.signed_ 32 b.toNat := fun h2 => hab (h.mpr h2)
     simp [ilt_, u, proj_uN_0, Builtins.bool, hab, h2]
 
+/-! ## Unsigned remainder -/
+
+theorem ofInt_ofNat (a : Nat) : Rat.ofInt (Int.ofNat a) = (a : Rat) := by
+  change ((Int.ofNat a : Int) : Rat) = (a : Rat)
+  rw [Int.ofNat_eq_natCast, Rat.intCast_natCast]
+
+/-- `$truncz` of a quotient of naturals is the natural quotient. -/
+theorem truncz_div (a b : Nat) (hb : 0 < b) :
+    truncz (Rat.ofInt (Int.ofNat a) / Rat.ofInt (Int.ofNat b)) = Int.ofNat (a / b) := by
+  rw [ofInt_ofNat, ofInt_ofNat]
+  have hb' : (0 : Rat) < (b : Rat) := Rat.natCast_pos.mpr hb
+  have hq : (0 : Rat) ≤ (a : Rat) / (b : Rat) := by
+    apply Rat.not_lt.mp
+    rw [Rat.div_lt_iff hb', Rat.zero_mul]
+    exact Rat.not_lt.mpr Rat.natCast_nonneg
+  simp only [truncz, Builtins.truncz, hq, ↓reduceIte]
+  apply Int.le_antisymm
+  · have h : ((a : Rat) / (b : Rat)).floor < ((a / b : Nat) : Int) + 1 := by
+      rw [Rat.floor_lt_iff, Rat.div_lt_iff hb']
+      have h2 : ((a : Nat) : Rat) < (((a / b) * b + b : Nat) : Rat) :=
+        Rat.natCast_lt_natCast.mpr (Nat.lt_div_mul_add hb)
+      simp only [Rat.natCast_add, Rat.natCast_mul] at h2
+      simp only [Rat.intCast_add, Rat.intCast_natCast, Rat.intCast_one, Rat.add_mul, Rat.one_mul]
+      exact h2
+    simp only [Int.ofNat_eq_natCast]
+    omega
+  · rw [Int.ofNat_eq_natCast, Rat.le_floor_iff, Rat.intCast_natCast]
+    apply Rat.not_lt.mp
+    rw [Rat.div_lt_iff hb']
+    apply Rat.not_lt.mpr
+    have h2 : (((a / b) * b : Nat) : Rat) ≤ ((a : Nat) : Rat) :=
+      Rat.natCast_le_natCast.mpr (Nat.div_mul_le_self a b)
+    simpa only [Rat.natCast_mul] using h2
+
+/-- The unsigned remainder. -/
+def irem_u (x y : uN) : uN := .mk_uN (proj_uN_0 x % proj_uN_0 y)
+
+theorem irem_u_eq_formula (a b : Nat) (hb : b ≠ 0) :
+    irem_u (.mk_uN a) (.mk_uN b) = .mk_uN (Int.toNat (Int.ofNat a - Int.ofNat (b *
+      Int.toNat (truncz (Rat.ofInt (Int.ofNat a) / Rat.ofInt (Int.ofNat b)))))) := by
+  rw [truncz_div a b (Nat.pos_of_ne_zero hb)]
+  simp only [irem_u, proj_uN_0, uN.mk_uN.injEq, Int.ofNat_eq_natCast, Int.toNat_natCast]
+  have h1 := Nat.mod_add_div a b
+  generalize b * (a / b) = m at *
+  omega
+
+theorem fun_irem_u {N : Nat} {x y : uN} (hy : proj_uN_0 y ≠ 0) :
+    fun_irem_ N .U x y (some (irem_u x y)) := by
+  obtain ⟨a⟩ := x
+  obtain ⟨b⟩ := y
+  simp only [proj_uN_0] at hy
+  rw [irem_u_eq_formula a b hy]
+  have key := truncz_div a b (Nat.pos_of_ne_zero hy)
+  refine .fun_irem__case_1 N (.mk_uN a) (.mk_uN b) ?_ ?_ ?_
+  · simp only [proj_uN_0]
+    rw [key]
+    simp only [Int.ofNat_eq_natCast, Int.toNat_natCast]
+    have := Nat.div_mul_le_self a b
+    rw [Nat.mul_comm] at this
+    omega
+  · simp only [proj_uN_0]; rw [key]; exact Int.ofNat_nonneg _
+  · simp only [proj_uN_0, ofInt_ofNat]
+    exact fun h => hy (Rat.natCast_eq_zero_iff.mp h)
+
+theorem fun_irem_u_uniq {N : Nat} {x y : uN} {r : Option uN} (hy : proj_uN_0 y ≠ 0)
+    (h : fun_irem_ N .U x y r) : r = some (irem_u x y) := by
+  cases h with
+  | fun_irem__case_0 => simp [proj_uN_0] at hy
+  | fun_irem__case_1 =>
+    obtain ⟨a⟩ := x
+    obtain ⟨b⟩ := y
+    simp only [proj_uN_0] at hy ⊢
+    rw [irem_u_eq_formula a b hy]
+
+theorem irem_u_eq (a b : UInt32) : irem_u (u a) (u b) = u (a % b) := by
+  simp [irem_u, u, proj_uN_0, UInt32.toNat_mod]
+
 end SpecTecWP

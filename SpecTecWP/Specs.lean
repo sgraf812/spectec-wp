@@ -1,4 +1,5 @@
-import SpecTecWP.InstrLocal
+import SpecTecWP.Locals
+import SpecTecWP.Arith
 import Std.Tactic.Do
 
 /-!
@@ -130,5 +131,167 @@ theorem wf_isub (x y : uN) : wf_uN 32 (isub_ 32 x y) := by
   obtain ⟨v, hv⟩ := Option.isSome_iff_exists.mp hsome
   rw [hv] at hwf hq
   exact Code.wp_local_get hv hwf hq
+
+/-! ## `i32.eqz` and `i32.rem_u` -/
+
+theorem wf_ieqz (x : uN) : wf_uN 32 (ieqz_ 32 x) := by
+  simp only [ieqz_]
+  refine .uN_case_0 _ _ ⟨Nat.zero_le _, ?_⟩ (by decide)
+  cases (proj_uN_0 x == 0) <;> decide
+
+@[spec] theorem Spec.i32_eqz {Q : Unit → Assn} {E : EAssn} :
+    Triple ([.TESTOP .I32 (.mk_testop__0 .I32 .EQZ)] : List instr)
+      (fun z vs => (⌜vs[0]! = i32v (asI32 vs[0]!) ∧ 1 ≤ vs.length⌝ : Prop) ⊓
+        Q () z (i32v (ieqz_ 32 (asI32 vs[0]!)) :: vs.drop 1)) Q E := by
+  refine Triple.iff.mpr fun z vs hpre => ?_
+  simp only [meet_prop_eq_and, CompleteLattice.ofProp_prop_eq] at hpre
+  obtain ⟨⟨h0, hlen⟩, hq⟩ := hpre
+  rcases vs with _ | ⟨v0, rest⟩
+  · simp at hlen
+  · simp only [List.getElem!_cons_zero, List.drop_succ_cons, List.drop_zero] at h0 hq
+    rw [h0]
+    exact Code.wp_testop rfl (wf_ieqz _) hq
+
+theorem wf_of_wf_num {x : uN} (h : wf_num_ .I32 (.mk_num__0 .I32 x)) : wf_uN 32 x := by
+  cases h with | num__case_0 _ _ h _ => exact h
+
+theorem wf_irem_u {x y : uN} (hx : wf_uN 32 x) : wf_uN 32 (irem_u x y) := by
+  obtain ⟨a⟩ := x
+  obtain ⟨b⟩ := y
+  cases hx with
+  | uN_case_0 _ h1 h2 =>
+    refine .uN_case_0 _ _ ⟨Nat.zero_le _, ?_⟩ h2
+    simp only [irem_u, proj_uN_0]
+    exact Nat.le_trans (Nat.mod_le a b) h1.2
+
+theorem fun_binop_rem_u {x y : uN} (hy : proj_uN_0 y ≠ 0) (hwr : wf_uN 32 (irem_u x y)) :
+    fun_binop_ .I32 (.mk_binop__0 .I32 (.REM .U)) (.mk_num__0 .I32 x) (.mk_num__0 .I32 y)
+      (some [.mk_num__0 .I32 (irem_u x y)]) :=
+  .fun_binop__case_8 .U x y (some (irem_u x y)) (fun_irem_u hy)
+    (fun i hi => by simp only [Option.toList_some, List.mem_singleton] at hi; subst hi; exact hwr)
+    (fun i hi => by
+      simp only [Option.toList_some, List.mem_singleton] at hi; subst hi; exact wf_num_i32 hwr)
+
+theorem fun_binop_rem_u_uniq {x y : uN} (hy : proj_uN_0 y ≠ 0) (hwr : wf_uN 32 (irem_u x y)) :
+    ∀ r, fun_binop_ .I32 (.mk_binop__0 .I32 (.REM .U)) (.mk_num__0 .I32 x) (.mk_num__0 .I32 y) r →
+      r = some [.mk_num__0 .I32 (irem_u x y)] := by
+  intro r hr
+  cases hr
+  · rename_i _ _ hirem
+    rw [fun_irem_u_uniq hy hirem]
+    rfl
+  · rename_i hneg
+    exact absurd (.fun_binop__case_8 .U x y (some (irem_u x y)) (fun_irem_u hy)
+      (fun i hi => by simp only [Option.toList_some, List.mem_singleton] at hi; subst hi; exact hwr)
+      (fun i hi => by
+        simp only [Option.toList_some, List.mem_singleton] at hi; subst hi
+        exact wf_num_i32 hwr)) hneg
+
+@[spec] theorem Spec.i32_rem_u {Q : Unit → Assn} {E : EAssn} :
+    Triple ([.BINOP .I32 (.mk_binop__0 .I32 (.REM .U))] : List instr)
+      (fun z vs => (⌜vs[0]! = i32v (asI32 vs[0]!) ∧ vs[1]! = i32v (asI32 vs[1]!) ∧
+          2 ≤ vs.length ∧ proj_uN_0 (asI32 vs[0]!) ≠ 0⌝ : Prop) ⊓
+        Q () z (i32v (irem_u (asI32 vs[1]!) (asI32 vs[0]!)) :: vs.drop 2)) Q E := by
+  refine Triple.iff.mpr fun z vs hpre => ?_
+  simp only [meet_prop_eq_and, CompleteLattice.ofProp_prop_eq] at hpre
+  obtain ⟨⟨h0, h1, hlen, hnz⟩, hq⟩ := hpre
+  rcases vs with _ | ⟨v0, _ | ⟨v1, rest⟩⟩
+  · simp at hlen
+  · simp at hlen
+  · simp only [List.getElem!_cons_zero, List.getElem!_cons_succ, List.drop_succ_cons,
+      List.drop_zero] at h0 h1 hq hnz
+    rw [h0, h1]
+    intro hwf
+    have hwf' := hwf
+    rw [cfg_eq] at hwf'
+    obtain ⟨-, hi⟩ := wf_config_iff.mp hwf'
+    have hwx : wf_uN 32 (asI32 v1) := by
+      have := hi (.CONST .I32 (.mk_num__0 .I32 (asI32 v1))) (by simp [instr_val])
+      cases this with | instr_case_76 _ _ h => exact wf_of_wf_num h
+    have hwr := wf_irem_u (y := asI32 v0) hwx
+    exact Code.wp_binop (fun_binop_rem_u hnz hwr) (fun_binop_rem_u_uniq hnz hwr)
+      (fun c hc => by simp only [List.mem_singleton] at hc; subst hc; exact wf_num_i32 hwr)
+      (fun c hc => by simp only [List.mem_singleton] at hc; subst hc; exact hq)
+      (fun h => by simp at h) hwf
+
+/-! ## `local.set` -/
+
+@[spec] theorem Spec.local_set {x : idx} {Q : Unit → Assn} {E : EAssn} :
+    Triple ([.LOCAL_SET x] : List instr)
+      (fun z vs => (⌜1 ≤ vs.length⌝ : Prop) ⊓ Q () (with_local z x vs[0]!) (vs.drop 1)) Q E := by
+  refine Triple.iff.mpr fun z vs hpre => ?_
+  simp only [meet_prop_eq_and, CompleteLattice.ofProp_prop_eq] at hpre
+  obtain ⟨hlen, hq⟩ := hpre
+  rcases vs with _ | ⟨v0, rest⟩
+  · simp at hlen
+  · simp only [List.getElem!_cons_zero, List.drop_succ_cons, List.drop_zero] at hq
+    exact Code.wp_local_set' hq
+
+/-! ## Control flow -/
+
+@[spec] theorem Spec.br {l : labelidx} {Q : Unit → Assn} {E : EAssn} :
+    Triple ([.BR l] : List instr) (fun z vs => E (.br l vs) z) Q E :=
+  Triple.iff.mpr fun _ _ h => Code.wp_br h
+
+@[spec] theorem Spec.br_if {l : labelidx} {Q : Unit → Assn} {E : EAssn} :
+    Triple ([.BR_IF l] : List instr)
+      (fun z vs => (⌜vs[0]! = i32v (asI32 vs[0]!) ∧ 1 ≤ vs.length⌝ : Prop) ⊓
+        ((proj_uN_0 (asI32 vs[0]!) = 0 → Q () z (vs.drop 1)) ∧
+          (proj_uN_0 (asI32 vs[0]!) ≠ 0 → E (.br l (vs.drop 1)) z))) Q E := by
+  refine Triple.iff.mpr fun z vs hpre => ?_
+  simp only [meet_prop_eq_and, CompleteLattice.ofProp_prop_eq] at hpre
+  obtain ⟨⟨h0, hlen⟩, hF, hT⟩ := hpre
+  rcases vs with _ | ⟨v0, rest⟩
+  · simp at hlen
+  · simp only [List.getElem!_cons_zero, List.drop_succ_cons, List.drop_zero] at h0 hF hT
+    rw [h0]
+    exact Code.wp_br_if hT hF
+
+/-- A block with the empty block type: the body runs on the empty stack, `br 0` continues
+after the block, and `br (l + 1)` leaves the block as `br l`. -/
+@[spec] theorem Spec.block {B : List instr} {Q : Unit → Assn} {E : EAssn} :
+    Triple ([.BLOCK (._RESULT none) B] : List instr)
+      (fun z vs => Std.WP.wp B (fun _ z' bs => Q () z' (bs ++ vs))
+        (fun e => match e with
+          | .br (.mk_uN 0) _ => fun z' => Q () z' vs
+          | .br (.mk_uN (l + 1)) bs => E (.br (.mk_uN l) (bs ++ vs))
+          | .ret bs => E (.ret (bs ++ vs))
+          | e => E e) z []) Q E := by
+  refine Triple.iff.mpr fun z vs h => ?_
+  rw [wp_eq] at h
+  refine Code.wp_block (Code.wp_conseq (fun _ _ h => h) ?_ h)
+  intro e z' he
+  rcases e with ⟨⟨_ | l⟩, bs⟩ | bs | a | _
+  · refine ⟨Nat.zero_le _, ?_⟩
+    rw [List.take_zero, List.nil_append]
+    exact fun _ => Safe.vals _ _ he
+  all_goals exact he
+
+/-- The termination measure of a loop. -/
+@[spec_invariant_type] def LoopVariant : Type := state → Stack → Nat
+
+/-- The invariant of a loop. -/
+@[spec_invariant_type] def LoopInvariant : Type := Assn
+
+/-- A loop with the empty block type: the body runs on the empty stack from every state
+`z₀` and stack `vs₀` that satisfy the invariant, and `br 0` must restore the invariant and
+decrease the variant. -/
+@[spec] theorem Spec.loop {B : List instr} {Q : Unit → Assn} {E : EAssn}
+    (var : LoopVariant) (inv : LoopInvariant)
+    (step : ∀ z₀ vs₀, inv z₀ vs₀ →
+      Std.WP.wp B (fun _ z bs => Q () z (bs ++ vs₀))
+        (fun e => match e with
+          | .br (.mk_uN 0) _ => fun z => inv z vs₀ ∧ var z vs₀ < var z₀ vs₀
+          | .br (.mk_uN (l + 1)) bs => E (.br (.mk_uN l) (bs ++ vs₀))
+          | .ret bs => E (.ret (bs ++ vs₀))
+          | e => E e) z₀ []) :
+    Triple ([.LOOP (._RESULT none) B] : List instr) (fun z vs => inv z vs) Q E := by
+  refine Triple.iff.mpr fun z vs hI => ?_
+  refine Code.wp_loop_inv (inv := inv) (var := var) (fun z₀ vs₀ hI₀ => ?_) hI
+  have h := step z₀ vs₀ hI₀
+  rw [wp_eq] at h
+  refine Code.wp_conseq (fun _ _ h => h) ?_ h
+  intro e z' he
+  rcases e with ⟨⟨_ | l⟩, bs⟩ | bs | a | _ <;> exact he
 
 end SpecTecWP
