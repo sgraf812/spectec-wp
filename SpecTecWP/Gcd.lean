@@ -27,55 +27,36 @@ abbrev gcdBody : List instr :=
      .BR (.mk_uN 1)]],
    get 0]
 
-theorem wf_val_i32 (x : Nat) : wf_val (i32v (.mk_uN x)) ↔ x < 2 ^ 32 := by
-  constructor
-  · intro h
-    cases h with
-    | val_case_0 _ _ h =>
-      have := wf_of_wf_num h
-      cases this with
-      | uN_case_0 _ h _ => simp only [Int.ofNat_eq_natCast] at h; omega
-  · intro h
-    exact .val_case_0 _ _ (wf_num_i32 (.uN_case_0 _ _ ⟨Nat.zero_le _, by
-      simp only [Int.ofNat_eq_natCast]; omega⟩ (by decide)))
-
-theorem gcd_rem (a b : Nat) : Nat.gcd b (a % b) = Nat.gcd a b := by
+@[grind =] theorem gcd_step (a b : Nat) : Nat.gcd b (a % b) = Nat.gcd a b := by
   rw [Nat.gcd_comm b (a % b), ← Nat.gcd_rec, Nat.gcd_comm]
 
-theorem mod_lt_pow {a b : Nat} (h : a < 4294967296) : a % b < 4294967296 :=
-  Nat.lt_of_le_of_lt (Nat.mod_le a b) h
+theorem gcd_zero (a : Nat) : Nat.gcd a 0 = a := Nat.gcd_zero_right a
 
-theorem proj_mk (x : Nat) : proj_uN_0 (.mk_uN x) = x := rfl
+grind_pattern gcd_zero => Nat.gcd a 0
 
-theorem proj_ieqz (N x : Nat) : proj_uN_0 (ieqz_ N (.mk_uN x)) = if x = 0 then 1 else 0 := by
-  cases x <;> simp [ieqz_, nat_of_bool, proj_uN_0]
+theorem toNat_mod_lt (a : UInt32) {b : UInt32} (h : b ≠ 0) :
+    a.toNat % b.toNat < b.toNat := by
+  refine Nat.mod_lt _ (Nat.pos_of_ne_zero fun h0 => h ?_)
+  exact UInt32.toNat_inj.mp (by simpa using h0)
 
-/-- The value of the local `i`, as a natural number. -/
-def loc (z : state) (i : Nat) : Nat := proj_uN_0 (asI32 (fun_local z (.mk_uN i)).get!)
+grind_pattern toNat_mod_lt => a.toNat % b.toNat
 
-theorem gcd_spec (z : state) (a b t : Nat) (h3 : 2 < (fof z).LOCALS.length)
-    (h0 : fun_local z (.mk_uN 0) = some (i32v (.mk_uN a)))
-    (h1 : fun_local z (.mk_uN 1) = some (i32v (.mk_uN b)))
-    (h2 : fun_local z (.mk_uN 2) = some (i32v (.mk_uN t)))
-    (ha : a < 2 ^ 32) (hb : b < 2 ^ 32) (ht : t < 2 ^ 32) :
+attribute [local grind =] UInt32.toNat_mod UInt32.ofNat_toNat
+
+theorem gcd_spec (z : state) (a b t : UInt32)
+    (h0 : fun_local z (.mk_uN 0) = some (i32v (u a)))
+    (h1 : fun_local z (.mk_uN 1) = some (i32v (u b)))
+    (h2 : fun_local z (.mk_uN 2) = some (i32v (u t))) :
     ⦃ fun z' vs => z' = z ∧ vs = [] ⦄ gcdBody
-      ⦃ fun _ _ vs => vs = [i32v (.mk_uN (Nat.gcd a b))] ⦄ := by
-  have h3' : 1 < (fof z).LOCALS.length := by omega
-  have h3'' : 0 < (fof z).LOCALS.length := by omega
+      ⦃ fun _ z' vs => sof z' = sof z ∧
+          vs = [i32v (u (UInt32.ofNat (Nat.gcd a.toNat b.toNat)))] ⦄ := by
   vcgen invariants
-    | inv1 => fun z' vs => vs = [] ∧
-        0 < (fof z').LOCALS.length ∧ 1 < (fof z').LOCALS.length ∧ 2 < (fof z').LOCALS.length ∧ ∃ x0 x1 x2 : Nat,
-        fun_local z' (.mk_uN 0) = some (i32v (.mk_uN x0)) ∧
-        fun_local z' (.mk_uN 1) = some (i32v (.mk_uN x1)) ∧
-        fun_local z' (.mk_uN 2) = some (i32v (.mk_uN x2)) ∧
-        x0 < 2 ^ 32 ∧ x1 < 2 ^ 32 ∧ x2 < 2 ^ 32 ∧ Nat.gcd x0 x1 = Nat.gcd a b
-    | inv2 => fun z' _ => loc z' 1
-  all_goals
-    repeat (first
-      | cases ‹∃ _ : Nat, _›
-      | cases ‹_ ∧ _›)
-  all_goals simp_all [loc, fun_local_with_local, irem_u, proj_ieqz, proj_mk, wf_val_i32,
-    gcd_rem, mod_lt_pow]
-  all_goals exact Nat.mod_lt _ (Nat.pos_of_ne_zero ‹_›)
+    | inv1 => fun z' vs => vs = [] ∧ sof z' = sof z ∧ ∃ a' b' t' : UInt32,
+        fun_local z' (.mk_uN 0) = some (i32v (u a')) ∧
+        fun_local z' (.mk_uN 1) = some (i32v (u b')) ∧
+        fun_local z' (.mk_uN 2) = some (i32v (u t')) ∧
+        Nat.gcd a'.toNat b'.toNat = Nat.gcd a.toNat b.toNat
+    | inv2 => fun z' _ => proj_uN_0 (asI32 (fun_local z' (.mk_uN 1)).get!)
+  with finish
 
 end SpecTecWP.Examples

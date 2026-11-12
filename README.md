@@ -43,11 +43,11 @@ The script builds SpecTec, writes `SpecTecWP/Wasm.lean` and elaborates it.
 | `SpecTecWP/Instr.lean`, `InstrLocal.lean` | Weakest preconditions of the straight-line instructions. |
 | `SpecTecWP/Label.lean` | `Step.redex_label`: the steps of a label, one `LabelStep` constructor per rule. The configurations without steps. |
 | `SpecTecWP/Control.lean` | `Safe.label`: `Safe` of the body of a label gives `Safe` of the label. Weakest preconditions of `block`, `loop`, `br`, `br_if`, and the loop rule `Code.wp_loop_inv` with an invariant and a variant. |
-| `SpecTecWP/Locals.lean` | Reading a local after `local.set`, and `local.set` without a well-formedness hypothesis. |
+| `SpecTecWP/Locals.lean` | Reading a local after `local.set` (as `grind` lemmas), the well-formedness of every local of a well-formed state, and `local.set` without a well-formedness hypothesis. |
 | `SpecTecWP/Arith.lean` | The integer operations of the model on `UInt32`, including the hand-written built-ins, and `$truncz` of a quotient of naturals. |
 | `SpecTecWP/Specs.lean` | `@[spec]` triples for `vcgen`: `nil`, `cons`, constants, `i32.add`/`sub`/`mul`/`rem_u`/`eqz`, `local.get`/`set`, `br`, `br_if`, `block`, and `loop` with an invariant and a variant. |
-| `SpecTecWP/Examples.lean` | Programs proved with `vcgen`: `(a + b) - b = a` from two locals, and two programs that compute `(x + 1) * (x + 1)` in different ways. |
-| `SpecTecWP/Gcd.lean` | Euclid's gcd loop of the Talos examples, proved with one `vcgen` call: the result is `Nat.gcd a b`, and the loop terminates. |
+| `SpecTecWP/Examples.lean` | Programs proved with `vcgen ... with finish`: `(a + b) - b = a` from two locals, and two programs that compute `(x + 1) * (x + 1)` in different ways. |
+| `SpecTecWP/Gcd.lean` | Euclid's gcd loop of the Talos examples, proved with `vcgen invariants ... with finish`: the result is `Nat.gcd a b`, the store does not change, and the loop terminates. |
 | `SpecTecWP/Regression.lean` | Facts of the specification that earlier versions of the model contradicted. |
 | `Adequacy/Translate.lean` | The translation from Talos values, frames and instructions. |
 | `Adequacy/Straight.lean` | `adequacy_straight`. |

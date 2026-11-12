@@ -165,4 +165,17 @@ theorem fun_irem_u_uniq {N : Nat} {x y : uN} {r : Option uN} (hy : proj_uN_0 y â
 theorem irem_u_eq (a b : UInt32) : irem_u (u a) (u b) = u (a % b) := by
   simp [irem_u, u, proj_uN_0, UInt32.toNat_mod]
 
+/-! ## The `UInt32` view for `grind` -/
+
+theorem proj_u (a : UInt32) : proj_uN_0 (u a) = a.toNat := rfl
+
+theorem u_injective : Function.Injective u := by
+  intro a b h
+  simp only [u, uN.mk_uN.injEq] at h
+  exact UInt32.toNat_inj.mp h
+
+attribute [grind =] iadd_eq isub_eq imul_eq iand_eq ior_eq ixor_eq ieqz_eq ieq_eq ine_eq ilt_u_eq
+  irem_u_eq proj_u
+attribute [grind inj] u_injective
+
 end SpecTecWP

@@ -52,8 +52,8 @@ theorem fun_local_with_local (z : state) (i j : Nat) (v : val) :
   · subst hij
     simp only [true_and, List.getElem!_eq_getElem?_getD, List.getElem?_modify_eq]
     by_cases hi : i < f.LOCALS.length
-    · simp [hi, List.getElem?_eq_getElem hi]
-    · simp [hi, List.getElem?_eq_none (Nat.le_of_not_lt hi)]
+    · simp [hi]
+    · simp [hi]
   · simp [hij, List.getElem!_eq_getElem?_getD, List.getElem?_modify_ne _ _ hij]
 
 @[simp] theorem locals_length_with_local (z : state) (x : idx) (v : val) :
@@ -80,5 +80,40 @@ theorem Code.wp_conseq {is : List instr} {Q Q' : Assn} {E E' : EAssn} {z : state
     (hQ : ∀ z vs, Q z vs → Q' z vs) (hE : ∀ e z, E e z → E' e z) (h : Code.wp is Q E z vs) :
     Code.wp is Q' E' z vs :=
   fun hwf => Safe.mono hQ hE (h hwf)
+
+/-! ## Locals for `grind` -/
+
+theorem fun_local_with_local_self {z : state} {i : Nat} {v : val}
+    (h : (fun_local z (.mk_uN i)).isSome) :
+    fun_local (with_local z (.mk_uN i) v) (.mk_uN i) = some v := by
+  obtain ⟨w, hw⟩ := Option.isSome_iff_exists.mp h
+  rw [fun_local_with_local]
+  simp [lt_length_of_fun_local hw]
+
+theorem fun_local_with_local_ne {z : state} {i j : Nat} {v : val} (h : i ≠ j) :
+    fun_local (with_local z (.mk_uN i) v) (.mk_uN j) = fun_local z (.mk_uN j) := by
+  rw [fun_local_with_local]
+  simp [h]
+
+theorem sof_with_local (z : state) (x : idx) (v : val) : sof (with_local z x v) = sof z := by
+  simp [with_local, sof, fun_store]
+
+/-- Every local of a well-formed state is a well-formed value. -/
+theorem wf_val_of_fun_local {z : state} {x : idx} {v : val} (hz : wf_state z)
+    (h : fun_local z x = some v) : wf_val v := by
+  cases hz with
+  | state_case_0 s f hs hf =>
+    cases hf with
+    | frame_case_ L mi hL hmi =>
+      simp only [fun_local, fof, fun_frame, List.getElem!_eq_getElem?_getD] at h
+      cases hl : L[proj_uN_0 x]? with
+      | none => rw [hl] at h; cases h
+      | some o =>
+        rw [hl] at h
+        simp only [Option.getD_some] at h
+        subst h
+        exact hL _ (List.mem_of_getElem? hl) v (by simp)
+
+attribute [grind =] fun_local_with_local_self fun_local_with_local_ne sof_with_local
 
 end SpecTecWP

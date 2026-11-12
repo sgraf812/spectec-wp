@@ -123,14 +123,15 @@ theorem wf_isub (x y : uN) : wf_uN 32 (isub_ 32 x y) := by
 
 @[spec] theorem Spec.local_get {x : idx} {Q : Unit → Assn} {E : EAssn} :
     Triple ([.LOCAL_GET x] : List instr)
-      (fun z vs => (⌜(fun_local z x).isSome ∧ wf_val (fun_local z x).get!⌝ : Prop) ⊓
-        Q () z ((fun_local z x).get! :: vs)) Q E := by
+      (fun z vs => (⌜(fun_local z x).isSome⌝ : Prop) ⊓ Q () z ((fun_local z x).get! :: vs)) Q E := by
   refine Triple.iff.mpr fun z vs hpre => ?_
   simp only [meet_prop_eq_and, CompleteLattice.ofProp_prop_eq] at hpre
-  obtain ⟨⟨hsome, hwf⟩, hq⟩ := hpre
+  obtain ⟨hsome, hq⟩ := hpre
   obtain ⟨v, hv⟩ := Option.isSome_iff_exists.mp hsome
-  rw [hv] at hwf hq
-  exact Code.wp_local_get hv hwf hq
+  rw [hv] at hq
+  intro hwf
+  have hs := (wf_config_iff.mp (by rwa [cfg_eq] at hwf)).1
+  exact Code.wp_local_get hv (wf_val_of_fun_local hs hv) hq hwf
 
 /-! ## `i32.eqz` and `i32.rem_u` -/
 
@@ -293,5 +294,15 @@ decrease the variant. -/
   refine Code.wp_conseq (fun _ _ h => h) ?_ h
   intro e z' he
   rcases e with ⟨⟨_ | l⟩, bs⟩ | bs | a | _ <;> exact he
+
+/-! ## `grind` setup for the verification conditions
+
+`open SpecTecWP` makes `grind`, and so `vcgen ... with finish`, normalize the stack accesses of
+the specifications and read the values out of `some (i32v x)`. -/
+
+attribute [scoped grind norm] List.getElem!_cons_zero List.getElem!_cons_succ
+  List.drop_succ_cons List.drop_zero List.length_cons List.length_nil
+  List.cons_append List.nil_append
+attribute [scoped grind =] Option.get!_some asI32_i32v
 
 end SpecTecWP
