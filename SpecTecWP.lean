@@ -8,6 +8,7 @@ import SpecTecWP.InstrLocal
 import SpecTecWP.Label
 import SpecTecWP.Control
 import SpecTecWP.Locals
+import SpecTecWP.View
 import SpecTecWP.Arith
 import SpecTecWP.Specs
 import SpecTecWP.Examples

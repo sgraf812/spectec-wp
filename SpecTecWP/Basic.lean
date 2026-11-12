@@ -2,17 +2,18 @@ import SpecTecWP.Wasm
 import Std.WP
 
 /-!
-# `Std.WP.WP` instance for the SpecTec Wasm model
+# The weakest precondition of the SpecTec Wasm model
 
 `SpecTecWP.Wasm` is the Lean 4 output of SpecTec for the WebAssembly 3.0 specification. Its
 operational semantics is the relation `Step : config → config → Prop`. A configuration
 `.mk_config z is` pairs a state `z` with one instruction sequence `is`, and the operand stack is
 the prefix of values of `is`.
 
-The instance interprets an instruction sequence `is : List instr` by a total-correctness weakest
-precondition over `Step`. An assertion `P : Assn` is a predicate on the state and the operand
-stack. The stack is a `List val` with its top first: the stack `[.CONST .I32 b, .CONST .I32 a]`
-runs as the instruction prefix `[.CONST .I32 a, .CONST .I32 b]`.
+`Code.wp is Q E z vs` is the total-correctness weakest precondition of `is : List instr` over
+`Step`. An assertion `P : Assn` is a predicate on the state and the operand stack. The stack is
+a `List val` with its top first: the stack `[.CONST .I32 b, .CONST .I32 a]` runs as the
+instruction prefix `[.CONST .I32 a, .CONST .I32 b]`. `SpecTecWP.View` builds the `Std.WP.WP`
+instance on top of `Code.wp`.
 
 `Safe Q E c` holds when every maximal `Step` path from `c` is finite and ends in a configuration
 that `Q` or `E` accepts:
@@ -22,7 +23,7 @@ that `Q` or `E` accepts:
   instructions) with exit `e` satisfies `E e z`;
 * any other configuration steps, and every successor is `Safe`.
 
-`Step` requires `wf_config` of its source and of its target. `wp` therefore assumes `wf_config`
+`Step` requires `wf_config` of its source and of its target. `Code.wp` therefore assumes `wf_config`
 of the initial configuration, and every configuration that a step reaches is well-formed.
 -/
 
@@ -86,16 +87,6 @@ theorem Safe.mono {Q Q' : Assn} {E E' : EAssn}
   | vals z vs hq => exact .vals z vs (hQ z vs hq)
   | exit z is e hx he => exact .exit z is e hx (hE e z he)
   | step c hp _ ih => exact .step c hp ih
-
-instance : WP (List instr) Unit Assn EAssn where
-  trans is := ⟨fun Q E => Code.wp is (Q ()) E⟩
-  trans_monotone is := by
-    intro Q Q' E E' hE hQ z vs h hwf
-    exact Safe.mono (fun z vs => hQ () z vs) (fun e z => hE e z) (h hwf)
-
-/-- `Std.WP.wp` of an instruction sequence, unfolded to `Code.wp`. -/
-theorem wp_apply (is : List instr) (Q : Unit → Assn) (E : EAssn) :
-    Std.WP.wp is Q E = Code.wp is (Q ()) E := rfl
 
 /-! ## Well-formedness along steps -/
 

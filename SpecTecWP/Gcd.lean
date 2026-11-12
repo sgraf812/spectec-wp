@@ -43,20 +43,27 @@ grind_pattern toNat_mod_lt => a.toNat % b.toNat
 
 attribute [local grind =] UInt32.toNat_mod UInt32.ofNat_toNat
 
-theorem gcd_spec (z : state) (a b t : UInt32)
-    (h0 : fun_local z (.mk_uN 0) = some (i32v (u a)))
-    (h1 : fun_local z (.mk_uN 1) = some (i32v (u b)))
-    (h2 : fun_local z (.mk_uN 2) = some (i32v (u t))) :
-    ⦃ fun z' vs => z' = z ∧ vs = [] ⦄ gcdBody
-      ⦃ fun _ z' vs => sof z' = sof z ∧
-          vs = [i32v (u (UInt32.ofNat (Nat.gcd a.toNat b.toNat)))] ⦄ := by
+theorem gcd_spec (st : store) (a b t : UInt32) :
+    ⦃ fun s => s.store = st ∧ s.locals = [.i32 a, .i32 b, .i32 t] ∧ s.stack = [] ⦄ gcdBody
+      ⦃ fun _ s => s.store = st ∧ s.stack = [.i32 (UInt32.ofNat (Nat.gcd a.toNat b.toNat))] ⦄ := by
   vcgen invariants
-    | inv1 => fun z' vs => vs = [] ∧ sof z' = sof z ∧ ∃ a' b' t' : UInt32,
-        fun_local z' (.mk_uN 0) = some (i32v (u a')) ∧
-        fun_local z' (.mk_uN 1) = some (i32v (u b')) ∧
-        fun_local z' (.mk_uN 2) = some (i32v (u t')) ∧
-        Nat.gcd a'.toNat b'.toNat = Nat.gcd a.toNat b.toNat
-    | inv2 => fun z' _ => proj_uN_0 (asI32 (fun_local z' (.mk_uN 1)).get!)
+    | inv1 => fun s => s.store = st ∧ s.stack = [] ∧
+        match s.locals with
+        | [.i32 a', .i32 b', .i32 _] => Nat.gcd a'.toNat b'.toNat = Nat.gcd a.toNat b.toNat
+        | _ => False
+    | inv2 => fun s => match s.locals with
+        | [_, .i32 b', _] => b'.toNat
+        | _ => 0
   with finish
+
+/-- The gcd loop on the SpecTec model: from a state whose frame holds the three `i32` locals,
+every reduction terminates with `gcd a b` on the stack and the store unchanged. -/
+theorem gcd_spectec (z : state) (a b t : UInt32)
+    (h : (fof z).LOCALS = [some (i32v (u a)), some (i32v (u b)), some (i32v (u t))]) :
+    Code.wp gcdBody
+      (lift fun s => s.store = sof z ∧ s.stack = [.i32 (UInt32.ofNat (Nat.gcd a.toNat b.toNat))])
+      (liftE ⊥) z [] :=
+  transport (gcd_spec (sof z) a b t) (s := ⟨sof z, [.i32 a, .i32 b, .i32 t], []⟩) ⟨rfl, h, rfl⟩
+    ⟨rfl, rfl, rfl⟩
 
 end SpecTecWP.Examples
