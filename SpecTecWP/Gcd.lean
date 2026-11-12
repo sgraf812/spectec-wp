@@ -44,15 +44,17 @@ grind_pattern toNat_mod_lt => a.toNat % b.toNat
 attribute [local grind =] UInt32.toNat_mod UInt32.ofNat_toNat
 
 theorem gcd_spec (st : store) (a b t : UInt32) :
-    ⦃ fun s => s.store = st ∧ s.locals = [.i32 a, .i32 b, .i32 t] ∧ s.stack = [] ⦄ gcdBody
+    ⦃ fun s => s.store = st ∧ s.locals = [some (.i32 a), some (.i32 b), some (.i32 t)] ∧
+        s.stack = [] ⦄ gcdBody
       ⦃ fun _ s => s.store = st ∧ s.stack = [.i32 (UInt32.ofNat (Nat.gcd a.toNat b.toNat))] ⦄ := by
   vcgen invariants
     | inv1 => fun s => s.store = st ∧ s.stack = [] ∧
         match s.locals with
-        | [.i32 a', .i32 b', .i32 _] => Nat.gcd a'.toNat b'.toNat = Nat.gcd a.toNat b.toNat
+        | [some (.i32 a'), some (.i32 b'), some (.i32 _)] =>
+          Nat.gcd a'.toNat b'.toNat = Nat.gcd a.toNat b.toNat
         | _ => False
     | inv2 => fun s => match s.locals with
-        | [_, .i32 b', _] => b'.toNat
+        | [_, some (.i32 b'), _] => b'.toNat
         | _ => 0
   with finish
 
@@ -63,7 +65,8 @@ theorem gcd_spectec (z : state) (a b t : UInt32)
     Code.wp gcdBody
       (lift fun s => s.store = sof z ∧ s.stack = [.i32 (UInt32.ofNat (Nat.gcd a.toNat b.toNat))])
       (liftE ⊥) z [] :=
-  transport (gcd_spec (sof z) a b t) (s := ⟨sof z, [.i32 a, .i32 b, .i32 t], []⟩) ⟨rfl, h, rfl⟩
-    ⟨rfl, rfl, rfl⟩
+  transport (gcd_spec (sof z) a b t)
+    (s := ⟨sof z, (fof z).MODULE, [some (.i32 a), some (.i32 b), some (.i32 t)], []⟩)
+    ⟨⟨rfl, rfl, h⟩, rfl⟩ ⟨rfl, rfl, rfl⟩
 
 end SpecTecWP.Examples

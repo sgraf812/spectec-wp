@@ -44,7 +44,7 @@ The script builds SpecTec, writes `SpecTecWP/Wasm.lean` and elaborates it.
 | `SpecTecWP/Label.lean` | `Step.redex_label`: the steps of a label, one `LabelStep` constructor per rule. The configurations without steps. |
 | `SpecTecWP/Control.lean` | `Safe.label`: `Safe` of the body of a label gives `Safe` of the label. Weakest preconditions of `block`, `loop`, `br`, `br_if`, and the loop rule `Code.wp_loop_inv` with an invariant and a variant. |
 | `SpecTecWP/Locals.lean` | Reading a local after `local.set`, the well-formedness of every local of a well-formed state, and `local.set` without a well-formedness hypothesis. |
-| `SpecTecWP/View.lean` | The view: `VState` with the store, typed locals and a typed stack, the representation relation `Rep`, the `WP` instance on `List instr` over `VState`, and `transport` from a triple to `Code.wp`. |
+| `SpecTecWP/View.lean` | The view: `VState` with the store, the module instance, the locals and the stack over typed values `V`; the representation relation `Rep`, with one representation for every well-formed state; the `WP` instance on `List instr` over `VState`; `transport` from a triple to `Code.wp`; and `wp_view_iff`, the equivalence of `Code.wp` and the view `wp` on represented states. |
 | `SpecTecWP/Arith.lean` | The integer operations of the model on `UInt32`, including the hand-written built-ins, and `$truncz` of a quotient of naturals. |
 | `SpecTecWP/Specs.lean` | `@[spec]` triples over the view for `vcgen`: `nil`, `cons`, `i32`/`i64` constants, `i32.add`/`sub`/`mul`/`rem_u`/`eqz`, `local.get`/`set`, `br`, `br_if`, `block`, and `loop` with an invariant and a variant. |
 | `SpecTecWP/Examples.lean` | Programs proved with `vcgen ... with finish`: `(a + b) - b = a` from two locals, and two programs that compute `(x + 1) * (x + 1)` in different ways. |
@@ -67,11 +67,13 @@ The quantification over successors is demonic, because `memory.grow` and `table.
 in every state. Every `Step` rule requires `wf_config` of its source and its target, so every
 configuration that a step reaches is well-formed.
 
-The `WP` instance has assertions over a `VState` `s`: the store `s.store`, the locals
-`s.locals : List V` and the stack `s.stack : List V`, with `V` the typed values `.i32 a` and
-`.i64 a`. `wp is Q E s` holds when `Code.wp is` holds from every SpecTec state and stack that
-represent `s`, for the postconditions that hold of a represented `VState` that satisfies `Q`
-or `E`. The view covers the states whose locals all hold `i32` or `i64` values.
+The `WP` instance has assertions over a `VState` `s`: the store `s.store`, the module instance
+`s.inst`, the locals `s.locals : List (Option V)` and the stack `s.stack : List V`. A value `V`
+has one constructor per value of the model; `.i32 a` and `.i64 a` carry `UInt32` and `UInt64`
+payloads. `wp is Q E s` holds when `Code.wp is` holds from the SpecTec state and stack that
+represent `s`, for the postconditions that hold of the represented `VState` when it satisfies
+`Q` or `E`. Every well-formed state and stack has exactly one representation, and
+`wp_view_iff` states that the view `wp` of the pullbacks of any postconditions is `Code.wp`.
 
 ## Adequacy
 

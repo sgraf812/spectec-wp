@@ -5,11 +5,11 @@ import Std.Tactic.Do
 # Specification triples for `vcgen`
 
 The triples are over the view of `SpecTecWP.View`: a precondition is a predicate on a
-`VState`, with typed locals `s.locals` and a typed stack `s.stack`, top first. `Spec.cons`
-sequences the head of a list with its tail, and each instruction has one `@[spec]` triple in
-total style. A read from the stack is `s.stack[i]!`, an `i32` payload is `asI32`, and the
-partiality of an instruction is one closed `⌜…⌝` guard. Each triple is proved from the
-weakest precondition of its instruction over the SpecTec model.
+`VState`, with the locals `s.locals`, the value `s.loc i` of the local `i`, and the stack
+`s.stack`, top first. `Spec.cons` sequences the head of a list with its tail, and each
+instruction has one `@[spec]` triple in total style. A read from the stack is `s.stack[i]!`,
+an `i32` payload is `asI32`, and the partiality of an instruction is one closed `⌜…⌝` guard.
+Each triple is proved from the weakest precondition of its instruction over the SpecTec model.
 -/
 
 namespace SpecTecWP
@@ -36,15 +36,15 @@ open Std.WP Lean.Order
     Triple ([.CONST .I32 (.mk_num__0 .I32 (u a))] : List instr)
       (fun s => Q () { s with stack := .i32 a :: s.stack }) Q E := by
   refine Triple.iff.mpr fun s h z vs hr => ?_
-  obtain ⟨hs, hl, rfl⟩ := hr
-  exact Code.wp_const (c := (V.i32 a).enc) (lift_of (.i32 a :: s.stack) hs hl rfl h)
+  obtain ⟨hrf, rfl⟩ := hr
+  exact Code.wp_const (c := (V.i32 a).enc) (lift_of (.i32 a :: s.stack) hrf rfl h)
 
 @[spec] theorem Spec.i64_const {a : UInt64} {Q : Unit → VAssn} {E : VEAssn} :
     Triple ([.CONST .I64 (.mk_num__0 .I64 (.mk_uN a.toNat))] : List instr)
       (fun s => Q () { s with stack := .i64 a :: s.stack }) Q E := by
   refine Triple.iff.mpr fun s h z vs hr => ?_
-  obtain ⟨hs, hl, rfl⟩ := hr
-  exact Code.wp_const (c := (V.i64 a).enc) (lift_of (.i64 a :: s.stack) hs hl rfl h)
+  obtain ⟨hrf, rfl⟩ := hr
+  exact Code.wp_const (c := (V.i64 a).enc) (lift_of (.i64 a :: s.stack) hrf rfl h)
 
 /-! ## `i32` binary operators -/
 
@@ -78,8 +78,8 @@ theorem Spec.i32_binop {op : binop_Inn} (f : UInt32 → UInt32 → UInt32) (g : 
   refine Triple.iff.mpr fun s hpre z vs hr => ?_
   simp only [meet_prop_eq_and, CompleteLattice.ofProp_prop_eq] at hpre
   obtain ⟨⟨h0, h1, hlen⟩, hq⟩ := hpre
-  obtain ⟨hs, hl, rfl⟩ := hr
-  obtain ⟨st, ls, stk⟩ := s
+  obtain ⟨hrf, rfl⟩ := hr
+  obtain ⟨st, m, ls, stk⟩ := s
   rcases stk with _ | ⟨v0, _ | ⟨v1, rest⟩⟩
   · simp at hlen
   · simp at hlen
@@ -94,7 +94,7 @@ theorem Spec.i32_binop {op : binop_Inn} (f : UInt32 → UInt32 → UInt32) (g : 
     simp only [List.mem_singleton] at hc
     subst hc
     rw [hg]
-    exact ⟨⟨st, ls, .i32 (f a1 a0) :: rest⟩, ⟨hs, hl, rfl⟩, hq⟩
+    exact ⟨⟨st, m, ls, .i32 (f a1 a0) :: rest⟩, ⟨hrf, rfl⟩, hq⟩
 
 /-- The `otherwise` clause of `$binop_` does not apply to a defined `i32` operation. -/
 macro "binop_uniq" w:term : tactic => `(tactic| (
@@ -189,8 +189,8 @@ theorem proj_u_ne_zero {a : UInt32} (h : a ≠ 0) : proj_uN_0 (u a) ≠ 0 :=
   refine Triple.iff.mpr fun s hpre z vs hr => ?_
   simp only [meet_prop_eq_and, CompleteLattice.ofProp_prop_eq] at hpre
   obtain ⟨⟨h0, h1, hlen, hnz⟩, hq⟩ := hpre
-  obtain ⟨hs, hl, rfl⟩ := hr
-  obtain ⟨st, ls, stk⟩ := s
+  obtain ⟨hrf, rfl⟩ := hr
+  obtain ⟨st, m, ls, stk⟩ := s
   rcases stk with _ | ⟨v0, _ | ⟨v1, rest⟩⟩
   · simp at hlen
   · simp at hlen
@@ -207,7 +207,7 @@ theorem proj_u_ne_zero {a : UInt32} (h : a ≠ 0) : proj_uN_0 (u a) ≠ 0 :=
     simp only [List.mem_singleton] at hc
     subst hc
     rw [irem_u_eq]
-    exact ⟨⟨st, ls, .i32 (a1 % a0) :: rest⟩, ⟨hs, hl, rfl⟩, hq⟩
+    exact ⟨⟨st, m, ls, .i32 (a1 % a0) :: rest⟩, ⟨hrf, rfl⟩, hq⟩
 
 theorem wf_ieqz (x : uN) : wf_uN 32 (ieqz_ 32 x) := by
   simp only [ieqz_]
@@ -222,8 +222,8 @@ theorem wf_ieqz (x : uN) : wf_uN 32 (ieqz_ 32 x) := by
   refine Triple.iff.mpr fun s hpre z vs hr => ?_
   simp only [meet_prop_eq_and, CompleteLattice.ofProp_prop_eq] at hpre
   obtain ⟨⟨h0, hlen⟩, hq⟩ := hpre
-  obtain ⟨hs, hl, rfl⟩ := hr
-  obtain ⟨st, ls, stk⟩ := s
+  obtain ⟨hrf, rfl⟩ := hr
+  obtain ⟨st, m, ls, stk⟩ := s
   rcases stk with _ | ⟨v0, rest⟩
   · simp at hlen
   · simp only [List.getElem!_cons_zero, List.drop_succ_cons, List.drop_zero] at h0 hq
@@ -231,38 +231,40 @@ theorem wf_ieqz (x : uN) : wf_uN 32 (ieqz_ 32 x) := by
     simp only [V.asI32_i32] at hq
     refine Code.wp_testop (u := ieqz_ 32 (u a0)) rfl (wf_ieqz _) ?_
     rw [ieqz_eq]
-    exact ⟨⟨st, ls, .i32 (if a0 = 0 then 1 else 0) :: rest⟩, ⟨hs, hl, rfl⟩, hq⟩
+    exact ⟨⟨st, m, ls, .i32 (if a0 = 0 then 1 else 0) :: rest⟩, ⟨hrf, rfl⟩, hq⟩
 
 /-! ## Locals -/
 
 @[spec] theorem Spec.local_get {i : Nat} {Q : Unit → VAssn} {E : VEAssn} :
     Triple ([.LOCAL_GET (.mk_uN i)] : List instr)
-      (fun s => (⌜i < s.locals.length⌝ : Prop) ⊓
-        Q () { s with stack := s.locals[i]! :: s.stack }) Q E := by
+      (fun s => (⌜(s.loc i).isSome⌝ : Prop) ⊓
+        Q () { s with stack := (s.loc i).get! :: s.stack }) Q E := by
   refine Triple.iff.mpr fun s hpre z vs hr => ?_
   simp only [meet_prop_eq_and, CompleteLattice.ofProp_prop_eq] at hpre
-  obtain ⟨hi, hq⟩ := hpre
-  have hv := hr.get_local hi
+  obtain ⟨hsome, hq⟩ := hpre
+  obtain ⟨v, hv⟩ := Option.isSome_iff_exists.mp hsome
+  rw [hv, Option.get!_some] at hq
+  have hl : fun_local z (.mk_uN i) = some v.enc := by rw [hr.get_local, hv]; rfl
   intro hwf
   have hz := (wf_config_iff.mp (by rwa [cfg_eq] at hwf)).1
-  obtain ⟨hs, hl, rfl⟩ := hr
-  exact Code.wp_local_get hv (wf_val_of_fun_local hz hv)
-    (lift_of (s.locals[i]! :: s.stack) hs hl rfl hq) hwf
+  obtain ⟨hrf, rfl⟩ := hr
+  exact Code.wp_local_get hl (wf_val_of_fun_local hz hl) (lift_of (v :: s.stack) hrf rfl hq) hwf
 
 @[spec] theorem Spec.local_set {i : Nat} {Q : Unit → VAssn} {E : VEAssn} :
     Triple ([.LOCAL_SET (.mk_uN i)] : List instr)
       (fun s => (⌜1 ≤ s.stack.length⌝ : Prop) ⊓
-        Q () { s with locals := s.locals.set i s.stack[0]!, stack := s.stack.drop 1 }) Q E := by
+        Q () { s with locals := s.locals.set i (some s.stack[0]!), stack := s.stack.drop 1 })
+      Q E := by
   refine Triple.iff.mpr fun s hpre z vs hr => ?_
   simp only [meet_prop_eq_and, CompleteLattice.ofProp_prop_eq] at hpre
   obtain ⟨hlen, hq⟩ := hpre
-  obtain ⟨hs, hl, rfl⟩ := hr
-  obtain ⟨st, ls, stk⟩ := s
+  obtain ⟨hrf, rfl⟩ := hr
+  obtain ⟨st, m, ls, stk⟩ := s
   rcases stk with _ | ⟨v0, rest⟩
   · simp at hlen
   · simp only [List.getElem!_cons_zero, List.drop_succ_cons, List.drop_zero] at hq
     exact Code.wp_local_set'
-      ⟨_, Rep.set_local (s := ⟨st, ls, rest⟩) (i := i) v0 ⟨hs, hl, rfl⟩, hq⟩
+      ⟨_, Rep.set_local (s := ⟨st, m, ls, rest⟩) (i := i) v0 ⟨hrf, rfl⟩, hq⟩
 
 /-! ## Control flow -/
 
@@ -278,16 +280,16 @@ theorem wf_ieqz (x : uN) : wf_uN 32 (ieqz_ 32 x) := by
   refine Triple.iff.mpr fun s hpre z vs hr => ?_
   simp only [meet_prop_eq_and, CompleteLattice.ofProp_prop_eq] at hpre
   obtain ⟨⟨h0, hlen⟩, hF, hT⟩ := hpre
-  obtain ⟨hs, hl, rfl⟩ := hr
-  obtain ⟨st, ls, stk⟩ := s
+  obtain ⟨hrf, rfl⟩ := hr
+  obtain ⟨st, m, ls, stk⟩ := s
   rcases stk with _ | ⟨v0, rest⟩
   · simp at hlen
   · simp only [List.getElem!_cons_zero, List.drop_succ_cons, List.drop_zero] at h0 hF hT
     obtain ⟨a0, rfl⟩ : ∃ a, v0 = .i32 a := ⟨_, h0⟩
     simp only [V.asI32_i32] at hF hT
     exact Code.wp_br_if (x := u a0)
-      (fun h => ⟨⟨st, ls, rest⟩, ⟨hs, hl, rfl⟩, hT fun e => h (by rw [e]; rfl)⟩)
-      (fun h => ⟨⟨st, ls, rest⟩, ⟨hs, hl, rfl⟩, hF (UInt32.toNat_inj.mp (h : a0.toNat = 0))⟩)
+      (fun h => ⟨⟨st, m, ls, rest⟩, ⟨hrf, rfl⟩, hT fun e => h (by rw [e]; rfl)⟩)
+      (fun h => ⟨⟨st, m, ls, rest⟩, ⟨hrf, rfl⟩, hF (UInt32.toNat_inj.mp (h : a0.toNat = 0))⟩)
 
 /-- A block with the empty block type: the body runs on the empty stack, `br 0` continues
 after the block, and `br (l + 1)` leaves the block as `br l`. -/
@@ -300,21 +302,21 @@ after the block, and `br (l + 1)` leaves the block as `br l`. -/
           | .ret => fun s' => E .ret { s' with stack := s'.stack ++ s.stack }
           | e => E e) { s with stack := [] }) Q E := by
   refine Triple.iff.mpr fun s h z vs hr => ?_
-  obtain ⟨hs, hl, rfl⟩ := hr
-  have hb := h z [] ⟨hs, hl, rfl⟩
+  obtain ⟨hrf, rfl⟩ := hr
+  have hb := h z [] ⟨hrf, rfl⟩
   refine Code.wp_block (Code.wp_conseq ?_ ?_ hb)
-  · rintro z' bs ⟨s', ⟨hs', hl', rfl⟩, hq⟩
-    exact lift_of (s'.stack ++ s.stack) hs' hl' (by simp) hq
+  · rintro z' bs ⟨s', ⟨hrf', rfl⟩, hq⟩
+    exact lift_of (s'.stack ++ s.stack) hrf' (by simp) hq
   · intro e z' he
     rcases e with ⟨⟨_ | l⟩, bs⟩ | bs | a | _
-    · obtain ⟨s', ⟨hs', hl', rfl⟩, hq⟩ := he
+    · obtain ⟨s', ⟨hrf', rfl⟩, hq⟩ := he
       refine ⟨Nat.zero_le _, ?_⟩
       rw [List.take_zero, List.nil_append]
-      exact fun _ => Safe.vals _ _ (lift_of s.stack hs' hl' rfl hq)
-    · obtain ⟨s', ⟨hs', hl', rfl⟩, hq⟩ := he
-      exact lift_of (s'.stack ++ s.stack) hs' hl' (by simp) hq
-    · obtain ⟨s', ⟨hs', hl', rfl⟩, hq⟩ := he
-      exact lift_of (s'.stack ++ s.stack) hs' hl' (by simp) hq
+      exact fun _ => Safe.vals _ _ (lift_of s.stack hrf' rfl hq)
+    · obtain ⟨s', ⟨hrf', rfl⟩, hq⟩ := he
+      exact lift_of (s'.stack ++ s.stack) hrf' (by simp) hq
+    · obtain ⟨s', ⟨hrf', rfl⟩, hq⟩ := he
+      exact lift_of (s'.stack ++ s.stack) hrf' (by simp) hq
     · exact he
     · exact he
 
@@ -350,24 +352,32 @@ satisfies the invariant, and `br 0` must restore the invariant and decrease the 
     exact congrArg var (Rep.unique (Exists.choose_spec (of_eq_true (eq_true h))) hr)
   refine Code.wp_loop_inv (inv := inv') (var := var') (fun z₀ vs₀ hI₀ => ?_) ⟨s, hr, hI⟩
   obtain ⟨s₀, hr₀, hI₀⟩ := hI₀
-  obtain ⟨hs₀, hl₀, rfl⟩ := hr₀
-  have hb := step s₀ hI₀ z₀ [] ⟨hs₀, hl₀, rfl⟩
+  obtain ⟨hrf₀, rfl⟩ := hr₀
+  have hb := step s₀ hI₀ z₀ [] ⟨hrf₀, rfl⟩
   refine Code.wp_conseq ?_ ?_ hb
-  · rintro z' bs ⟨s', ⟨hs', hl', rfl⟩, hq⟩
-    exact lift_of (s'.stack ++ s₀.stack) hs' hl' (by simp) hq
+  · rintro z' bs ⟨s', ⟨hrf', rfl⟩, hq⟩
+    exact lift_of (s'.stack ++ s₀.stack) hrf' (by simp) hq
   · intro e z' he
     rcases e with ⟨⟨_ | l⟩, bs⟩ | bs | a | _
-    · obtain ⟨s', ⟨hs', hl', rfl⟩, hI', hlt⟩ := he
-      have hr' : Rep { s' with stack := s₀.stack } z' (s₀.stack.map V.enc) := ⟨hs', hl', rfl⟩
+    · obtain ⟨s', ⟨hrf', rfl⟩, hI', hlt⟩ := he
+      have hr' : Rep { s' with stack := s₀.stack } z' (s₀.stack.map V.enc) := ⟨hrf', rfl⟩
       refine ⟨⟨_, hr', hI'⟩, ?_⟩
       have e1 := hvar hr'
-      have e2 := hvar (s := s₀) ⟨hs₀, hl₀, rfl⟩
+      have e2 := hvar (s := s₀) ⟨hrf₀, rfl⟩
       omega
-    · obtain ⟨s', ⟨hs', hl', rfl⟩, hq⟩ := he
-      exact lift_of (s'.stack ++ s₀.stack) hs' hl' (by simp) hq
-    · obtain ⟨s', ⟨hs', hl', rfl⟩, hq⟩ := he
-      exact lift_of (s'.stack ++ s₀.stack) hs' hl' (by simp) hq
+    · obtain ⟨s', ⟨hrf', rfl⟩, hq⟩ := he
+      exact lift_of (s'.stack ++ s₀.stack) hrf' (by simp) hq
+    · obtain ⟨s', ⟨hrf', rfl⟩, hq⟩ := he
+      exact lift_of (s'.stack ++ s₀.stack) hrf' (by simp) hq
     · exact he
     · exact he
+
+/-! ## `grind` setup for the verification conditions
+
+`open SpecTecWP` lets `grind`, and so `vcgen ... with finish`, read the entries of a list of
+known shape, also when the list is known only through an equation such as
+`s.locals = [some (.i32 a)]`. -/
+
+attribute [scoped grind =] List.getElem!_cons_zero List.getElem!_cons_succ
 
 end SpecTecWP
