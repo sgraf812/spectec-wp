@@ -234,6 +234,36 @@ theorem sim (i : Wasm.Instruction) (j : instr) (hti : ti i = some j) {R : Unit �
         exact sim_binop_rs (fun_binop_rem_u hb) (fun_binop_rem_u_uniq hb) hv
           (fun c hc => ⟨a % b, by simpa using hc, h⟩) (by simp)
     · exact (inv h).elim
+  case divS =>
+    rw [wp_divS_eq'] at h; split at h
+    · rename_i b a vs hv
+      by_cases hb : b = 0
+      · subst hb
+        rw [ite_eq_left rfl] at h
+        exact sim_binop_rs (fun_binop_div_s_zero a) (fun_binop_div_s_zero_uniq a) hv
+          (by simp) (fun _ => ⟨_, h⟩)
+      · rw [ite_eq_right hb] at h
+        by_cases hov : a = 0x80000000 ∧ b = 0xFFFFFFFF
+        · obtain ⟨rfl, rfl⟩ := hov
+          rw [ite_eq_left ⟨rfl, rfl⟩] at h
+          exact sim_binop_rs fun_binop_div_s_ov fun_binop_div_s_ov_uniq hv (by simp)
+            (fun _ => ⟨_, h⟩)
+        · rw [ite_eq_right hov] at h
+          exact sim_binop_rs (fun_binop_div_s hb hov) (fun_binop_div_s_uniq hb hov) hv
+            (fun c hc => ⟨divS a b, by simpa using hc, h⟩) (by simp)
+    · exact (inv h).elim
+  case remS =>
+    rw [wp_remS_eq'] at h; split at h
+    · rename_i b a vs hv
+      by_cases hb : b = 0
+      · subst hb
+        rw [ite_eq_left rfl] at h
+        exact sim_binop_rs (fun_binop_rem_s_zero a) (fun_binop_rem_s_zero_uniq a) hv
+          (by simp) (fun _ => ⟨_, h⟩)
+      · rw [ite_eq_right hb] at h
+        exact sim_binop_rs (fun_binop_rem_s hb) (fun_binop_rem_s_uniq hb) hv
+          (fun c hc => ⟨remS a b, by simpa using hc, h⟩) (by simp)
+    · exact (inv h).elim
   case and =>
     rw [wp_and_eq'] at h; split at h
     · exact sim_binop (fun x y => x &&& y) (iand_ 32)

@@ -43,6 +43,8 @@ def ti : Wasm.Instruction → Option instr
   | .mul => some (i32op .MUL)
   | .divU => some (i32op (.DIV .U))
   | .remU => some (i32op (.REM .U))
+  | .divS => some (i32op (.DIV .S))
+  | .remS => some (i32op (.REM .S))
   | .and => some (i32op .AND)
   | .or => some (i32op .OR)
   | .xor => some (i32op .XOR)

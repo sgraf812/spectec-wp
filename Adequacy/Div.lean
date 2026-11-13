@@ -1,4 +1,5 @@
 import Adequacy.Translate
+import SpecTecWP.ArithSigned
 
 /-!
 # Division and remainder
@@ -140,5 +141,124 @@ theorem fun_binop_rem_u_zero_uniq (a : UInt32) (r : Option (List num_))
   · rename_i hneg
     exact (hneg (.fun_binop__case_8 .U (u a) (u 0) none (.fun_irem__case_0 _ _)
       (fun _ h => by cases h) (fun _ h => by cases h))).elim
+
+/-! ## `div_s` -/
+
+section TalosEquationsS
+open Wasm
+
+theorem wp_divS_eq' : Std.WP.wp (⟨m, env, [.divS]⟩ : Wasm.Code) Q epost st s ↔
+    (match s.values with
+     | .i32 b :: .i32 a :: vs =>
+       if b = 0 then ∀ s', epost (.Trap "integer divide by zero") st s'
+       else if a = 0x80000000 ∧ b = 0xFFFFFFFF then
+         ∀ s', epost (.Trap "integer overflow") st s'
+       else Q () st { s with values := (.i32 (Int32.ofInt
+         (Int.tdiv a.toInt32.toInt b.toInt32.toInt)).toUInt32 :: vs) }
+     | _ => ∀ st' s', epost (.Invalid "divS: ill-shaped operand stack") st' s') := by
+  wasm_eq
+
+theorem wp_remS_eq' : Std.WP.wp (⟨m, env, [.remS]⟩ : Wasm.Code) Q epost st s ↔
+    (match s.values with
+     | .i32 b :: .i32 a :: vs =>
+       if b = 0 then ∀ s', epost (.Trap "integer divide by zero") st s'
+       else Q () st { s with values := (.i32 (Int32.ofInt
+         (Int.tmod a.toInt32.toInt b.toInt32.toInt)).toUInt32 :: vs) }
+     | _ => ∀ st' s', epost (.Invalid "remS: ill-shaped operand stack") st' s') := by
+  wasm_eq
+
+end TalosEquationsS
+
+theorem forall_some {α : Type} {P : α → Prop} {x : α} (h : P x) : ∀ y ∈ (some x).toList, P y := by
+  intro y hy
+  simp only [Option.toList_some, List.mem_singleton] at hy
+  exact hy ▸ h
+
+theorem forall_none {α : Type} {P : α → Prop} : ∀ y ∈ (none : Option α).toList, P y :=
+  fun _ h => by cases h
+
+theorem fun_binop_div_s {a b : UInt32} (hb : b ≠ 0) (hov : ¬ (a = 0x80000000 ∧ b = 0xFFFFFFFF)) :
+    fun_binop_ .I32 (.mk_binop__0 .I32 (.DIV .S)) (.mk_num__0 .I32 (u a)) (.mk_num__0 .I32 (u b))
+      (some [.mk_num__0 .I32 (u (divS a b))]) :=
+  .fun_binop__case_6 .S (u a) (u b) _ (fun_idiv_s hb hov) (forall_some (wf_uN_u _))
+    (forall_some (wf_num_u _))
+
+theorem fun_binop_div_s_uniq {a b : UInt32} (hb : b ≠ 0)
+    (hov : ¬ (a = 0x80000000 ∧ b = 0xFFFFFFFF)) (r : Option (List num_))
+    (hr : fun_binop_ .I32 (.mk_binop__0 .I32 (.DIV .S)) (.mk_num__0 .I32 (u a))
+      (.mk_num__0 .I32 (u b)) r) : r = some [.mk_num__0 .I32 (u (divS a b))] := by
+  cases hr
+  · rename_i _ _ hid
+    rw [fun_idiv_s_uniq hb hov rfl rfl hid]
+    rfl
+  · rename_i hneg
+    exact (hneg (.fun_binop__case_6 .S (u a) (u b) _ (fun_idiv_s hb hov)
+      (forall_some (wf_uN_u _)) (forall_some (wf_num_u _)))).elim
+
+theorem fun_binop_div_s_zero (a : UInt32) :
+    fun_binop_ .I32 (.mk_binop__0 .I32 (.DIV .S)) (.mk_num__0 .I32 (u a)) (.mk_num__0 .I32 (u 0))
+      (some []) :=
+  .fun_binop__case_6 .S (u a) (u 0) none (.fun_idiv__case_2 _ _) forall_none forall_none
+
+theorem fun_binop_div_s_zero_uniq (a : UInt32) (r : Option (List num_))
+    (hr : fun_binop_ .I32 (.mk_binop__0 .I32 (.DIV .S)) (.mk_num__0 .I32 (u a))
+      (.mk_num__0 .I32 (u 0)) r) : r = some [] := by
+  cases hr
+  · rename_i _ _ hid
+    rw [fun_idiv_s_zero_uniq rfl hid]
+    rfl
+  · rename_i hneg
+    exact (hneg (.fun_binop__case_6 .S (u a) (u 0) none (.fun_idiv__case_2 _ _) forall_none
+      forall_none)).elim
+
+theorem fun_binop_div_s_ov :
+    fun_binop_ .I32 (.mk_binop__0 .I32 (.DIV .S)) (.mk_num__0 .I32 (u 0x80000000))
+      (.mk_num__0 .I32 (u 0xFFFFFFFF)) (some []) :=
+  .fun_binop__case_6 .S _ _ none fun_idiv_s_ov forall_none forall_none
+
+theorem fun_binop_div_s_ov_uniq (r : Option (List num_))
+    (hr : fun_binop_ .I32 (.mk_binop__0 .I32 (.DIV .S)) (.mk_num__0 .I32 (u 0x80000000))
+      (.mk_num__0 .I32 (u 0xFFFFFFFF)) r) : r = some [] := by
+  cases hr
+  · rename_i _ _ hid
+    rw [fun_idiv_s_ov_uniq rfl rfl hid]
+    rfl
+  · rename_i hneg
+    exact (hneg (.fun_binop__case_6 .S _ _ none fun_idiv_s_ov forall_none forall_none)).elim
+
+/-! ## `rem_s` -/
+
+theorem fun_binop_rem_s {a b : UInt32} (hb : b ≠ 0) :
+    fun_binop_ .I32 (.mk_binop__0 .I32 (.REM .S)) (.mk_num__0 .I32 (u a)) (.mk_num__0 .I32 (u b))
+      (some [.mk_num__0 .I32 (u (remS a b))]) :=
+  .fun_binop__case_8 .S (u a) (u b) _ (fun_irem_s hb) (forall_some (wf_uN_u _))
+    (forall_some (wf_num_u _))
+
+theorem fun_binop_rem_s_uniq {a b : UInt32} (hb : b ≠ 0) (r : Option (List num_))
+    (hr : fun_binop_ .I32 (.mk_binop__0 .I32 (.REM .S)) (.mk_num__0 .I32 (u a))
+      (.mk_num__0 .I32 (u b)) r) : r = some [.mk_num__0 .I32 (u (remS a b))] := by
+  cases hr
+  · rename_i _ _ hir
+    rw [fun_irem_s_uniq hb rfl rfl hir]
+    rfl
+  · rename_i hneg
+    exact (hneg (.fun_binop__case_8 .S (u a) (u b) _ (fun_irem_s hb)
+      (forall_some (wf_uN_u _)) (forall_some (wf_num_u _)))).elim
+
+theorem fun_binop_rem_s_zero (a : UInt32) :
+    fun_binop_ .I32 (.mk_binop__0 .I32 (.REM .S)) (.mk_num__0 .I32 (u a)) (.mk_num__0 .I32 (u 0))
+      (some []) :=
+  .fun_binop__case_8 .S (u a) (u 0) none (.fun_irem__case_2 _ _) forall_none forall_none
+
+theorem fun_binop_rem_s_zero_uniq (a : UInt32) (r : Option (List num_))
+    (hr : fun_binop_ .I32 (.mk_binop__0 .I32 (.REM .S)) (.mk_num__0 .I32 (u a))
+      (.mk_num__0 .I32 (u 0)) r) : r = some [] := by
+  cases hr
+  · rename_i _ _ hir
+    rw [fun_irem_s_zero_uniq rfl hir]
+    rfl
+  · rename_i hneg
+    exact (hneg (.fun_binop__case_8 .S (u a) (u 0) none (.fun_irem__case_2 _ _) forall_none
+      forall_none)).elim
 
 end Adequacy
