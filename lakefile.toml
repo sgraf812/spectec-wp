@@ -4,13 +4,13 @@ defaultTargets = ["SpecTecWP"]
 [[lean_lib]]
 name = "SpecTecWP"
 
-# The Talos interpreter and its `Std.WP` instance, linked from ~/code/lean/talos.
-[[lean_lib]]
-name = "Interpreter"
-
-[[lean_lib]]
-name = "WasmWP"
-roots = ["WasmWP.Basic", "WasmWP.Spec", "WasmWP.Call", "WasmWP.Block", "WasmWP.Loop"]
-
 [[lean_lib]]
 name = "Adequacy"
+
+# The Talos interpreter and its `Std.WP` instance (libraries `Interpreter` and `WasmWP`),
+# used only by `Adequacy`.
+[[require]]
+name = "wasm-wp"
+git = "https://github.com/sgraf812/talos"
+rev = "9875d3b4f9a17f9e93211ba20062bd3f78f045aa"
+subDir = "wp"

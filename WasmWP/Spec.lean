@@ -1,1 +1,0 @@
-/home/sg/code/lean/talos/wp/WasmWP/Spec.lean

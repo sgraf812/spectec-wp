@@ -5,17 +5,22 @@ adequacy proof of that model against the Talos interpreter on a fragment.
 `SpecTecWP/Wasm.lean` is the model, generated from every file of `specification/wasm-3.0`,
 with the reduction relation `Step : config → config → Prop`.
 
+To verify a program, use the `Std.WP` instance of `SpecTecWP/View.lean` with the `@[spec]`
+triples of `SpecTecWP/Specs.lean`: assertions talk about the store, the locals and the stack
+of a `VState`, and `vcgen ... with finish` proves the triples. `SpecTecWP/Gcd.lean` is the
+worked example. The files before `View.lean` in the tour build the weakest precondition
+`Code.wp` over `Step` that the instance rests on.
+
 ## Build
 
 ```
 lake build SpecTecWP Adequacy.Straight
 ```
 
-Toolchain: `leanprover/lean4:nightly-2026-11-08`. The libraries `Interpreter` and `WasmWP`
-are symbolic links into `~/code/lean/talos`, a checkout of
-[Talos](https://github.com/cajal-technologies/talos) with its `wp/` package (the `Std.WP`
-instance for the Talos interpreter). They are needed only for `Adequacy`; adjust the links to
-your checkout.
+Toolchain: `leanprover/lean4:nightly-2026-11-08`. `Adequacy` uses the Talos interpreter and its
+`Std.WP` instance (the libraries `Interpreter` and `WasmWP`), which Lake fetches from the `wp/`
+package of [sgraf812/talos](https://github.com/sgraf812/talos/tree/vcgen/wp), a fork of
+[Talos](https://github.com/cajal-technologies/talos).
 
 ## Regenerate the model
 
