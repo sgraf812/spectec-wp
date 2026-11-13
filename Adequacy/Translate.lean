@@ -1,4 +1,5 @@
 import SpecTecWP.InstrLocal
+import SpecTecWP.Arith
 import WasmWP.Spec
 
 /-!
@@ -40,6 +41,8 @@ def ti : Wasm.Instruction → Option instr
   | .add => some (i32op .ADD)
   | .sub => some (i32op .SUB)
   | .mul => some (i32op .MUL)
+  | .divU => some (i32op (.DIV .U))
+  | .remU => some (i32op (.REM .U))
   | .and => some (i32op .AND)
   | .or => some (i32op .OR)
   | .xor => some (i32op .XOR)
@@ -99,5 +102,13 @@ theorem wf_zOf (s : Wasm.Locals) : wf_state (zOf s) := by
   obtain ⟨w, -, rfl⟩ := ho
   simp only [Option.toList_some, List.mem_singleton] at hv
   exact hv ▸ wf_tv w
+
+theorem wf_num_u (x : UInt32) : wf_num_ .I32 (.mk_num__0 .I32 (u x)) := by
+  have := wf_tv (.i32 x); cases this; assumption
+
+theorem wf_uN_u (x : UInt32) : wf_uN 32 (u x) := by
+  have := wf_num_u x; cases this; assumption
+
+theorem tv_i32 (x : UInt32) : tv (.i32 x) = .CONST .I32 (.mk_num__0 .I32 (u x)) := rfl
 
 end Adequacy

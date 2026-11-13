@@ -178,4 +178,51 @@ attribute [grind =] iadd_eq isub_eq imul_eq iand_eq ior_eq ixor_eq ieqz_eq ieq_e
   irem_u_eq proj_u
 attribute [grind inj] u_injective
 
+/-! ## Unsigned division -/
+
+theorem fun_idiv_u {N a b : Nat} (hb : b ≠ 0) (hw : wf_uN N (.mk_uN (a / b))) :
+    fun_idiv_ N .U (.mk_uN a) (.mk_uN b) (some (.mk_uN (a / b))) := by
+  have key := truncz_div a b (Nat.pos_of_ne_zero hb)
+  have e : a / b = Int.toNat (truncz (Rat.ofInt (Int.ofNat a) / Rat.ofInt (Int.ofNat b))) := by
+    rw [key]; rfl
+  rw [e] at hw ⊢
+  refine .fun_idiv__case_1 N (.mk_uN a) (.mk_uN b) hw ?_ ?_
+  · simp only [proj_uN_0]; rw [key]; exact Int.ofNat_nonneg _
+  · simp only [proj_uN_0, ofInt_ofNat]
+    exact fun h => hb (Rat.natCast_eq_zero_iff.mp h)
+
+theorem fun_idiv_u_uniq {N a b : Nat} {r : Option uN} (hb : b ≠ 0)
+    (h : fun_idiv_ N .U (.mk_uN a) (.mk_uN b) r) : r = some (.mk_uN (a / b)) := by
+  cases h with
+  | fun_idiv__case_0 => exact absurd rfl hb
+  | fun_idiv__case_1 =>
+    simp only [proj_uN_0]
+    rw [truncz_div a b (Nat.pos_of_ne_zero hb)]
+    rfl
+
+theorem fun_idiv_u_zero_uniq {N a : Nat} {r : Option uN}
+    (h : fun_idiv_ N .U (.mk_uN a) (.mk_uN 0) r) : r = none := by
+  cases h with
+  | fun_idiv__case_0 => rfl
+  | fun_idiv__case_1 =>
+    simp only [proj_uN_0] at *
+    exact absurd rfl ‹Rat.ofInt (Int.ofNat 0) ≠ 0›
+
+theorem fun_irem_u_zero_uniq {N a : Nat} {r : Option uN}
+    (h : fun_irem_ N .U (.mk_uN a) (.mk_uN 0) r) : r = none := by
+  cases h with
+  | fun_irem__case_0 => rfl
+  | fun_irem__case_1 =>
+    simp only [proj_uN_0] at *
+    exact absurd rfl ‹Rat.ofInt (Int.ofNat 0) ≠ 0›
+
+theorem u_div (a b : UInt32) : u (a / b) = .mk_uN (a.toNat / b.toNat) := by
+  simp [u, UInt32.toNat_div]
+
+theorem u_mod (a b : UInt32) : u (a % b) = .mk_uN (a.toNat % b.toNat) := by
+  simp [u, UInt32.toNat_mod]
+
+theorem toNat_ne_zero {b : UInt32} (h : b ≠ 0) : b.toNat ≠ 0 :=
+  fun h0 => h (UInt32.toNat_inj.mp (h0 : b.toNat = 0))
+
 end SpecTecWP

@@ -1,5 +1,4 @@
-import Adequacy.Translate
-import SpecTecWP.Arith
+import Adequacy.Div
 
 /-!
 # Adequacy on the straight-line fragment
@@ -83,14 +82,6 @@ theorem wp_unreachable_eq' : Std.WP.wp (⟨m, env, [.unreachable]⟩ : Wasm.Code
 end TalosEquations
 
 /-! ## Values, frames and stacks -/
-
-theorem wf_num_u (x : UInt32) : wf_num_ .I32 (.mk_num__0 .I32 (u x)) := by
-  have := wf_tv (.i32 x); cases this; assumption
-
-theorem wf_uN_u (x : UInt32) : wf_uN 32 (u x) := by
-  have := wf_num_u x; cases this; assumption
-
-theorem tv_i32 (x : UInt32) : tv (.i32 x) = .CONST .I32 (.mk_num__0 .I32 (u x)) := rfl
 
 theorem zOf_values (s : Wasm.Locals) (vs : List Wasm.Value) :
     zOf { s with values := vs } = zOf s := rfl
@@ -218,6 +209,30 @@ theorem sim (i : Wasm.Instruction) (j : instr) (hti : ti i = some j) {R : Unit �
           · rfl
           · rename_i hneg
             exact absurd (by constructor; have := wf_num_u (x * y); rw [← imul_eq] at this; exact this) hneg) (fun x y => imul_eq x y) (by assumption) h
+    · exact (inv h).elim
+  case divU =>
+    rw [wp_divU_eq'] at h; split at h
+    · rename_i b a vs hv
+      by_cases hb : b = 0
+      · subst hb
+        rw [ite_eq_left rfl] at h
+        exact sim_binop_rs (fun_binop_div_u_zero a) (fun_binop_div_u_zero_uniq a) hv
+          (by simp) (fun _ => ⟨_, h⟩)
+      · rw [ite_eq_right hb] at h
+        exact sim_binop_rs (fun_binop_div_u hb) (fun_binop_div_u_uniq hb) hv
+          (fun c hc => ⟨a / b, by simpa using hc, h⟩) (by simp)
+    · exact (inv h).elim
+  case remU =>
+    rw [Wasm.wp_remU_eq] at h; split at h
+    · rename_i b a vs hv
+      by_cases hb : b = 0
+      · subst hb
+        rw [ite_eq_left rfl] at h
+        exact sim_binop_rs (fun_binop_rem_u_zero a) (fun_binop_rem_u_zero_uniq a) hv
+          (by simp) (fun _ => ⟨_, h⟩)
+      · rw [ite_eq_right hb] at h
+        exact sim_binop_rs (fun_binop_rem_u hb) (fun_binop_rem_u_uniq hb) hv
+          (fun c hc => ⟨a % b, by simpa using hc, h⟩) (by simp)
     · exact (inv h).elim
   case and =>
     rw [wp_and_eq'] at h; split at h
