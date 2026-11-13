@@ -68,13 +68,14 @@ theorem lt_length_of_fun_local {z : state} {i : Nat} {w : val}
   cases h
 
 theorem Code.wp_local_set' {x : idx} {v : val} {Q : Assn} {E : EAssn} {z : state} {vs : Stack}
-    (hQ : Q (with_local z x v) vs) : Code.wp [.LOCAL_SET x] Q E z (v :: vs) := by
+    (hx : proj_uN_0 x < (fof z).LOCALS.length) (hQ : Q (with_local z x v) vs) :
+    Code.wp [.LOCAL_SET x] Q E z (v :: vs) := by
   intro hwf
   have hwf' := hwf
   rw [cfg_eq] at hwf'
   obtain ⟨hs, hi⟩ := wf_config_iff.mp hwf'
   have hv : wf_val v := wf_val_of_wf_instr (hi (instr_val v) (by simp))
-  exact Code.wp_local_set (wf_state_with_local hs hv) hQ hwf
+  exact Code.wp_local_set hx (wf_state_with_local hs hv) hQ hwf
 
 theorem Code.wp_conseq {is : List instr} {Q Q' : Assn} {E E' : EAssn} {z : state} {vs : Stack}
     (hQ : ∀ z vs, Q z vs → Q' z vs) (hE : ∀ e z, E e z → E' e z) (h : Code.wp is Q E z vs) :

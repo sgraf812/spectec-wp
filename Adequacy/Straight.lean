@@ -127,6 +127,16 @@ theorem with_local_zOf {s s' : Wasm.Locals} {n : Nat} {v : Wasm.Value}
       rw [List.set_append_right n _ (by simp; omega), List.length_map]
     · cases h
 
+theorem lt_of_set? {s s' : Wasm.Locals} {n : Nat} {v : Wasm.Value} (h : s.set? n v = some s') :
+    proj_uN_0 (.mk_uN n) < (fof (zOf s)).LOCALS.length := by
+  simp only [Wasm.Locals.set?] at h
+  simp only [proj_uN_0, fof, fun_frame, zOf, frameOf, List.length_map, List.length_append]
+  split at h
+  · omega
+  · split at h
+    · omega
+    · cases h
+
 theorem set_values {s s' : Wasm.Locals} {n : Nat} {v : Wasm.Value} (h : s.set? n v = some s') :
     s'.values = s.values := by
   simp only [Wasm.Locals.set?] at h
@@ -183,32 +193,37 @@ theorem sim (i : Wasm.Instruction) (j : instr) (hti : ti i = some j) {R : Unit �
   case add =>
     rw [Wasm.wp_add_eq] at h; split at h
     · exact sim_binop (fun x y => x + y) (iadd_ 32)
-        (fun x y => by constructor; have := wf_num_u (x + y); rw [← iadd_eq] at this; exact this)
+        (fun x y => by constructor <;> (try decide) <;> have := wf_num_u (x + y); rw [← iadd_eq] at this; exact this)
         (fun x y r hr => by
           cases hr
           · rfl
           · rename_i hneg
-            exact absurd (by constructor; have := wf_num_u (x + y); rw [← iadd_eq] at this; exact this) hneg) (fun x y => iadd_eq x y) (by assumption) h
+            exact absurd (by constructor <;> (try decide) <;> have := wf_num_u (x + y); rw [← iadd_eq] at this; exact this) hneg) (fun x y => iadd_eq x y) (by assumption) h
     · exact (inv h).elim
   case sub =>
     rw [Wasm.wp_sub_eq] at h; split at h
     · exact sim_binop (fun x y => y - x) (isub_ 32)
-        (fun x y => by constructor; have := wf_num_u (y - x); rw [← isub_eq] at this; exact this)
+        (fun x y => by
+          constructor <;> first | decide | exact isub_nonneg _ _ |
+            (have := wf_num_u (y - x); rw [← isub_eq] at this; exact this))
         (fun x y r hr => by
           cases hr
           · rfl
           · rename_i hneg
-            exact absurd (by constructor; have := wf_num_u (y - x); rw [← isub_eq] at this; exact this) hneg) (fun x y => isub_eq x y) (by assumption) h
+            exact absurd (by
+              constructor <;> first | decide | exact isub_nonneg _ _ |
+                (have := wf_num_u (y - x); rw [← isub_eq] at this; exact this)) hneg)
+          (fun x y => isub_eq x y) (by assumption) h
     · exact (inv h).elim
   case mul =>
     rw [Wasm.wp_mul_eq] at h; split at h
     · exact sim_binop (fun x y => x * y) (imul_ 32)
-        (fun x y => by constructor; have := wf_num_u (x * y); rw [← imul_eq] at this; exact this)
+        (fun x y => by constructor <;> (try decide) <;> have := wf_num_u (x * y); rw [← imul_eq] at this; exact this)
         (fun x y r hr => by
           cases hr
           · rfl
           · rename_i hneg
-            exact absurd (by constructor; have := wf_num_u (x * y); rw [← imul_eq] at this; exact this) hneg) (fun x y => imul_eq x y) (by assumption) h
+            exact absurd (by constructor <;> (try decide) <;> have := wf_num_u (x * y); rw [← imul_eq] at this; exact this) hneg) (fun x y => imul_eq x y) (by assumption) h
     · exact (inv h).elim
   case divU =>
     rw [wp_divU_eq'] at h; split at h
@@ -267,32 +282,32 @@ theorem sim (i : Wasm.Instruction) (j : instr) (hti : ti i = some j) {R : Unit �
   case and =>
     rw [wp_and_eq'] at h; split at h
     · exact sim_binop (fun x y => x &&& y) (iand_ 32)
-        (fun x y => by constructor; have := wf_num_u (x &&& y); rw [← iand_eq] at this; exact this)
+        (fun x y => by constructor <;> (try decide) <;> have := wf_num_u (x &&& y); rw [← iand_eq] at this; exact this)
         (fun x y r hr => by
           cases hr
           · rfl
           · rename_i hneg
-            exact absurd (by constructor; have := wf_num_u (x &&& y); rw [← iand_eq] at this; exact this) hneg) (fun x y => iand_eq x y) (by assumption) h
+            exact absurd (by constructor <;> (try decide) <;> have := wf_num_u (x &&& y); rw [← iand_eq] at this; exact this) hneg) (fun x y => iand_eq x y) (by assumption) h
     · exact (inv h).elim
   case or =>
     rw [wp_or_eq'] at h; split at h
     · exact sim_binop (fun x y => y ||| x) (ior_ 32)
-        (fun x y => by constructor; have := wf_num_u (y ||| x); rw [← ior_eq] at this; exact this)
+        (fun x y => by constructor <;> (try decide) <;> have := wf_num_u (y ||| x); rw [← ior_eq] at this; exact this)
         (fun x y r hr => by
           cases hr
           · rfl
           · rename_i hneg
-            exact absurd (by constructor; have := wf_num_u (y ||| x); rw [← ior_eq] at this; exact this) hneg) (fun x y => ior_eq y x) (by assumption) h
+            exact absurd (by constructor <;> (try decide) <;> have := wf_num_u (y ||| x); rw [← ior_eq] at this; exact this) hneg) (fun x y => ior_eq y x) (by assumption) h
     · exact (inv h).elim
   case xor =>
     rw [wp_xor_eq'] at h; split at h
     · exact sim_binop (fun x y => y ^^^ x) (ixor_ 32)
-        (fun x y => by constructor; have := wf_num_u (y ^^^ x); rw [← ixor_eq] at this; exact this)
+        (fun x y => by constructor <;> (try decide) <;> have := wf_num_u (y ^^^ x); rw [← ixor_eq] at this; exact this)
         (fun x y r hr => by
           cases hr
           · rfl
           · rename_i hneg
-            exact absurd (by constructor; have := wf_num_u (y ^^^ x); rw [← ixor_eq] at this; exact this) hneg) (fun x y => ixor_eq y x) (by assumption) h
+            exact absurd (by constructor <;> (try decide) <;> have := wf_num_u (y ^^^ x); rw [← ixor_eq] at this; exact this) hneg) (fun x y => ixor_eq y x) (by assumption) h
     · exact (inv h).elim
   case eqz =>
     rw [Wasm.wp_eqz_eq] at h; split at h
@@ -334,7 +349,7 @@ theorem sim (i : Wasm.Instruction) (j : instr) (hti : ti i = some j) {R : Unit �
       split at h
       · rename_i s' hs'
         rw [show stk s = tv v :: vs.map tv by simp [stk, hv]]
-        refine Code.wp_local_set (by rw [with_local_zOf hs']; exact wf_zOf _)
+        refine Code.wp_local_set (lt_of_set? hs') (by rw [with_local_zOf hs']; exact wf_zOf _)
           ⟨{ s' with values := vs }, by rw [with_local_zOf hs']; rfl, rfl, h⟩
       · exact (inv h).elim
     · exact (inv h).elim
@@ -345,7 +360,8 @@ theorem sim (i : Wasm.Instruction) (j : instr) (hti : ti i = some j) {R : Unit �
       · rename_i s' hs'
         have hvals : s'.values = s.values := set_values hs'
         rw [show stk s = tv v :: vs.map tv by simp [stk, hv]]
-        exact Code.wp_local_tee (Code.wp_local_set (by rw [with_local_zOf hs']; exact wf_zOf _)
+        exact Code.wp_local_tee (Code.wp_local_set (lt_of_set? hs')
+          (by rw [with_local_zOf hs']; exact wf_zOf _)
           ⟨s', by rw [with_local_zOf hs'], by simp [stk, hvals, hv], h⟩)
       · exact (inv h).elim
     · exact (inv h).elim

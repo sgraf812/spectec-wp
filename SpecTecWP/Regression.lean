@@ -1,4 +1,4 @@
-import SpecTecWP.Wasm
+import SpecTecWP.Exits
 
 /-!
 # Regression tests for the Lean backend of SpecTec
@@ -85,5 +85,102 @@ theorem not_irem_by_zero : ¬ fun_irem_ 32 .U (.mk_uN 5) (.mk_uN 0) (some (.mk_u
   | fun_irem__case_1 =>
     simp only [proj_uN_0] at *
     exact absurd rfl ‹Rat.ofInt (Int.ofNat 0) ≠ 0›
+
+/-! ## Out-of-bounds `store` -/
+
+section Store
+
+open SpecTecWP
+
+/-- A step of `vals ++ [STORE nt none x ao]` traps on the top two values, or writes the
+memory within its bounds. -/
+theorem Step.redex_store_aux {c c' : config} (h : Step c c') :
+    ∀ (z : state) (ws : List val) (nt : numtype) (x : idx) (ao : memarg),
+      c = .mk_config z (ws.map instr_val ++ [.STORE nt none x ao]) →
+      (∃ ws₁ a b, ws = ws₁ ++ [a, b] ∧ c' = .mk_config z (ws₁.map instr_val ++ [.TRAP])) ∨
+      (∃ z' L n, c' = .mk_config z' L ∧
+        n + Int.toNat (Rat.floor (Rat.ofInt (Int.ofNat (size nt)) / Rat.ofInt (Int.ofNat 8))) ≤
+          (((sof z).MEMS)[(((fof z).MODULE).MEMS)[proj_uN_0 x]!]!).BYTES.length) := by
+  induction h
+  case pure z₀ L L' hp _ _ =>
+    intro z ws nt x ao hc
+    simp only [config.mk_config.injEq] at hc
+    obtain ⟨rfl, rfl⟩ := hc
+    exfalso
+    generalize hL : ws.map instr_val ++ [.STORE nt none x ao] = L₀ at hp
+    cases hp <;> list_contra hL
+  case read z₀ L L' hr _ _ =>
+    intro z ws nt x ao hc
+    simp only [config.mk_config.injEq] at hc
+    obtain ⟨rfl, rfl⟩ := hc
+    exfalso
+    generalize hcfg : config.mk_config z₀ (ws.map instr_val ++ [.STORE nt none x ao]) = c at hr
+    cases hr
+    all_goals
+      simp only [config.mk_config.injEq] at hcfg
+      obtain ⟨-, hcfg⟩ := hcfg
+      list_contra hcfg
+  case ctxt_instrs z₀ vals L₀ L₁ z' L₀' hinner _ _ _ _ _ ih =>
+    intro z ws nt x ao hc
+    simp only [config.mk_config.injEq] at hc
+    obtain ⟨rfl, hc⟩ := hc
+    obtain ⟨ws₂, rfl, rfl, rfl⟩ := ctxt_split rfl hc hinner
+    rcases ih z₀ ws₂ nt x ao rfl with ⟨ws₁, a, b, rfl, heq⟩ | ⟨z'', L, n, heq, hle⟩
+    · simp only [config.mk_config.injEq] at heq
+      obtain ⟨rfl, rfl⟩ := heq
+      exact .inl ⟨vals ++ ws₁, a, b, by simp, by simp⟩
+    · simp only [config.mk_config.injEq] at heq
+      obtain ⟨rfl, rfl⟩ := heq
+      exact .inr ⟨_, _, n, rfl, hle⟩
+  case store_num_oob =>
+    intro z ws nt x ao hc
+    simp only [config.mk_config.injEq] at hc
+    obtain ⟨rfl, hL⟩ := hc
+    have hlen := congrArg List.length hL
+    simp only [List.length_append, List.length_map, List.length_cons, List.length_nil] at hlen
+    match ws, hlen with
+    | [a, b], _ => exact .inl ⟨[], a, b, rfl, rfl⟩
+  case store_num_val =>
+    intro z ws nt x ao hc
+    simp only [config.mk_config.injEq] at hc
+    obtain ⟨rfl, hL⟩ := hc
+    have hlast := congrArg List.getLast? hL
+    simp only [List.getLast?_append, List.getLast?_singleton, List.getLast?_cons_cons,
+      Option.some_or, Option.some.injEq, instr.STORE.injEq, true_and] at hlast
+    obtain ⟨rfl, rfl, rfl⟩ := hlast
+    exact .inr ⟨_, _, _, rfl, ‹_ + _ ≤ _›⟩
+  all_goals
+    intro z ws nt x ao hc
+    simp only [config.mk_config.injEq] at hc
+    obtain ⟨-, hc⟩ := hc
+    exfalso
+    list_contra hc
+
+def mem0 : meminst := { TYPE := .PAGE .I32 (.mk_limits (.mk_uN 0) none), BYTES := [] }
+def z0 : state :=
+  .mk_state { (default : store) with MEMS := [mem0] }
+    { LOCALS := [], MODULE := { (default : moduleinst) with MEMS := [0] } }
+def i0 : num_ := .mk_num__0 .I32 (.mk_uN 0)
+def ao0 : memarg := { ALIGN := .mk_uN 0, OFFSET := .mk_uN 0 }
+
+/-- `i32.store` of `0` at address `0` into an empty memory traps: it has no other
+successor. Before the definedness premises of `$with_mem`, it also stepped to a state whose
+memory had grown to four bytes. -/
+theorem oob_store_traps (c' : config)
+    (h : Step (.mk_config z0 [.CONST .I32 i0, .CONST .I32 i0, .STORE .I32 none (.mk_uN 0) ao0]) c') :
+    c' = .mk_config z0 [.TRAP] := by
+  rcases Step.redex_store_aux h z0 [.CONST .I32 i0, .CONST .I32 i0] .I32 (.mk_uN 0) ao0 rfl with
+    ⟨ws₁, a, b, hws, rfl⟩ | ⟨z', L, n, -, hle⟩
+  · have hlen := congrArg List.length hws
+    simp only [List.length_append, List.length_cons, List.length_nil] at hlen
+    obtain rfl : ws₁ = [] := List.eq_nil_of_length_eq_zero (by omega)
+    rfl
+  · have e : Int.toNat (Rat.floor (Rat.ofInt (Int.ofNat (size .I32)) / Rat.ofInt (Int.ofNat 8))) = 4 := by
+      decide +kernel
+    rw [e] at hle
+    have : (((sof z0).MEMS)[(((fof z0).MODULE).MEMS)[proj_uN_0 (uN.mk_uN 0)]!]!).BYTES.length = 0 := rfl
+    omega
+
+end Store
 
 end SpecTecWP.Regression

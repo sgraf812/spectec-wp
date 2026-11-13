@@ -26,6 +26,15 @@ theorem isub_eq (a b : UInt32) : isub_ 32 (u b) (u a) = u (b - a) := by
     (((2 ^ 32 + b.toNat - a.toNat) % 2 ^ 32 : Nat) : Int) from rfl, Int.toNat_natCast]
   omega
 
+/-- The side condition of the `nat` conversion in `$isub_` holds on `i32` payloads. -/
+theorem isub_nonneg (a b : UInt32) :
+    0 ≤ Int.tmod (Int.ofNat (2 ^ sizenn (numtype_addrtype .I32) + proj_uN_0 (u a)) -
+      Int.ofNat (proj_uN_0 (u b))) (Int.ofNat (2 ^ sizenn (numtype_addrtype .I32))) := by
+  apply Int.tmod_nonneg
+  have := b.toNat_lt
+  simp only [u, proj_uN_0, sizenn, size, numtype_addrtype, Int.ofNat_eq_natCast]
+  omega
+
 theorem imul_eq (a b : UInt32) : imul_ 32 (u b) (u a) = u (a * b) := by
   simp only [imul_, u, proj_uN_0, UInt32.toNat_mul, Nat.mul_comm]
 

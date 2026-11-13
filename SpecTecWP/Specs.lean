@@ -64,11 +64,11 @@ theorem wf_num_i32 {x : uN} (h : wf_uN 32 x) : wf_num_ .I32 (.mk_num__0 .I32 x) 
 
 /-- An `i32` binary operator: the model's operation `g` on payloads is `f` on `UInt32`. -/
 theorem Spec.i32_binop {op : binop_Inn} (f : UInt32 → UInt32 → UInt32) (g : uN → uN → uN)
-    (hf : ∀ x y, fun_binop_ .I32 (.mk_binop__0 .I32 op) (.mk_num__0 .I32 x) (.mk_num__0 .I32 y)
-      (some [.mk_num__0 .I32 (g x y)]))
-    (huniq : ∀ x y r, fun_binop_ .I32 (.mk_binop__0 .I32 op) (.mk_num__0 .I32 x)
-      (.mk_num__0 .I32 y) r → r = some [.mk_num__0 .I32 (g x y)])
-    (hwf : ∀ x y, wf_uN 32 (g x y)) (hg : ∀ a b, g (u a) (u b) = u (f a b))
+    (hf : ∀ a b : UInt32, fun_binop_ .I32 (.mk_binop__0 .I32 op) (.mk_num__0 .I32 (u a))
+      (.mk_num__0 .I32 (u b)) (some [.mk_num__0 .I32 (g (u a) (u b))]))
+    (huniq : ∀ (a b : UInt32) r, fun_binop_ .I32 (.mk_binop__0 .I32 op) (.mk_num__0 .I32 (u a))
+      (.mk_num__0 .I32 (u b)) r → r = some [.mk_num__0 .I32 (g (u a) (u b))])
+    (hwf : ∀ a b : UInt32, wf_uN 32 (g (u a) (u b))) (hg : ∀ a b, g (u a) (u b) = u (f a b))
     {Q : Unit → VAssn} {E : VEAssn} :
     Triple ([.BINOP .I32 (.mk_binop__0 .I32 op)] : List instr)
       (fun s => (⌜s.stack[0]! = .i32 s.stack[0]!.asI32 ∧ s.stack[1]! = .i32 s.stack[1]!.asI32 ∧
@@ -88,7 +88,7 @@ theorem Spec.i32_binop {op : binop_Inn} (f : UInt32 → UInt32 → UInt32) (g : 
     obtain ⟨a0, rfl⟩ : ∃ a, v0 = .i32 a := ⟨_, h0⟩
     obtain ⟨a1, rfl⟩ : ∃ a, v1 = .i32 a := ⟨_, h1⟩
     simp only [V.asI32_i32] at hq
-    refine Code.wp_binop (hf (u a1) (u a0)) (huniq _ _)
+    refine Code.wp_binop (hf a1 a0) (huniq _ _)
       (fun c hc => by simp only [List.mem_singleton] at hc; subst hc; exact wf_num_i32 (hwf _ _))
       (fun c hc => ?_) (fun h => by simp at h)
     simp only [List.mem_singleton] at hc
@@ -101,7 +101,7 @@ macro "binop_uniq" w:term : tactic => `(tactic| (
   intro x y r hr
   cases hr
   · rfl
-  · rename_i hneg; exact absurd (by constructor; exact $w _ _) hneg))
+  · rename_i hneg; exact absurd (by constructor <;> (try decide) <;> exact $w _ _) hneg))
 
 theorem wf_iadd (x y : uN) : wf_uN 32 (iadd_ 32 x y) := wf_mod 32 _
 theorem wf_imul (x y : uN) : wf_uN 32 (imul_ 32 x y) := wf_mod 32 _
@@ -120,8 +120,9 @@ theorem wf_isub (x y : uN) : wf_uN 32 (isub_ 32 x y) := by
           2 ≤ s.stack.length⌝ : Prop) ⊓
         Q () { s with stack := .i32 (s.stack[1]!.asI32 + s.stack[0]!.asI32) :: s.stack.drop 2 })
       Q E :=
-  Spec.i32_binop (· + ·) (iadd_ 32) (fun x y => by constructor; exact wf_num_i32 (wf_iadd x y))
-    (by binop_uniq (fun x y => wf_num_i32 (wf_iadd x y))) wf_iadd
+  Spec.i32_binop (· + ·) (iadd_ 32)
+    (fun x y => by constructor <;> (try decide) <;> exact wf_num_i32 (wf_iadd _ _))
+    (by binop_uniq (fun x y => wf_num_i32 (wf_iadd (u x) (u y)))) (fun _ _ => wf_iadd _ _)
     (fun a b => by rw [iadd_eq, UInt32.add_comm])
 
 @[spec] theorem Spec.i32_sub {Q : Unit → VAssn} {E : VEAssn} :
@@ -130,8 +131,18 @@ theorem wf_isub (x y : uN) : wf_uN 32 (isub_ 32 x y) := by
           2 ≤ s.stack.length⌝ : Prop) ⊓
         Q () { s with stack := .i32 (s.stack[1]!.asI32 - s.stack[0]!.asI32) :: s.stack.drop 2 })
       Q E :=
-  Spec.i32_binop (· - ·) (isub_ 32) (fun x y => by constructor; exact wf_num_i32 (wf_isub x y))
-    (by binop_uniq (fun x y => wf_num_i32 (wf_isub x y))) wf_isub (fun a b => isub_eq b a)
+  Spec.i32_binop (· - ·) (isub_ 32)
+    (fun x y => by
+      constructor <;> first | decide | exact wf_num_i32 (wf_isub _ _) | exact isub_nonneg _ _)
+    (by
+      intro x y r hr
+      cases hr
+      · rfl
+      · rename_i hneg
+        exact absurd (by
+          constructor <;> first | decide | exact wf_num_i32 (wf_isub _ _) |
+            exact isub_nonneg _ _) hneg)
+    (fun _ _ => wf_isub _ _) (fun a b => isub_eq b a)
 
 @[spec] theorem Spec.i32_mul {Q : Unit → VAssn} {E : VEAssn} :
     Triple ([.BINOP .I32 (.mk_binop__0 .I32 .MUL)] : List instr)
@@ -139,8 +150,9 @@ theorem wf_isub (x y : uN) : wf_uN 32 (isub_ 32 x y) := by
           2 ≤ s.stack.length⌝ : Prop) ⊓
         Q () { s with stack := .i32 (s.stack[1]!.asI32 * s.stack[0]!.asI32) :: s.stack.drop 2 })
       Q E :=
-  Spec.i32_binop (· * ·) (imul_ 32) (fun x y => by constructor; exact wf_num_i32 (wf_imul x y))
-    (by binop_uniq (fun x y => wf_num_i32 (wf_imul x y))) wf_imul
+  Spec.i32_binop (· * ·) (imul_ 32)
+    (fun x y => by constructor <;> (try decide) <;> exact wf_num_i32 (wf_imul _ _))
+    (by binop_uniq (fun x y => wf_num_i32 (wf_imul (u x) (u y)))) (fun _ _ => wf_imul _ _)
     (fun a b => by rw [imul_eq, UInt32.mul_comm])
 
 /-! ## `i32.rem_u` and `i32.eqz` -/
@@ -252,18 +264,20 @@ theorem wf_ieqz (x : uN) : wf_uN 32 (ieqz_ 32 x) := by
 
 @[spec] theorem Spec.local_set {i : Nat} {Q : Unit → VAssn} {E : VEAssn} :
     Triple ([.LOCAL_SET (.mk_uN i)] : List instr)
-      (fun s => (⌜1 ≤ s.stack.length⌝ : Prop) ⊓
+      (fun s => (⌜1 ≤ s.stack.length ∧ i < s.locals.length⌝ : Prop) ⊓
         Q () { s with locals := s.locals.set i (some s.stack[0]!), stack := s.stack.drop 1 })
       Q E := by
   refine Triple.iff.mpr fun s hpre z vs hr => ?_
   simp only [meet_prop_eq_and, CompleteLattice.ofProp_prop_eq] at hpre
-  obtain ⟨hlen, hq⟩ := hpre
+  obtain ⟨⟨hlen, hi⟩, hq⟩ := hpre
   obtain ⟨hrf, rfl⟩ := hr
+  have hx : proj_uN_0 (.mk_uN i) < (fof z).LOCALS.length := by
+    simpa [proj_uN_0, hrf.2.2] using hi
   obtain ⟨st, m, ls, stk⟩ := s
   rcases stk with _ | ⟨v0, rest⟩
   · simp at hlen
   · simp only [List.getElem!_cons_zero, List.drop_succ_cons, List.drop_zero] at hq
-    exact Code.wp_local_set'
+    exact Code.wp_local_set' hx
       ⟨_, Rep.set_local (s := ⟨st, m, ls, rest⟩) (i := i) v0 ⟨hrf, rfl⟩, hq⟩
 
 /-! ## Control flow -/

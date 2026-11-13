@@ -6360,6 +6360,7 @@ inductive fun_with_locals : context -> (List localidx) -> (List localtype) -> (O
   | fun_with_locals_case_0 : forall (C : context), fun_with_locals C [] [] (some C)
   | fun_with_locals_case_1 : forall (C : context) (x_1 : uN) (x_lst : (List idx)) (lct_1 : localtype) (lct_lst : (List localtype)) (var_0 : (Option context)), 
     (fun_with_locals { C with LOCALS := (List.modify (C.LOCALS) (proj_uN_0 x_1) (fun (_ : localtype) => lct_1)) } x_lst lct_lst var_0) ->
+    ((proj_uN_0 x_1) < (List.length (C.LOCALS))) ->
     fun_with_locals C (([x_1] : (List localidx)) ++ x_lst) (([lct_1] : (List localtype)) ++ lct_lst) var_0
   | fun_with_locals_case_2 : forall (x0 : context) (x1 : (List localidx)) (x2 : (List localtype)), 
     (¬(fun_with_locals_before_fun_with_locals_case_2 x0 x1 x2)) ->
@@ -9180,6 +9181,8 @@ inductive ineg__is_wf : N -> iN -> iN -> Prop where
     (wf_uN v_N v_iN) ->
     (ret_val = (ineg_ v_N v_iN)) ->
     (wf_uN v_N ret_val) ->
+    (0 ≤ (Int.tmod ((Int.ofNat (2 ^ v_N)) - (Int.ofNat (proj_uN_0 v_iN))) (Int.ofNat (2 ^ v_N)))) ->
+    ((Int.ofNat (2 ^ v_N)) ≠ 0) ->
     ineg__is_wf v_N v_iN ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:101.1-101.29 -/
@@ -9266,6 +9269,7 @@ inductive iadd__is_wf : N -> iN -> iN -> iN -> Prop where
     (wf_uN v_N iN_0) ->
     (ret_val = (iadd_ v_N v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
+    ((2 ^ v_N) ≠ 0) ->
     iadd__is_wf v_N v_iN iN_0 ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:108.1-108.36 -/
@@ -9281,6 +9285,8 @@ inductive isub__is_wf : N -> iN -> iN -> iN -> Prop where
     (wf_uN v_N iN_0) ->
     (ret_val = (isub_ v_N v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
+    (0 ≤ (Int.tmod ((Int.ofNat ((2 ^ v_N) + (proj_uN_0 v_iN))) - (Int.ofNat (proj_uN_0 iN_0))) (Int.ofNat (2 ^ v_N)))) ->
+    ((Int.ofNat (2 ^ v_N)) ≠ 0) ->
     isub__is_wf v_N v_iN iN_0 ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:109.1-109.36 -/
@@ -9296,6 +9302,7 @@ inductive imul__is_wf : N -> iN -> iN -> iN -> Prop where
     (wf_uN v_N iN_0) ->
     (ret_val = (imul_ v_N v_iN iN_0)) ->
     (wf_uN v_N ret_val) ->
+    ((2 ^ v_N) ≠ 0) ->
     imul__is_wf v_N v_iN iN_0 ret_val
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:110.6-110.12 -/
@@ -10461,42 +10468,58 @@ inductive fun_binop__before_fun_binop__case_38 : numtype -> binop_ -> num_ -> nu
     fun_binop__before_fun_binop__case_38 .I32 (.mk_binop__0 .I32 (.DIV v_sx)) (.mk_num__0 .I32 i_1) (.mk_num__0 .I32 i_2)
   | fun_binop__case_5 : forall (i_1 : uN) (i_2 : uN), 
     (wf_num_ (numtype_addrtype .I64) (.mk_num__0 .I64 (imul_ (sizenn (numtype_addrtype .I64)) i_1 i_2))) ->
+    ((2 ^ (sizenn (numtype_addrtype .I64))) ≠ 0) ->
     fun_binop__before_fun_binop__case_38 .I64 (.mk_binop__0 .I64 .MUL) (.mk_num__0 .I64 i_1) (.mk_num__0 .I64 i_2)
   | fun_binop__case_4 : forall (i_1 : uN) (i_2 : uN), 
     (wf_num_ (numtype_addrtype .I32) (.mk_num__0 .I32 (imul_ (sizenn (numtype_addrtype .I32)) i_1 i_2))) ->
+    ((2 ^ (sizenn (numtype_addrtype .I32))) ≠ 0) ->
     fun_binop__before_fun_binop__case_38 .I32 (.mk_binop__0 .I32 .MUL) (.mk_num__0 .I32 i_1) (.mk_num__0 .I32 i_2)
   | fun_binop__case_3 : forall (i_1 : uN) (i_2 : uN), 
     (wf_num_ (numtype_addrtype .I64) (.mk_num__0 .I64 (isub_ (sizenn (numtype_addrtype .I64)) i_1 i_2))) ->
+    (0 ≤ (Int.tmod ((Int.ofNat ((2 ^ (sizenn (numtype_addrtype .I64))) + (proj_uN_0 i_1))) - (Int.ofNat (proj_uN_0 i_2))) (Int.ofNat (2 ^ (sizenn (numtype_addrtype .I64)))))) ->
+    ((Int.ofNat (2 ^ (sizenn (numtype_addrtype .I64)))) ≠ 0) ->
     fun_binop__before_fun_binop__case_38 .I64 (.mk_binop__0 .I64 .SUB) (.mk_num__0 .I64 i_1) (.mk_num__0 .I64 i_2)
   | fun_binop__case_2 : forall (i_1 : uN) (i_2 : uN), 
     (wf_num_ (numtype_addrtype .I32) (.mk_num__0 .I32 (isub_ (sizenn (numtype_addrtype .I32)) i_1 i_2))) ->
+    (0 ≤ (Int.tmod ((Int.ofNat ((2 ^ (sizenn (numtype_addrtype .I32))) + (proj_uN_0 i_1))) - (Int.ofNat (proj_uN_0 i_2))) (Int.ofNat (2 ^ (sizenn (numtype_addrtype .I32)))))) ->
+    ((Int.ofNat (2 ^ (sizenn (numtype_addrtype .I32)))) ≠ 0) ->
     fun_binop__before_fun_binop__case_38 .I32 (.mk_binop__0 .I32 .SUB) (.mk_num__0 .I32 i_1) (.mk_num__0 .I32 i_2)
   | fun_binop__case_1 : forall (i_1 : uN) (i_2 : uN), 
     (wf_num_ (numtype_addrtype .I64) (.mk_num__0 .I64 (iadd_ (sizenn (numtype_addrtype .I64)) i_1 i_2))) ->
+    ((2 ^ (sizenn (numtype_addrtype .I64))) ≠ 0) ->
     fun_binop__before_fun_binop__case_38 .I64 (.mk_binop__0 .I64 .ADD) (.mk_num__0 .I64 i_1) (.mk_num__0 .I64 i_2)
   | fun_binop__case_0 : forall (i_1 : uN) (i_2 : uN), 
     (wf_num_ (numtype_addrtype .I32) (.mk_num__0 .I32 (iadd_ (sizenn (numtype_addrtype .I32)) i_1 i_2))) ->
+    ((2 ^ (sizenn (numtype_addrtype .I32))) ≠ 0) ->
     fun_binop__before_fun_binop__case_38 .I32 (.mk_binop__0 .I32 .ADD) (.mk_num__0 .I32 i_1) (.mk_num__0 .I32 i_2)
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/3.1-numerics.scalar.spectec:368.6-368.13 -/
 inductive fun_binop_ : numtype -> binop_ -> num_ -> num_ -> (Option (List num_)) -> Prop where
   | fun_binop__case_0 : forall (i_1 : uN) (i_2 : uN), 
     (wf_num_ (numtype_addrtype .I32) (.mk_num__0 .I32 (iadd_ (sizenn (numtype_addrtype .I32)) i_1 i_2))) ->
+    ((2 ^ (sizenn (numtype_addrtype .I32))) ≠ 0) ->
     fun_binop_ .I32 (.mk_binop__0 .I32 .ADD) (.mk_num__0 .I32 i_1) (.mk_num__0 .I32 i_2) (some ([(.mk_num__0 .I32 (iadd_ (sizenn (numtype_addrtype .I32)) i_1 i_2))] : (List num_)))
   | fun_binop__case_1 : forall (i_1 : uN) (i_2 : uN), 
     (wf_num_ (numtype_addrtype .I64) (.mk_num__0 .I64 (iadd_ (sizenn (numtype_addrtype .I64)) i_1 i_2))) ->
+    ((2 ^ (sizenn (numtype_addrtype .I64))) ≠ 0) ->
     fun_binop_ .I64 (.mk_binop__0 .I64 .ADD) (.mk_num__0 .I64 i_1) (.mk_num__0 .I64 i_2) (some ([(.mk_num__0 .I64 (iadd_ (sizenn (numtype_addrtype .I64)) i_1 i_2))] : (List num_)))
   | fun_binop__case_2 : forall (i_1 : uN) (i_2 : uN), 
     (wf_num_ (numtype_addrtype .I32) (.mk_num__0 .I32 (isub_ (sizenn (numtype_addrtype .I32)) i_1 i_2))) ->
+    (0 ≤ (Int.tmod ((Int.ofNat ((2 ^ (sizenn (numtype_addrtype .I32))) + (proj_uN_0 i_1))) - (Int.ofNat (proj_uN_0 i_2))) (Int.ofNat (2 ^ (sizenn (numtype_addrtype .I32)))))) ->
+    ((Int.ofNat (2 ^ (sizenn (numtype_addrtype .I32)))) ≠ 0) ->
     fun_binop_ .I32 (.mk_binop__0 .I32 .SUB) (.mk_num__0 .I32 i_1) (.mk_num__0 .I32 i_2) (some ([(.mk_num__0 .I32 (isub_ (sizenn (numtype_addrtype .I32)) i_1 i_2))] : (List num_)))
   | fun_binop__case_3 : forall (i_1 : uN) (i_2 : uN), 
     (wf_num_ (numtype_addrtype .I64) (.mk_num__0 .I64 (isub_ (sizenn (numtype_addrtype .I64)) i_1 i_2))) ->
+    (0 ≤ (Int.tmod ((Int.ofNat ((2 ^ (sizenn (numtype_addrtype .I64))) + (proj_uN_0 i_1))) - (Int.ofNat (proj_uN_0 i_2))) (Int.ofNat (2 ^ (sizenn (numtype_addrtype .I64)))))) ->
+    ((Int.ofNat (2 ^ (sizenn (numtype_addrtype .I64)))) ≠ 0) ->
     fun_binop_ .I64 (.mk_binop__0 .I64 .SUB) (.mk_num__0 .I64 i_1) (.mk_num__0 .I64 i_2) (some ([(.mk_num__0 .I64 (isub_ (sizenn (numtype_addrtype .I64)) i_1 i_2))] : (List num_)))
   | fun_binop__case_4 : forall (i_1 : uN) (i_2 : uN), 
     (wf_num_ (numtype_addrtype .I32) (.mk_num__0 .I32 (imul_ (sizenn (numtype_addrtype .I32)) i_1 i_2))) ->
+    ((2 ^ (sizenn (numtype_addrtype .I32))) ≠ 0) ->
     fun_binop_ .I32 (.mk_binop__0 .I32 .MUL) (.mk_num__0 .I32 i_1) (.mk_num__0 .I32 i_2) (some ([(.mk_num__0 .I32 (imul_ (sizenn (numtype_addrtype .I32)) i_1 i_2))] : (List num_)))
   | fun_binop__case_5 : forall (i_1 : uN) (i_2 : uN), 
     (wf_num_ (numtype_addrtype .I64) (.mk_num__0 .I64 (imul_ (sizenn (numtype_addrtype .I64)) i_1 i_2))) ->
+    ((2 ^ (sizenn (numtype_addrtype .I64))) ≠ 0) ->
     fun_binop_ .I64 (.mk_binop__0 .I64 .MUL) (.mk_num__0 .I64 i_1) (.mk_num__0 .I64 i_2) (some ([(.mk_num__0 .I64 (imul_ (sizenn (numtype_addrtype .I64)) i_1 i_2))] : (List num_)))
   | fun_binop__case_6 : forall (v_sx : sx) (i_1 : uN) (i_2 : uN) (var_0 : (Option iN)), 
     (fun_idiv_ (sizenn (numtype_addrtype .I32)) v_sx i_1 i_2 var_0) ->
@@ -15811,6 +15834,8 @@ inductive tag_is_wf : state -> tagidx -> taginst -> Prop where
     (wf_uN 32 v_tagidx) ->
     (ret_val = (fun_tag v_state v_tagidx)) ->
     (wf_taginst ret_val) ->
+    (((((fof v_state).MODULE).TAGS)[(proj_uN_0 v_tagidx)]!) < (List.length ((sof v_state).TAGS))) ->
+    ((proj_uN_0 v_tagidx) < (List.length (((fof v_state).MODULE).TAGS))) ->
     tag_is_wf v_state v_tagidx ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:255.1-255.85 -/
@@ -15826,6 +15851,8 @@ inductive global_is_wf : state -> globalidx -> globalinst -> Prop where
     (wf_uN 32 v_globalidx) ->
     (ret_val = (fun_global v_state v_globalidx)) ->
     (wf_globalinst ret_val) ->
+    (((((fof v_state).MODULE).GLOBALS)[(proj_uN_0 v_globalidx)]!) < (List.length ((sof v_state).GLOBALS))) ->
+    ((proj_uN_0 v_globalidx) < (List.length (((fof v_state).MODULE).GLOBALS))) ->
     global_is_wf v_state v_globalidx ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:256.1-256.85 -/
@@ -15841,6 +15868,8 @@ inductive mem_is_wf : state -> memidx -> meminst -> Prop where
     (wf_uN 32 v_memidx) ->
     (ret_val = (fun_mem v_state v_memidx)) ->
     (wf_meminst ret_val) ->
+    (((((fof v_state).MODULE).MEMS)[(proj_uN_0 v_memidx)]!) < (List.length ((sof v_state).MEMS))) ->
+    ((proj_uN_0 v_memidx) < (List.length (((fof v_state).MODULE).MEMS))) ->
     mem_is_wf v_state v_memidx ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:257.1-257.85 -/
@@ -15856,6 +15885,8 @@ inductive table_is_wf : state -> tableidx -> tableinst -> Prop where
     (wf_uN 32 v_tableidx) ->
     (ret_val = (fun_table v_state v_tableidx)) ->
     (wf_tableinst ret_val) ->
+    (((((fof v_state).MODULE).TABLES)[(proj_uN_0 v_tableidx)]!) < (List.length ((sof v_state).TABLES))) ->
+    ((proj_uN_0 v_tableidx) < (List.length (((fof v_state).MODULE).TABLES))) ->
     table_is_wf v_state v_tableidx ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:258.1-258.85 -/
@@ -15871,6 +15902,8 @@ inductive func_is_wf : state -> funcidx -> funcinst -> Prop where
     (wf_uN 32 v_funcidx) ->
     (ret_val = (fun_func v_state v_funcidx)) ->
     (wf_funcinst ret_val) ->
+    (((((fof v_state).MODULE).FUNCS)[(proj_uN_0 v_funcidx)]!) < (List.length ((sof v_state).FUNCS))) ->
+    ((proj_uN_0 v_funcidx) < (List.length (((fof v_state).MODULE).FUNCS))) ->
     func_is_wf v_state v_funcidx ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:259.1-259.85 -/
@@ -15886,6 +15919,8 @@ inductive data_is_wf : state -> dataidx -> datainst -> Prop where
     (wf_uN 32 v_dataidx) ->
     (ret_val = (fun_data v_state v_dataidx)) ->
     (wf_datainst ret_val) ->
+    (((((fof v_state).MODULE).DATAS)[(proj_uN_0 v_dataidx)]!) < (List.length ((sof v_state).DATAS))) ->
+    ((proj_uN_0 v_dataidx) < (List.length (((fof v_state).MODULE).DATAS))) ->
     data_is_wf v_state v_dataidx ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:260.1-260.85 -/
@@ -15901,6 +15936,8 @@ inductive elem_is_wf : state -> tableidx -> eleminst -> Prop where
     (wf_uN 32 v_tableidx) ->
     (ret_val = (fun_elem v_state v_tableidx)) ->
     (wf_eleminst ret_val) ->
+    (((((fof v_state).MODULE).ELEMS)[(proj_uN_0 v_tableidx)]!) < (List.length ((sof v_state).ELEMS))) ->
+    ((proj_uN_0 v_tableidx) < (List.length (((fof v_state).MODULE).ELEMS))) ->
     elem_is_wf v_state v_tableidx ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:261.1-261.85 -/
@@ -15916,6 +15953,7 @@ inductive local_is_wf : state -> localidx -> (Option val) -> Prop where
     (wf_uN 32 v_localidx) ->
     (ret_val_opt = (fun_local v_state v_localidx)) ->
     Forall (fun (ret_val : val) => (wf_val ret_val)) (Option.toList ret_val_opt) ->
+    ((proj_uN_0 v_localidx) < (List.length ((fof v_state).LOCALS))) ->
     local_is_wf v_state v_localidx ret_val_opt
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:282.1-282.165 -/
@@ -15932,6 +15970,7 @@ inductive with_local_is_wf : state -> localidx -> val -> state -> Prop where
     (wf_val v_val) ->
     (ret_val = (with_local v_state v_localidx v_val)) ->
     (wf_state ret_val) ->
+    ((proj_uN_0 v_localidx) < (List.length ((fof v_state).LOCALS))) ->
     with_local_is_wf v_state v_localidx v_val ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:283.1-283.172 -/
@@ -15948,6 +15987,8 @@ inductive with_global_is_wf : state -> globalidx -> val -> state -> Prop where
     (wf_val v_val) ->
     (ret_val = (with_global v_state v_globalidx v_val)) ->
     (wf_state ret_val) ->
+    (((((fof v_state).MODULE).GLOBALS)[(proj_uN_0 v_globalidx)]!) < (List.length ((sof v_state).GLOBALS))) ->
+    ((proj_uN_0 v_globalidx) < (List.length (((fof v_state).MODULE).GLOBALS))) ->
     with_global_is_wf v_state v_globalidx v_val ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:284.1-284.174 -/
@@ -15964,6 +16005,9 @@ inductive with_table_is_wf : state -> tableidx -> Nat -> ref -> state -> Prop wh
     (wf_ref v_ref) ->
     (ret_val = (with_table v_state v_tableidx nat v_ref)) ->
     (wf_state ret_val) ->
+    (((((fof v_state).MODULE).TABLES)[(proj_uN_0 v_tableidx)]!) < (List.length ((sof v_state).TABLES))) ->
+    (nat < (List.length ((((sof v_state).TABLES)[((((fof v_state).MODULE).TABLES)[(proj_uN_0 v_tableidx)]!)]!).REFS))) ->
+    ((proj_uN_0 v_tableidx) < (List.length (((fof v_state).MODULE).TABLES))) ->
     with_table_is_wf v_state v_tableidx nat v_ref ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:285.1-285.165 -/
@@ -15980,6 +16024,8 @@ inductive with_tableinst_is_wf : state -> tableidx -> tableinst -> state -> Prop
     (wf_tableinst v_tableinst) ->
     (ret_val = (with_tableinst v_state v_tableidx v_tableinst)) ->
     (wf_state ret_val) ->
+    (((((fof v_state).MODULE).TABLES)[(proj_uN_0 v_tableidx)]!) < (List.length ((sof v_state).TABLES))) ->
+    ((proj_uN_0 v_tableidx) < (List.length (((fof v_state).MODULE).TABLES))) ->
     with_tableinst_is_wf v_state v_tableidx v_tableinst ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:286.1-286.176 -/
@@ -15996,6 +16042,9 @@ inductive with_mem_is_wf : state -> memidx -> Nat -> Nat -> (List byte) -> state
     Forall (fun (var_0 : byte) => (wf_byte var_0)) var_0_lst ->
     (ret_val = (with_mem v_state v_memidx nat nat_0 var_0_lst)) ->
     (wf_state ret_val) ->
+    (((((fof v_state).MODULE).MEMS)[(proj_uN_0 v_memidx)]!) < (List.length ((sof v_state).MEMS))) ->
+    (nat + nat_0 ≤ (List.length ((((sof v_state).MEMS)[((((fof v_state).MODULE).MEMS)[(proj_uN_0 v_memidx)]!)]!).BYTES))) ->
+    ((proj_uN_0 v_memidx) < (List.length (((fof v_state).MODULE).MEMS))) ->
     with_mem_is_wf v_state v_memidx nat nat_0 var_0_lst ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:287.1-287.167 -/
@@ -16012,6 +16061,8 @@ inductive with_meminst_is_wf : state -> memidx -> meminst -> state -> Prop where
     (wf_meminst v_meminst) ->
     (ret_val = (with_meminst v_state v_memidx v_meminst)) ->
     (wf_state ret_val) ->
+    (((((fof v_state).MODULE).MEMS)[(proj_uN_0 v_memidx)]!) < (List.length ((sof v_state).MEMS))) ->
+    ((proj_uN_0 v_memidx) < (List.length (((fof v_state).MODULE).MEMS))) ->
     with_meminst_is_wf v_state v_memidx v_meminst ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:288.1-288.169 -/
@@ -16028,6 +16079,8 @@ inductive with_elem_is_wf : state -> elemidx -> (List ref) -> state -> Prop wher
     Forall (fun (var_0 : ref) => (wf_ref var_0)) var_0_lst ->
     (ret_val = (with_elem v_state v_elemidx var_0_lst)) ->
     (wf_state ret_val) ->
+    (((((fof v_state).MODULE).ELEMS)[(proj_uN_0 v_elemidx)]!) < (List.length ((sof v_state).ELEMS))) ->
+    ((proj_uN_0 v_elemidx) < (List.length (((fof v_state).MODULE).ELEMS))) ->
     with_elem_is_wf v_state v_elemidx var_0_lst ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:289.1-289.170 -/
@@ -16044,6 +16097,8 @@ inductive with_data_is_wf : state -> dataidx -> (List byte) -> state -> Prop whe
     Forall (fun (var_0 : byte) => (wf_byte var_0)) var_0_lst ->
     (ret_val = (with_data v_state v_dataidx var_0_lst)) ->
     (wf_state ret_val) ->
+    (((((fof v_state).MODULE).DATAS)[(proj_uN_0 v_dataidx)]!) < (List.length ((sof v_state).DATAS))) ->
+    ((proj_uN_0 v_dataidx) < (List.length (((fof v_state).MODULE).DATAS))) ->
     with_data_is_wf v_state v_dataidx var_0_lst ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:290.1-290.181 -/
@@ -16059,6 +16114,8 @@ inductive with_struct_is_wf : state -> structaddr -> Nat -> fieldval -> state ->
     (wf_fieldval v_fieldval) ->
     (ret_val = (with_struct v_state v_structaddr nat v_fieldval)) ->
     (wf_state ret_val) ->
+    (v_structaddr < (List.length ((sof v_state).STRUCTS))) ->
+    (nat < (List.length ((((sof v_state).STRUCTS)[v_structaddr]!).FIELDS))) ->
     with_struct_is_wf v_state v_structaddr nat v_fieldval ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:291.1-291.180 -/
@@ -16074,6 +16131,8 @@ inductive with_array_is_wf : state -> arrayaddr -> Nat -> fieldval -> state -> P
     (wf_fieldval v_fieldval) ->
     (ret_val = (with_array v_state v_arrayaddr nat v_fieldval)) ->
     (wf_state ret_val) ->
+    (v_arrayaddr < (List.length ((sof v_state).ARRAYS))) ->
+    (nat < (List.length ((((sof v_state).ARRAYS)[v_arrayaddr]!).FIELDS))) ->
     with_array_is_wf v_state v_arrayaddr nat v_fieldval ret_val
 
 /- Auxiliary Definition at: ../../specification/wasm-3.0/4.0-execution.configurations.spectec:305.1-305.140 -/
@@ -17128,6 +17187,8 @@ inductive Step_read_before_table_fill_zero : config -> Prop where
     (wf_tableinst (fun_table z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.TABLE_FILL x)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).TABLES))) ->
     Step_read_before_table_fill_zero (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.TABLE_FILL x)] : (List instr)))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:377.1-380.14 -/
@@ -17140,6 +17201,10 @@ inductive Step_read_before_table_copy_zero : config -> Prop where
     (wf_tableinst (fun_table z x_2)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x_1 x_2)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x_1)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x_1) < (List.length (((fof z).MODULE).TABLES))) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x_2)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x_2) < (List.length (((fof z).MODULE).TABLES))) ->
     Step_read_before_table_copy_zero (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x_1 x_2)] : (List instr)))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:382.1-387.19 -/
@@ -17157,6 +17222,10 @@ inductive Step_read_before_table_copy_le : config -> Prop where
     (wf_tableinst (fun_table z x_2)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x_1 x_2)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x_1)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x_1) < (List.length (((fof z).MODULE).TABLES))) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x_2)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x_2) < (List.length (((fof z).MODULE).TABLES))) ->
     Step_read_before_table_copy_le (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x_1 x_2)] : (List instr)))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:389.1-393.15 -/
@@ -17190,6 +17259,10 @@ inductive Step_read_before_table_copy_gt : config -> Prop where
     (wf_tableinst (fun_table z x_2)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x_1 x_2)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x_1)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x_1) < (List.length (((fof z).MODULE).TABLES))) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x_2)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x_2) < (List.length (((fof z).MODULE).TABLES))) ->
     Step_read_before_table_copy_gt (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x_1 x_2)] : (List instr)))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:401.1-404.14 -/
@@ -17202,6 +17275,10 @@ inductive Step_read_before_table_init_zero : config -> Prop where
     (wf_eleminst (fun_elem z y)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.TABLE_INIT x y)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).TABLES))) ->
+    (((((fof z).MODULE).ELEMS)[(proj_uN_0 y)]!) < (List.length ((sof z).ELEMS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).ELEMS))) ->
     Step_read_before_table_init_zero (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.TABLE_INIT x y)] : (List instr)))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:562.1-565.14 -/
@@ -17212,6 +17289,8 @@ inductive Step_read_before_memory_fill_zero : config -> Prop where
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.MEMORY_FILL x)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read_before_memory_fill_zero (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.MEMORY_FILL x)] : (List instr)))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:579.1-582.14 -/
@@ -17224,6 +17303,10 @@ inductive Step_read_before_memory_copy_zero : config -> Prop where
     (wf_meminst (fun_mem z x_2)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x_1)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x_1) < (List.length (((fof z).MODULE).MEMS))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x_2)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x_2) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read_before_memory_copy_zero (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr)))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:584.1-589.19 -/
@@ -17241,6 +17324,10 @@ inductive Step_read_before_memory_copy_le : config -> Prop where
     (wf_meminst (fun_mem z x_2)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x_1)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x_1) < (List.length (((fof z).MODULE).MEMS))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x_2)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x_2) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read_before_memory_copy_le (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr)))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:603.1-606.14 -/
@@ -17253,6 +17340,10 @@ inductive Step_read_before_memory_init_zero : config -> Prop where
     (wf_datainst (fun_data z y)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.MEMORY_INIT x y)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
+    (((((fof z).MODULE).DATAS)[(proj_uN_0 y)]!) < (List.length ((sof z).DATAS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).DATAS))) ->
     Step_read_before_memory_init_zero (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.MEMORY_INIT x y)] : (List instr)))
 
 /- Inductive Relations Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:667.1-669.15 -/
@@ -17398,6 +17489,8 @@ inductive Step_read_before_array_init_elem_zero : config -> Prop where
     (wf_eleminst (fun_elem z y)) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).ELEMS)[(proj_uN_0 y)]!) < (List.length ((sof z).ELEMS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).ELEMS))) ->
     Step_read_before_array_init_elem_zero (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr)))
   | array_init_elem_oob1_0 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     ((proj_num__0 i) ≠ none) ->
@@ -17421,6 +17514,8 @@ inductive Step_read_before_array_init_elem_succ : config -> Prop where
     (wf_eleminst (fun_elem z y)) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).ELEMS)[(proj_uN_0 y)]!) < (List.length ((sof z).ELEMS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).ELEMS))) ->
     Step_read_before_array_init_elem_succ (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr)))
   | array_init_elem_oob1_1 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     ((proj_num__0 i) ≠ none) ->
@@ -17445,6 +17540,8 @@ inductive Step_read_before_array_init_data_zero : config -> Prop where
     (wf_comptype (.ARRAY (.mk_fieldtype mut_opt zt))) ->
     ((((Rat.ofInt (Int.ofNat (v_n * (Option.get! (zsize zt))))) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat (v_n * (Option.get! (zsize zt))))) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).DATAS)[(proj_uN_0 y)]!) < (List.length ((sof z).DATAS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).DATAS))) ->
     Step_read_before_array_init_data_zero (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr)))
   | array_init_data_oob1_0 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     ((proj_num__0 i) ≠ none) ->
@@ -17474,6 +17571,8 @@ inductive Step_read_before_array_init_data_num : config -> Prop where
     (wf_comptype (.ARRAY (.mk_fieldtype mut_opt zt))) ->
     ((((Rat.ofInt (Int.ofNat (v_n * (Option.get! (zsize zt))))) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat (v_n * (Option.get! (zsize zt))))) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).DATAS)[(proj_uN_0 y)]!) < (List.length ((sof z).DATAS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).DATAS))) ->
     Step_read_before_array_init_data_num (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr)))
   | array_init_data_oob1_1 : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     ((proj_num__0 i) ≠ none) ->
@@ -17676,12 +17775,15 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_val v_val) ->
     Forall (fun (iter : val) => (wf_val iter)) (Option.toList (fun_local z x)) ->
     (wf_config (.mk_config z ([(.LOCAL_GET x)] : (List instr)))) ->
+    ((proj_uN_0 x) < (List.length ((fof z).LOCALS))) ->
     Step_read (.mk_config z ([(.LOCAL_GET x)] : (List instr))) ([(instr_val v_val)] : (List instr))
   | global_get : forall (z : state) (x : idx) (v_val : val), 
     (((fun_global z x).VALUE) = v_val) ->
     (wf_val v_val) ->
     (wf_globalinst (fun_global z x)) ->
     (wf_config (.mk_config z ([(.GLOBAL_GET x)] : (List instr)))) ->
+    (((((fof z).MODULE).GLOBALS)[(proj_uN_0 x)]!) < (List.length ((sof z).GLOBALS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).GLOBALS))) ->
     Step_read (.mk_config z ([(.GLOBAL_GET x)] : (List instr))) ([(instr_val v_val)] : (List instr))
   | table_get_oob : forall (z : state) («at» : addrtype) (i : num_) (x : idx), 
     ((proj_num__0 i) ≠ none) ->
@@ -17689,12 +17791,16 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_tableinst (fun_table z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.TABLE_GET x)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).TABLES))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.TABLE_GET x)] : (List instr))) ([.TRAP] : (List instr))
   | table_get_val : forall (z : state) («at» : addrtype) (i : num_) (x : idx), 
     ((proj_uN_0 (Option.get! (proj_num__0 i))) < (List.length ((fun_table z x).REFS))) ->
     ((proj_num__0 i) ≠ none) ->
     (wf_tableinst (fun_table z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.TABLE_GET x)] : (List instr)))) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).TABLES))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.TABLE_GET x)] : (List instr))) ([(instr_ref (((fun_table z x).REFS)[(proj_uN_0 (Option.get! (proj_num__0 i)))]!))] : (List instr))
   | table_size : forall (z : state) (x : idx) («at» : addrtype) (v_n : n) (lim : limits) (rt : reftype), 
     ((List.length ((fun_table z x).REFS)) = v_n) ->
@@ -17703,6 +17809,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_config (.mk_config z ([(.TABLE_SIZE x)] : (List instr)))) ->
     (wf_instr (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n)))) ->
     (wf_tabletype (.mk_tabletype «at» lim rt)) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).TABLES))) ->
     Step_read (.mk_config z ([(.TABLE_SIZE x)] : (List instr))) ([(.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n)))] : (List instr))
   | table_fill_oob : forall (z : state) («at» : addrtype) (i : num_) (v_val : val) (v_n : n) (x : idx), 
     ((proj_num__0 i) ≠ none) ->
@@ -17710,12 +17818,16 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_tableinst (fun_table z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.TABLE_FILL x)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).TABLES))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.TABLE_FILL x)] : (List instr))) ([.TRAP] : (List instr))
   | table_fill_zero : forall (z : state) («at» : addrtype) (i : num_) (v_val : val) (v_n : n) (x : idx), 
     ((proj_num__0 i) ≠ none) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) <= (List.length ((fun_table z x).REFS))) ->
     (v_n = 0) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.TABLE_FILL x)] : (List instr)))) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).TABLES))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.TABLE_FILL x)] : (List instr))) []
   | table_fill_succ : forall (z : state) («at» : addrtype) (i : num_) (v_val : val) (v_n : n) (x : idx), 
     ((proj_num__0 i) ≠ none) ->
@@ -17728,6 +17840,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1))))))) ->
     (wf_instr (.TABLE_FILL x)) ->
     (0 ≤ ((Int.ofNat v_n) - (Int.ofNat 1))) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).TABLES))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.TABLE_FILL x)] : (List instr))) ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.TABLE_SET x), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN ((proj_uN_0 (Option.get! (proj_num__0 i))) + 1)))), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1)))))), (.TABLE_FILL x)] : (List instr))
   | table_copy_oob : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x_1 : idx) (x_2 : idx), 
     ((proj_num__0 i_1) ≠ none) ->
@@ -17737,6 +17851,10 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_tableinst (fun_table z x_2)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x_1 x_2)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x_1)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x_1) < (List.length (((fof z).MODULE).TABLES))) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x_2)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x_2) < (List.length (((fof z).MODULE).TABLES))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x_1 x_2)] : (List instr))) ([.TRAP] : (List instr))
   | table_copy_zero : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x : idx) (y : idx), 
     (¬(Step_read_before_table_copy_zero (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.TABLE_COPY x y)] : (List instr))))) ->
@@ -17784,6 +17902,10 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_eleminst (fun_elem z y)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.TABLE_INIT x y)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).TABLES))) ->
+    (((((fof z).MODULE).ELEMS)[(proj_uN_0 y)]!) < (List.length ((sof z).ELEMS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).ELEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.TABLE_INIT x y)] : (List instr))) ([.TRAP] : (List instr))
   | table_init_zero : forall (z : state) («at» : addrtype) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     ((proj_num__0 i) ≠ none) ->
@@ -17791,6 +17913,10 @@ inductive Step_read : config -> (List instr) -> Prop where
     ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) <= (List.length ((fun_table z x).REFS))) ∧ (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) <= (List.length ((fun_elem z y).REFS)))) ->
     (v_n = 0) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.TABLE_INIT x y)] : (List instr)))) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).TABLES))) ->
+    (((((fof z).MODULE).ELEMS)[(proj_uN_0 y)]!) < (List.length ((sof z).ELEMS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).ELEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.TABLE_INIT x y)] : (List instr))) []
   | table_init_succ : forall (z : state) («at» : addrtype) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     ((proj_uN_0 (Option.get! (proj_num__0 j))) < (List.length ((fun_elem z y).REFS))) ->
@@ -17806,7 +17932,11 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr (.CONST .I32 (.mk_num__0 .I32 (.mk_uN ((proj_uN_0 (Option.get! (proj_num__0 j))) + 1))))) ->
     (wf_instr (.CONST .I32 (.mk_num__0 .I32 (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1))))))) ->
     (wf_instr (.TABLE_INIT x y)) ->
+    (((((fof z).MODULE).ELEMS)[(proj_uN_0 y)]!) < (List.length ((sof z).ELEMS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).ELEMS))) ->
     (0 ≤ ((Int.ofNat v_n) - (Int.ofNat 1))) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).TABLES))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.TABLE_INIT x y)] : (List instr))) ([(.CONST (numtype_addrtype «at») i), (instr_ref (((fun_elem z y).REFS)[(proj_uN_0 (Option.get! (proj_num__0 j)))]!)), (.TABLE_SET x), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN ((proj_uN_0 (Option.get! (proj_num__0 i))) + 1)))), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN ((proj_uN_0 (Option.get! (proj_num__0 j))) + 1)))), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1)))))), (.TABLE_INIT x y)] : (List instr))
   | load_num_oob : forall (z : state) («at» : addrtype) (i : num_) (nt : numtype) (x : idx) (ao : memarg), 
     ((proj_num__0 i) ≠ none) ->
@@ -17816,6 +17946,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr .TRAP) ->
     ((((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.LOAD nt none x ao)] : (List instr))) ([.TRAP] : (List instr))
   | load_num_val : forall (z : state) («at» : addrtype) (i : num_) (nt : numtype) (x : idx) (ao : memarg) (c : num_), 
     ((proj_num__0 i) ≠ none) ->
@@ -17825,6 +17957,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.LOAD nt none x ao)] : (List instr)))) ->
     (wf_instr (.CONST nt c)) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8))))) ≤ (List.length ((fun_mem z x).BYTES))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     ((((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.LOAD nt none x ao)] : (List instr))) ([(.CONST nt c)] : (List instr))
@@ -17836,6 +17970,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr .TRAP) ->
     ((((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.LOAD (numtype_addrtype v_Inn) (some (.mk_loadop__0 v_Inn (.mk_loadop_Inn (.mk_sz v_n) v_sx))) x ao)] : (List instr))) ([.TRAP] : (List instr))
   | load_pack_val : forall (z : state) («at» : addrtype) (i : num_) (v_Inn : Inn) (v_n : n) (v_sx : sx) (x : idx) (ao : memarg) (c : iN), 
     ((proj_num__0 i) ≠ none) ->
@@ -17845,6 +17981,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.LOAD (numtype_addrtype v_Inn) (some (.mk_loadop__0 v_Inn (.mk_loadop_Inn (.mk_sz v_n) v_sx))) x ao)] : (List instr)))) ->
     (wf_instr (.CONST (numtype_addrtype v_Inn) (.mk_num__0 v_Inn (extend__ v_n (size (numtype_addrtype v_Inn)) v_sx c)))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8))))) ≤ (List.length ((fun_mem z x).BYTES))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     ((((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.LOAD (numtype_addrtype v_Inn) (some (.mk_loadop__0 v_Inn (.mk_loadop_Inn (.mk_sz v_n) v_sx))) x ao)] : (List instr))) ([(.CONST (numtype_addrtype v_Inn) (.mk_num__0 v_Inn (extend__ v_n (size (numtype_addrtype v_Inn)) v_sx c)))] : (List instr))
@@ -17856,6 +17994,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr .TRAP) ->
     ((((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 none x ao)] : (List instr))) ([.TRAP] : (List instr))
   | vload_val : forall (z : state) («at» : addrtype) (i : num_) (x : idx) (ao : memarg) (c : vec_), 
     ((proj_num__0 i) ≠ none) ->
@@ -17865,6 +18005,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 none x ao)] : (List instr)))) ->
     (wf_instr (.VCONST .V128 c)) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8))))) ≤ (List.length ((fun_mem z x).BYTES))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     ((((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 none x ao)] : (List instr))) ([(.VCONST .V128 c)] : (List instr))
@@ -17876,6 +18018,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr .TRAP) ->
     ((((Rat.ofInt (Int.ofNat (v_M * v_K))) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat (v_M * v_K))) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.SHAPEX_ (.mk_sz v_M) v_K v_sx)) x ao)] : (List instr))) ([.TRAP] : (List instr))
   | vload_pack_val : forall (z : state) («at» : addrtype) (i : num_) (v_M : M) (v_K : K) (v_sx : sx) (x : idx) (ao : memarg) (c : vec_) (j_lst : (List iN)) (v_Jnn : Jnn), 
     (∀ (k : Nat), k < v_K → ((proj_num__0 i) ≠ none)) ->
@@ -17890,6 +18034,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     Forall (fun (j : iN) => (wf_lane_ (fun_lanetype (.X (lanetype_Jnn v_Jnn) (.mk_dim v_K))) (.mk_lane__0 v_Jnn (extend__ v_M (jsizenn v_Jnn) v_sx j)))) j_lst ->
     (v_K = (List.length j_lst)) ->
     ((List.length j_lst) = v_K) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.SHAPEX_ (.mk_sz v_M) v_K v_sx)) x ao)] : (List instr))) ([(.VCONST .V128 c)] : (List instr))
   | vload_splat_oob : forall (z : state) («at» : addrtype) (i : num_) (v_N : N) (x : idx) (ao : memarg), 
     ((proj_num__0 i) ≠ none) ->
@@ -17899,6 +18045,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr .TRAP) ->
     ((((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.SPLAT (.mk_sz v_N))) x ao)] : (List instr))) ([.TRAP] : (List instr))
   | vload_splat_val : forall (z : state) («at» : addrtype) (i : num_) (v_N : N) (x : idx) (ao : memarg) (c : vec_) (j : iN) (v_Jnn : Jnn) (v_M : M), 
     ((proj_num__0 i) ≠ none) ->
@@ -17914,6 +18062,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_shape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) ->
     (wf_lane_ (fun_lanetype (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_lane__0 v_Jnn (.mk_uN (proj_uN_0 j)))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8))))) ≤ (List.length ((fun_mem z x).BYTES))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     ((((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
     ((Rat.ofInt (Int.ofNat v_N)) ≠ 0) ->
@@ -17926,6 +18076,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr .TRAP) ->
     ((((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.ZERO (.mk_sz v_N))) x ao)] : (List instr))) ([.TRAP] : (List instr))
   | vload_zero_val : forall (z : state) («at» : addrtype) (i : num_) (v_N : N) (x : idx) (ao : memarg) (c : vec_) (j : iN), 
     ((proj_num__0 i) ≠ none) ->
@@ -17938,6 +18090,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.ZERO (.mk_sz v_N))) x ao)] : (List instr)))) ->
     (wf_instr (.VCONST .V128 c)) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8))))) ≤ (List.length ((fun_mem z x).BYTES))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     ((((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VLOAD .V128 (some (.ZERO (.mk_sz v_N))) x ao)] : (List instr))) ([(.VCONST .V128 c)] : (List instr))
@@ -17949,6 +18103,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr .TRAP) ->
     ((((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VCONST .V128 c_1), (.VLOAD_LANE .V128 (.mk_sz v_N) x ao j)] : (List instr))) ([.TRAP] : (List instr))
   | vload_lane_val : forall (z : state) («at» : addrtype) (i : num_) (c_1 : vec_) (v_N : N) (x : idx) (ao : memarg) (j : laneidx) (c : vec_) (k : iN) (v_Jnn : Jnn) (v_M : M), 
     ((proj_num__0 i) ≠ none) ->
@@ -17965,6 +18121,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_shape (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) ->
     (wf_lane_ (fun_lanetype (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M))) (.mk_lane__0 v_Jnn (.mk_uN (proj_uN_0 k)))) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8))))) ≤ (List.length ((fun_mem z x).BYTES))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     ((((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
     ((Rat.ofInt (Int.ofNat v_N)) ≠ 0) ->
@@ -17977,6 +18135,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_config (.mk_config z ([(.MEMORY_SIZE x)] : (List instr)))) ->
     (wf_instr (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n)))) ->
     (wf_memtype (.PAGE «at» lim)) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read (.mk_config z ([(.MEMORY_SIZE x)] : (List instr))) ([(.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n)))] : (List instr))
   | memory_fill_oob : forall (z : state) («at» : addrtype) (i : num_) (v_val : val) (v_n : n) (x : idx), 
     ((proj_num__0 i) ≠ none) ->
@@ -17984,12 +18144,16 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.MEMORY_FILL x)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.MEMORY_FILL x)] : (List instr))) ([.TRAP] : (List instr))
   | memory_fill_zero : forall (z : state) («at» : addrtype) (i : num_) (v_val : val) (v_n : n) (x : idx), 
     ((proj_num__0 i) ≠ none) ->
     (((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) <= (List.length ((fun_mem z x).BYTES))) ->
     (v_n = 0) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.MEMORY_FILL x)] : (List instr)))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.MEMORY_FILL x)] : (List instr))) []
   | memory_fill_succ : forall (z : state) («at» : addrtype) (i : num_) (v_val : val) (v_n : n) (x : idx), 
     ((proj_num__0 i) ≠ none) ->
@@ -18001,7 +18165,10 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (iadd_ (size (numtype_addrtype «at»)) (Option.get! (proj_num__0 i)) (.mk_uN 1))))) ->
     (wf_instr (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1))))))) ->
     (wf_instr (.MEMORY_FILL x)) ->
+    ((2 ^ (size (numtype_addrtype «at»))) ≠ 0) ->
     (0 ≤ ((Int.ofNat v_n) - (Int.ofNat 1))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.MEMORY_FILL x)] : (List instr))) ([(.CONST (numtype_addrtype «at») i), (instr_val v_val), (.STORE .I32 (some (.mk_storeop__0 .I32 (.mk_storeop_Inn (.mk_sz 8)))) x (memarg0 )), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (iadd_ (size (numtype_addrtype «at»)) (Option.get! (proj_num__0 i)) (.mk_uN 1)))), (instr_val v_val), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1)))))), (.MEMORY_FILL x)] : (List instr))
   | memory_copy_oob : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x_1 : idx) (x_2 : idx), 
     ((proj_num__0 i_1) ≠ none) ->
@@ -18011,6 +18178,10 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_meminst (fun_mem z x_2)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x_1)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x_1) < (List.length (((fof z).MODULE).MEMS))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x_2)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x_2) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr))) ([.TRAP] : (List instr))
   | memory_copy_zero : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x_1 : idx) (x_2 : idx), 
     ((proj_num__0 i_1) ≠ none) ->
@@ -18018,6 +18189,10 @@ inductive Step_read : config -> (List instr) -> Prop where
     ((((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n) <= (List.length ((fun_mem z x_1).BYTES))) ∧ (((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n) <= (List.length ((fun_mem z x_2).BYTES)))) ->
     (v_n = 0) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr)))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x_1)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x_1) < (List.length (((fof z).MODULE).MEMS))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x_2)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x_2) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr))) []
   | memory_copy_le : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x_1 : idx) (x_2 : idx), 
     ((proj_num__0 i_1) ≠ none) ->
@@ -18034,7 +18209,13 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr (.CONST (numtype_addrtype at_2) (.mk_num__0 at_2 (iadd_ (size (numtype_addrtype at_2)) (Option.get! (proj_num__0 i_2)) (.mk_uN 1))))) ->
     (wf_instr (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1))))))) ->
     (wf_instr (.MEMORY_COPY x_1 x_2)) ->
+    ((2 ^ (size (numtype_addrtype at_1))) ≠ 0) ->
+    ((2 ^ (size (numtype_addrtype at_2))) ≠ 0) ->
     (0 ≤ ((Int.ofNat v_n) - (Int.ofNat 1))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x_1)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x_1) < (List.length (((fof z).MODULE).MEMS))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x_2)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x_2) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr))) ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.LOAD .I32 (some (.mk_loadop__0 .I32 (.mk_loadop_Inn (.mk_sz 8) .U))) x_2 (memarg0 )), (.STORE .I32 (some (.mk_storeop__0 .I32 (.mk_storeop_Inn (.mk_sz 8)))) x_1 (memarg0 )), (.CONST (numtype_addrtype at_1) (.mk_num__0 at_1 (iadd_ (size (numtype_addrtype at_1)) (Option.get! (proj_num__0 i_1)) (.mk_uN 1)))), (.CONST (numtype_addrtype at_2) (.mk_num__0 at_2 (iadd_ (size (numtype_addrtype at_2)) (Option.get! (proj_num__0 i_2)) (.mk_uN 1)))), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1)))))), (.MEMORY_COPY x_1 x_2)] : (List instr))
   | memory_copy_gt : forall (z : state) (at_1 : addrtype) (i_1 : num_) (at_2 : addrtype) (i_2 : num_) (at' : addrtype) (v_n : n) (x_1 : idx) (x_2 : idx), 
     ((proj_num__0 i_1) ≠ none) ->
@@ -18054,6 +18235,10 @@ inductive Step_read : config -> (List instr) -> Prop where
     (0 ≤ ((Int.ofNat ((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n)) - (Int.ofNat 1))) ->
     (0 ≤ ((Int.ofNat ((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n)) - (Int.ofNat 1))) ->
     (0 ≤ ((Int.ofNat v_n) - (Int.ofNat 1))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x_1)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x_1) < (List.length (((fof z).MODULE).MEMS))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x_2)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x_2) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN v_n))), (.MEMORY_COPY x_1 x_2)] : (List instr))) ([(.CONST (numtype_addrtype at_1) (.mk_num__0 at_1 (.mk_uN (Int.toNat ((Int.ofNat ((proj_uN_0 (Option.get! (proj_num__0 i_1))) + v_n)) - (Int.ofNat 1)))))), (.CONST (numtype_addrtype at_2) (.mk_num__0 at_2 (.mk_uN (Int.toNat ((Int.ofNat ((proj_uN_0 (Option.get! (proj_num__0 i_2))) + v_n)) - (Int.ofNat 1)))))), (.LOAD .I32 (some (.mk_loadop__0 .I32 (.mk_loadop_Inn (.mk_sz 8) .U))) x_2 (memarg0 )), (.STORE .I32 (some (.mk_storeop__0 .I32 (.mk_storeop_Inn (.mk_sz 8)))) x_1 (memarg0 )), (.CONST (numtype_addrtype at_1) i_1), (.CONST (numtype_addrtype at_2) i_2), (.CONST (numtype_addrtype at') (.mk_num__0 at' (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1)))))), (.MEMORY_COPY x_1 x_2)] : (List instr))
   | memory_init_oob : forall (z : state) («at» : addrtype) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     ((proj_num__0 i) ≠ none) ->
@@ -18063,6 +18248,10 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_datainst (fun_data z y)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.MEMORY_INIT x y)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
+    (((((fof z).MODULE).DATAS)[(proj_uN_0 y)]!) < (List.length ((sof z).DATAS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).DATAS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.MEMORY_INIT x y)] : (List instr))) ([.TRAP] : (List instr))
   | memory_init_zero : forall (z : state) («at» : addrtype) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     ((proj_num__0 i) ≠ none) ->
@@ -18070,6 +18259,10 @@ inductive Step_read : config -> (List instr) -> Prop where
     ((((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n) <= (List.length ((fun_mem z x).BYTES))) ∧ (((proj_uN_0 (Option.get! (proj_num__0 j))) + v_n) <= (List.length ((fun_data z y).BYTES)))) ->
     (v_n = 0) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.MEMORY_INIT x y)] : (List instr)))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
+    (((((fof z).MODULE).DATAS)[(proj_uN_0 y)]!) < (List.length ((sof z).DATAS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).DATAS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.MEMORY_INIT x y)] : (List instr))) []
   | memory_init_succ : forall (z : state) («at» : addrtype) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     ((proj_uN_0 (Option.get! (proj_num__0 j))) < (List.length ((fun_data z y).BYTES))) ->
@@ -18085,7 +18278,13 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr (.CONST .I32 (.mk_num__0 .I32 (iadd_ 32 (Option.get! (proj_num__0 j)) (.mk_uN 1))))) ->
     (wf_instr (.CONST .I32 (.mk_num__0 .I32 (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1))))))) ->
     (wf_instr (.MEMORY_INIT x y)) ->
+    (((((fof z).MODULE).DATAS)[(proj_uN_0 y)]!) < (List.length ((sof z).DATAS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).DATAS))) ->
+    ((2 ^ (size (numtype_addrtype «at»))) ≠ 0) ->
+    ((2 ^ 32) ≠ 0) ->
     (0 ≤ ((Int.ofNat v_n) - (Int.ofNat 1))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step_read (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.MEMORY_INIT x y)] : (List instr))) ([(.CONST (numtype_addrtype «at») i), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN (proj_byte_0 (((fun_data z y).BYTES)[(proj_uN_0 (Option.get! (proj_num__0 j)))]!))))), (.STORE .I32 (some (.mk_storeop__0 .I32 (.mk_storeop_Inn (.mk_sz 8)))) x (memarg0 )), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (iadd_ (size (numtype_addrtype «at»)) (Option.get! (proj_num__0 i)) (.mk_uN 1)))), (.CONST .I32 (.mk_num__0 .I32 (iadd_ 32 (Option.get! (proj_num__0 j)) (.mk_uN 1)))), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1)))))), (.MEMORY_INIT x y)] : (List instr))
   | ref_null : forall (z : state) (ht : heaptype), 
     (wf_config (.mk_config z ([(.REF_NULL ht)] : (List instr)))) ->
@@ -18172,6 +18371,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_eleminst (fun_elem z y)) ->
     (wf_config (.mk_config z ([(.CONST .I32 i), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW_ELEM x y)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).ELEMS)[(proj_uN_0 y)]!) < (List.length ((sof z).ELEMS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).ELEMS))) ->
     Step_read (.mk_config z ([(.CONST .I32 i), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW_ELEM x y)] : (List instr))) ([.TRAP] : (List instr))
   | array_new_elem_alloc : forall (z : state) (i : num_) (v_n : n) (x : idx) (y : idx) (ref_lst : (List ref)), 
     ((proj_num__0 i) ≠ none) ->
@@ -18183,6 +18384,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (v_n = (List.length ref_lst)) ->
     ((List.length ref_lst) = v_n) ->
     ((proj_uN_0 (Option.get! (proj_num__0 i))) + v_n ≤ (List.length ((fun_elem z y).REFS))) ->
+    (((((fof z).MODULE).ELEMS)[(proj_uN_0 y)]!) < (List.length ((sof z).ELEMS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).ELEMS))) ->
     Step_read (.mk_config z ([(.CONST .I32 i), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW_ELEM x y)] : (List instr))) ((List.map (fun (v_ref : ref) => (instr_ref v_ref)) ref_lst) ++ ([(.ARRAY_NEW_FIXED x (.mk_uN v_n))] : (List instr)))
   | array_new_data_oob : forall (z : state) (i : num_) (v_n : n) (x : idx) (y : idx) (mut_opt : (Option «mut»)) (zt : storagetype) (var_0 : deftype), 
     (fun_type z x var_0) ->
@@ -18196,6 +18399,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_comptype (.ARRAY (.mk_fieldtype mut_opt zt))) ->
     ((((Rat.ofInt (Int.ofNat (v_n * (Option.get! (zsize zt))))) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat (v_n * (Option.get! (zsize zt))))) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).DATAS)[(proj_uN_0 y)]!) < (List.length ((sof z).DATAS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).DATAS))) ->
     Step_read (.mk_config z ([(.CONST .I32 i), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW_DATA x y)] : (List instr))) ([.TRAP] : (List instr))
   | array_new_data_num : forall (z : state) (i : num_) (v_n : n) (x : idx) (y : idx) (zt : storagetype) (c_lst : (List lit_)) (mut_opt : (Option «mut»)) (var_0 : deftype), 
     (fun_type z x var_0) ->
@@ -18220,6 +18425,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     ((((Rat.ofInt (Int.ofNat (Option.get! (zsize zt)))) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat (Option.get! (zsize zt)))) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
     ((proj_uN_0 (Option.get! (proj_num__0 i))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (v_n * (Option.get! (zsize zt))))) / (Rat.ofInt (Int.ofNat 8))))) ≤ (List.length ((fun_data z y).BYTES))) ->
+    (((((fof z).MODULE).DATAS)[(proj_uN_0 y)]!) < (List.length ((sof z).DATAS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).DATAS))) ->
     ((((Rat.ofInt (Int.ofNat (v_n * (Option.get! (zsize zt))))) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat (v_n * (Option.get! (zsize zt))))) / (Rat.ofInt (Int.ofNat 8)))) ->
     Step_read (.mk_config z ([(.CONST .I32 i), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_NEW_DATA x y)] : (List instr))) ((List.map (fun (c : lit_) => (Option.get! (const (Option.get! (cunpack zt)) (Option.get! (cunpacknum_ zt c))))) c_lst) ++ ([(.ARRAY_NEW_FIXED x (.mk_uN v_n))] : (List instr)))
   | array_get_null : forall (z : state) (i : num_) (sx_opt : (Option sx)) (x : idx), 
@@ -18377,6 +18584,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_eleminst (fun_elem z y)) ->
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr)))) ->
     (wf_instr .TRAP) ->
+    (((((fof z).MODULE).ELEMS)[(proj_uN_0 y)]!) < (List.length ((sof z).ELEMS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).ELEMS))) ->
     Step_read (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr))) ([.TRAP] : (List instr))
   | array_init_elem_zero : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     (¬(Step_read_before_array_init_elem_zero (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr))))) ->
@@ -18400,6 +18609,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_instr (.CONST .I32 (.mk_num__0 .I32 (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1))))))) ->
     (wf_instr (.ARRAY_INIT_ELEM x y)) ->
     (0 ≤ ((Int.ofNat v_n) - (Int.ofNat 1))) ->
+    (((((fof z).MODULE).ELEMS)[(proj_uN_0 y)]!) < (List.length ((sof z).ELEMS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).ELEMS))) ->
     Step_read (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_ELEM x y)] : (List instr))) ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (instr_ref v_ref), (.ARRAY_SET x), (.REF_ARRAY_ADDR a), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN ((proj_uN_0 (Option.get! (proj_num__0 i))) + 1)))), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN ((proj_uN_0 (Option.get! (proj_num__0 j))) + 1)))), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1)))))), (.ARRAY_INIT_ELEM x y)] : (List instr))
   | array_init_data_null : forall (z : state) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     (wf_config (.mk_config z ([.REF_NULL_ADDR, (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr)))) ->
@@ -18425,6 +18636,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     (wf_comptype (.ARRAY (.mk_fieldtype mut_opt zt))) ->
     ((((Rat.ofInt (Int.ofNat (v_n * (Option.get! (zsize zt))))) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat (v_n * (Option.get! (zsize zt))))) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).DATAS)[(proj_uN_0 y)]!) < (List.length ((sof z).DATAS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).DATAS))) ->
     Step_read (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr))) ([.TRAP] : (List instr))
   | array_init_data_zero : forall (z : state) (a : addr) (i : num_) (j : num_) (v_n : n) (x : idx) (y : idx), 
     (¬(Step_read_before_array_init_data_zero (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr))))) ->
@@ -18460,6 +18673,8 @@ inductive Step_read : config -> (List instr) -> Prop where
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
     (0 ≤ ((Int.ofNat v_n) - (Int.ofNat 1))) ->
     ((proj_uN_0 (Option.get! (proj_num__0 j))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (Option.get! (zsize zt)))) / (Rat.ofInt (Int.ofNat 8))))) ≤ (List.length ((fun_data z y).BYTES))) ->
+    (((((fof z).MODULE).DATAS)[(proj_uN_0 y)]!) < (List.length ((sof z).DATAS))) ->
+    ((proj_uN_0 y) < (List.length (((fof z).MODULE).DATAS))) ->
     Step_read (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (.CONST .I32 j), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN v_n))), (.ARRAY_INIT_DATA x y)] : (List instr))) ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (Option.get! (const (Option.get! (cunpack zt)) (Option.get! (cunpacknum_ zt c)))), (.ARRAY_SET x), (.REF_ARRAY_ADDR a), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN ((proj_uN_0 (Option.get! (proj_num__0 i))) + 1)))), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN ((proj_uN_0 (Option.get! (proj_num__0 j))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (Option.get! (zsize zt)))) / (Rat.ofInt (Int.ofNat 8))))))))), (.CONST .I32 (.mk_num__0 .I32 (.mk_uN (Int.toNat ((Int.ofNat v_n) - (Int.ofNat 1)))))), (.ARRAY_INIT_DATA x y)] : (List instr))
 
 /- Recursive Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:5.1-5.88 -/
@@ -18519,14 +18734,19 @@ inductive Step : config -> config -> Prop where
     (v_n = (List.length val_lst)) ->
     (v_n = (List.length t_lst)) ->
     ((List.length val_lst) = v_n) ->
+    (((((fof z).MODULE).TAGS)[(proj_uN_0 x)]!) < (List.length ((sof z).TAGS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).TAGS))) ->
     Step (.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([(.THROW x)] : (List instr)))) (.mk_config (add_exninst z ([exn] : (List exninst))) ([(.REF_EXN_ADDR a), .THROW_REF] : (List instr)))
   | local_set : forall (z : state) (v_val : val) (x : idx), 
     (wf_config (.mk_config z ([(instr_val v_val), (.LOCAL_SET x)] : (List instr)))) ->
     (wf_config (.mk_config (with_local z x v_val) [])) ->
+    ((proj_uN_0 x) < (List.length ((fof z).LOCALS))) ->
     Step (.mk_config z ([(instr_val v_val), (.LOCAL_SET x)] : (List instr))) (.mk_config (with_local z x v_val) [])
   | global_set : forall (z : state) (v_val : val) (x : idx), 
     (wf_config (.mk_config z ([(instr_val v_val), (.GLOBAL_SET x)] : (List instr)))) ->
     (wf_config (.mk_config (with_global z x v_val) [])) ->
+    (((((fof z).MODULE).GLOBALS)[(proj_uN_0 x)]!) < (List.length ((sof z).GLOBALS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).GLOBALS))) ->
     Step (.mk_config z ([(instr_val v_val), (.GLOBAL_SET x)] : (List instr))) (.mk_config (with_global z x v_val) [])
   | table_set_oob : forall (z : state) («at» : addrtype) (i : num_) (v_ref : ref) (x : idx), 
     ((proj_num__0 i) ≠ none) ->
@@ -18534,6 +18754,8 @@ inductive Step : config -> config -> Prop where
     (wf_tableinst (fun_table z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_ref v_ref), (.TABLE_SET x)] : (List instr)))) ->
     (wf_config (.mk_config z ([.TRAP] : (List instr)))) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).TABLES))) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_ref v_ref), (.TABLE_SET x)] : (List instr))) (.mk_config z ([.TRAP] : (List instr)))
   | table_set_val : forall (z : state) («at» : addrtype) (i : num_) (v_ref : ref) (x : idx), 
     ((proj_num__0 i) ≠ none) ->
@@ -18541,6 +18763,9 @@ inductive Step : config -> config -> Prop where
     (wf_tableinst (fun_table z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_ref v_ref), (.TABLE_SET x)] : (List instr)))) ->
     (wf_config (.mk_config (with_table z x (proj_uN_0 (Option.get! (proj_num__0 i))) v_ref) [])) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 (Option.get! (proj_num__0 i))) < (List.length ((((sof z).TABLES)[((((fof z).MODULE).TABLES)[(proj_uN_0 x)]!)]!).REFS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).TABLES))) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (instr_ref v_ref), (.TABLE_SET x)] : (List instr))) (.mk_config (with_table z x (proj_uN_0 (Option.get! (proj_num__0 i))) v_ref) [])
   | table_grow_succeed : forall (z : state) (v_ref : ref) («at» : addrtype) (v_n : n) (x : idx) (ti : tableinst) (var_0 : (Option tableinst)), 
     (fun_growtable (fun_table z x) v_n v_ref var_0) ->
@@ -18550,6 +18775,8 @@ inductive Step : config -> config -> Prop where
     (wf_tableinst (fun_table z x)) ->
     (wf_config (.mk_config z ([(instr_ref v_ref), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.TABLE_GROW x)] : (List instr)))) ->
     (wf_config (.mk_config (with_tableinst z x ti) ([(.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN (List.length ((fun_table z x).REFS)))))] : (List instr)))) ->
+    (((((fof z).MODULE).TABLES)[(proj_uN_0 x)]!) < (List.length ((sof z).TABLES))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).TABLES))) ->
     Step (.mk_config z ([(instr_ref v_ref), (.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.TABLE_GROW x)] : (List instr))) (.mk_config (with_tableinst z x ti) ([(.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN (List.length ((fun_table z x).REFS)))))] : (List instr)))
   | table_grow_fail : forall (z : state) (v_ref : ref) («at» : addrtype) (v_n : n) (x : idx) (var_0 : Nat), 
     (fun_inv_signed_ (size (numtype_addrtype «at»)) (0 - (Int.ofNat 1)) var_0) ->
@@ -18559,6 +18786,8 @@ inductive Step : config -> config -> Prop where
   | elem_drop : forall (z : state) (x : idx), 
     (wf_config (.mk_config z ([(.ELEM_DROP x)] : (List instr)))) ->
     (wf_config (.mk_config (with_elem z x []) [])) ->
+    (((((fof z).MODULE).ELEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).ELEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).ELEMS))) ->
     Step (.mk_config z ([(.ELEM_DROP x)] : (List instr))) (.mk_config (with_elem z x []) [])
   | store_num_oob : forall (z : state) («at» : addrtype) (i : num_) (nt : numtype) (c : num_) (x : idx) (ao : memarg), 
     ((proj_num__0 i) ≠ none) ->
@@ -18568,6 +18797,8 @@ inductive Step : config -> config -> Prop where
     (wf_config (.mk_config z ([.TRAP] : (List instr)))) ->
     ((((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST nt c), (.STORE nt none x ao)] : (List instr))) (.mk_config z ([.TRAP] : (List instr)))
   | store_num_val : forall (z : state) («at» : addrtype) (i : num_) (nt : numtype) (c : num_) (x : idx) (ao : memarg) (b_lst : (List byte)), 
     ((proj_num__0 i) ≠ none) ->
@@ -18577,6 +18808,9 @@ inductive Step : config -> config -> Prop where
     (wf_config (.mk_config (with_mem z x ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8))))) b_lst) [])) ->
     ((((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    (((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8))))) ≤ (List.length ((((sof z).MEMS)[((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!)]!).BYTES))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST nt c), (.STORE nt none x ao)] : (List instr))) (.mk_config (with_mem z x ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (size nt))) / (Rat.ofInt (Int.ofNat 8))))) b_lst) [])
   | store_pack_oob : forall (z : state) («at» : addrtype) (i : num_) (v_Inn : Inn) (c : num_) (v_n : n) (x : idx) (ao : memarg), 
     ((proj_num__0 i) ≠ none) ->
@@ -18586,6 +18820,8 @@ inductive Step : config -> config -> Prop where
     (wf_config (.mk_config z ([.TRAP] : (List instr)))) ->
     ((((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST (numtype_addrtype v_Inn) c), (.STORE (numtype_addrtype v_Inn) (some (.mk_storeop__0 v_Inn (.mk_storeop_Inn (.mk_sz v_n)))) x ao)] : (List instr))) (.mk_config z ([.TRAP] : (List instr)))
   | store_pack_val : forall (z : state) («at» : addrtype) (i : num_) (v_Inn : Inn) (c : num_) (v_n : n) (x : idx) (ao : memarg) (b_lst : (List byte)), 
     ((proj_num__0 i) ≠ none) ->
@@ -18597,6 +18833,9 @@ inductive Step : config -> config -> Prop where
     (wf_config (.mk_config (with_mem z x ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8))))) b_lst) [])) ->
     ((((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    (((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8))))) ≤ (List.length ((((sof z).MEMS)[((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!)]!).BYTES))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.CONST (numtype_addrtype v_Inn) c), (.STORE (numtype_addrtype v_Inn) (some (.mk_storeop__0 v_Inn (.mk_storeop_Inn (.mk_sz v_n)))) x ao)] : (List instr))) (.mk_config (with_mem z x ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_n)) / (Rat.ofInt (Int.ofNat 8))))) b_lst) [])
   | vstore_oob : forall (z : state) («at» : addrtype) (i : num_) (c : vec_) (x : idx) (ao : memarg), 
     ((proj_num__0 i) ≠ none) ->
@@ -18606,6 +18845,8 @@ inductive Step : config -> config -> Prop where
     (wf_config (.mk_config z ([.TRAP] : (List instr)))) ->
     ((((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VCONST .V128 c), (.VSTORE .V128 x ao)] : (List instr))) (.mk_config z ([.TRAP] : (List instr)))
   | vstore_val : forall (z : state) («at» : addrtype) (i : num_) (c : vec_) (x : idx) (ao : memarg) (b_lst : (List byte)), 
     ((proj_num__0 i) ≠ none) ->
@@ -18615,6 +18856,9 @@ inductive Step : config -> config -> Prop where
     (wf_config (.mk_config (with_mem z x ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8))))) b_lst) [])) ->
     ((((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    (((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8))))) ≤ (List.length ((((sof z).MEMS)[((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!)]!).BYTES))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VCONST .V128 c), (.VSTORE .V128 x ao)] : (List instr))) (.mk_config (with_mem z x ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (vsize .V128))) / (Rat.ofInt (Int.ofNat 8))))) b_lst) [])
   | vstore_lane_oob : forall (z : state) («at» : addrtype) (i : num_) (c : vec_) (v_N : N) (x : idx) (ao : memarg) (j : laneidx), 
     ((proj_num__0 i) ≠ none) ->
@@ -18622,6 +18866,8 @@ inductive Step : config -> config -> Prop where
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VCONST .V128 c), (.VSTORE_LANE .V128 (.mk_sz v_N) x ao j)] : (List instr)))) ->
     (wf_config (.mk_config z ([.TRAP] : (List instr)))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VCONST .V128 c), (.VSTORE_LANE .V128 (.mk_sz v_N) x ao j)] : (List instr))) (.mk_config z ([.TRAP] : (List instr)))
   | vstore_lane_val : forall (z : state) («at» : addrtype) (i : num_) (c : vec_) (v_N : N) (x : idx) (ao : memarg) (j : laneidx) (b_lst : (List byte)) (v_Jnn : Jnn) (v_M : M), 
     ((proj_num__0 i) ≠ none) ->
@@ -18636,6 +18882,9 @@ inductive Step : config -> config -> Prop where
     (wf_uN v_N (.mk_uN (proj_uN_0 (Option.get! (proj_lane__0 ((lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c)[(proj_uN_0 j)]!)))))) ->
     ((((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8)))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8)))) ->
     ((Rat.ofInt (Int.ofNat 8)) ≠ 0) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    (((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) + (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8))))) ≤ (List.length ((((sof z).MEMS)[((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!)]!).BYTES))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     ((Rat.ofInt (Int.ofNat v_N)) ≠ 0) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») i), (.VCONST .V128 c), (.VSTORE_LANE .V128 (.mk_sz v_N) x ao j)] : (List instr))) (.mk_config (with_mem z x ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8))))) b_lst) [])
   | memory_grow_succeed : forall (z : state) («at» : addrtype) (v_n : n) (x : idx) (mi : meminst) (var_0 : (Option meminst)), 
@@ -18646,6 +18895,8 @@ inductive Step : config -> config -> Prop where
     (wf_meminst (fun_mem z x)) ->
     (wf_config (.mk_config z ([(.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.MEMORY_GROW x)] : (List instr)))) ->
     (wf_config (.mk_config (with_meminst z x mi) ([(.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (List.length ((fun_mem z x).BYTES)))) / (Rat.ofInt (Int.ofNat (64 * (Ki ))))))))))] : (List instr)))) ->
+    (((((fof z).MODULE).MEMS)[(proj_uN_0 x)]!) < (List.length ((sof z).MEMS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).MEMS))) ->
     ((((Rat.ofInt (Int.ofNat (List.length ((fun_mem z x).BYTES)))) / (Rat.ofInt (Int.ofNat (64 * (Ki )))))).den = 1 ∧ 0 ≤ ((Rat.ofInt (Int.ofNat (List.length ((fun_mem z x).BYTES)))) / (Rat.ofInt (Int.ofNat (64 * (Ki )))))) ->
     ((Rat.ofInt (Int.ofNat (64 * (Ki )))) ≠ 0) ->
     Step (.mk_config z ([(.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN v_n))), (.MEMORY_GROW x)] : (List instr))) (.mk_config (with_meminst z x mi) ([(.CONST (numtype_addrtype «at») (.mk_num__0 «at» (.mk_uN (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat (List.length ((fun_mem z x).BYTES)))) / (Rat.ofInt (Int.ofNat (64 * (Ki ))))))))))] : (List instr)))
@@ -18657,6 +18908,8 @@ inductive Step : config -> config -> Prop where
   | data_drop : forall (z : state) (x : idx), 
     (wf_config (.mk_config z ([(.DATA_DROP x)] : (List instr)))) ->
     (wf_config (.mk_config (with_data z x []) [])) ->
+    (((((fof z).MODULE).DATAS)[(proj_uN_0 x)]!) < (List.length ((sof z).DATAS))) ->
+    ((proj_uN_0 x) < (List.length (((fof z).MODULE).DATAS))) ->
     Step (.mk_config z ([(.DATA_DROP x)] : (List instr))) (.mk_config (with_data z x []) [])
   | struct_new : forall (z : state) (v_n : n) (val_lst : (List val)) (x : idx) (si : structinst) (a : addr) (mut_opt_lst : (List (Option «mut»))) (zt_lst : (List storagetype)) (var_0 : deftype), 
     (fun_type z x var_0) ->
@@ -18689,6 +18942,9 @@ inductive Step : config -> config -> Prop where
     (wf_config (.mk_config (with_struct z a (proj_uN_0 i) (Option.get! (packfield_ (zt_lst[(proj_uN_0 i)]!) v_val))) [])) ->
     (wf_comptype (.STRUCT (.mk_list (List.zipWith (fun (mut_opt : (Option «mut»)) (zt : storagetype) => ((.mk_fieldtype mut_opt zt) : fieldtype)) mut_opt_lst zt_lst)))) ->
     ((List.length mut_opt_lst) = (List.length zt_lst)) ->
+    (a < (List.length ((sof z).STRUCTS))) ->
+    ((proj_uN_0 i) < (List.length ((((sof z).STRUCTS)[a]!).FIELDS))) ->
+    ((proj_uN_0 i) < (List.length zt_lst)) ->
     Step (.mk_config z ([(.REF_STRUCT_ADDR a), (instr_val v_val), (.STRUCT_SET x i)] : (List instr))) (.mk_config (with_struct z a (proj_uN_0 i) (Option.get! (packfield_ (zt_lst[(proj_uN_0 i)]!) v_val))) [])
   | array_new_fixed : forall (z : state) (v_n : n) (val_lst : (List val)) (x : idx) (ai : arrayinst) (a : addr) (mut_opt : (Option «mut»)) (zt : storagetype) (var_0 : deftype), 
     (fun_type z x var_0) ->
@@ -18723,6 +18979,8 @@ inductive Step : config -> config -> Prop where
     (wf_config (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (instr_val v_val), (.ARRAY_SET x)] : (List instr)))) ->
     (wf_config (.mk_config (with_array z a (proj_uN_0 (Option.get! (proj_num__0 i))) (Option.get! (packfield_ zt v_val))) [])) ->
     (wf_comptype (.ARRAY (.mk_fieldtype mut_opt zt))) ->
+    (a < (List.length ((sof z).ARRAYS))) ->
+    ((proj_uN_0 (Option.get! (proj_num__0 i))) < (List.length ((((sof z).ARRAYS)[a]!).FIELDS))) ->
     Step (.mk_config z ([(.REF_ARRAY_ADDR a), (.CONST .I32 i), (instr_val v_val), (.ARRAY_SET x)] : (List instr))) (.mk_config (with_array z a (proj_uN_0 (Option.get! (proj_num__0 i))) (Option.get! (packfield_ zt v_val))) [])
 
 /- Recursive Definition at: ../../specification/wasm-3.0/4.3-execution.instructions.spectec:8.1-8.92 -/

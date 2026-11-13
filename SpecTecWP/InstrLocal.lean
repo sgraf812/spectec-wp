@@ -39,7 +39,7 @@ theorem Step.redex_local_set_aux {c c' : config} (h : Step c c') :
     simp only [config.mk_config.injEq] at heq
     obtain ⟨rfl, rfl⟩ := heq
     exact ⟨vals ++ ws₁', v, by simp, by simp⟩
-  case local_set z₀ v x' _ _ =>
+  case local_set z₀ v x' _ _ _ =>
     intro z ws x hc
     simp only [config.mk_config.injEq] at hc
     obtain ⟨rfl, hc⟩ := hc
@@ -56,7 +56,8 @@ theorem Step.redex_local_set_aux {c c' : config} (h : Step c c') :
     list_contra hc
 
 theorem Code.wp_local_set {x : idx} {v : val} {Q : Assn} {E : EAssn} {z : state} {vs : Stack}
-    (hwz : wf_state (with_local z x v)) (hQ : Q (with_local z x v) vs) :
+    (hx : proj_uN_0 x < (fof z).LOCALS.length) (hwz : wf_state (with_local z x v))
+    (hQ : Q (with_local z x v) vs) :
     Code.wp [.LOCAL_SET x] Q E z (v :: vs) := by
   intro hwf
   have hlist : (v :: vs).reverse.map instr_val ++ [.LOCAL_SET x] =
@@ -64,7 +65,7 @@ theorem Code.wp_local_set {x : idx} {v : val} {Q : Assn} {E : EAssn} {z : state}
   rw [cfg_eq, hlist] at hwf ⊢
   obtain ⟨hs, hi⟩ := wf_redex hwf
   have hstep : Step (.mk_config z [instr_val v, .LOCAL_SET x]) (.mk_config (with_local z x v) []) :=
-    .local_set z v x (wf_config_iff.mpr ⟨hs, hi⟩) (wf_config_iff.mpr ⟨hwz, by simp⟩)
+    .local_set z v x (wf_config_iff.mpr ⟨hs, hi⟩) (wf_config_iff.mpr ⟨hwz, by simp⟩) hx
   refine .step _ ⟨_, Step.under vs.reverse hstep hwf⟩ ?_
   intro c' hs'
   have hs'' : Step (.mk_config z ((vs.reverse ++ [v]).map instr_val ++ [.LOCAL_SET x])) c' := by
@@ -79,7 +80,7 @@ theorem Step_read.local_get_redex {z : state} {ws : List val} {x : idx} {L : Lis
     ws = [] ∧ ∃ v, fun_local z x = some v ∧ L = [instr_val v] := by
   generalize hc : config.mk_config z (ws.map instr_val ++ [.LOCAL_GET x]) = c at h
   cases h
-  case local_get z' x' v hl _ _ _ =>
+  case local_get z' x' v hl _ _ _ _ =>
     simp only [config.mk_config.injEq] at hc
     obtain ⟨rfl, hc⟩ := hc
     have hc' : ws.map instr_val ++ [.LOCAL_GET x] = ([] : List val).map instr_val ++ [.LOCAL_GET x'] :=
@@ -93,6 +94,14 @@ theorem Step_read.local_get_redex {z : state} {ws : List val} {x : idx} {L : Lis
     obtain ⟨-, hc⟩ := hc
     list_contra hc
 
+/-- A local that holds a value lies within the locals of the frame. -/
+theorem lt_length_of_fun_local' {z : state} {x : idx} {v : val} (h : fun_local z x = some v) :
+    proj_uN_0 x < (fof z).LOCALS.length := by
+  simp only [fun_local, List.getElem!_eq_getElem?_getD] at h
+  refine Nat.lt_of_not_le fun hi => ?_
+  rw [List.getElem?_eq_none hi] at h
+  cases h
+
 theorem Code.wp_local_get {x : idx} {v : val} {Q : Assn} {E : EAssn} {z : state} {vs : Stack}
     (hl : fun_local z x = some v) (hwv : wf_val v) (hQ : Q z (v :: vs)) :
     Code.wp [.LOCAL_GET x] Q E z vs := by
@@ -101,7 +110,7 @@ theorem Code.wp_local_get {x : idx} {v : val} {Q : Assn} {E : EAssn} {z : state}
   obtain ⟨hs, hi⟩ := wf_redex hwf
   have hwfR : wf_config (.mk_config z [.LOCAL_GET x]) := wf_config_iff.mpr ⟨hs, hi⟩
   have hr : Step_read (.mk_config z [.LOCAL_GET x]) [instr_val v] :=
-    .local_get z x v hl hwv (by simp [Forall, hl, hwv]) hwfR
+    .local_get z x v hl hwv (by simp [Forall, hl, hwv]) hwfR (lt_length_of_fun_local' hl)
   have hstep := Step.read z _ _ hr hwfR
     (wf_config_iff.mpr ⟨hs, by simpa using wf_instr_of_wf_val hwv⟩)
   refine .step _ ⟨_, Step.under vs.reverse hstep hwf⟩ ?_
