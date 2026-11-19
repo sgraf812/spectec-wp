@@ -152,10 +152,10 @@ def interp_inv_valtype_reftype (y : valtype) : Option {x : reftype // valtype_re
 
 def interp_wf_fNmag_ii_fNmag_case_0 (a0 : N) (a1 : fNmag) : List {o : Unit // (wf_fNmag a0 a1)} :=
   match a0, a1 with
- | v_N, (.NORM v_m v_exp) => ((if h_4537 : (v_m < (2 ^ (fun_M v_N))) then
-((if h_4538 : (((Int.ofNat 2) - (Int.ofNat (2 ^ (Int.toNat ((Int.ofNat (E v_N)) - (Int.ofNat 1)))))) <= v_exp) then
-((if h_4539 : (v_exp <= ((Int.ofNat (2 ^ (Int.toNat ((Int.ofNat (E v_N)) - (Int.ofNat 1))))) - (Int.ofNat 1))) then
-((if h_4540 : (0 ≤ ((Int.ofNat (E v_N)) - (Int.ofNat 1))) then
+ | v_N, (.NORM v_m v_exp) => ((if h_4546 : (v_m < (2 ^ (fun_M v_N))) then
+((if h_4547 : (((Int.ofNat 2) - (Int.ofNat (2 ^ (Int.toNat ((Int.ofNat (E v_N)) - (Int.ofNat 1)))))) <= v_exp) then
+((if h_4548 : (v_exp <= ((Int.ofNat (2 ^ (Int.toNat ((Int.ofNat (E v_N)) - (Int.ofNat 1))))) - (Int.ofNat 1))) then
+((if h_4549 : (0 ≤ ((Int.ofNat (E v_N)) - (Int.ofNat 1))) then
 ([⟨(), by subst_vars; apply wf_fNmag.fNmag_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
 else []))
@@ -165,9 +165,9 @@ else []))
 
 def interp_wf_fNmag_ii_fNmag_case_1 (a0 : N) (a1 : fNmag) : List {o : Unit // (wf_fNmag a0 a1)} :=
   match a0, a1 with
- | v_N, (.SUBNORM v_m) => ((if h_4541 : (v_m < (2 ^ (fun_M v_N))) then
-((match h_4542 : (((Int.ofNat 2) - (Int.ofNat (2 ^ (Int.toNat ((Int.ofNat (E v_N)) - (Int.ofNat 1)))))) : exp) with
- | v_exp => ((if h_4543 : (0 ≤ ((Int.ofNat (E v_N)) - (Int.ofNat 1))) then
+ | v_N, (.SUBNORM v_m) => ((if h_4550 : (v_m < (2 ^ (fun_M v_N))) then
+((match h_4551 : (((Int.ofNat 2) - (Int.ofNat (2 ^ (Int.toNat ((Int.ofNat (E v_N)) - (Int.ofNat 1)))))) : exp) with
+ | v_exp => ((if h_4552 : (0 ≤ ((Int.ofNat (E v_N)) - (Int.ofNat 1))) then
 ([⟨(), by subst_vars; apply wf_fNmag.fNmag_case_1 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))))
 else []))
@@ -180,8 +180,8 @@ def interp_wf_fNmag_ii_fNmag_case_2 (a0 : N) (a1 : fNmag) : List {o : Unit // (w
 
 def interp_wf_fNmag_ii_fNmag_case_3 (a0 : N) (a1 : fNmag) : List {o : Unit // (wf_fNmag a0 a1)} :=
   match a0, a1 with
- | v_N, (.NAN v_m) => ((if h_4544 : (1 <= v_m) then
-((if h_4545 : (v_m < (2 ^ (fun_M v_N))) then
+ | v_N, (.NAN v_m) => ((if h_4553 : (1 <= v_m) then
+((if h_4554 : (v_m < (2 ^ (fun_M v_N))) then
 ([⟨(), by subst_vars; apply wf_fNmag.fNmag_case_3 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
 else []))
@@ -209,7 +209,7 @@ def interp_wf_fN_ii (a0 : N) (a1 : fN) : List {o : Unit // (wf_fN a0 a1)} :=
 
 def interp_fun_fzero_io_fun_fzero_case_0 (a0 : N) : List {o : fN // (fun_fzero a0 o)} :=
   match a0 with
- | v_N => (((interp_wf_fN_ii (v_N) ((.POS (.SUBNORM 0)))).flatMap fun ⟨_, h_4547⟩ => ([⟨(.POS (.SUBNORM 0)), by subst_vars; apply fun_fzero.fun_fzero_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | v_N => (((interp_wf_fN_ii (v_N) ((.POS (.SUBNORM 0)))).flatMap fun ⟨_, h_4556⟩ => ([⟨(.POS (.SUBNORM 0)), by subst_vars; apply fun_fzero.fun_fzero_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
 
 def interp_fun_fzero_io (a0 : N) : List {o : fN // (fun_fzero a0 o)} :=
   interp_fun_fzero_io_fun_fzero_case_0 a0
@@ -1300,56 +1300,56 @@ def interp_wf_vbinop_Jnn_M_iii_vbinop_Jnn_M_case_1 (a0 : Jnn) (a1 : M) (a2 : vbi
 
 def interp_wf_vbinop_Jnn_M_iii_vbinop_Jnn_M_case_2 (a0 : Jnn) (a1 : M) (a2 : vbinop_Jnn_M) : List {o : Unit // (wf_vbinop_Jnn_M a0 a1 a2)} :=
   match a0, a1, a2 with
- | v_Jnn, v_M, (.ADD_SAT v_sx) => ((if h_4503 : ((lsizenn (lanetype_Jnn v_Jnn)) <= 16) then
+ | v_Jnn, v_M, (.ADD_SAT v_sx) => ((if h_4512 : ((lsizenn (lanetype_Jnn v_Jnn)) <= 16) then
 ([⟨(), by subst_vars; apply wf_vbinop_Jnn_M.vbinop_Jnn_M_case_2 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
 
 def interp_wf_vbinop_Jnn_M_iii_vbinop_Jnn_M_case_3 (a0 : Jnn) (a1 : M) (a2 : vbinop_Jnn_M) : List {o : Unit // (wf_vbinop_Jnn_M a0 a1 a2)} :=
   match a0, a1, a2 with
- | v_Jnn, v_M, (.SUB_SAT v_sx) => ((if h_4504 : ((lsizenn (lanetype_Jnn v_Jnn)) <= 16) then
+ | v_Jnn, v_M, (.SUB_SAT v_sx) => ((if h_4513 : ((lsizenn (lanetype_Jnn v_Jnn)) <= 16) then
 ([⟨(), by subst_vars; apply wf_vbinop_Jnn_M.vbinop_Jnn_M_case_3 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
 
 def interp_wf_vbinop_Jnn_M_iii_vbinop_Jnn_M_case_4 (a0 : Jnn) (a1 : M) (a2 : vbinop_Jnn_M) : List {o : Unit // (wf_vbinop_Jnn_M a0 a1 a2)} :=
   match a0, a1, a2 with
- | v_Jnn, v_M, .MUL => ((if h_4505 : ((lsizenn (lanetype_Jnn v_Jnn)) >= 16) then
+ | v_Jnn, v_M, .MUL => ((if h_4514 : ((lsizenn (lanetype_Jnn v_Jnn)) >= 16) then
 ([⟨(), by subst_vars; apply wf_vbinop_Jnn_M.vbinop_Jnn_M_case_4 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
 
 def interp_wf_vbinop_Jnn_M_iii_vbinop_Jnn_M_case_5 (a0 : Jnn) (a1 : M) (a2 : vbinop_Jnn_M) : List {o : Unit // (wf_vbinop_Jnn_M a0 a1 a2)} :=
   match a0, a1, a2 with
- | v_Jnn, v_M, .AVGRU => ((if h_4506 : ((lsizenn (lanetype_Jnn v_Jnn)) <= 16) then
+ | v_Jnn, v_M, .AVGRU => ((if h_4515 : ((lsizenn (lanetype_Jnn v_Jnn)) <= 16) then
 ([⟨(), by subst_vars; apply wf_vbinop_Jnn_M.vbinop_Jnn_M_case_5 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
 
 def interp_wf_vbinop_Jnn_M_iii_vbinop_Jnn_M_case_6 (a0 : Jnn) (a1 : M) (a2 : vbinop_Jnn_M) : List {o : Unit // (wf_vbinop_Jnn_M a0 a1 a2)} :=
   match a0, a1, a2 with
- | v_Jnn, v_M, .Q15MULR_SATS => ((if h_4507 : ((lsizenn (lanetype_Jnn v_Jnn)) = 16) then
+ | v_Jnn, v_M, .Q15MULR_SATS => ((if h_4516 : ((lsizenn (lanetype_Jnn v_Jnn)) = 16) then
 ([⟨(), by subst_vars; apply wf_vbinop_Jnn_M.vbinop_Jnn_M_case_6 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
 
 def interp_wf_vbinop_Jnn_M_iii_vbinop_Jnn_M_case_7 (a0 : Jnn) (a1 : M) (a2 : vbinop_Jnn_M) : List {o : Unit // (wf_vbinop_Jnn_M a0 a1 a2)} :=
   match a0, a1, a2 with
- | v_Jnn, v_M, .RELAXED_Q15MULRS => ((if h_4508 : ((lsizenn (lanetype_Jnn v_Jnn)) = 16) then
+ | v_Jnn, v_M, .RELAXED_Q15MULRS => ((if h_4517 : ((lsizenn (lanetype_Jnn v_Jnn)) = 16) then
 ([⟨(), by subst_vars; apply wf_vbinop_Jnn_M.vbinop_Jnn_M_case_7 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
 
 def interp_wf_vbinop_Jnn_M_iii_vbinop_Jnn_M_case_8 (a0 : Jnn) (a1 : M) (a2 : vbinop_Jnn_M) : List {o : Unit // (wf_vbinop_Jnn_M a0 a1 a2)} :=
   match a0, a1, a2 with
- | v_Jnn, v_M, (.MIN v_sx) => ((if h_4509 : ((lsizenn (lanetype_Jnn v_Jnn)) <= 32) then
+ | v_Jnn, v_M, (.MIN v_sx) => ((if h_4518 : ((lsizenn (lanetype_Jnn v_Jnn)) <= 32) then
 ([⟨(), by subst_vars; apply wf_vbinop_Jnn_M.vbinop_Jnn_M_case_8 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
 
 def interp_wf_vbinop_Jnn_M_iii_vbinop_Jnn_M_case_9 (a0 : Jnn) (a1 : M) (a2 : vbinop_Jnn_M) : List {o : Unit // (wf_vbinop_Jnn_M a0 a1 a2)} :=
   match a0, a1, a2 with
- | v_Jnn, v_M, (.MAX v_sx) => ((if h_4510 : ((lsizenn (lanetype_Jnn v_Jnn)) <= 32) then
+ | v_Jnn, v_M, (.MAX v_sx) => ((if h_4519 : ((lsizenn (lanetype_Jnn v_Jnn)) <= 32) then
 ([⟨(), by subst_vars; apply wf_vbinop_Jnn_M.vbinop_Jnn_M_case_9 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
@@ -2054,7 +2054,7 @@ def interp_fun_vswizzlop__iiiio (a0 : bshape) (a1 : vswizzlop_) (a2 : vec_) (a3 
 
 def interp_wf_bit_i_bit_case_0 (a0 : bit) : List {o : Unit // (wf_bit a0)} :=
   match a0 with
- | (.mk_bit i) => ((if h_4546 : ((i = 0) ∨ (i = 1)) then
+ | (.mk_bit i) => ((if h_4555 : ((i = 0) ∨ (i = 1)) then
 ([⟨(), by subst_vars; apply wf_bit.bit_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
 
@@ -3507,17 +3507,17 @@ def interp_fun_inv_signed__iio (a0 : N) (a1 : Int) : List {o : Nat // (fun_inv_s
 
 def interp_fun_signed__iio_fun_signed__case_0 (a0 : N) (a1 : Nat) : List {o : Int // (fun_signed_ a0 a1 o)} :=
   match a0, a1 with
- | v_N, i => ((if h_4532 : (i < (2 ^ (Int.toNat ((Int.ofNat v_N) - (Int.ofNat 1))))) then
-((if h_4533 : (0 ≤ ((Int.ofNat v_N) - (Int.ofNat 1))) then
+ | v_N, i => ((if h_4541 : (i < (2 ^ (Int.toNat ((Int.ofNat v_N) - (Int.ofNat 1))))) then
+((if h_4542 : (0 ≤ ((Int.ofNat v_N) - (Int.ofNat 1))) then
 ([⟨(Int.ofNat i), by subst_vars; apply fun_signed_.fun_signed__case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
 else []))
 
 def interp_fun_signed__iio_fun_signed__case_1 (a0 : N) (a1 : Nat) : List {o : Int // (fun_signed_ a0 a1 o)} :=
   match a0, a1 with
- | v_N, i => ((if h_4534 : ((2 ^ (Int.toNat ((Int.ofNat v_N) - (Int.ofNat 1)))) <= i) then
-((if h_4535 : (i < (2 ^ v_N)) then
-((if h_4536 : (0 ≤ ((Int.ofNat v_N) - (Int.ofNat 1))) then
+ | v_N, i => ((if h_4543 : ((2 ^ (Int.toNat ((Int.ofNat v_N) - (Int.ofNat 1)))) <= i) then
+((if h_4544 : (i < (2 ^ v_N)) then
+((if h_4545 : (0 ≤ ((Int.ofNat v_N) - (Int.ofNat 1))) then
 ([⟨((Int.ofNat i) - (Int.ofNat (2 ^ v_N))), by subst_vars; apply fun_signed_.fun_signed__case_1 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
 else []))
@@ -4179,7 +4179,7 @@ def interp_wf_catch_i (a0 : «catch») : List {o : Unit // (wf_catch a0)} :=
 
 def interp_wf_char_i_char_case_0 (a0 : char) : List {o : Unit // (wf_char a0)} :=
   match a0 with
- | (.mk_char i) => ((if h_4857 : (((i >= 0) ∧ (i <= 55295)) ∨ ((i >= 57344) ∧ (i <= 1114111))) then
+ | (.mk_char i) => ((if h_4893 : (((i >= 0) ∧ (i <= 55295)) ∨ ((i >= 57344) ∧ (i <= 1114111))) then
 ([⟨(), by subst_vars; apply wf_char.char_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
 
@@ -4199,9 +4199,9 @@ def interp_wf_byte_i (a0 : byte) : List {o : Unit // (wf_byte a0)} :=
 
 def interp_fun_utf8_io_fun_utf8_case_1 (a0 : (List char)) : List {o : (List byte) // (fun_utf8 a0 o)} :=
   match a0 with
- | [ch] => ((if h_4810 : ((proj_char_0 ch) < 128) then
-((match h_4811 : ((.mk_byte (proj_char_0 ch)) : byte) with
- | b => (((interp_wf_byte_i ((.mk_byte (proj_char_0 ch)))).flatMap fun ⟨_, h_4812⟩ => ([⟨([b] : (List byte)), by subst_vars; apply fun_utf8.fun_utf8_case_1 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
+ | [ch] => ((if h_4846 : ((proj_char_0 ch) < 128) then
+((match h_4847 : ((.mk_byte (proj_char_0 ch)) : byte) with
+ | b => (((interp_wf_byte_i ((.mk_byte (proj_char_0 ch)))).flatMap fun ⟨_, h_4848⟩ => ([⟨([b] : (List byte)), by subst_vars; apply fun_utf8.fun_utf8_case_1 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
 else []))
  | _ => []
 
@@ -4210,9 +4210,9 @@ def interp_fun_utf8_io (a0 : (List char)) : List {o : (List byte) // (fun_utf8 a
 
 def interp_wf_name_i_name_case_0 (a0 : name) : List {o : Unit // (wf_name a0)} :=
   match a0 with
- | (.mk_name char_lst) => (((interp_fun_utf8_io (char_lst)).flatMap fun ⟨o_383, h_4745⟩ => (match o_383 with
- | var_0 => ((if h_4746 : ((List.length var_0) < (2 ^ 32)) then
-(((interp_allL (fun (v_char : char) => (interp_wf_char_i (v_char))) char_lst).flatMap fun ⟨_, h_4747⟩ => ([⟨(), by subst_vars; apply wf_name.name_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | (.mk_name char_lst) => (((interp_fun_utf8_io (char_lst)).flatMap fun ⟨o_383, h_4780⟩ => (match o_383 with
+ | var_0 => ((if h_4781 : ((List.length var_0) < (2 ^ 32)) then
+(((interp_allL (fun (v_char : char) => (interp_wf_char_i (v_char))) char_lst).flatMap fun ⟨_, h_4782⟩ => ([⟨(), by subst_vars; apply wf_name.name_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
 else [])))))
 
 def interp_wf_name_i (a0 : name) : List {o : Unit // (wf_name a0)} :=
@@ -4220,14 +4220,14 @@ def interp_wf_name_i (a0 : name) : List {o : Unit // (wf_name a0)} :=
 
 def interp_wf_exportinst_i_exportinst_case_ (a0 : exportinst) : List {o : Unit // (wf_exportinst a0)} :=
   match a0 with
- | { NAME := var_0, ADDR := var_1 } => (((interp_wf_name_i (var_0)).flatMap fun ⟨_, h_4625⟩ => ([⟨(), by subst_vars; apply wf_exportinst.exportinst_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | { NAME := var_0, ADDR := var_1 } => (((interp_wf_name_i (var_0)).flatMap fun ⟨_, h_4634⟩ => ([⟨(), by subst_vars; apply wf_exportinst.exportinst_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
 
 def interp_wf_exportinst_i (a0 : exportinst) : List {o : Unit // (wf_exportinst a0)} :=
   interp_wf_exportinst_i_exportinst_case_ a0
 
 def interp_wf_moduleinst_i_moduleinst_case_ (a0 : moduleinst) : List {o : Unit // (wf_moduleinst a0)} :=
   match a0 with
- | { TYPES := var_0_lst, TAGS := var_1_lst, GLOBALS := var_2_lst, MEMS := var_3_lst, TABLES := var_4_lst, FUNCS := var_5_lst, DATAS := var_6_lst, ELEMS := var_7_lst, EXPORTS := var_8_lst } => (((interp_allL (fun (var_8 : exportinst) => (interp_wf_exportinst_i (var_8))) var_8_lst).flatMap fun ⟨_, h_4466⟩ => ([⟨(), by subst_vars; apply wf_moduleinst.moduleinst_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | { TYPES := var_0_lst, TAGS := var_1_lst, GLOBALS := var_2_lst, MEMS := var_3_lst, TABLES := var_4_lst, FUNCS := var_5_lst, DATAS := var_6_lst, ELEMS := var_7_lst, EXPORTS := var_8_lst } => (((interp_allL (fun (var_8 : exportinst) => (interp_wf_exportinst_i (var_8))) var_8_lst).flatMap fun ⟨_, h_4475⟩ => ([⟨(), by subst_vars; apply wf_moduleinst.moduleinst_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
 
 def interp_wf_moduleinst_i (a0 : moduleinst) : List {o : Unit // (wf_moduleinst a0)} :=
   interp_wf_moduleinst_i_moduleinst_case_ a0
@@ -4241,14 +4241,14 @@ def interp_wf_frame_i (a0 : frame) : List {o : Unit // (wf_frame a0)} :=
 
 def interp_wf_vcvtop__Fnn_1_M_1_Fnn_2_M_2_iiiii_vcvtop__Fnn_1_M_1_Fnn_2_M_2_case_0 (a0 : Fnn) (a1 : M) (a2 : Fnn) (a3 : M) (a4 : vcvtop__Fnn_1_M_1_Fnn_2_M_2) : List {o : Unit // (wf_vcvtop__Fnn_1_M_1_Fnn_2_M_2 a0 a1 a2 a3 a4)} :=
   match a0, a1, a2, a3, a4 with
- | Fnn_1, M_1, Fnn_2, M_2, (.DEMOTE v_zero) => ((if h_4530 : ((sizenn1 (numtype_Fnn Fnn_1)) = (2 * (sizenn2 (numtype_Fnn Fnn_2)))) then
+ | Fnn_1, M_1, Fnn_2, M_2, (.DEMOTE v_zero) => ((if h_4539 : ((sizenn1 (numtype_Fnn Fnn_1)) = (2 * (sizenn2 (numtype_Fnn Fnn_2)))) then
 ([⟨(), by subst_vars; apply wf_vcvtop__Fnn_1_M_1_Fnn_2_M_2.vcvtop__Fnn_1_M_1_Fnn_2_M_2_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _, _, _ => []
 
 def interp_wf_vcvtop__Fnn_1_M_1_Fnn_2_M_2_iiiii_vcvtop__Fnn_1_M_1_Fnn_2_M_2_case_1 (a0 : Fnn) (a1 : M) (a2 : Fnn) (a3 : M) (a4 : vcvtop__Fnn_1_M_1_Fnn_2_M_2) : List {o : Unit // (wf_vcvtop__Fnn_1_M_1_Fnn_2_M_2 a0 a1 a2 a3 a4)} :=
   match a0, a1, a2, a3, a4 with
- | Fnn_1, M_1, Fnn_2, M_2, .PROMOTELOW => ((if h_4531 : ((2 * (sizenn1 (numtype_Fnn Fnn_1))) = (sizenn2 (numtype_Fnn Fnn_2))) then
+ | Fnn_1, M_1, Fnn_2, M_2, .PROMOTELOW => ((if h_4540 : ((2 * (sizenn1 (numtype_Fnn Fnn_1))) = (sizenn2 (numtype_Fnn Fnn_2))) then
 ([⟨(), by subst_vars; apply wf_vcvtop__Fnn_1_M_1_Fnn_2_M_2.vcvtop__Fnn_1_M_1_Fnn_2_M_2_case_1 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _, _, _ => []
@@ -4259,14 +4259,14 @@ def interp_wf_vcvtop__Fnn_1_M_1_Fnn_2_M_2_iiiii (a0 : Fnn) (a1 : M) (a2 : Fnn) (
 
 def interp_wf_vcvtop__Fnn_1_M_1_Inn_2_M_2_iiiii_vcvtop__Fnn_1_M_1_Inn_2_M_2_case_0 (a0 : Fnn) (a1 : M) (a2 : Inn) (a3 : M) (a4 : vcvtop__Fnn_1_M_1_Inn_2_M_2) : List {o : Unit // (wf_vcvtop__Fnn_1_M_1_Inn_2_M_2 a0 a1 a2 a3 a4)} :=
   match a0, a1, a2, a3, a4 with
- | Fnn_1, M_1, Inn_2, M_2, (.TRUNC_SAT v_sx zero_opt) => ((if h_4528 : (((((sizenn1 (numtype_Fnn Fnn_1)) = (lsizenn2 (lanetype_addrtype Inn_2))) ∧ ((lsizenn2 (lanetype_addrtype Inn_2)) = 32)) ∧ (zero_opt = none)) ∨ (((sizenn1 (numtype_Fnn Fnn_1)) = (2 * (lsizenn2 (lanetype_addrtype Inn_2)))) ∧ (zero_opt = (some .ZERO)))) then
+ | Fnn_1, M_1, Inn_2, M_2, (.TRUNC_SAT v_sx zero_opt) => ((if h_4537 : (((((sizenn1 (numtype_Fnn Fnn_1)) = (lsizenn2 (lanetype_addrtype Inn_2))) ∧ ((lsizenn2 (lanetype_addrtype Inn_2)) = 32)) ∧ (zero_opt = none)) ∨ (((sizenn1 (numtype_Fnn Fnn_1)) = (2 * (lsizenn2 (lanetype_addrtype Inn_2)))) ∧ (zero_opt = (some .ZERO)))) then
 ([⟨(), by subst_vars; apply wf_vcvtop__Fnn_1_M_1_Inn_2_M_2.vcvtop__Fnn_1_M_1_Inn_2_M_2_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _, _, _ => []
 
 def interp_wf_vcvtop__Fnn_1_M_1_Inn_2_M_2_iiiii_vcvtop__Fnn_1_M_1_Inn_2_M_2_case_1 (a0 : Fnn) (a1 : M) (a2 : Inn) (a3 : M) (a4 : vcvtop__Fnn_1_M_1_Inn_2_M_2) : List {o : Unit // (wf_vcvtop__Fnn_1_M_1_Inn_2_M_2 a0 a1 a2 a3 a4)} :=
   match a0, a1, a2, a3, a4 with
- | Fnn_1, M_1, Inn_2, M_2, (.RELAXED_TRUNC v_sx zero_opt) => ((if h_4529 : (((((sizenn1 (numtype_Fnn Fnn_1)) = (lsizenn2 (lanetype_addrtype Inn_2))) ∧ ((lsizenn2 (lanetype_addrtype Inn_2)) = 32)) ∧ (zero_opt = none)) ∨ (((sizenn1 (numtype_Fnn Fnn_1)) = (2 * (lsizenn2 (lanetype_addrtype Inn_2)))) ∧ (zero_opt = (some .ZERO)))) then
+ | Fnn_1, M_1, Inn_2, M_2, (.RELAXED_TRUNC v_sx zero_opt) => ((if h_4538 : (((((sizenn1 (numtype_Fnn Fnn_1)) = (lsizenn2 (lanetype_addrtype Inn_2))) ∧ ((lsizenn2 (lanetype_addrtype Inn_2)) = 32)) ∧ (zero_opt = none)) ∨ (((sizenn1 (numtype_Fnn Fnn_1)) = (2 * (lsizenn2 (lanetype_addrtype Inn_2)))) ∧ (zero_opt = (some .ZERO)))) then
 ([⟨(), by subst_vars; apply wf_vcvtop__Fnn_1_M_1_Inn_2_M_2.vcvtop__Fnn_1_M_1_Inn_2_M_2_case_1 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _, _, _ => []
@@ -4277,7 +4277,7 @@ def interp_wf_vcvtop__Fnn_1_M_1_Inn_2_M_2_iiiii (a0 : Fnn) (a1 : M) (a2 : Inn) (
 
 def interp_wf_vcvtop__Jnn_1_M_1_Fnn_2_M_2_iiiii_vcvtop__Jnn_1_M_1_Fnn_2_M_2_case_0 (a0 : Jnn) (a1 : M) (a2 : Fnn) (a3 : M) (a4 : vcvtop__Jnn_1_M_1_Fnn_2_M_2) : List {o : Unit // (wf_vcvtop__Jnn_1_M_1_Fnn_2_M_2 a0 a1 a2 a3 a4)} :=
   match a0, a1, a2, a3, a4 with
- | Jnn_1, M_1, Fnn_2, M_2, (.CONVERT half_opt v_sx) => ((if h_4527 : (((((sizenn2 (numtype_Fnn Fnn_2)) = (lsizenn1 (lanetype_Jnn Jnn_1))) ∧ ((lsizenn1 (lanetype_Jnn Jnn_1)) = 32)) ∧ (half_opt = none)) ∨ (((sizenn2 (numtype_Fnn Fnn_2)) = (2 * (lsizenn1 (lanetype_Jnn Jnn_1)))) ∧ (half_opt = (some .LOW)))) then
+ | Jnn_1, M_1, Fnn_2, M_2, (.CONVERT half_opt v_sx) => ((if h_4536 : (((((sizenn2 (numtype_Fnn Fnn_2)) = (lsizenn1 (lanetype_Jnn Jnn_1))) ∧ ((lsizenn1 (lanetype_Jnn Jnn_1)) = 32)) ∧ (half_opt = none)) ∨ (((sizenn2 (numtype_Fnn Fnn_2)) = (2 * (lsizenn1 (lanetype_Jnn Jnn_1)))) ∧ (half_opt = (some .LOW)))) then
 ([⟨(), by subst_vars; apply wf_vcvtop__Jnn_1_M_1_Fnn_2_M_2.vcvtop__Jnn_1_M_1_Fnn_2_M_2_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
 
@@ -4286,7 +4286,7 @@ def interp_wf_vcvtop__Jnn_1_M_1_Fnn_2_M_2_iiiii (a0 : Jnn) (a1 : M) (a2 : Fnn) (
 
 def interp_wf_vcvtop__Jnn_1_M_1_Jnn_2_M_2_iiiii_vcvtop__Jnn_1_M_1_Jnn_2_M_2_case_0 (a0 : Jnn) (a1 : M) (a2 : Jnn) (a3 : M) (a4 : vcvtop__Jnn_1_M_1_Jnn_2_M_2) : List {o : Unit // (wf_vcvtop__Jnn_1_M_1_Jnn_2_M_2 a0 a1 a2 a3 a4)} :=
   match a0, a1, a2, a3, a4 with
- | Jnn_1, M_1, Jnn_2, M_2, (.EXTEND v_half v_sx) => ((if h_4526 : ((lsizenn2 (lanetype_Jnn Jnn_2)) = (2 * (lsizenn1 (lanetype_Jnn Jnn_1)))) then
+ | Jnn_1, M_1, Jnn_2, M_2, (.EXTEND v_half v_sx) => ((if h_4535 : ((lsizenn2 (lanetype_Jnn Jnn_2)) = (2 * (lsizenn1 (lanetype_Jnn Jnn_1)))) then
 ([⟨(), by subst_vars; apply wf_vcvtop__Jnn_1_M_1_Jnn_2_M_2.vcvtop__Jnn_1_M_1_Jnn_2_M_2_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
 
@@ -4337,8 +4337,8 @@ def interp_wf_vcvtop___iii (a0 : shape) (a1 : shape) (a2 : vcvtop__) : List {o :
 
 def interp_wf_vextternop__Jnn_1_M_1_Jnn_2_M_2_iiiii_vextternop__Jnn_1_M_1_Jnn_2_M_2_case_0 (a0 : Jnn) (a1 : M) (a2 : Jnn) (a3 : M) (a4 : vextternop__Jnn_1_M_1_Jnn_2_M_2) : List {o : Unit // (wf_vextternop__Jnn_1_M_1_Jnn_2_M_2 a0 a1 a2 a3 a4)} :=
   match a0, a1, a2, a3, a4 with
- | Jnn_1, M_1, Jnn_2, M_2, .RELAXED_DOT_ADDS => ((if h_4524 : ((4 * (lsizenn1 (lanetype_Jnn Jnn_1))) = (lsizenn2 (lanetype_Jnn Jnn_2))) then
-((if h_4525 : ((lsizenn2 (lanetype_Jnn Jnn_2)) = 32) then
+ | Jnn_1, M_1, Jnn_2, M_2, .RELAXED_DOT_ADDS => ((if h_4533 : ((4 * (lsizenn1 (lanetype_Jnn Jnn_1))) = (lsizenn2 (lanetype_Jnn Jnn_2))) then
+((if h_4534 : ((lsizenn2 (lanetype_Jnn Jnn_2)) = 32) then
 ([⟨(), by subst_vars; apply wf_vextternop__Jnn_1_M_1_Jnn_2_M_2.vextternop__Jnn_1_M_1_Jnn_2_M_2_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
 else []))
@@ -4359,8 +4359,8 @@ def interp_wf_vextternop___iii (a0 : ishape) (a1 : ishape) (a2 : vextternop__) :
 
 def interp_wf_vextbinop__Jnn_1_M_1_Jnn_2_M_2_iiiii_vextbinop__Jnn_1_M_1_Jnn_2_M_2_case_0 (a0 : Jnn) (a1 : M) (a2 : Jnn) (a3 : M) (a4 : vextbinop__Jnn_1_M_1_Jnn_2_M_2) : List {o : Unit // (wf_vextbinop__Jnn_1_M_1_Jnn_2_M_2 a0 a1 a2 a3 a4)} :=
   match a0, a1, a2, a3, a4 with
- | Jnn_1, M_1, Jnn_2, M_2, (.EXTMUL v_half v_sx) => ((if h_4518 : ((2 * (lsizenn1 (lanetype_Jnn Jnn_1))) = (lsizenn2 (lanetype_Jnn Jnn_2))) then
-((if h_4519 : ((lsizenn2 (lanetype_Jnn Jnn_2)) >= 16) then
+ | Jnn_1, M_1, Jnn_2, M_2, (.EXTMUL v_half v_sx) => ((if h_4527 : ((2 * (lsizenn1 (lanetype_Jnn Jnn_1))) = (lsizenn2 (lanetype_Jnn Jnn_2))) then
+((if h_4528 : ((lsizenn2 (lanetype_Jnn Jnn_2)) >= 16) then
 ([⟨(), by subst_vars; apply wf_vextbinop__Jnn_1_M_1_Jnn_2_M_2.vextbinop__Jnn_1_M_1_Jnn_2_M_2_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
 else []))
@@ -4368,8 +4368,8 @@ else []))
 
 def interp_wf_vextbinop__Jnn_1_M_1_Jnn_2_M_2_iiiii_vextbinop__Jnn_1_M_1_Jnn_2_M_2_case_1 (a0 : Jnn) (a1 : M) (a2 : Jnn) (a3 : M) (a4 : vextbinop__Jnn_1_M_1_Jnn_2_M_2) : List {o : Unit // (wf_vextbinop__Jnn_1_M_1_Jnn_2_M_2 a0 a1 a2 a3 a4)} :=
   match a0, a1, a2, a3, a4 with
- | Jnn_1, M_1, Jnn_2, M_2, .DOTS => ((if h_4520 : ((2 * (lsizenn1 (lanetype_Jnn Jnn_1))) = (lsizenn2 (lanetype_Jnn Jnn_2))) then
-((if h_4521 : ((lsizenn2 (lanetype_Jnn Jnn_2)) = 32) then
+ | Jnn_1, M_1, Jnn_2, M_2, .DOTS => ((if h_4529 : ((2 * (lsizenn1 (lanetype_Jnn Jnn_1))) = (lsizenn2 (lanetype_Jnn Jnn_2))) then
+((if h_4530 : ((lsizenn2 (lanetype_Jnn Jnn_2)) = 32) then
 ([⟨(), by subst_vars; apply wf_vextbinop__Jnn_1_M_1_Jnn_2_M_2.vextbinop__Jnn_1_M_1_Jnn_2_M_2_case_1 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
 else []))
@@ -4377,8 +4377,8 @@ else []))
 
 def interp_wf_vextbinop__Jnn_1_M_1_Jnn_2_M_2_iiiii_vextbinop__Jnn_1_M_1_Jnn_2_M_2_case_2 (a0 : Jnn) (a1 : M) (a2 : Jnn) (a3 : M) (a4 : vextbinop__Jnn_1_M_1_Jnn_2_M_2) : List {o : Unit // (wf_vextbinop__Jnn_1_M_1_Jnn_2_M_2 a0 a1 a2 a3 a4)} :=
   match a0, a1, a2, a3, a4 with
- | Jnn_1, M_1, Jnn_2, M_2, .RELAXED_DOTS => ((if h_4522 : ((2 * (lsizenn1 (lanetype_Jnn Jnn_1))) = (lsizenn2 (lanetype_Jnn Jnn_2))) then
-((if h_4523 : ((lsizenn2 (lanetype_Jnn Jnn_2)) = 16) then
+ | Jnn_1, M_1, Jnn_2, M_2, .RELAXED_DOTS => ((if h_4531 : ((2 * (lsizenn1 (lanetype_Jnn Jnn_1))) = (lsizenn2 (lanetype_Jnn Jnn_2))) then
+((if h_4532 : ((lsizenn2 (lanetype_Jnn Jnn_2)) = 16) then
 ([⟨(), by subst_vars; apply wf_vextbinop__Jnn_1_M_1_Jnn_2_M_2.vextbinop__Jnn_1_M_1_Jnn_2_M_2_case_2 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
 else []))
@@ -4402,9 +4402,9 @@ def interp_wf_vextbinop___iii (a0 : ishape) (a1 : ishape) (a2 : vextbinop__) : L
 
 def interp_wf_vextunop__Jnn_1_M_1_Jnn_2_M_2_iiiii_vextunop__Jnn_1_M_1_Jnn_2_M_2_case_0 (a0 : Jnn) (a1 : M) (a2 : Jnn) (a3 : M) (a4 : vextunop__Jnn_1_M_1_Jnn_2_M_2) : List {o : Unit // (wf_vextunop__Jnn_1_M_1_Jnn_2_M_2 a0 a1 a2 a3 a4)} :=
   match a0, a1, a2, a3, a4 with
- | Jnn_1, M_1, Jnn_2, M_2, (.EXTADD_PAIRWISE v_sx) => ((if h_4515 : (16 <= (2 * (lsizenn1 (lanetype_Jnn Jnn_1)))) then
-((if h_4516 : ((2 * (lsizenn1 (lanetype_Jnn Jnn_1))) = (lsizenn2 (lanetype_Jnn Jnn_2))) then
-((if h_4517 : ((lsizenn2 (lanetype_Jnn Jnn_2)) <= 32) then
+ | Jnn_1, M_1, Jnn_2, M_2, (.EXTADD_PAIRWISE v_sx) => ((if h_4524 : (16 <= (2 * (lsizenn1 (lanetype_Jnn Jnn_1)))) then
+((if h_4525 : ((2 * (lsizenn1 (lanetype_Jnn Jnn_1))) = (lsizenn2 (lanetype_Jnn Jnn_2))) then
+((if h_4526 : ((lsizenn2 (lanetype_Jnn Jnn_2)) <= 32) then
 ([⟨(), by subst_vars; apply wf_vextunop__Jnn_1_M_1_Jnn_2_M_2.vextunop__Jnn_1_M_1_Jnn_2_M_2_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
 else []))
@@ -4463,28 +4463,28 @@ def interp_wf_vrelop_Jnn_M_iii_vrelop_Jnn_M_case_1 (a0 : Jnn) (a1 : M) (a2 : vre
 
 def interp_wf_vrelop_Jnn_M_iii_vrelop_Jnn_M_case_2 (a0 : Jnn) (a1 : M) (a2 : vrelop_Jnn_M) : List {o : Unit // (wf_vrelop_Jnn_M a0 a1 a2)} :=
   match a0, a1, a2 with
- | v_Jnn, v_M, (.LT v_sx) => ((if h_4511 : (((lsizenn (lanetype_Jnn v_Jnn)) ≠ 64) ∨ (v_sx = .S)) then
+ | v_Jnn, v_M, (.LT v_sx) => ((if h_4520 : (((lsizenn (lanetype_Jnn v_Jnn)) ≠ 64) ∨ (v_sx = .S)) then
 ([⟨(), by subst_vars; apply wf_vrelop_Jnn_M.vrelop_Jnn_M_case_2 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
 
 def interp_wf_vrelop_Jnn_M_iii_vrelop_Jnn_M_case_3 (a0 : Jnn) (a1 : M) (a2 : vrelop_Jnn_M) : List {o : Unit // (wf_vrelop_Jnn_M a0 a1 a2)} :=
   match a0, a1, a2 with
- | v_Jnn, v_M, (.GT v_sx) => ((if h_4512 : (((lsizenn (lanetype_Jnn v_Jnn)) ≠ 64) ∨ (v_sx = .S)) then
+ | v_Jnn, v_M, (.GT v_sx) => ((if h_4521 : (((lsizenn (lanetype_Jnn v_Jnn)) ≠ 64) ∨ (v_sx = .S)) then
 ([⟨(), by subst_vars; apply wf_vrelop_Jnn_M.vrelop_Jnn_M_case_3 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
 
 def interp_wf_vrelop_Jnn_M_iii_vrelop_Jnn_M_case_4 (a0 : Jnn) (a1 : M) (a2 : vrelop_Jnn_M) : List {o : Unit // (wf_vrelop_Jnn_M a0 a1 a2)} :=
   match a0, a1, a2 with
- | v_Jnn, v_M, (.LE v_sx) => ((if h_4513 : (((lsizenn (lanetype_Jnn v_Jnn)) ≠ 64) ∨ (v_sx = .S)) then
+ | v_Jnn, v_M, (.LE v_sx) => ((if h_4522 : (((lsizenn (lanetype_Jnn v_Jnn)) ≠ 64) ∨ (v_sx = .S)) then
 ([⟨(), by subst_vars; apply wf_vrelop_Jnn_M.vrelop_Jnn_M_case_4 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
 
 def interp_wf_vrelop_Jnn_M_iii_vrelop_Jnn_M_case_5 (a0 : Jnn) (a1 : M) (a2 : vrelop_Jnn_M) : List {o : Unit // (wf_vrelop_Jnn_M a0 a1 a2)} :=
   match a0, a1, a2 with
- | v_Jnn, v_M, (.GE v_sx) => ((if h_4514 : (((lsizenn (lanetype_Jnn v_Jnn)) ≠ 64) ∨ (v_sx = .S)) then
+ | v_Jnn, v_M, (.GE v_sx) => ((if h_4523 : (((lsizenn (lanetype_Jnn v_Jnn)) ≠ 64) ∨ (v_sx = .S)) then
 ([⟨(), by subst_vars; apply wf_vrelop_Jnn_M.vrelop_Jnn_M_case_5 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
@@ -4554,7 +4554,7 @@ def interp_wf_vunop_Jnn_M_iii_vunop_Jnn_M_case_1 (a0 : Jnn) (a1 : M) (a2 : vunop
 
 def interp_wf_vunop_Jnn_M_iii_vunop_Jnn_M_case_2 (a0 : Jnn) (a1 : M) (a2 : vunop_Jnn_M) : List {o : Unit // (wf_vunop_Jnn_M a0 a1 a2)} :=
   match a0, a1, a2 with
- | v_Jnn, v_M, .POPCNT => ((if h_4502 : ((lsizenn (lanetype_Jnn v_Jnn)) = 8) then
+ | v_Jnn, v_M, .POPCNT => ((if h_4511 : ((lsizenn (lanetype_Jnn v_Jnn)) = 8) then
 ([⟨(), by subst_vars; apply wf_vunop_Jnn_M.vunop_Jnn_M_case_2 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
@@ -4584,14 +4584,14 @@ def interp_wf_vunop__ii (a0 : shape) (a1 : vunop_) : List {o : Unit // (wf_vunop
 
 def interp_wf_cvtop__Fnn_1_Fnn_2_iii_cvtop__Fnn_1_Fnn_2_case_0 (a0 : Fnn) (a1 : Fnn) (a2 : cvtop__Fnn_1_Fnn_2) : List {o : Unit // (wf_cvtop__Fnn_1_Fnn_2 a0 a1 a2)} :=
   match a0, a1, a2 with
- | Fnn_1, Fnn_2, .PROMOTE => ((if h_4500 : ((sizenn1 (numtype_Fnn Fnn_1)) < (sizenn2 (numtype_Fnn Fnn_2))) then
+ | Fnn_1, Fnn_2, .PROMOTE => ((if h_4509 : ((sizenn1 (numtype_Fnn Fnn_1)) < (sizenn2 (numtype_Fnn Fnn_2))) then
 ([⟨(), by subst_vars; apply wf_cvtop__Fnn_1_Fnn_2.cvtop__Fnn_1_Fnn_2_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
 
 def interp_wf_cvtop__Fnn_1_Fnn_2_iii_cvtop__Fnn_1_Fnn_2_case_1 (a0 : Fnn) (a1 : Fnn) (a2 : cvtop__Fnn_1_Fnn_2) : List {o : Unit // (wf_cvtop__Fnn_1_Fnn_2 a0 a1 a2)} :=
   match a0, a1, a2 with
- | Fnn_1, Fnn_2, .DEMOTE => ((if h_4501 : ((sizenn1 (numtype_Fnn Fnn_1)) > (sizenn2 (numtype_Fnn Fnn_2))) then
+ | Fnn_1, Fnn_2, .DEMOTE => ((if h_4510 : ((sizenn1 (numtype_Fnn Fnn_1)) > (sizenn2 (numtype_Fnn Fnn_2))) then
 ([⟨(), by subst_vars; apply wf_cvtop__Fnn_1_Fnn_2.cvtop__Fnn_1_Fnn_2_case_1 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
@@ -4612,7 +4612,7 @@ def interp_wf_cvtop__Fnn_1_Inn_2_iii_cvtop__Fnn_1_Inn_2_case_1 (a0 : Fnn) (a1 : 
 
 def interp_wf_cvtop__Fnn_1_Inn_2_iii_cvtop__Fnn_1_Inn_2_case_2 (a0 : Fnn) (a1 : Inn) (a2 : cvtop__Fnn_1_Inn_2) : List {o : Unit // (wf_cvtop__Fnn_1_Inn_2 a0 a1 a2)} :=
   match a0, a1, a2 with
- | Fnn_1, Inn_2, .REINTERPRET => ((if h_4499 : ((sizenn1 (numtype_Fnn Fnn_1)) = (sizenn2 (numtype_addrtype Inn_2))) then
+ | Fnn_1, Inn_2, .REINTERPRET => ((if h_4508 : ((sizenn1 (numtype_Fnn Fnn_1)) = (sizenn2 (numtype_addrtype Inn_2))) then
 ([⟨(), by subst_vars; apply wf_cvtop__Fnn_1_Inn_2.cvtop__Fnn_1_Inn_2_case_2 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
@@ -4629,7 +4629,7 @@ def interp_wf_cvtop__Inn_1_Fnn_2_iii_cvtop__Inn_1_Fnn_2_case_0 (a0 : Inn) (a1 : 
 
 def interp_wf_cvtop__Inn_1_Fnn_2_iii_cvtop__Inn_1_Fnn_2_case_1 (a0 : Inn) (a1 : Fnn) (a2 : cvtop__Inn_1_Fnn_2) : List {o : Unit // (wf_cvtop__Inn_1_Fnn_2 a0 a1 a2)} :=
   match a0, a1, a2 with
- | Inn_1, Fnn_2, .REINTERPRET => ((if h_4498 : ((sizenn1 (numtype_addrtype Inn_1)) = (sizenn2 (numtype_Fnn Fnn_2))) then
+ | Inn_1, Fnn_2, .REINTERPRET => ((if h_4507 : ((sizenn1 (numtype_addrtype Inn_1)) = (sizenn2 (numtype_Fnn Fnn_2))) then
 ([⟨(), by subst_vars; apply wf_cvtop__Inn_1_Fnn_2.cvtop__Inn_1_Fnn_2_case_1 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
@@ -4640,14 +4640,14 @@ def interp_wf_cvtop__Inn_1_Fnn_2_iii (a0 : Inn) (a1 : Fnn) (a2 : cvtop__Inn_1_Fn
 
 def interp_wf_cvtop__Inn_1_Inn_2_iii_cvtop__Inn_1_Inn_2_case_0 (a0 : Inn) (a1 : Inn) (a2 : cvtop__Inn_1_Inn_2) : List {o : Unit // (wf_cvtop__Inn_1_Inn_2 a0 a1 a2)} :=
   match a0, a1, a2 with
- | Inn_1, Inn_2, (.EXTEND v_sx) => ((if h_4496 : ((sizenn1 (numtype_addrtype Inn_1)) < (sizenn2 (numtype_addrtype Inn_2))) then
+ | Inn_1, Inn_2, (.EXTEND v_sx) => ((if h_4505 : ((sizenn1 (numtype_addrtype Inn_1)) < (sizenn2 (numtype_addrtype Inn_2))) then
 ([⟨(), by subst_vars; apply wf_cvtop__Inn_1_Inn_2.cvtop__Inn_1_Inn_2_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
 
 def interp_wf_cvtop__Inn_1_Inn_2_iii_cvtop__Inn_1_Inn_2_case_1 (a0 : Inn) (a1 : Inn) (a2 : cvtop__Inn_1_Inn_2) : List {o : Unit // (wf_cvtop__Inn_1_Inn_2 a0 a1 a2)} :=
   match a0, a1, a2 with
- | Inn_1, Inn_2, .WRAP => ((if h_4497 : ((sizenn1 (numtype_addrtype Inn_1)) > (sizenn2 (numtype_addrtype Inn_2))) then
+ | Inn_1, Inn_2, .WRAP => ((if h_4506 : ((sizenn1 (numtype_addrtype Inn_1)) > (sizenn2 (numtype_addrtype Inn_2))) then
 ([⟨(), by subst_vars; apply wf_cvtop__Inn_1_Inn_2.cvtop__Inn_1_Inn_2_case_1 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))
  | _, _, _ => []
@@ -4769,8 +4769,8 @@ def interp_wf_unop_Inn_ii_unop_Inn_case_2 (a0 : Inn) (a1 : unop_Inn) : List {o :
 
 def interp_wf_unop_Inn_ii_unop_Inn_case_3 (a0 : Inn) (a1 : unop_Inn) : List {o : Unit // (wf_unop_Inn a0 a1)} :=
   match a0, a1 with
- | v_Inn, (.EXTEND v_sz) => ((if h_4494 : ((proj_sz_0 v_sz) < (sizenn (numtype_addrtype v_Inn))) then
-(((interp_wf_sz_i (v_sz)).flatMap fun ⟨_, h_4495⟩ => ([⟨(), by subst_vars; apply wf_unop_Inn.unop_Inn_case_3 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | v_Inn, (.EXTEND v_sz) => ((if h_4503 : ((proj_sz_0 v_sz) < (sizenn (numtype_addrtype v_Inn))) then
+(((interp_wf_sz_i (v_sz)).flatMap fun ⟨_, h_4504⟩ => ([⟨(), by subst_vars; apply wf_unop_Inn.unop_Inn_case_3 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
 else []))
  | _, _ => []
 
@@ -4926,8 +4926,8 @@ def interp_wf_vloadop__ii (a0 : vectype) (a1 : vloadop_) : List {o : Unit // (wf
 
 def interp_wf_storeop_Inn_ii_storeop_Inn_case_0 (a0 : Inn) (a1 : storeop_Inn) : List {o : Unit // (wf_storeop_Inn a0 a1)} :=
   match a0, a1 with
- | v_Inn, (.mk_storeop_Inn v_sz) => ((if h_4492 : ((proj_sz_0 v_sz) < (sizenn (numtype_addrtype v_Inn))) then
-(((interp_wf_sz_i (v_sz)).flatMap fun ⟨_, h_4493⟩ => ([⟨(), by subst_vars; apply wf_storeop_Inn.storeop_Inn_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | v_Inn, (.mk_storeop_Inn v_sz) => ((if h_4501 : ((proj_sz_0 v_sz) < (sizenn (numtype_addrtype v_Inn))) then
+(((interp_wf_sz_i (v_sz)).flatMap fun ⟨_, h_4502⟩ => ([⟨(), by subst_vars; apply wf_storeop_Inn.storeop_Inn_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
 else []))
 
 def interp_wf_storeop_Inn_ii (a0 : Inn) (a1 : storeop_Inn) : List {o : Unit // (wf_storeop_Inn a0 a1)} :=
@@ -4944,8 +4944,8 @@ def interp_wf_storeop__ii (a0 : numtype) (a1 : storeop_) : List {o : Unit // (wf
 
 def interp_wf_loadop_Inn_ii_loadop_Inn_case_0 (a0 : Inn) (a1 : loadop_Inn) : List {o : Unit // (wf_loadop_Inn a0 a1)} :=
   match a0, a1 with
- | v_Inn, (.mk_loadop_Inn v_sz v_sx) => ((if h_4490 : ((proj_sz_0 v_sz) < (sizenn (numtype_addrtype v_Inn))) then
-(((interp_wf_sz_i (v_sz)).flatMap fun ⟨_, h_4491⟩ => ([⟨(), by subst_vars; apply wf_loadop_Inn.loadop_Inn_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | v_Inn, (.mk_loadop_Inn v_sz v_sx) => ((if h_4499 : ((proj_sz_0 v_sz) < (sizenn (numtype_addrtype v_Inn))) then
+(((interp_wf_sz_i (v_sz)).flatMap fun ⟨_, h_4500⟩ => ([⟨(), by subst_vars; apply wf_loadop_Inn.loadop_Inn_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
 else []))
 
 def interp_wf_loadop_Inn_ii (a0 : Inn) (a1 : loadop_Inn) : List {o : Unit // (wf_loadop_Inn a0 a1)} :=
@@ -5969,38 +5969,38 @@ else []))
 
 def interp_Step_pure_io_return_frame (a0 : (List instr)) : List {o : (List instr) // (Step_pure a0 o)} :=
   match a0 with
- | [(.FRAME_ v_n f y_29)] => (((interp_splits y_29).flatMap fun ⟨(a_30, b_31), h_113⟩ => (((interp_splits a_30).flatMap fun ⟨(a_32, b_33), h_114⟩ => (((interp_splits a_32).flatMap fun ⟨(a_34, b_35), h_115⟩ => ((match interp_invMap interp_inv_instr_val a_34 with
- | some ⟨val'_lst, h_116⟩ => ((match interp_invMap interp_inv_instr_val b_35 with
- | some ⟨val_lst, h_117⟩ => ((if h_118 : (v_n = (List.length val_lst)) then
-((match b_33 with
- | [.RETURN] => ((match b_31 with
+ | [(.FRAME_ v_n f y_29)] => (((interp_splits y_29).flatMap fun ⟨(a_30, b_31), h_113⟩ => (((interp_splits a_30).flatMap fun ⟨(a_32, b_33), h_114⟩ => ((if h_115 : (b_33 = ([.RETURN] : (List instr))) then
+(((interp_splits a_32).flatMap fun ⟨(a_34, b_35), h_116⟩ => ((match interp_invMap interp_inv_instr_val a_34 with
+ | some ⟨val'_lst, h_117⟩ => ((match interp_invMap interp_inv_instr_val b_35 with
+ | some ⟨val_lst, h_118⟩ => ((if h_119 : (v_n = (List.length val_lst)) then
+((match b_31 with
  | instr_lst => (((interp_wf_instr_i ((.FRAME_ v_n f ((((List.map (fun (val' : val) => (instr_val val')) val'_lst) ++ (List.map (fun (v_val : val) => (instr_val v_val)) val_lst)) ++ ([.RETURN] : (List instr))) ++ instr_lst)))).flatMap fun ⟨_, h_121⟩ => ((if h_122 : ((List.length val_lst) = v_n) then
 ([⟨(List.map (fun (v_val : val) => (instr_val v_val)) val_lst), by subst_vars; apply Step_pure.return_frame <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))))))
- | _ => []))
 else []))
  | none => []))
- | none => []))))))))
+ | none => []))))
+else []))))))
  | _ => []
 
 def interp_Step_pure_io_return_label (a0 : (List instr)) : List {o : (List instr) // (Step_pure a0 o)} :=
   match a0 with
- | [(.LABEL_ v_n instr'_lst y_36)] => (((interp_splits y_36).flatMap fun ⟨(a_37, b_38), h_123⟩ => (((interp_splits a_37).flatMap fun ⟨(a_39, b_40), h_124⟩ => ((match interp_invMap interp_inv_instr_val a_39 with
- | some ⟨val_lst, h_125⟩ => ((match b_40 with
- | [.RETURN] => ((match b_38 with
+ | [(.LABEL_ v_n instr'_lst y_36)] => (((interp_splits y_36).flatMap fun ⟨(a_37, b_38), h_123⟩ => (((interp_splits a_37).flatMap fun ⟨(a_39, b_40), h_124⟩ => ((if h_125 : (b_40 = ([.RETURN] : (List instr))) then
+((match interp_invMap interp_inv_instr_val a_39 with
+ | some ⟨val_lst, h_126⟩ => ((match b_38 with
  | instr_lst => (((interp_wf_instr_i ((.LABEL_ v_n instr'_lst (((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([.RETURN] : (List instr))) ++ instr_lst)))).flatMap fun ⟨_, h_128⟩ => (((interp_wf_instr_i (.RETURN)).flatMap fun ⟨_, h_129⟩ => ([⟨((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([.RETURN] : (List instr))), by subst_vars; apply Step_pure.return_label <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
- | _ => []))
- | none => []))))))
+ | none => []))
+else []))))))
  | _ => []
 
 def interp_Step_pure_io_return_handler (a0 : (List instr)) : List {o : (List instr) // (Step_pure a0 o)} :=
   match a0 with
- | [(.HANDLER_ v_n catch_lst y_41)] => (((interp_splits y_41).flatMap fun ⟨(a_42, b_43), h_130⟩ => (((interp_splits a_42).flatMap fun ⟨(a_44, b_45), h_131⟩ => ((match interp_invMap interp_inv_instr_val a_44 with
- | some ⟨val_lst, h_132⟩ => ((match b_45 with
- | [.RETURN] => ((match b_43 with
+ | [(.HANDLER_ v_n catch_lst y_41)] => (((interp_splits y_41).flatMap fun ⟨(a_42, b_43), h_130⟩ => (((interp_splits a_42).flatMap fun ⟨(a_44, b_45), h_131⟩ => ((if h_132 : (b_45 = ([.RETURN] : (List instr))) then
+((match interp_invMap interp_inv_instr_val a_44 with
+ | some ⟨val_lst, h_133⟩ => ((match b_43 with
  | instr_lst => (((interp_wf_instr_i ((.HANDLER_ v_n catch_lst (((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([.RETURN] : (List instr))) ++ instr_lst)))).flatMap fun ⟨_, h_135⟩ => (((interp_wf_instr_i (.RETURN)).flatMap fun ⟨_, h_136⟩ => ([⟨((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([.RETURN] : (List instr))), by subst_vars; apply Step_pure.return_handler <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
- | _ => []))
- | none => []))))))
+ | none => []))
+else []))))))
  | _ => []
 
 def interp_Step_pure_io_handler_vals (a0 : (List instr)) : List {o : (List instr) // (Step_pure a0 o)} :=
@@ -6013,12 +6013,12 @@ def interp_Step_pure_io_handler_vals (a0 : (List instr)) : List {o : (List instr
 def interp_Step_pure_io_trap_instrs (a0 : (List instr)) : List {o : (List instr) // (Step_pure a0 o)} :=
   match a0 with
  | y_47 => (((interp_splits y_47).flatMap fun ⟨(a_48, b_49), h_139⟩ => ((match interp_invMap interp_inv_instr_val a_48 with
- | some ⟨val_lst, h_140⟩ => (((interp_splits b_49).flatMap fun ⟨(a_50, b_51), h_141⟩ => ((match a_50 with
- | [.TRAP] => ((match b_51 with
+ | some ⟨val_lst, h_140⟩ => (((interp_splits b_49).flatMap fun ⟨(a_50, b_51), h_141⟩ => ((if h_142 : (a_50 = ([.TRAP] : (List instr))) then
+((match b_51 with
  | instr_lst => ((if h_144 : ((val_lst ≠ []) ∨ (instr_lst ≠ [])) then
 (((interp_allL (fun (v_val : val) => (interp_wf_val_i (v_val))) val_lst).flatMap fun ⟨_, h_145⟩ => (((interp_allL (fun (v_instr : instr) => (interp_wf_instr_i (v_instr))) instr_lst).flatMap fun ⟨_, h_146⟩ => (((interp_wf_instr_i (.TRAP)).flatMap fun ⟨_, h_147⟩ => ([⟨([.TRAP] : (List instr)), by subst_vars; apply Step_pure.trap_instrs <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
 else []))))
- | _ => []))))
+else []))))
  | none => []))))
 
 def interp_Step_pure_io_trap_label (a0 : (List instr)) : List {o : (List instr) // (Step_pure a0 o)} :=
@@ -6574,17 +6574,17 @@ def interp_Step_pure_io (a0 : (List instr)) : List {o : (List instr) // (Step_pu
 
 def interp_wf_fieldval_i_fieldval_case_0 (a0 : fieldval) : List {o : Unit // (wf_fieldval a0)} :=
   match a0 with
- | (.CONST v_numtype var_0) => (((interp_wf_num__ii (v_numtype) (var_0)).flatMap fun ⟨_, h_4485⟩ => ([⟨(), by subst_vars; apply wf_fieldval.fieldval_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | (.CONST v_numtype var_0) => (((interp_wf_num__ii (v_numtype) (var_0)).flatMap fun ⟨_, h_4494⟩ => ([⟨(), by subst_vars; apply wf_fieldval.fieldval_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
  | _ => []
 
 def interp_wf_fieldval_i_fieldval_case_1 (a0 : fieldval) : List {o : Unit // (wf_fieldval a0)} :=
   match a0 with
- | (.VCONST v_vectype var_0) => (((interp_wf_uN_ii ((vsize v_vectype)) (var_0)).flatMap fun ⟨_, h_4486⟩ => ([⟨(), by subst_vars; apply wf_fieldval.fieldval_case_1 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | (.VCONST v_vectype var_0) => (((interp_wf_uN_ii ((vsize v_vectype)) (var_0)).flatMap fun ⟨_, h_4495⟩ => ([⟨(), by subst_vars; apply wf_fieldval.fieldval_case_1 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
  | _ => []
 
 def interp_wf_fieldval_i_fieldval_case_2 (a0 : fieldval) : List {o : Unit // (wf_fieldval a0)} :=
   match a0 with
- | (.REF_I31_NUM v_u31) => (((interp_wf_uN_ii (31) (v_u31)).flatMap fun ⟨_, h_4487⟩ => ([⟨(), by subst_vars; apply wf_fieldval.fieldval_case_2 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | (.REF_I31_NUM v_u31) => (((interp_wf_uN_ii (31) (v_u31)).flatMap fun ⟨_, h_4496⟩ => ([⟨(), by subst_vars; apply wf_fieldval.fieldval_case_2 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
  | _ => []
 
 def interp_wf_fieldval_i_fieldval_case_3 (a0 : fieldval) : List {o : Unit // (wf_fieldval a0)} :=
@@ -6619,12 +6619,12 @@ def interp_wf_fieldval_i_fieldval_case_8 (a0 : fieldval) : List {o : Unit // (wf
 
 def interp_wf_fieldval_i_fieldval_case_9 (a0 : fieldval) : List {o : Unit // (wf_fieldval a0)} :=
   match a0 with
- | (.REF_EXTERN v_ref) => (((interp_wf_ref_i (v_ref)).flatMap fun ⟨_, h_4488⟩ => ([⟨(), by subst_vars; apply wf_fieldval.fieldval_case_9 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | (.REF_EXTERN v_ref) => (((interp_wf_ref_i (v_ref)).flatMap fun ⟨_, h_4497⟩ => ([⟨(), by subst_vars; apply wf_fieldval.fieldval_case_9 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
  | _ => []
 
 def interp_wf_fieldval_i_fieldval_case_10 (a0 : fieldval) : List {o : Unit // (wf_fieldval a0)} :=
   match a0 with
- | (.PACK v_packtype var_0) => (((interp_wf_uN_ii ((psize v_packtype)) (var_0)).flatMap fun ⟨_, h_4489⟩ => ([⟨(), by subst_vars; apply wf_fieldval.fieldval_case_10 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | (.PACK v_packtype var_0) => (((interp_wf_uN_ii ((psize v_packtype)) (var_0)).flatMap fun ⟨_, h_4498⟩ => ([⟨(), by subst_vars; apply wf_fieldval.fieldval_case_10 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
  | _ => []
 
 def interp_wf_fieldval_i (a0 : fieldval) : List {o : Unit // (wf_fieldval a0)} :=
@@ -6656,14 +6656,14 @@ def interp_fun_type_iio (a0 : state) (a1 : typeidx) : List {o : deftype // (fun_
 
 def interp_wf_limits_i_limits_case_0 (a0 : limits) : List {o : Unit // (wf_limits a0)} :=
   match a0 with
- | (.mk_limits v_u64 u64_opt) => (((interp_wf_uN_ii (64) (v_u64)).flatMap fun ⟨_, h_4630⟩ => (((interp_allL (fun (v_u64 : u64) => (interp_wf_uN_ii (64) (v_u64))) (Option.toList u64_opt)).flatMap fun ⟨_, h_4631⟩ => ([⟨(), by subst_vars; apply wf_limits.limits_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
+ | (.mk_limits v_u64 u64_opt) => (((interp_wf_uN_ii (64) (v_u64)).flatMap fun ⟨_, h_4639⟩ => (((interp_allL (fun (v_u64 : u64) => (interp_wf_uN_ii (64) (v_u64))) (Option.toList u64_opt)).flatMap fun ⟨_, h_4640⟩ => ([⟨(), by subst_vars; apply wf_limits.limits_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
 
 def interp_wf_limits_i (a0 : limits) : List {o : Unit // (wf_limits a0)} :=
   interp_wf_limits_i_limits_case_0 a0
 
 def interp_wf_memtype_i_memtype_case_0 (a0 : memtype) : List {o : Unit // (wf_memtype a0)} :=
   match a0 with
- | (.PAGE v_addrtype v_limits) => (((interp_wf_limits_i (v_limits)).flatMap fun ⟨_, h_4475⟩ => ([⟨(), by subst_vars; apply wf_memtype.memtype_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | (.PAGE v_addrtype v_limits) => (((interp_wf_limits_i (v_limits)).flatMap fun ⟨_, h_4484⟩ => ([⟨(), by subst_vars; apply wf_memtype.memtype_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
 
 def interp_wf_memtype_i (a0 : memtype) : List {o : Unit // (wf_memtype a0)} :=
   interp_wf_memtype_i_memtype_case_0 a0
@@ -6680,7 +6680,7 @@ def interp_fun_growmem_iio (a0 : meminst) (a1 : Nat) : List {o : (Option meminst
 
 def interp_wf_tabletype_i_tabletype_case_0 (a0 : tabletype) : List {o : Unit // (wf_tabletype a0)} :=
   match a0 with
- | (.mk_tabletype v_addrtype v_limits v_reftype) => (((interp_wf_limits_i (v_limits)).flatMap fun ⟨_, h_4471⟩ => (((interp_wf_reftype_i (v_reftype)).flatMap fun ⟨_, h_4472⟩ => ([⟨(), by subst_vars; apply wf_tabletype.tabletype_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
+ | (.mk_tabletype v_addrtype v_limits v_reftype) => (((interp_wf_limits_i (v_limits)).flatMap fun ⟨_, h_4480⟩ => (((interp_wf_reftype_i (v_reftype)).flatMap fun ⟨_, h_4481⟩ => ([⟨(), by subst_vars; apply wf_tabletype.tabletype_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
 
 def interp_wf_tabletype_i (a0 : tabletype) : List {o : Unit // (wf_tabletype a0)} :=
   interp_wf_tabletype_i_tabletype_case_0 a0
@@ -6729,7 +6729,7 @@ def interp_wf_storagetype_i_storagetype_case_4 (a0 : storagetype) : List {o : Un
 
 def interp_wf_storagetype_i_storagetype_case_5 (a0 : storagetype) : List {o : Unit // (wf_storagetype a0)} :=
   match a0 with
- | (.REF null_opt v_heaptype) => (((interp_wf_heaptype_i (v_heaptype)).flatMap fun ⟨_, h_4641⟩ => ([⟨(), by subst_vars; apply wf_storagetype.storagetype_case_5 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | (.REF null_opt v_heaptype) => (((interp_wf_heaptype_i (v_heaptype)).flatMap fun ⟨_, h_4650⟩ => ([⟨(), by subst_vars; apply wf_storagetype.storagetype_case_5 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
  | _ => []
 
 def interp_wf_storagetype_i_storagetype_case_6 (a0 : storagetype) : List {o : Unit // (wf_storagetype a0)} :=
@@ -6760,7 +6760,7 @@ def interp_wf_storagetype_i (a0 : storagetype) : List {o : Unit // (wf_storagety
 
 def interp_wf_fieldtype_i_fieldtype_case_0 (a0 : fieldtype) : List {o : Unit // (wf_fieldtype a0)} :=
   match a0 with
- | (.mk_fieldtype mut_opt v_storagetype) => (((interp_wf_storagetype_i (v_storagetype)).flatMap fun ⟨_, h_4484⟩ => ([⟨(), by subst_vars; apply wf_fieldtype.fieldtype_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | (.mk_fieldtype mut_opt v_storagetype) => (((interp_wf_storagetype_i (v_storagetype)).flatMap fun ⟨_, h_4493⟩ => ([⟨(), by subst_vars; apply wf_fieldtype.fieldtype_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
 
 def interp_wf_fieldtype_i (a0 : fieldtype) : List {o : Unit // (wf_fieldtype a0)} :=
   interp_wf_fieldtype_i_fieldtype_case_0 a0
@@ -6794,7 +6794,7 @@ def interp_wf_taginst_i (a0 : taginst) : List {o : Unit // (wf_taginst a0)} :=
 
 def interp_wf_subtype_i_subtype_case_0 (a0 : subtype) : List {o : Unit // (wf_subtype a0)} :=
   match a0 with
- | (.SUB final_opt typeuse_lst v_comptype) => (((interp_allL (fun (v_typeuse : typeuse) => (interp_wf_typeuse_i (v_typeuse))) typeuse_lst).flatMap fun ⟨_, h_4482⟩ => (((interp_wf_comptype_i (v_comptype)).flatMap fun ⟨_, h_4483⟩ => ([⟨(), by subst_vars; apply wf_subtype.subtype_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
+ | (.SUB final_opt typeuse_lst v_comptype) => (((interp_allL (fun (v_typeuse : typeuse) => (interp_wf_typeuse_i (v_typeuse))) typeuse_lst).flatMap fun ⟨_, h_4491⟩ => (((interp_wf_comptype_i (v_comptype)).flatMap fun ⟨_, h_4492⟩ => ([⟨(), by subst_vars; apply wf_subtype.subtype_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
 
 def interp_wf_subtype_i (a0 : subtype) : List {o : Unit // (wf_subtype a0)} :=
   interp_wf_subtype_i_subtype_case_0 a0
@@ -6804,8 +6804,8 @@ def interp_fun_unrollrt_io (a0 : rectype) : List {o : rectype // (fun_unrollrt a
 
 def interp_fun_unrolldt_io_fun_unrolldt_case_0 (a0 : deftype) : List {o : subtype // (fun_unrolldt a0 o)} :=
   match a0 with
- | (._DEF v_rectype i) => (((interp_fun_unrollrt_io (v_rectype)).flatMap fun ⟨o_364, h_4480⟩ => (match o_364 with
- | var_0 => ((match h_4481 : (var_0 : rectype) with
+ | (._DEF v_rectype i) => (((interp_fun_unrollrt_io (v_rectype)).flatMap fun ⟨o_364, h_4489⟩ => (match o_364 with
+ | var_0 => ((match h_4490 : (var_0 : rectype) with
  | (.REC (.mk_list subtype_lst)) => ([⟨(subtype_lst[i]!), by subst_vars; apply fun_unrolldt.fun_unrolldt_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))))
 
 def interp_fun_unrolldt_io (a0 : deftype) : List {o : subtype // (fun_unrolldt a0 o)} :=
@@ -6832,13 +6832,13 @@ def interp_fun_default__io_fun_default__case_1 (a0 : valtype) : List {o : (Optio
 
 def interp_fun_default__io_fun_default__case_2 (a0 : valtype) : List {o : (Option (Option val)) // (fun_default_ a0 o)} :=
   match a0 with
- | .F32 => (((interp_fun_fzero_io ((size (numtype_Fnn .F32)))).flatMap fun ⟨o_362, h_4477⟩ => (match o_362 with
+ | .F32 => (((interp_fun_fzero_io ((size (numtype_Fnn .F32)))).flatMap fun ⟨o_362, h_4486⟩ => (match o_362 with
  | var_0 => ([⟨(some (some (.CONST (numtype_Fnn .F32) (.mk_num__1 .F32 var_0)))), by subst_vars; apply fun_default_.fun_default__case_2 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))
  | _ => []
 
 def interp_fun_default__io_fun_default__case_3 (a0 : valtype) : List {o : (Option (Option val)) // (fun_default_ a0 o)} :=
   match a0 with
- | .F64 => (((interp_fun_fzero_io ((size (numtype_Fnn .F64)))).flatMap fun ⟨o_363, h_4478⟩ => (match o_363 with
+ | .F64 => (((interp_fun_fzero_io ((size (numtype_Fnn .F64)))).flatMap fun ⟨o_363, h_4487⟩ => (match o_363 with
  | var_0 => ([⟨(some (some (.CONST (numtype_Fnn .F64) (.mk_num__1 .F64 var_0)))), by subst_vars; apply fun_default_.fun_default__case_3 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))
  | _ => []
 
@@ -6868,42 +6868,42 @@ def interp_fun_default__io (a0 : valtype) : List {o : (Option (Option val)) // (
 
 def interp_wf_datainst_i_datainst_case_ (a0 : datainst) : List {o : Unit // (wf_datainst a0)} :=
   match a0 with
- | { BYTES := var_0_lst } => (((interp_allL (fun (var_0 : byte) => (interp_wf_byte_i (var_0))) var_0_lst).flatMap fun ⟨_, h_4476⟩ => ([⟨(), by subst_vars; apply wf_datainst.datainst_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | { BYTES := var_0_lst } => (((interp_allL (fun (var_0 : byte) => (interp_wf_byte_i (var_0))) var_0_lst).flatMap fun ⟨_, h_4485⟩ => ([⟨(), by subst_vars; apply wf_datainst.datainst_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
 
 def interp_wf_datainst_i (a0 : datainst) : List {o : Unit // (wf_datainst a0)} :=
   interp_wf_datainst_i_datainst_case_ a0
 
 def interp_wf_eleminst_i_eleminst_case_ (a0 : eleminst) : List {o : Unit // (wf_eleminst a0)} :=
   match a0 with
- | { TYPE := var_0, REFS := var_1_lst } => (((interp_wf_reftype_i (var_0)).flatMap fun ⟨_, h_4473⟩ => (((interp_allL (fun (var_1 : ref) => (interp_wf_ref_i (var_1))) var_1_lst).flatMap fun ⟨_, h_4474⟩ => ([⟨(), by subst_vars; apply wf_eleminst.eleminst_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
+ | { TYPE := var_0, REFS := var_1_lst } => (((interp_wf_reftype_i (var_0)).flatMap fun ⟨_, h_4482⟩ => (((interp_allL (fun (var_1 : ref) => (interp_wf_ref_i (var_1))) var_1_lst).flatMap fun ⟨_, h_4483⟩ => ([⟨(), by subst_vars; apply wf_eleminst.eleminst_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
 
 def interp_wf_eleminst_i (a0 : eleminst) : List {o : Unit // (wf_eleminst a0)} :=
   interp_wf_eleminst_i_eleminst_case_ a0
 
 def interp_wf_globaltype_i_globaltype_case_0 (a0 : globaltype) : List {o : Unit // (wf_globaltype a0)} :=
   match a0 with
- | (.mk_globaltype mut_opt v_valtype) => (((interp_wf_valtype_i (v_valtype)).flatMap fun ⟨_, h_4629⟩ => ([⟨(), by subst_vars; apply wf_globaltype.globaltype_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | (.mk_globaltype mut_opt v_valtype) => (((interp_wf_valtype_i (v_valtype)).flatMap fun ⟨_, h_4638⟩ => ([⟨(), by subst_vars; apply wf_globaltype.globaltype_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
 
 def interp_wf_globaltype_i (a0 : globaltype) : List {o : Unit // (wf_globaltype a0)} :=
   interp_wf_globaltype_i_globaltype_case_0 a0
 
 def interp_wf_globalinst_i_globalinst_case_ (a0 : globalinst) : List {o : Unit // (wf_globalinst a0)} :=
   match a0 with
- | { TYPE := var_0, VALUE := var_1 } => (((interp_wf_globaltype_i (var_0)).flatMap fun ⟨_, h_4469⟩ => (((interp_wf_val_i (var_1)).flatMap fun ⟨_, h_4470⟩ => ([⟨(), by subst_vars; apply wf_globalinst.globalinst_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
+ | { TYPE := var_0, VALUE := var_1 } => (((interp_wf_globaltype_i (var_0)).flatMap fun ⟨_, h_4478⟩ => (((interp_wf_val_i (var_1)).flatMap fun ⟨_, h_4479⟩ => ([⟨(), by subst_vars; apply wf_globalinst.globalinst_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
 
 def interp_wf_globalinst_i (a0 : globalinst) : List {o : Unit // (wf_globalinst a0)} :=
   interp_wf_globalinst_i_globalinst_case_ a0
 
 def interp_wf_local_i_local_case_0 (a0 : «local») : List {o : Unit // (wf_local a0)} :=
   match a0 with
- | (.LOCAL v_valtype) => (((interp_wf_valtype_i (v_valtype)).flatMap fun ⟨_, h_4748⟩ => ([⟨(), by subst_vars; apply wf_local.local_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | (.LOCAL v_valtype) => (((interp_wf_valtype_i (v_valtype)).flatMap fun ⟨_, h_4783⟩ => ([⟨(), by subst_vars; apply wf_local.local_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
 
 def interp_wf_local_i (a0 : «local») : List {o : Unit // (wf_local a0)} :=
   interp_wf_local_i_local_case_0 a0
 
 def interp_wf_funccode_i_funccode_case_0 (a0 : funccode) : List {o : Unit // (wf_funccode a0)} :=
   match a0 with
- | (.FUNC v_typeidx local_lst v_expr) => (((interp_wf_uN_ii (32) (v_typeidx)).flatMap fun ⟨_, h_4626⟩ => (((interp_allL (fun (v_local : «local») => (interp_wf_local_i (v_local))) local_lst).flatMap fun ⟨_, h_4627⟩ => (((interp_allL (fun (v_expr : instr) => (interp_wf_instr_i (v_expr))) v_expr).flatMap fun ⟨_, h_4628⟩ => ([⟨(), by subst_vars; apply wf_funccode.funccode_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | (.FUNC v_typeidx local_lst v_expr) => (((interp_wf_uN_ii (32) (v_typeidx)).flatMap fun ⟨_, h_4635⟩ => (((interp_allL (fun (v_local : «local») => (interp_wf_local_i (v_local))) local_lst).flatMap fun ⟨_, h_4636⟩ => (((interp_allL (fun (v_expr : instr) => (interp_wf_instr_i (v_expr))) v_expr).flatMap fun ⟨_, h_4637⟩ => ([⟨(), by subst_vars; apply wf_funccode.funccode_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _ => []
 
 def interp_wf_funccode_i_funccode_case_1 (a0 : funccode) : List {o : Unit // (wf_funccode a0)} :=
@@ -6917,21 +6917,21 @@ def interp_wf_funccode_i (a0 : funccode) : List {o : Unit // (wf_funccode a0)} :
 
 def interp_wf_funcinst_i_funcinst_case_ (a0 : funcinst) : List {o : Unit // (wf_funcinst a0)} :=
   match a0 with
- | { TYPE := var_0, MODULE := var_1, CODE := var_2 } => (((interp_wf_moduleinst_i (var_1)).flatMap fun ⟨_, h_4467⟩ => (((interp_wf_funccode_i (var_2)).flatMap fun ⟨_, h_4468⟩ => ([⟨(), by subst_vars; apply wf_funcinst.funcinst_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
+ | { TYPE := var_0, MODULE := var_1, CODE := var_2 } => (((interp_wf_moduleinst_i (var_1)).flatMap fun ⟨_, h_4476⟩ => (((interp_wf_funccode_i (var_2)).flatMap fun ⟨_, h_4477⟩ => ([⟨(), by subst_vars; apply wf_funcinst.funcinst_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
 
 def interp_wf_funcinst_i (a0 : funcinst) : List {o : Unit // (wf_funcinst a0)} :=
   interp_wf_funcinst_i_funcinst_case_ a0
 
 def interp_wf_localtype_i_localtype_case_0 (a0 : localtype) : List {o : Unit // (wf_localtype a0)} :=
   match a0 with
- | (.mk_localtype v_init v_valtype) => (((interp_wf_valtype_i (v_valtype)).flatMap fun ⟨_, h_4744⟩ => ([⟨(), by subst_vars; apply wf_localtype.localtype_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | (.mk_localtype v_init v_valtype) => (((interp_wf_valtype_i (v_valtype)).flatMap fun ⟨_, h_4779⟩ => ([⟨(), by subst_vars; apply wf_localtype.localtype_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
 
 def interp_wf_localtype_i (a0 : localtype) : List {o : Unit // (wf_localtype a0)} :=
   interp_wf_localtype_i_localtype_case_0 a0
 
 def interp_wf_context_i_context_case_ (a0 : context) : List {o : Unit // (wf_context a0)} :=
   match a0 with
- | { TYPES := var_0_lst, TAGS := var_1_lst, GLOBALS := var_2_lst, MEMS := var_3_lst, TABLES := var_4_lst, FUNCS := var_5_lst, DATAS := var_6_lst, ELEMS := var_7_lst, LOCALS := var_8_lst, LABELS := var_9_lst, RETURN := var_10_opt, REFS := var_11_lst, RECS := var_12_lst } => (((interp_allL (fun (var_1 : tagtype) => (interp_wf_typeuse_i (var_1))) var_1_lst).flatMap fun ⟨_, h_4617⟩ => (((interp_allL (fun (var_2 : globaltype) => (interp_wf_globaltype_i (var_2))) var_2_lst).flatMap fun ⟨_, h_4618⟩ => (((interp_allL (fun (var_3 : memtype) => (interp_wf_memtype_i (var_3))) var_3_lst).flatMap fun ⟨_, h_4619⟩ => (((interp_allL (fun (var_4 : tabletype) => (interp_wf_tabletype_i (var_4))) var_4_lst).flatMap fun ⟨_, h_4620⟩ => (((interp_allL (fun (var_7 : elemtype) => (interp_wf_reftype_i (var_7))) var_7_lst).flatMap fun ⟨_, h_4621⟩ => (((interp_allL (fun (var_8 : localtype) => (interp_wf_localtype_i (var_8))) var_8_lst).flatMap fun ⟨_, h_4622⟩ => (((interp_allL (fun (var_11 : funcidx) => (interp_wf_uN_ii (32) (var_11))) var_11_lst).flatMap fun ⟨_, h_4623⟩ => (((interp_allL (fun (var_12 : subtype) => (interp_wf_subtype_i (var_12))) var_12_lst).flatMap fun ⟨_, h_4624⟩ => ([⟨(), by subst_vars; apply wf_context.context_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))))))))
+ | { TYPES := var_0_lst, TAGS := var_1_lst, GLOBALS := var_2_lst, MEMS := var_3_lst, TABLES := var_4_lst, FUNCS := var_5_lst, DATAS := var_6_lst, ELEMS := var_7_lst, LOCALS := var_8_lst, LABELS := var_9_lst, RETURN := var_10_opt, REFS := var_11_lst, RECS := var_12_lst } => (((interp_allL (fun (var_1 : tagtype) => (interp_wf_typeuse_i (var_1))) var_1_lst).flatMap fun ⟨_, h_4626⟩ => (((interp_allL (fun (var_2 : globaltype) => (interp_wf_globaltype_i (var_2))) var_2_lst).flatMap fun ⟨_, h_4627⟩ => (((interp_allL (fun (var_3 : memtype) => (interp_wf_memtype_i (var_3))) var_3_lst).flatMap fun ⟨_, h_4628⟩ => (((interp_allL (fun (var_4 : tabletype) => (interp_wf_tabletype_i (var_4))) var_4_lst).flatMap fun ⟨_, h_4629⟩ => (((interp_allL (fun (var_7 : elemtype) => (interp_wf_reftype_i (var_7))) var_7_lst).flatMap fun ⟨_, h_4630⟩ => (((interp_allL (fun (var_8 : localtype) => (interp_wf_localtype_i (var_8))) var_8_lst).flatMap fun ⟨_, h_4631⟩ => (((interp_allL (fun (var_11 : funcidx) => (interp_wf_uN_ii (32) (var_11))) var_11_lst).flatMap fun ⟨_, h_4632⟩ => (((interp_allL (fun (var_12 : subtype) => (interp_wf_subtype_i (var_12))) var_12_lst).flatMap fun ⟨_, h_4633⟩ => ([⟨(), by subst_vars; apply wf_context.context_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))))))))
 
 def interp_wf_context_i (a0 : context) : List {o : Unit // (wf_context a0)} :=
   interp_wf_context_i_context_case_ a0
@@ -6941,7 +6941,7 @@ def interp_fun_subst_rectype_iiio (a0 : rectype) (a1 : (List typevar)) (a2 : (Li
 
 def interp_fun_subst_deftype_iiio_fun_subst_deftype_case_0 (a0 : deftype) (a1 : (List typevar)) (a2 : (List typeuse)) : List {o : deftype // (fun_subst_deftype a0 a1 a2 o)} :=
   match a0, a1, a2 with
- | (._DEF qt i), tv_lst, tu_lst => (((interp_fun_subst_rectype_iiio (qt) (tv_lst) (tu_lst)).flatMap fun ⟨o_393, h_4860⟩ => (match o_393 with
+ | (._DEF qt i), tv_lst, tu_lst => (((interp_fun_subst_rectype_iiio (qt) (tv_lst) (tu_lst)).flatMap fun ⟨o_393, h_4896⟩ => (match o_393 with
  | var_0 => ([⟨(._DEF var_0 i), by subst_vars; apply fun_subst_deftype.fun_subst_deftype_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))
 
 def interp_fun_subst_deftype_iiio (a0 : deftype) (a1 : (List typevar)) (a2 : (List typeuse)) : List {o : deftype // (fun_subst_deftype a0 a1 a2 o)} :=
@@ -6959,11 +6959,11 @@ partial def interp_fun_clos_deftypes_io_fun_clos_deftypes_case_0 (a0 : (List def
 
 partial def interp_fun_clos_deftypes_io_fun_clos_deftypes_case_1 (a0 : (List deftype)) : List {o : (List deftype) // (fun_clos_deftypes a0 o)} :=
   match a0 with
- | y_397 => (((interp_splits y_397).flatMap fun ⟨(a_398, b_399), h_4914⟩ => ((match a_398 with
+ | y_397 => (((interp_splits y_397).flatMap fun ⟨(a_398, b_399), h_4950⟩ => ((match a_398 with
  | dt_lst => ((match b_399 with
- | [dt_n] => (((interp_fun_clos_deftypes_io (dt_lst)).flatMap fun ⟨o_400, h_4917⟩ => (match o_400 with
- | var_1 => ((match h_4919 : (var_1 : (List deftype)) with
- | dt'_lst => (((interp_fun_subst_all_deftype_iio (dt_n) ((List.map (fun (dt' : deftype) => (typeuse_deftype dt')) dt'_lst))).flatMap fun ⟨o_401, h_4920⟩ => (match o_401 with
+ | [dt_n] => (((interp_fun_clos_deftypes_io (dt_lst)).flatMap fun ⟨o_400, h_4953⟩ => (match o_400 with
+ | var_1 => ((match h_4955 : (var_1 : (List deftype)) with
+ | dt'_lst => (((interp_fun_subst_all_deftype_iio (dt_n) ((List.map (fun (dt' : deftype) => (typeuse_deftype dt')) dt'_lst))).flatMap fun ⟨o_401, h_4956⟩ => (match o_401 with
  | var_0 => ([⟨(dt'_lst ++ ([var_0] : (List deftype))), by subst_vars; apply fun_clos_deftypes.fun_clos_deftypes_case_1 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
  | _ => []))))))
 
@@ -6975,36 +6975,44 @@ end
 
 def interp_fun_clos_deftype_iio_fun_clos_deftype_case_0 (a0 : context) (a1 : deftype) : List {o : deftype // (fun_clos_deftype a0 a1 o)} :=
   match a0, a1 with
- | C, dt => (((interp_fun_clos_deftypes_io ((C.TYPES))).flatMap fun ⟨o_395, h_4886⟩ => (match o_395 with
- | var_1 => ((match h_4888 : (var_1 : (List deftype)) with
- | dt'_lst => (((interp_fun_subst_all_deftype_iio (dt) ((List.map (fun (dt' : deftype) => (typeuse_deftype dt')) dt'_lst))).flatMap fun ⟨o_396, h_4889⟩ => (match o_396 with
+ | C, dt => (((interp_fun_clos_deftypes_io ((C.TYPES))).flatMap fun ⟨o_395, h_4922⟩ => (match o_395 with
+ | var_1 => ((match h_4924 : (var_1 : (List deftype)) with
+ | dt'_lst => (((interp_fun_subst_all_deftype_iio (dt) ((List.map (fun (dt' : deftype) => (typeuse_deftype dt')) dt'_lst))).flatMap fun ⟨o_396, h_4925⟩ => (match o_396 with
  | var_0 => ([⟨var_0, by subst_vars; apply fun_clos_deftype.fun_clos_deftype_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
 
 def interp_fun_clos_deftype_iio (a0 : context) (a1 : deftype) : List {o : deftype // (fun_clos_deftype a0 a1 o)} :=
   interp_fun_clos_deftype_iio_fun_clos_deftype_case_0 a0 a1
 
+def interp_Deftype_sub_iii_refl (a0 : context) (a1 : deftype) (a2 : deftype) : List {o : Unit // (Deftype_sub a0 a1 a2)} :=
+  match a0, a1, a2 with
+ | C, deftype_1, deftype_2 => (((interp_fun_clos_deftype_iio (C) (deftype_2)).flatMap fun ⟨o_389, h_4806⟩ => (match o_389 with
+ | var_1 => (((interp_fun_clos_deftype_iio (C) (deftype_1)).flatMap fun ⟨o_390, h_4807⟩ => (match o_390 with
+ | var_0 => ((if h_4808 : (var_0 = var_1) then
+(((interp_wf_context_i (C)).flatMap fun ⟨_, h_4809⟩ => ([⟨(), by subst_vars; apply Deftype_sub.refl <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+else []))))))))
+
 def interp_Deftype_sub_iii (a0 : context) (a1 : deftype) (a2 : deftype) : List {o : Unit // (Deftype_sub a0 a1 a2)} :=
-  []
+  interp_Deftype_sub_iii_refl a0 a1 a2
 
 def interp_Deftype_ok_io (a0 : context) : List {o : deftype // (Deftype_ok a0 o)} :=
   []
 
 def interp_Typeuse_ok_io_deftype (a0 : context) : List {o : typeuse // (Typeuse_ok a0 o)} :=
   match a0 with
- | C => (((interp_Deftype_ok_io (C)).flatMap fun ⟨o_394, h_4874⟩ => (match o_394 with
- | v_deftype => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4875⟩ => ([⟨(typeuse_deftype v_deftype), by subst_vars; apply Typeuse_ok.deftype <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))))
+ | C => (((interp_Deftype_ok_io (C)).flatMap fun ⟨o_394, h_4910⟩ => (match o_394 with
+ | v_deftype => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4911⟩ => ([⟨(typeuse_deftype v_deftype), by subst_vars; apply Typeuse_ok.deftype <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))))
 
 def interp_Typeuse_ok_io (a0 : context) : List {o : typeuse // (Typeuse_ok a0 o)} :=
   interp_Typeuse_ok_io_deftype a0
 
 def interp_Heaptype_ok_io_typeuse (a0 : context) : List {o : heaptype // (Heaptype_ok a0 o)} :=
   match a0 with
- | C => (((interp_Typeuse_ok_io (C)).flatMap fun ⟨o_387, h_4754⟩ => (match o_387 with
- | v_typeuse => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4755⟩ => (((interp_wf_typeuse_i (v_typeuse)).flatMap fun ⟨_, h_4756⟩ => ([⟨(heaptype_typeuse v_typeuse), by subst_vars; apply Heaptype_ok.typeuse <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))))))
+ | C => (((interp_Typeuse_ok_io (C)).flatMap fun ⟨o_387, h_4789⟩ => (match o_387 with
+ | v_typeuse => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4790⟩ => (((interp_wf_typeuse_i (v_typeuse)).flatMap fun ⟨_, h_4791⟩ => ([⟨(heaptype_typeuse v_typeuse), by subst_vars; apply Heaptype_ok.typeuse <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))))))
 
 def interp_Heaptype_ok_io_bot (a0 : context) : List {o : heaptype // (Heaptype_ok a0 o)} :=
   match a0 with
- | C => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4757⟩ => (((interp_wf_heaptype_i (.BOT)).flatMap fun ⟨_, h_4758⟩ => ([⟨.BOT, by subst_vars; apply Heaptype_ok.bot <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
+ | C => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4792⟩ => (((interp_wf_heaptype_i (.BOT)).flatMap fun ⟨_, h_4793⟩ => ([⟨.BOT, by subst_vars; apply Heaptype_ok.bot <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
 
 def interp_Heaptype_ok_io (a0 : context) : List {o : heaptype // (Heaptype_ok a0 o)} :=
   interp_Heaptype_ok_io_typeuse a0 ++
@@ -7012,36 +7020,42 @@ def interp_Heaptype_ok_io (a0 : context) : List {o : heaptype // (Heaptype_ok a0
 
 mutual
 
+partial def interp_Heaptype_sub_iii_refl (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
+  match a0, a1, a2 with
+ | C, v_heaptype, y_372 => ((if h_4664 : (y_372 = v_heaptype) then
+(((interp_wf_context_i (C)).flatMap fun ⟨_, h_4665⟩ => (((interp_wf_heaptype_i (v_heaptype)).flatMap fun ⟨_, h_4666⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.refl <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
+else []))
+
 partial def interp_Heaptype_sub_iii_trans (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
   match a0, a1, a2 with
- | C, heaptype_1, heaptype_2 => (((interp_Heaptype_ok_io (C)).flatMap fun ⟨o_373, h_4656⟩ => (match o_373 with
- | heaptype' => (((interp_Heaptype_sub_iii (C) (heaptype_1) (heaptype')).flatMap fun ⟨_, h_4657⟩ => (((interp_Heaptype_sub_iii (C) (heaptype') (heaptype_2)).flatMap fun ⟨_, h_4658⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4659⟩ => (((interp_wf_heaptype_i (heaptype_1)).flatMap fun ⟨_, h_4660⟩ => (((interp_wf_heaptype_i (heaptype_2)).flatMap fun ⟨_, h_4661⟩ => (((interp_wf_heaptype_i (heaptype')).flatMap fun ⟨_, h_4662⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.trans <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))))))))))))))
+ | C, heaptype_1, heaptype_2 => (((interp_Heaptype_ok_io (C)).flatMap fun ⟨o_373, h_4667⟩ => (match o_373 with
+ | heaptype' => (((interp_Heaptype_sub_iii (C) (heaptype_1) (heaptype')).flatMap fun ⟨_, h_4668⟩ => (((interp_Heaptype_sub_iii (C) (heaptype') (heaptype_2)).flatMap fun ⟨_, h_4669⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4670⟩ => (((interp_wf_heaptype_i (heaptype_1)).flatMap fun ⟨_, h_4671⟩ => (((interp_wf_heaptype_i (heaptype_2)).flatMap fun ⟨_, h_4672⟩ => (((interp_wf_heaptype_i (heaptype')).flatMap fun ⟨_, h_4673⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.trans <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))))))))))))))
 
 partial def interp_Heaptype_sub_iii_eq_any (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
   match a0, a1, a2 with
- | C, .EQ, .ANY => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4663⟩ => (((interp_wf_heaptype_i (.EQ)).flatMap fun ⟨_, h_4664⟩ => (((interp_wf_heaptype_i (.ANY)).flatMap fun ⟨_, h_4665⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.eq_any <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | C, .EQ, .ANY => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4674⟩ => (((interp_wf_heaptype_i (.EQ)).flatMap fun ⟨_, h_4675⟩ => (((interp_wf_heaptype_i (.ANY)).flatMap fun ⟨_, h_4676⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.eq_any <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _, _, _ => []
 
 partial def interp_Heaptype_sub_iii_i31_eq (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
   match a0, a1, a2 with
- | C, .I31, .EQ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4666⟩ => (((interp_wf_heaptype_i (.I31)).flatMap fun ⟨_, h_4667⟩ => (((interp_wf_heaptype_i (.EQ)).flatMap fun ⟨_, h_4668⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.i31_eq <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | C, .I31, .EQ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4677⟩ => (((interp_wf_heaptype_i (.I31)).flatMap fun ⟨_, h_4678⟩ => (((interp_wf_heaptype_i (.EQ)).flatMap fun ⟨_, h_4679⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.i31_eq <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _, _, _ => []
 
 partial def interp_Heaptype_sub_iii_struct_eq (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
   match a0, a1, a2 with
- | C, .STRUCT, .EQ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4669⟩ => (((interp_wf_heaptype_i (.STRUCT)).flatMap fun ⟨_, h_4670⟩ => (((interp_wf_heaptype_i (.EQ)).flatMap fun ⟨_, h_4671⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.struct_eq <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | C, .STRUCT, .EQ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4680⟩ => (((interp_wf_heaptype_i (.STRUCT)).flatMap fun ⟨_, h_4681⟩ => (((interp_wf_heaptype_i (.EQ)).flatMap fun ⟨_, h_4682⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.struct_eq <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _, _, _ => []
 
 partial def interp_Heaptype_sub_iii_array_eq (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
   match a0, a1, a2 with
- | C, .ARRAY, .EQ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4672⟩ => (((interp_wf_heaptype_i (.ARRAY)).flatMap fun ⟨_, h_4673⟩ => (((interp_wf_heaptype_i (.EQ)).flatMap fun ⟨_, h_4674⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.array_eq <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | C, .ARRAY, .EQ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4683⟩ => (((interp_wf_heaptype_i (.ARRAY)).flatMap fun ⟨_, h_4684⟩ => (((interp_wf_heaptype_i (.EQ)).flatMap fun ⟨_, h_4685⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.array_eq <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _, _, _ => []
 
 partial def interp_Heaptype_sub_iii_struct (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
   match a0, a1, a2 with
  | C, y_374, .STRUCT => ((match interp_inv_heaptype_deftype y_374 with
- | some ⟨v_deftype, h_4675⟩ => (((interp_Expand_io (v_deftype)).flatMap fun ⟨o_375, h_4676⟩ => (match o_375 with
- | (.STRUCT (.mk_list fieldtype_lst)) => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4677⟩ => (((interp_wf_heaptype_i (.STRUCT)).flatMap fun ⟨_, h_4678⟩ => (((interp_wf_comptype_i ((.STRUCT (.mk_list fieldtype_lst)))).flatMap fun ⟨_, h_4679⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.struct <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | some ⟨v_deftype, h_4686⟩ => (((interp_Expand_io (v_deftype)).flatMap fun ⟨o_375, h_4687⟩ => (match o_375 with
+ | (.STRUCT (.mk_list fieldtype_lst)) => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4688⟩ => (((interp_wf_heaptype_i (.STRUCT)).flatMap fun ⟨_, h_4689⟩ => (((interp_wf_comptype_i ((.STRUCT (.mk_list fieldtype_lst)))).flatMap fun ⟨_, h_4690⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.struct <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _ => [])))
  | none => []))
  | _, _, _ => []
@@ -7049,8 +7063,8 @@ partial def interp_Heaptype_sub_iii_struct (a0 : context) (a1 : heaptype) (a2 : 
 partial def interp_Heaptype_sub_iii_array (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
   match a0, a1, a2 with
  | C, y_376, .ARRAY => ((match interp_inv_heaptype_deftype y_376 with
- | some ⟨v_deftype, h_4680⟩ => (((interp_Expand_io (v_deftype)).flatMap fun ⟨o_377, h_4681⟩ => (match o_377 with
- | (.ARRAY v_fieldtype) => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4682⟩ => (((interp_wf_heaptype_i (.ARRAY)).flatMap fun ⟨_, h_4683⟩ => (((interp_wf_comptype_i ((.ARRAY v_fieldtype))).flatMap fun ⟨_, h_4684⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.array <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | some ⟨v_deftype, h_4691⟩ => (((interp_Expand_io (v_deftype)).flatMap fun ⟨o_377, h_4692⟩ => (match o_377 with
+ | (.ARRAY v_fieldtype) => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4693⟩ => (((interp_wf_heaptype_i (.ARRAY)).flatMap fun ⟨_, h_4694⟩ => (((interp_wf_comptype_i ((.ARRAY v_fieldtype))).flatMap fun ⟨_, h_4695⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.array <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _ => [])))
  | none => []))
  | _, _, _ => []
@@ -7058,8 +7072,8 @@ partial def interp_Heaptype_sub_iii_array (a0 : context) (a1 : heaptype) (a2 : h
 partial def interp_Heaptype_sub_iii_func (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
   match a0, a1, a2 with
  | C, y_378, .FUNC => ((match interp_inv_heaptype_deftype y_378 with
- | some ⟨v_deftype, h_4685⟩ => (((interp_Expand_io (v_deftype)).flatMap fun ⟨o_379, h_4686⟩ => (match o_379 with
- | (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst)) => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4687⟩ => (((interp_wf_heaptype_i (.FUNC)).flatMap fun ⟨_, h_4688⟩ => (((interp_wf_comptype_i ((.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst)))).flatMap fun ⟨_, h_4689⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.func <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | some ⟨v_deftype, h_4696⟩ => (((interp_Expand_io (v_deftype)).flatMap fun ⟨o_379, h_4697⟩ => (match o_379 with
+ | (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst)) => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4698⟩ => (((interp_wf_heaptype_i (.FUNC)).flatMap fun ⟨_, h_4699⟩ => (((interp_wf_comptype_i ((.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst)))).flatMap fun ⟨_, h_4700⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.func <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _ => [])))
  | none => []))
  | _, _, _ => []
@@ -7067,58 +7081,87 @@ partial def interp_Heaptype_sub_iii_func (a0 : context) (a1 : heaptype) (a2 : he
 partial def interp_Heaptype_sub_iii_def (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
   match a0, a1, a2 with
  | C, y_380, y_381 => ((match interp_inv_heaptype_deftype y_380 with
- | some ⟨deftype_1, h_4690⟩ => ((match interp_inv_heaptype_deftype y_381 with
- | some ⟨deftype_2, h_4691⟩ => (((interp_Deftype_sub_iii (C) (deftype_1) (deftype_2)).flatMap fun ⟨_, h_4692⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4693⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.def <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
+ | some ⟨deftype_1, h_4701⟩ => ((match interp_inv_heaptype_deftype y_381 with
+ | some ⟨deftype_2, h_4702⟩ => (((interp_Deftype_sub_iii (C) (deftype_1) (deftype_2)).flatMap fun ⟨_, h_4703⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4704⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.def <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
  | none => []))
  | none => []))
 
 partial def interp_Heaptype_sub_iii_typeidx_l (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
   match a0, a1, a2 with
- | C, (._IDX v_typeidx), v_heaptype => ((if h_4694 : ((proj_uN_0 v_typeidx) < (List.length (C.TYPES))) then
-(((interp_Heaptype_sub_iii (C) ((heaptype_deftype ((C.TYPES)[(proj_uN_0 v_typeidx)]!))) (v_heaptype)).flatMap fun ⟨_, h_4695⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4696⟩ => (((interp_wf_heaptype_i (v_heaptype)).flatMap fun ⟨_, h_4697⟩ => (((interp_wf_heaptype_i ((._IDX v_typeidx))).flatMap fun ⟨_, h_4698⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.typeidx_l <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
+ | C, (._IDX v_typeidx), v_heaptype => ((if h_4705 : ((proj_uN_0 v_typeidx) < (List.length (C.TYPES))) then
+(((interp_Heaptype_sub_iii (C) ((heaptype_deftype ((C.TYPES)[(proj_uN_0 v_typeidx)]!))) (v_heaptype)).flatMap fun ⟨_, h_4706⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4707⟩ => (((interp_wf_heaptype_i (v_heaptype)).flatMap fun ⟨_, h_4708⟩ => (((interp_wf_heaptype_i ((._IDX v_typeidx))).flatMap fun ⟨_, h_4709⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.typeidx_l <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
 else []))
  | _, _, _ => []
 
 partial def interp_Heaptype_sub_iii_typeidx_r (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
   match a0, a1, a2 with
- | C, v_heaptype, (._IDX v_typeidx) => ((if h_4699 : ((proj_uN_0 v_typeidx) < (List.length (C.TYPES))) then
-(((interp_Heaptype_sub_iii (C) (v_heaptype) ((heaptype_deftype ((C.TYPES)[(proj_uN_0 v_typeidx)]!)))).flatMap fun ⟨_, h_4700⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4701⟩ => (((interp_wf_heaptype_i (v_heaptype)).flatMap fun ⟨_, h_4702⟩ => (((interp_wf_heaptype_i ((._IDX v_typeidx))).flatMap fun ⟨_, h_4703⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.typeidx_r <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
+ | C, v_heaptype, (._IDX v_typeidx) => ((if h_4710 : ((proj_uN_0 v_typeidx) < (List.length (C.TYPES))) then
+(((interp_Heaptype_sub_iii (C) (v_heaptype) ((heaptype_deftype ((C.TYPES)[(proj_uN_0 v_typeidx)]!)))).flatMap fun ⟨_, h_4711⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4712⟩ => (((interp_wf_heaptype_i (v_heaptype)).flatMap fun ⟨_, h_4713⟩ => (((interp_wf_heaptype_i ((._IDX v_typeidx))).flatMap fun ⟨_, h_4714⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.typeidx_r <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
 else []))
  | _, _, _ => []
 
 partial def interp_Heaptype_sub_iii_rec_struct (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
   match a0, a1, a2 with
- | C, (.REC i), .STRUCT => ((if h_4704 : (i < (List.length (C.RECS))) then
-((match h_4705 : (((C.RECS)[i]!) : subtype) with
- | (.SUB final_opt [] (.STRUCT (.mk_list fieldtype_lst))) => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4706⟩ => (((interp_wf_heaptype_i ((.REC i))).flatMap fun ⟨_, h_4707⟩ => (((interp_wf_heaptype_i (.STRUCT)).flatMap fun ⟨_, h_4708⟩ => (((interp_wf_subtype_i ((.SUB final_opt [] (.STRUCT (.mk_list fieldtype_lst))))).flatMap fun ⟨_, h_4709⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.rec_struct <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
+ | C, (.REC i), .STRUCT => ((if h_4715 : (i < (List.length (C.RECS))) then
+((match h_4716 : (((C.RECS)[i]!) : subtype) with
+ | (.SUB final_opt [] (.STRUCT (.mk_list fieldtype_lst))) => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4717⟩ => (((interp_wf_heaptype_i ((.REC i))).flatMap fun ⟨_, h_4718⟩ => (((interp_wf_heaptype_i (.STRUCT)).flatMap fun ⟨_, h_4719⟩ => (((interp_wf_subtype_i ((.SUB final_opt [] (.STRUCT (.mk_list fieldtype_lst))))).flatMap fun ⟨_, h_4720⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.rec_struct <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
  | _ => []))
 else []))
  | _, _, _ => []
 
 partial def interp_Heaptype_sub_iii_rec_array (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
   match a0, a1, a2 with
- | C, (.REC i), .ARRAY => ((if h_4710 : (i < (List.length (C.RECS))) then
-((match h_4711 : (((C.RECS)[i]!) : subtype) with
- | (.SUB final_opt [] (.ARRAY v_fieldtype)) => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4712⟩ => (((interp_wf_heaptype_i ((.REC i))).flatMap fun ⟨_, h_4713⟩ => (((interp_wf_heaptype_i (.ARRAY)).flatMap fun ⟨_, h_4714⟩ => (((interp_wf_subtype_i ((.SUB final_opt [] (.ARRAY v_fieldtype)))).flatMap fun ⟨_, h_4715⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.rec_array <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
+ | C, (.REC i), .ARRAY => ((if h_4721 : (i < (List.length (C.RECS))) then
+((match h_4722 : (((C.RECS)[i]!) : subtype) with
+ | (.SUB final_opt [] (.ARRAY v_fieldtype)) => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4723⟩ => (((interp_wf_heaptype_i ((.REC i))).flatMap fun ⟨_, h_4724⟩ => (((interp_wf_heaptype_i (.ARRAY)).flatMap fun ⟨_, h_4725⟩ => (((interp_wf_subtype_i ((.SUB final_opt [] (.ARRAY v_fieldtype)))).flatMap fun ⟨_, h_4726⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.rec_array <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
  | _ => []))
 else []))
  | _, _, _ => []
 
 partial def interp_Heaptype_sub_iii_rec_func (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
   match a0, a1, a2 with
- | C, (.REC i), .FUNC => ((if h_4716 : (i < (List.length (C.RECS))) then
-((match h_4717 : (((C.RECS)[i]!) : subtype) with
- | (.SUB final_opt [] (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst))) => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4718⟩ => (((interp_wf_heaptype_i ((.REC i))).flatMap fun ⟨_, h_4719⟩ => (((interp_wf_heaptype_i (.FUNC)).flatMap fun ⟨_, h_4720⟩ => (((interp_wf_subtype_i ((.SUB final_opt [] (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst))))).flatMap fun ⟨_, h_4721⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.rec_func <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
+ | C, (.REC i), .FUNC => ((if h_4727 : (i < (List.length (C.RECS))) then
+((match h_4728 : (((C.RECS)[i]!) : subtype) with
+ | (.SUB final_opt [] (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst))) => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4729⟩ => (((interp_wf_heaptype_i ((.REC i))).flatMap fun ⟨_, h_4730⟩ => (((interp_wf_heaptype_i (.FUNC)).flatMap fun ⟨_, h_4731⟩ => (((interp_wf_subtype_i ((.SUB final_opt [] (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst))))).flatMap fun ⟨_, h_4732⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.rec_func <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
  | _ => []))
+else []))
+ | _, _, _ => []
+
+partial def interp_Heaptype_sub_iii_none (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
+  match a0, a1, a2 with
+ | C, .NONE, v_heaptype => ((if h_4748 : (v_heaptype ≠ .BOT) then
+(((interp_Heaptype_sub_iii (C) (v_heaptype) (.ANY)).flatMap fun ⟨_, h_4749⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4750⟩ => (((interp_wf_heaptype_i (v_heaptype)).flatMap fun ⟨_, h_4751⟩ => (((interp_wf_heaptype_i (.NONE)).flatMap fun ⟨_, h_4752⟩ => (((interp_wf_heaptype_i (.ANY)).flatMap fun ⟨_, h_4753⟩ => (((interp_wf_heaptype_i (.BOT)).flatMap fun ⟨_, h_4754⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.none <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))))
+else []))
+ | _, _, _ => []
+
+partial def interp_Heaptype_sub_iii_nofunc (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
+  match a0, a1, a2 with
+ | C, .NOFUNC, v_heaptype => ((if h_4755 : (v_heaptype ≠ .BOT) then
+(((interp_Heaptype_sub_iii (C) (v_heaptype) (.FUNC)).flatMap fun ⟨_, h_4756⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4757⟩ => (((interp_wf_heaptype_i (v_heaptype)).flatMap fun ⟨_, h_4758⟩ => (((interp_wf_heaptype_i (.NOFUNC)).flatMap fun ⟨_, h_4759⟩ => (((interp_wf_heaptype_i (.FUNC)).flatMap fun ⟨_, h_4760⟩ => (((interp_wf_heaptype_i (.BOT)).flatMap fun ⟨_, h_4761⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.nofunc <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))))
+else []))
+ | _, _, _ => []
+
+partial def interp_Heaptype_sub_iii_noexn (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
+  match a0, a1, a2 with
+ | C, .NOEXN, v_heaptype => ((if h_4762 : (v_heaptype ≠ .BOT) then
+(((interp_Heaptype_sub_iii (C) (v_heaptype) (.EXN)).flatMap fun ⟨_, h_4763⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4764⟩ => (((interp_wf_heaptype_i (v_heaptype)).flatMap fun ⟨_, h_4765⟩ => (((interp_wf_heaptype_i (.NOEXN)).flatMap fun ⟨_, h_4766⟩ => (((interp_wf_heaptype_i (.EXN)).flatMap fun ⟨_, h_4767⟩ => (((interp_wf_heaptype_i (.BOT)).flatMap fun ⟨_, h_4768⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.noexn <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))))
+else []))
+ | _, _, _ => []
+
+partial def interp_Heaptype_sub_iii_noextern (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
+  match a0, a1, a2 with
+ | C, .NOEXTERN, v_heaptype => ((if h_4769 : (v_heaptype ≠ .BOT) then
+(((interp_Heaptype_sub_iii (C) (v_heaptype) (.EXTERN)).flatMap fun ⟨_, h_4770⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4771⟩ => (((interp_wf_heaptype_i (v_heaptype)).flatMap fun ⟨_, h_4772⟩ => (((interp_wf_heaptype_i (.NOEXTERN)).flatMap fun ⟨_, h_4773⟩ => (((interp_wf_heaptype_i (.EXTERN)).flatMap fun ⟨_, h_4774⟩ => (((interp_wf_heaptype_i (.BOT)).flatMap fun ⟨_, h_4775⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.noextern <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))))
 else []))
  | _, _, _ => []
 
 partial def interp_Heaptype_sub_iii_bot (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
   match a0, a1, a2 with
- | C, .BOT, v_heaptype => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4741⟩ => (((interp_wf_heaptype_i (v_heaptype)).flatMap fun ⟨_, h_4742⟩ => (((interp_wf_heaptype_i (.BOT)).flatMap fun ⟨_, h_4743⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.bot <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | C, .BOT, v_heaptype => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4776⟩ => (((interp_wf_heaptype_i (v_heaptype)).flatMap fun ⟨_, h_4777⟩ => (((interp_wf_heaptype_i (.BOT)).flatMap fun ⟨_, h_4778⟩ => ([⟨(), by subst_vars; apply Heaptype_sub.bot <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _, _, _ => []
 
 partial def interp_Heaptype_sub_iii (a0 : context) (a1 : heaptype) (a2 : heaptype) : List {o : Unit // (Heaptype_sub a0 a1 a2)} :=
+  interp_Heaptype_sub_iii_refl a0 a1 a2 ++
   interp_Heaptype_sub_iii_trans a0 a1 a2 ++
   interp_Heaptype_sub_iii_eq_any a0 a1 a2 ++
   interp_Heaptype_sub_iii_i31_eq a0 a1 a2 ++
@@ -7133,18 +7176,22 @@ partial def interp_Heaptype_sub_iii (a0 : context) (a1 : heaptype) (a2 : heaptyp
   interp_Heaptype_sub_iii_rec_struct a0 a1 a2 ++
   interp_Heaptype_sub_iii_rec_array a0 a1 a2 ++
   interp_Heaptype_sub_iii_rec_func a0 a1 a2 ++
+  interp_Heaptype_sub_iii_none a0 a1 a2 ++
+  interp_Heaptype_sub_iii_nofunc a0 a1 a2 ++
+  interp_Heaptype_sub_iii_noexn a0 a1 a2 ++
+  interp_Heaptype_sub_iii_noextern a0 a1 a2 ++
   interp_Heaptype_sub_iii_bot a0 a1 a2
 
 end
 
 def interp_Reftype_sub_iii_nonnull (a0 : context) (a1 : reftype) (a2 : reftype) : List {o : Unit // (Reftype_sub a0 a1 a2)} :=
   match a0, a1, a2 with
- | C, (.REF none ht_1), (.REF none ht_2) => (((interp_Heaptype_sub_iii (C) (ht_1) (ht_2)).flatMap fun ⟨_, h_4609⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4610⟩ => (((interp_wf_reftype_i ((.REF none ht_1))).flatMap fun ⟨_, h_4611⟩ => (((interp_wf_reftype_i ((.REF none ht_2))).flatMap fun ⟨_, h_4612⟩ => ([⟨(), by subst_vars; apply Reftype_sub.nonnull <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
+ | C, (.REF none ht_1), (.REF none ht_2) => (((interp_Heaptype_sub_iii (C) (ht_1) (ht_2)).flatMap fun ⟨_, h_4618⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4619⟩ => (((interp_wf_reftype_i ((.REF none ht_1))).flatMap fun ⟨_, h_4620⟩ => (((interp_wf_reftype_i ((.REF none ht_2))).flatMap fun ⟨_, h_4621⟩ => ([⟨(), by subst_vars; apply Reftype_sub.nonnull <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
  | _, _, _ => []
 
 def interp_Reftype_sub_iii_null (a0 : context) (a1 : reftype) (a2 : reftype) : List {o : Unit // (Reftype_sub a0 a1 a2)} :=
   match a0, a1, a2 with
- | C, (.REF (some .NULL) ht_1), (.REF (some .NULL) ht_2) => (((interp_Heaptype_sub_iii (C) (ht_1) (ht_2)).flatMap fun ⟨_, h_4613⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4614⟩ => (((interp_wf_reftype_i ((.REF (some .NULL) ht_1))).flatMap fun ⟨_, h_4615⟩ => (((interp_wf_reftype_i ((.REF (some .NULL) ht_2))).flatMap fun ⟨_, h_4616⟩ => ([⟨(), by subst_vars; apply Reftype_sub.null <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
+ | C, (.REF (some .NULL) ht_1), (.REF (some .NULL) ht_2) => (((interp_Heaptype_sub_iii (C) (ht_1) (ht_2)).flatMap fun ⟨_, h_4622⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4623⟩ => (((interp_wf_reftype_i ((.REF (some .NULL) ht_1))).flatMap fun ⟨_, h_4624⟩ => (((interp_wf_reftype_i ((.REF (some .NULL) ht_2))).flatMap fun ⟨_, h_4625⟩ => ([⟨(), by subst_vars; apply Reftype_sub.null <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
  | _, _, _ => []
 
 def interp_Reftype_sub_iii (a0 : context) (a1 : reftype) (a2 : reftype) : List {o : Unit // (Reftype_sub a0 a1 a2)} :=
@@ -7153,21 +7200,21 @@ def interp_Reftype_sub_iii (a0 : context) (a1 : reftype) (a2 : reftype) : List {
 
 def interp_Vectype_ok_ii_mk_Vectype_ok (a0 : context) (a1 : vectype) : List {o : Unit // (Vectype_ok a0 a1)} :=
   match a0, a1 with
- | C, v_vectype => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5025⟩ => ([⟨(), by subst_vars; apply Vectype_ok.mk_Vectype_ok <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | C, v_vectype => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5061⟩ => ([⟨(), by subst_vars; apply Vectype_ok.mk_Vectype_ok <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
 
 def interp_Vectype_ok_ii (a0 : context) (a1 : vectype) : List {o : Unit // (Vectype_ok a0 a1)} :=
   interp_Vectype_ok_ii_mk_Vectype_ok a0 a1
 
 def interp_Numtype_ok_ii_mk_Numtype_ok (a0 : context) (a1 : numtype) : List {o : Unit // (Numtype_ok a0 a1)} :=
   match a0, a1 with
- | C, v_numtype => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5024⟩ => ([⟨(), by subst_vars; apply Numtype_ok.mk_Numtype_ok <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | C, v_numtype => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5060⟩ => ([⟨(), by subst_vars; apply Numtype_ok.mk_Numtype_ok <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
 
 def interp_Numtype_ok_ii (a0 : context) (a1 : numtype) : List {o : Unit // (Numtype_ok a0 a1)} :=
   interp_Numtype_ok_ii_mk_Numtype_ok a0 a1
 
 def interp_Packtype_ok_ii_mk_Packtype_ok (a0 : context) (a1 : packtype) : List {o : Unit // (Packtype_ok a0 a1)} :=
   match a0, a1 with
- | C, v_packtype => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5023⟩ => ([⟨(), by subst_vars; apply Packtype_ok.mk_Packtype_ok <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | C, v_packtype => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5059⟩ => ([⟨(), by subst_vars; apply Packtype_ok.mk_Packtype_ok <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
 
 def interp_Packtype_ok_ii (a0 : context) (a1 : packtype) : List {o : Unit // (Packtype_ok a0 a1)} :=
   interp_Packtype_ok_ii_mk_Packtype_ok a0 a1
@@ -7176,7 +7223,7 @@ mutual
 
 partial def interp_Reftype_ok_ii_mk_Reftype_ok (a0 : context) (a1 : reftype) : List {o : Unit // (Reftype_ok a0 a1)} :=
   match a0, a1 with
- | C, (.REF (some .NULL) v_heaptype) => (((interp_Heaptype_ok_ii (C) (v_heaptype)).flatMap fun ⟨_, h_4606⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4607⟩ => (((interp_wf_reftype_i ((.REF (some .NULL) v_heaptype))).flatMap fun ⟨_, h_4608⟩ => ([⟨(), by subst_vars; apply Reftype_ok.mk_Reftype_ok <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | C, (.REF (some .NULL) v_heaptype) => (((interp_Heaptype_ok_ii (C) (v_heaptype)).flatMap fun ⟨_, h_4615⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4616⟩ => (((interp_wf_reftype_i ((.REF (some .NULL) v_heaptype))).flatMap fun ⟨_, h_4617⟩ => ([⟨(), by subst_vars; apply Reftype_ok.mk_Reftype_ok <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _, _ => []
 
 partial def interp_Reftype_ok_ii (a0 : context) (a1 : reftype) : List {o : Unit // (Reftype_ok a0 a1)} :=
@@ -7185,18 +7232,18 @@ partial def interp_Reftype_ok_ii (a0 : context) (a1 : reftype) : List {o : Unit 
 partial def interp_Heaptype_ok_ii_abs (a0 : context) (a1 : heaptype) : List {o : Unit // (Heaptype_ok a0 a1)} :=
   match a0, a1 with
  | C, y_370 => ((match interp_inv_heaptype_absheaptype y_370 with
- | some ⟨v_absheaptype, h_4647⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4648⟩ => ([⟨(), by subst_vars; apply Heaptype_ok.abs <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | some ⟨v_absheaptype, h_4656⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4657⟩ => ([⟨(), by subst_vars; apply Heaptype_ok.abs <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
  | none => []))
 
 partial def interp_Heaptype_ok_ii_typeuse (a0 : context) (a1 : heaptype) : List {o : Unit // (Heaptype_ok a0 a1)} :=
   match a0, a1 with
  | C, y_371 => ((match interp_inv_heaptype_typeuse y_371 with
- | some ⟨v_typeuse, h_4649⟩ => (((interp_Typeuse_ok_ii (C) (v_typeuse)).flatMap fun ⟨_, h_4650⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4651⟩ => (((interp_wf_typeuse_i (v_typeuse)).flatMap fun ⟨_, h_4652⟩ => ([⟨(), by subst_vars; apply Heaptype_ok.typeuse <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | some ⟨v_typeuse, h_4658⟩ => (((interp_Typeuse_ok_ii (C) (v_typeuse)).flatMap fun ⟨_, h_4659⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4660⟩ => (((interp_wf_typeuse_i (v_typeuse)).flatMap fun ⟨_, h_4661⟩ => ([⟨(), by subst_vars; apply Heaptype_ok.typeuse <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | none => []))
 
 partial def interp_Heaptype_ok_ii_bot (a0 : context) (a1 : heaptype) : List {o : Unit // (Heaptype_ok a0 a1)} :=
   match a0, a1 with
- | C, .BOT => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4653⟩ => (((interp_wf_heaptype_i (.BOT)).flatMap fun ⟨_, h_4654⟩ => ([⟨(), by subst_vars; apply Heaptype_ok.bot <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
+ | C, .BOT => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4662⟩ => (((interp_wf_heaptype_i (.BOT)).flatMap fun ⟨_, h_4663⟩ => ([⟨(), by subst_vars; apply Heaptype_ok.bot <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
  | _, _ => []
 
 partial def interp_Heaptype_ok_ii (a0 : context) (a1 : heaptype) : List {o : Unit // (Heaptype_ok a0 a1)} :=
@@ -7206,24 +7253,24 @@ partial def interp_Heaptype_ok_ii (a0 : context) (a1 : heaptype) : List {o : Uni
 
 partial def interp_Typeuse_ok_ii_typeidx (a0 : context) (a1 : typeuse) : List {o : Unit // (Typeuse_ok a0 a1)} :=
   match a0, a1 with
- | C, (._IDX v_typeidx) => ((if h_4759 : ((proj_uN_0 v_typeidx) < (List.length (C.TYPES))) then
-((match h_4760 : (((C.TYPES)[(proj_uN_0 v_typeidx)]!) : deftype) with
- | dt => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4761⟩ => (((interp_wf_typeuse_i ((._IDX v_typeidx))).flatMap fun ⟨_, h_4762⟩ => ([⟨(), by subst_vars; apply Typeuse_ok.typeidx <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | C, (._IDX v_typeidx) => ((if h_4794 : ((proj_uN_0 v_typeidx) < (List.length (C.TYPES))) then
+((match h_4795 : (((C.TYPES)[(proj_uN_0 v_typeidx)]!) : deftype) with
+ | dt => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4796⟩ => (((interp_wf_typeuse_i ((._IDX v_typeidx))).flatMap fun ⟨_, h_4797⟩ => ([⟨(), by subst_vars; apply Typeuse_ok.typeidx <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
 else []))
  | _, _ => []
 
 partial def interp_Typeuse_ok_ii_rec (a0 : context) (a1 : typeuse) : List {o : Unit // (Typeuse_ok a0 a1)} :=
   match a0, a1 with
- | C, (.REC i) => ((if h_4763 : (i < (List.length (C.RECS))) then
-((match h_4764 : (((C.RECS)[i]!) : subtype) with
- | st => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4765⟩ => (((interp_wf_subtype_i (st)).flatMap fun ⟨_, h_4766⟩ => (((interp_wf_typeuse_i ((.REC i))).flatMap fun ⟨_, h_4767⟩ => ([⟨(), by subst_vars; apply Typeuse_ok.rec_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
+ | C, (.REC i) => ((if h_4798 : (i < (List.length (C.RECS))) then
+((match h_4799 : (((C.RECS)[i]!) : subtype) with
+ | st => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4800⟩ => (((interp_wf_subtype_i (st)).flatMap fun ⟨_, h_4801⟩ => (((interp_wf_typeuse_i ((.REC i))).flatMap fun ⟨_, h_4802⟩ => ([⟨(), by subst_vars; apply Typeuse_ok.rec_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
 else []))
  | _, _ => []
 
 partial def interp_Typeuse_ok_ii_deftype (a0 : context) (a1 : typeuse) : List {o : Unit // (Typeuse_ok a0 a1)} :=
   match a0, a1 with
  | C, y_388 => ((match interp_inv_typeuse_deftype y_388 with
- | some ⟨v_deftype, h_4768⟩ => (((interp_Deftype_ok_ii (C) (v_deftype)).flatMap fun ⟨_, h_4769⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4770⟩ => ([⟨(), by subst_vars; apply Typeuse_ok.deftype <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
+ | some ⟨v_deftype, h_4803⟩ => (((interp_Deftype_ok_ii (C) (v_deftype)).flatMap fun ⟨_, h_4804⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4805⟩ => ([⟨(), by subst_vars; apply Typeuse_ok.deftype <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
  | none => []))
 
 partial def interp_Typeuse_ok_ii (a0 : context) (a1 : typeuse) : List {o : Unit // (Typeuse_ok a0 a1)} :=
@@ -7233,9 +7280,9 @@ partial def interp_Typeuse_ok_ii (a0 : context) (a1 : typeuse) : List {o : Unit 
 
 partial def interp_Deftype_ok_ii_mk_Deftype_ok (a0 : context) (a1 : deftype) : List {o : Unit // (Deftype_ok a0 a1)} :=
   match a0, a1 with
- | C, (._DEF v_rectype i) => ((match h_4877 : (v_rectype : rectype) with
- | (.REC (.mk_list subtype_lst)) => (((interp_Rectype_ok2_iii (({ TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := subtype_lst } ++ C)) (v_rectype) ((.OK 0))).flatMap fun ⟨_, h_4878⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4880⟩ => (((interp_wf_context_i ({ TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := subtype_lst })).flatMap fun ⟨_, h_4882⟩ => ((match h_4884 : ((List.length subtype_lst) : Nat) with
- | v_n => ((if h_4885 : (i < v_n) then
+ | C, (._DEF v_rectype i) => ((match h_4913 : (v_rectype : rectype) with
+ | (.REC (.mk_list subtype_lst)) => (((interp_Rectype_ok2_iii (({ TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := subtype_lst } ++ C)) (v_rectype) ((.OK 0))).flatMap fun ⟨_, h_4914⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4916⟩ => (((interp_wf_context_i ({ TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := subtype_lst })).flatMap fun ⟨_, h_4918⟩ => ((match h_4920 : ((List.length subtype_lst) : Nat) with
+ | v_n => ((if h_4921 : (i < v_n) then
 ([⟨(), by subst_vars; apply Deftype_ok.mk_Deftype_ok <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])
 else []))))))))))))
 
@@ -7244,12 +7291,12 @@ partial def interp_Deftype_ok_ii (a0 : context) (a1 : deftype) : List {o : Unit 
 
 partial def interp_Rectype_ok2_iii_empty (a0 : context) (a1 : rectype) (a2 : oktypenat) : List {o : Unit // (Rectype_ok2 a0 a1 a2)} :=
   match a0, a1, a2 with
- | C, (.REC (.mk_list [])), (.OK i) => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4908⟩ => ([⟨(), by subst_vars; apply Rectype_ok2.empty <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | C, (.REC (.mk_list [])), (.OK i) => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4944⟩ => ([⟨(), by subst_vars; apply Rectype_ok2.empty <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
  | _, _, _ => []
 
 partial def interp_Rectype_ok2_iii_cons (a0 : context) (a1 : rectype) (a2 : oktypenat) : List {o : Unit // (Rectype_ok2 a0 a1 a2)} :=
   match a0, a1, a2 with
- | C, (.REC (.mk_list (subtype_1 :: subtype_lst))), (.OK i) => (((interp_Subtype_ok2_iii (C) (subtype_1) ((.OK i))).flatMap fun ⟨_, h_4909⟩ => (((interp_Rectype_ok2_iii (C) ((.REC (.mk_list subtype_lst))) ((.OK (i + 1)))).flatMap fun ⟨_, h_4910⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4911⟩ => (((interp_wf_subtype_i (subtype_1)).flatMap fun ⟨_, h_4912⟩ => (((interp_allL (fun (v_subtype : subtype) => (interp_wf_subtype_i (v_subtype))) subtype_lst).flatMap fun ⟨_, h_4913⟩ => ([⟨(), by subst_vars; apply Rectype_ok2.cons <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))
+ | C, (.REC (.mk_list (subtype_1 :: subtype_lst))), (.OK i) => (((interp_Subtype_ok2_iii (C) (subtype_1) ((.OK i))).flatMap fun ⟨_, h_4945⟩ => (((interp_Rectype_ok2_iii (C) ((.REC (.mk_list subtype_lst))) ((.OK (i + 1)))).flatMap fun ⟨_, h_4946⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4947⟩ => (((interp_wf_subtype_i (subtype_1)).flatMap fun ⟨_, h_4948⟩ => (((interp_allL (fun (v_subtype : subtype) => (interp_wf_subtype_i (v_subtype))) subtype_lst).flatMap fun ⟨_, h_4949⟩ => ([⟨(), by subst_vars; apply Rectype_ok2.cons <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))
  | _, _, _ => []
 
 partial def interp_Rectype_ok2_iii (a0 : context) (a1 : rectype) (a2 : oktypenat) : List {o : Unit // (Rectype_ok2 a0 a1 a2)} :=
@@ -7261,17 +7308,17 @@ partial def interp_Subtype_ok2_iii (a0 : context) (a1 : subtype) (a2 : oktypenat
 
 partial def interp_Comptype_ok_ii_struct (a0 : context) (a1 : comptype) : List {o : Unit // (Comptype_ok a0 a1)} :=
   match a0, a1 with
- | C, (.STRUCT (.mk_list fieldtype_lst)) => (((interp_allL (fun (v_fieldtype : fieldtype) => (interp_Fieldtype_ok_ii (C) (v_fieldtype))) fieldtype_lst).flatMap fun ⟨_, h_4988⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4989⟩ => (((interp_wf_comptype_i ((.STRUCT (.mk_list fieldtype_lst)))).flatMap fun ⟨_, h_4990⟩ => ([⟨(), by subst_vars; apply Comptype_ok.struct <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | C, (.STRUCT (.mk_list fieldtype_lst)) => (((interp_allL (fun (v_fieldtype : fieldtype) => (interp_Fieldtype_ok_ii (C) (v_fieldtype))) fieldtype_lst).flatMap fun ⟨_, h_5024⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5025⟩ => (((interp_wf_comptype_i ((.STRUCT (.mk_list fieldtype_lst)))).flatMap fun ⟨_, h_5026⟩ => ([⟨(), by subst_vars; apply Comptype_ok.struct <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _, _ => []
 
 partial def interp_Comptype_ok_ii_array (a0 : context) (a1 : comptype) : List {o : Unit // (Comptype_ok a0 a1)} :=
   match a0, a1 with
- | C, (.ARRAY v_fieldtype) => (((interp_Fieldtype_ok_ii (C) (v_fieldtype)).flatMap fun ⟨_, h_4991⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4992⟩ => (((interp_wf_comptype_i ((.ARRAY v_fieldtype))).flatMap fun ⟨_, h_4993⟩ => ([⟨(), by subst_vars; apply Comptype_ok.array <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | C, (.ARRAY v_fieldtype) => (((interp_Fieldtype_ok_ii (C) (v_fieldtype)).flatMap fun ⟨_, h_5027⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5028⟩ => (((interp_wf_comptype_i ((.ARRAY v_fieldtype))).flatMap fun ⟨_, h_5029⟩ => ([⟨(), by subst_vars; apply Comptype_ok.array <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _, _ => []
 
 partial def interp_Comptype_ok_ii_func (a0 : context) (a1 : comptype) : List {o : Unit // (Comptype_ok a0 a1)} :=
   match a0, a1 with
- | C, (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst)) => (((interp_Resulttype_ok_ii (C) ((.mk_list t_1_lst))).flatMap fun ⟨_, h_4994⟩ => (((interp_Resulttype_ok_ii (C) ((.mk_list t_2_lst))).flatMap fun ⟨_, h_4995⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4996⟩ => (((interp_wf_comptype_i ((.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst)))).flatMap fun ⟨_, h_4997⟩ => ([⟨(), by subst_vars; apply Comptype_ok.func <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
+ | C, (.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst)) => (((interp_Resulttype_ok_ii (C) ((.mk_list t_1_lst))).flatMap fun ⟨_, h_5030⟩ => (((interp_Resulttype_ok_ii (C) ((.mk_list t_2_lst))).flatMap fun ⟨_, h_5031⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5032⟩ => (((interp_wf_comptype_i ((.FUNC (.mk_list t_1_lst) (.mk_list t_2_lst)))).flatMap fun ⟨_, h_5033⟩ => ([⟨(), by subst_vars; apply Comptype_ok.func <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
  | _, _ => []
 
 partial def interp_Comptype_ok_ii (a0 : context) (a1 : comptype) : List {o : Unit // (Comptype_ok a0 a1)} :=
@@ -7281,7 +7328,7 @@ partial def interp_Comptype_ok_ii (a0 : context) (a1 : comptype) : List {o : Uni
 
 partial def interp_Resulttype_ok_ii_mk_Resulttype_ok (a0 : context) (a1 : resulttype) : List {o : Unit // (Resulttype_ok a0 a1)} :=
   match a0, a1 with
- | C, (.mk_list t_lst) => (((interp_allL (fun (t : valtype) => (interp_Valtype_ok_ii (C) (t))) t_lst).flatMap fun ⟨_, h_5001⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5002⟩ => (((interp_allL (fun (t : valtype) => (interp_wf_valtype_i (t))) t_lst).flatMap fun ⟨_, h_5003⟩ => ([⟨(), by subst_vars; apply Resulttype_ok.mk_Resulttype_ok <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | C, (.mk_list t_lst) => (((interp_allL (fun (t : valtype) => (interp_Valtype_ok_ii (C) (t))) t_lst).flatMap fun ⟨_, h_5037⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5038⟩ => (((interp_allL (fun (t : valtype) => (interp_wf_valtype_i (t))) t_lst).flatMap fun ⟨_, h_5039⟩ => ([⟨(), by subst_vars; apply Resulttype_ok.mk_Resulttype_ok <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
 
 partial def interp_Resulttype_ok_ii (a0 : context) (a1 : resulttype) : List {o : Unit // (Resulttype_ok a0 a1)} :=
   interp_Resulttype_ok_ii_mk_Resulttype_ok a0 a1
@@ -7289,24 +7336,24 @@ partial def interp_Resulttype_ok_ii (a0 : context) (a1 : resulttype) : List {o :
 partial def interp_Valtype_ok_ii_num (a0 : context) (a1 : valtype) : List {o : Unit // (Valtype_ok a0 a1)} :=
   match a0, a1 with
  | C, y_405 => ((match interp_inv_valtype_numtype y_405 with
- | some ⟨v_numtype, h_5011⟩ => (((interp_Numtype_ok_ii (C) (v_numtype)).flatMap fun ⟨_, h_5012⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5013⟩ => ([⟨(), by subst_vars; apply Valtype_ok.num <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
+ | some ⟨v_numtype, h_5047⟩ => (((interp_Numtype_ok_ii (C) (v_numtype)).flatMap fun ⟨_, h_5048⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5049⟩ => ([⟨(), by subst_vars; apply Valtype_ok.num <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
  | none => []))
 
 partial def interp_Valtype_ok_ii_vec (a0 : context) (a1 : valtype) : List {o : Unit // (Valtype_ok a0 a1)} :=
   match a0, a1 with
  | C, y_406 => ((match interp_inv_valtype_vectype y_406 with
- | some ⟨v_vectype, h_5014⟩ => (((interp_Vectype_ok_ii (C) (v_vectype)).flatMap fun ⟨_, h_5015⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5016⟩ => ([⟨(), by subst_vars; apply Valtype_ok.vec <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
+ | some ⟨v_vectype, h_5050⟩ => (((interp_Vectype_ok_ii (C) (v_vectype)).flatMap fun ⟨_, h_5051⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5052⟩ => ([⟨(), by subst_vars; apply Valtype_ok.vec <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
  | none => []))
 
 partial def interp_Valtype_ok_ii_ref (a0 : context) (a1 : valtype) : List {o : Unit // (Valtype_ok a0 a1)} :=
   match a0, a1 with
  | C, y_407 => ((match interp_inv_valtype_reftype y_407 with
- | some ⟨v_reftype, h_5017⟩ => (((interp_Reftype_ok_ii (C) (v_reftype)).flatMap fun ⟨_, h_5018⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5019⟩ => (((interp_wf_reftype_i (v_reftype)).flatMap fun ⟨_, h_5020⟩ => ([⟨(), by subst_vars; apply Valtype_ok.ref <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | some ⟨v_reftype, h_5053⟩ => (((interp_Reftype_ok_ii (C) (v_reftype)).flatMap fun ⟨_, h_5054⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5055⟩ => (((interp_wf_reftype_i (v_reftype)).flatMap fun ⟨_, h_5056⟩ => ([⟨(), by subst_vars; apply Valtype_ok.ref <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | none => []))
 
 partial def interp_Valtype_ok_ii_bot (a0 : context) (a1 : valtype) : List {o : Unit // (Valtype_ok a0 a1)} :=
   match a0, a1 with
- | C, .BOT => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5021⟩ => (((interp_wf_valtype_i (.BOT)).flatMap fun ⟨_, h_5022⟩ => ([⟨(), by subst_vars; apply Valtype_ok.bot <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
+ | C, .BOT => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5057⟩ => (((interp_wf_valtype_i (.BOT)).flatMap fun ⟨_, h_5058⟩ => ([⟨(), by subst_vars; apply Valtype_ok.bot <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
  | _, _ => []
 
 partial def interp_Valtype_ok_ii (a0 : context) (a1 : valtype) : List {o : Unit // (Valtype_ok a0 a1)} :=
@@ -7317,7 +7364,7 @@ partial def interp_Valtype_ok_ii (a0 : context) (a1 : valtype) : List {o : Unit 
 
 partial def interp_Fieldtype_ok_ii_mk_Fieldtype_ok (a0 : context) (a1 : fieldtype) : List {o : Unit // (Fieldtype_ok a0 a1)} :=
   match a0, a1 with
- | C, (.mk_fieldtype (some .MUT) v_storagetype) => (((interp_Storagetype_ok_ii (C) (v_storagetype)).flatMap fun ⟨_, h_4998⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4999⟩ => (((interp_wf_fieldtype_i ((.mk_fieldtype (some .MUT) v_storagetype))).flatMap fun ⟨_, h_5000⟩ => ([⟨(), by subst_vars; apply Fieldtype_ok.mk_Fieldtype_ok <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | C, (.mk_fieldtype (some .MUT) v_storagetype) => (((interp_Storagetype_ok_ii (C) (v_storagetype)).flatMap fun ⟨_, h_5034⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5035⟩ => (((interp_wf_fieldtype_i ((.mk_fieldtype (some .MUT) v_storagetype))).flatMap fun ⟨_, h_5036⟩ => ([⟨(), by subst_vars; apply Fieldtype_ok.mk_Fieldtype_ok <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _, _ => []
 
 partial def interp_Fieldtype_ok_ii (a0 : context) (a1 : fieldtype) : List {o : Unit // (Fieldtype_ok a0 a1)} :=
@@ -7326,13 +7373,13 @@ partial def interp_Fieldtype_ok_ii (a0 : context) (a1 : fieldtype) : List {o : U
 partial def interp_Storagetype_ok_ii_val (a0 : context) (a1 : storagetype) : List {o : Unit // (Storagetype_ok a0 a1)} :=
   match a0, a1 with
  | C, y_403 => ((match interp_inv_storagetype_valtype y_403 with
- | some ⟨v_valtype, h_5004⟩ => (((interp_Valtype_ok_ii (C) (v_valtype)).flatMap fun ⟨_, h_5005⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5006⟩ => (((interp_wf_valtype_i (v_valtype)).flatMap fun ⟨_, h_5007⟩ => ([⟨(), by subst_vars; apply Storagetype_ok.val <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | some ⟨v_valtype, h_5040⟩ => (((interp_Valtype_ok_ii (C) (v_valtype)).flatMap fun ⟨_, h_5041⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5042⟩ => (((interp_wf_valtype_i (v_valtype)).flatMap fun ⟨_, h_5043⟩ => ([⟨(), by subst_vars; apply Storagetype_ok.val <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | none => []))
 
 partial def interp_Storagetype_ok_ii_pack (a0 : context) (a1 : storagetype) : List {o : Unit // (Storagetype_ok a0 a1)} :=
   match a0, a1 with
  | C, y_404 => ((match interp_inv_storagetype_packtype y_404 with
- | some ⟨v_packtype, h_5008⟩ => (((interp_Packtype_ok_ii (C) (v_packtype)).flatMap fun ⟨_, h_5009⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5010⟩ => ([⟨(), by subst_vars; apply Storagetype_ok.pack <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
+ | some ⟨v_packtype, h_5044⟩ => (((interp_Packtype_ok_ii (C) (v_packtype)).flatMap fun ⟨_, h_5045⟩ => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_5046⟩ => ([⟨(), by subst_vars; apply Storagetype_ok.pack <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))
  | none => []))
 
 partial def interp_Storagetype_ok_ii (a0 : context) (a1 : storagetype) : List {o : Unit // (Storagetype_ok a0 a1)} :=
@@ -7343,22 +7390,22 @@ end
 
 def interp_Reftype_ok_io_mk_Reftype_ok (a0 : context) : List {o : reftype // (Reftype_ok a0 o)} :=
   match a0 with
- | C => (((interp_Heaptype_ok_io (C)).flatMap fun ⟨o_369, h_4644⟩ => (match o_369 with
- | v_heaptype => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4645⟩ => (((interp_wf_reftype_i ((.REF (some .NULL) v_heaptype))).flatMap fun ⟨_, h_4646⟩ => ([⟨(.REF (some .NULL) v_heaptype), by subst_vars; apply Reftype_ok.mk_Reftype_ok <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))))))
+ | C => (((interp_Heaptype_ok_io (C)).flatMap fun ⟨o_369, h_4653⟩ => (match o_369 with
+ | v_heaptype => (((interp_wf_context_i (C)).flatMap fun ⟨_, h_4654⟩ => (((interp_wf_reftype_i ((.REF (some .NULL) v_heaptype))).flatMap fun ⟨_, h_4655⟩ => ([⟨(.REF (some .NULL) v_heaptype), by subst_vars; apply Reftype_ok.mk_Reftype_ok <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))))))
 
 def interp_Reftype_ok_io (a0 : context) : List {o : reftype // (Reftype_ok a0 o)} :=
   interp_Reftype_ok_io_mk_Reftype_ok a0
 
 def interp_wf_structinst_i_structinst_case_ (a0 : structinst) : List {o : Unit // (wf_structinst a0)} :=
   match a0 with
- | { TYPE := var_0, FIELDS := var_1_lst } => (((interp_allL (fun (var_1 : fieldval) => (interp_wf_fieldval_i (var_1))) var_1_lst).flatMap fun ⟨_, h_4642⟩ => ([⟨(), by subst_vars; apply wf_structinst.structinst_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
+ | { TYPE := var_0, FIELDS := var_1_lst } => (((interp_allL (fun (var_1 : fieldval) => (interp_wf_fieldval_i (var_1))) var_1_lst).flatMap fun ⟨_, h_4651⟩ => ([⟨(), by subst_vars; apply wf_structinst.structinst_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))
 
 def interp_wf_structinst_i (a0 : structinst) : List {o : Unit // (wf_structinst a0)} :=
   interp_wf_structinst_i_structinst_case_ a0
 
 def interp_wf_store_i_store_case_ (a0 : store) : List {o : Unit // (wf_store a0)} :=
   match a0 with
- | { TAGS := var_0_lst, GLOBALS := var_1_lst, MEMS := var_2_lst, TABLES := var_3_lst, FUNCS := var_4_lst, DATAS := var_5_lst, ELEMS := var_6_lst, STRUCTS := var_7_lst, ARRAYS := var_8_lst, EXNS := var_9_lst } => (((interp_allL (fun (var_0 : taginst) => (interp_wf_taginst_i (var_0))) var_0_lst).flatMap fun ⟨_, h_4548⟩ => (((interp_allL (fun (var_1 : globalinst) => (interp_wf_globalinst_i (var_1))) var_1_lst).flatMap fun ⟨_, h_4549⟩ => (((interp_allL (fun (var_2 : meminst) => (interp_wf_meminst_i (var_2))) var_2_lst).flatMap fun ⟨_, h_4550⟩ => (((interp_allL (fun (var_3 : tableinst) => (interp_wf_tableinst_i (var_3))) var_3_lst).flatMap fun ⟨_, h_4551⟩ => (((interp_allL (fun (var_4 : funcinst) => (interp_wf_funcinst_i (var_4))) var_4_lst).flatMap fun ⟨_, h_4552⟩ => (((interp_allL (fun (var_5 : datainst) => (interp_wf_datainst_i (var_5))) var_5_lst).flatMap fun ⟨_, h_4553⟩ => (((interp_allL (fun (var_6 : eleminst) => (interp_wf_eleminst_i (var_6))) var_6_lst).flatMap fun ⟨_, h_4554⟩ => (((interp_allL (fun (var_7 : structinst) => (interp_wf_structinst_i (var_7))) var_7_lst).flatMap fun ⟨_, h_4555⟩ => (((interp_allL (fun (var_8 : arrayinst) => (interp_wf_arrayinst_i (var_8))) var_8_lst).flatMap fun ⟨_, h_4556⟩ => (((interp_allL (fun (var_9 : exninst) => (interp_wf_exninst_i (var_9))) var_9_lst).flatMap fun ⟨_, h_4557⟩ => ([⟨(), by subst_vars; apply wf_store.store_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))))))))))))
+ | { TAGS := var_0_lst, GLOBALS := var_1_lst, MEMS := var_2_lst, TABLES := var_3_lst, FUNCS := var_4_lst, DATAS := var_5_lst, ELEMS := var_6_lst, STRUCTS := var_7_lst, ARRAYS := var_8_lst, EXNS := var_9_lst } => (((interp_allL (fun (var_0 : taginst) => (interp_wf_taginst_i (var_0))) var_0_lst).flatMap fun ⟨_, h_4557⟩ => (((interp_allL (fun (var_1 : globalinst) => (interp_wf_globalinst_i (var_1))) var_1_lst).flatMap fun ⟨_, h_4558⟩ => (((interp_allL (fun (var_2 : meminst) => (interp_wf_meminst_i (var_2))) var_2_lst).flatMap fun ⟨_, h_4559⟩ => (((interp_allL (fun (var_3 : tableinst) => (interp_wf_tableinst_i (var_3))) var_3_lst).flatMap fun ⟨_, h_4560⟩ => (((interp_allL (fun (var_4 : funcinst) => (interp_wf_funcinst_i (var_4))) var_4_lst).flatMap fun ⟨_, h_4561⟩ => (((interp_allL (fun (var_5 : datainst) => (interp_wf_datainst_i (var_5))) var_5_lst).flatMap fun ⟨_, h_4562⟩ => (((interp_allL (fun (var_6 : eleminst) => (interp_wf_eleminst_i (var_6))) var_6_lst).flatMap fun ⟨_, h_4563⟩ => (((interp_allL (fun (var_7 : structinst) => (interp_wf_structinst_i (var_7))) var_7_lst).flatMap fun ⟨_, h_4564⟩ => (((interp_allL (fun (var_8 : arrayinst) => (interp_wf_arrayinst_i (var_8))) var_8_lst).flatMap fun ⟨_, h_4565⟩ => (((interp_allL (fun (var_9 : exninst) => (interp_wf_exninst_i (var_9))) var_9_lst).flatMap fun ⟨_, h_4566⟩ => ([⟨(), by subst_vars; apply wf_store.store_case_ <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))))))))))))
 
 def interp_wf_store_i (a0 : store) : List {o : Unit // (wf_store a0)} :=
   interp_wf_store_i_store_case_ a0
@@ -7375,34 +7422,70 @@ partial def interp_Ref_ok_iii_i31 (a0 : store) (a1 : ref) (a2 : reftype) : List 
  | s, (.REF_I31_NUM i), (.REF none .I31) => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4430⟩ => (((interp_wf_ref_i ((.REF_I31_NUM i))).flatMap fun ⟨_, h_4431⟩ => (((interp_wf_reftype_i ((.REF none .I31))).flatMap fun ⟨_, h_4432⟩ => ([⟨(), by subst_vars; apply Ref_ok.i31 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _, _, _ => []
 
+partial def interp_Ref_ok_iii_struct (a0 : store) (a1 : ref) (a2 : reftype) : List {o : Unit // (Ref_ok a0 a1 a2)} :=
+  match a0, a1, a2 with
+ | s, (.REF_STRUCT_ADDR a), (.REF none y_358) => ((if h_4433 : (a < (List.length (s.STRUCTS))) then
+((match interp_inv_heaptype_deftype y_358 with
+ | some ⟨dt, h_4434⟩ => ((if h_4435 : ((((s.STRUCTS)[a]!).TYPE) = dt) then
+(((interp_wf_store_i (s)).flatMap fun ⟨_, h_4436⟩ => (((interp_wf_ref_i ((.REF_STRUCT_ADDR a))).flatMap fun ⟨_, h_4437⟩ => (((interp_wf_reftype_i ((.REF none (heaptype_deftype dt)))).flatMap fun ⟨_, h_4438⟩ => ([⟨(), by subst_vars; apply Ref_ok.struct <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+else []))
+ | none => []))
+else []))
+ | _, _, _ => []
+
+partial def interp_Ref_ok_iii_array (a0 : store) (a1 : ref) (a2 : reftype) : List {o : Unit // (Ref_ok a0 a1 a2)} :=
+  match a0, a1, a2 with
+ | s, (.REF_ARRAY_ADDR a), (.REF none y_359) => ((if h_4439 : (a < (List.length (s.ARRAYS))) then
+((match interp_inv_heaptype_deftype y_359 with
+ | some ⟨dt, h_4440⟩ => ((if h_4441 : ((((s.ARRAYS)[a]!).TYPE) = dt) then
+(((interp_wf_store_i (s)).flatMap fun ⟨_, h_4442⟩ => (((interp_wf_ref_i ((.REF_ARRAY_ADDR a))).flatMap fun ⟨_, h_4443⟩ => (((interp_wf_reftype_i ((.REF none (heaptype_deftype dt)))).flatMap fun ⟨_, h_4444⟩ => ([⟨(), by subst_vars; apply Ref_ok.array <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+else []))
+ | none => []))
+else []))
+ | _, _, _ => []
+
+partial def interp_Ref_ok_iii_func (a0 : store) (a1 : ref) (a2 : reftype) : List {o : Unit // (Ref_ok a0 a1 a2)} :=
+  match a0, a1, a2 with
+ | s, (.REF_FUNC_ADDR a), (.REF none y_360) => ((if h_4445 : (a < (List.length (s.FUNCS))) then
+((match interp_inv_heaptype_deftype y_360 with
+ | some ⟨dt, h_4446⟩ => ((if h_4447 : ((((s.FUNCS)[a]!).TYPE) = dt) then
+(((interp_wf_store_i (s)).flatMap fun ⟨_, h_4448⟩ => (((interp_wf_ref_i ((.REF_FUNC_ADDR a))).flatMap fun ⟨_, h_4449⟩ => (((interp_wf_reftype_i ((.REF none (heaptype_deftype dt)))).flatMap fun ⟨_, h_4450⟩ => ([⟨(), by subst_vars; apply Ref_ok.func <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+else []))
+ | none => []))
+else []))
+ | _, _, _ => []
+
 partial def interp_Ref_ok_iii_exn (a0 : store) (a1 : ref) (a2 : reftype) : List {o : Unit // (Ref_ok a0 a1 a2)} :=
   match a0, a1, a2 with
- | s, (.REF_EXN_ADDR a), (.REF none .EXN) => ((if h_4442 : (a < (List.length (s.EXNS))) then
-((match h_4443 : (((s.EXNS)[a]!) : exninst) with
- | exn => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4444⟩ => (((interp_wf_exninst_i (exn)).flatMap fun ⟨_, h_4445⟩ => (((interp_wf_ref_i ((.REF_EXN_ADDR a))).flatMap fun ⟨_, h_4446⟩ => (((interp_wf_reftype_i ((.REF none .EXN))).flatMap fun ⟨_, h_4447⟩ => ([⟨(), by subst_vars; apply Ref_ok.exn <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))
+ | s, (.REF_EXN_ADDR a), (.REF none .EXN) => ((if h_4451 : (a < (List.length (s.EXNS))) then
+((match h_4452 : (((s.EXNS)[a]!) : exninst) with
+ | exn => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4453⟩ => (((interp_wf_exninst_i (exn)).flatMap fun ⟨_, h_4454⟩ => (((interp_wf_ref_i ((.REF_EXN_ADDR a))).flatMap fun ⟨_, h_4455⟩ => (((interp_wf_reftype_i ((.REF none .EXN))).flatMap fun ⟨_, h_4456⟩ => ([⟨(), by subst_vars; apply Ref_ok.exn <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))
 else []))
  | _, _, _ => []
 
 partial def interp_Ref_ok_iii_host (a0 : store) (a1 : ref) (a2 : reftype) : List {o : Unit // (Ref_ok a0 a1 a2)} :=
   match a0, a1, a2 with
- | s, (.REF_HOST_ADDR a), (.REF none .ANY) => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4448⟩ => (((interp_wf_ref_i ((.REF_HOST_ADDR a))).flatMap fun ⟨_, h_4449⟩ => (((interp_wf_reftype_i ((.REF none .ANY))).flatMap fun ⟨_, h_4450⟩ => ([⟨(), by subst_vars; apply Ref_ok.host <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | s, (.REF_HOST_ADDR a), (.REF none .ANY) => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4457⟩ => (((interp_wf_ref_i ((.REF_HOST_ADDR a))).flatMap fun ⟨_, h_4458⟩ => (((interp_wf_reftype_i ((.REF none .ANY))).flatMap fun ⟨_, h_4459⟩ => ([⟨(), by subst_vars; apply Ref_ok.host <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _, _, _ => []
 
 partial def interp_Ref_ok_iii_extern (a0 : store) (a1 : ref) (a2 : reftype) : List {o : Unit // (Ref_ok a0 a1 a2)} :=
   match a0, a1, a2 with
- | s, (.REF_EXTERN v_ref), (.REF none .EXTERN) => ((if h_4451 : (v_ref ≠ .REF_NULL_ADDR) then
-(((interp_Ref_ok_iii (s) (v_ref) ((.REF none .ANY))).flatMap fun ⟨_, h_4452⟩ => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4453⟩ => (((interp_wf_ref_i ((.REF_EXTERN v_ref))).flatMap fun ⟨_, h_4454⟩ => (((interp_wf_reftype_i ((.REF none .EXTERN))).flatMap fun ⟨_, h_4455⟩ => (((interp_wf_reftype_i ((.REF none .ANY))).flatMap fun ⟨_, h_4456⟩ => (((interp_wf_ref_i (.REF_NULL_ADDR)).flatMap fun ⟨_, h_4457⟩ => ([⟨(), by subst_vars; apply Ref_ok.extern <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))))
+ | s, (.REF_EXTERN v_ref), (.REF none .EXTERN) => ((if h_4460 : (v_ref ≠ .REF_NULL_ADDR) then
+(((interp_Ref_ok_iii (s) (v_ref) ((.REF none .ANY))).flatMap fun ⟨_, h_4461⟩ => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4462⟩ => (((interp_wf_ref_i ((.REF_EXTERN v_ref))).flatMap fun ⟨_, h_4463⟩ => (((interp_wf_reftype_i ((.REF none .EXTERN))).flatMap fun ⟨_, h_4464⟩ => (((interp_wf_reftype_i ((.REF none .ANY))).flatMap fun ⟨_, h_4465⟩ => (((interp_wf_ref_i (.REF_NULL_ADDR)).flatMap fun ⟨_, h_4466⟩ => ([⟨(), by subst_vars; apply Ref_ok.extern <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))))
 else []))
  | _, _, _ => []
 
 partial def interp_Ref_ok_iii_sub (a0 : store) (a1 : ref) (a2 : reftype) : List {o : Unit // (Ref_ok a0 a1 a2)} :=
   match a0, a1, a2 with
- | s, v_ref, rt => (((interp_Ref_ok_iio (s) (v_ref)).flatMap fun ⟨o_361, h_4458⟩ => (match o_361 with
- | rt' => (((interp_Reftype_ok_ii ({ TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] }) (rt)).flatMap fun ⟨_, h_4459⟩ => (((interp_Reftype_sub_iii ({ TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] }) (rt') (rt)).flatMap fun ⟨_, h_4460⟩ => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4461⟩ => (((interp_wf_ref_i (v_ref)).flatMap fun ⟨_, h_4462⟩ => (((interp_wf_reftype_i (rt)).flatMap fun ⟨_, h_4463⟩ => (((interp_wf_reftype_i (rt')).flatMap fun ⟨_, h_4464⟩ => (((interp_wf_context_i ({ TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] })).flatMap fun ⟨_, h_4465⟩ => ([⟨(), by subst_vars; apply Ref_ok.sub <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))))))))))))))))
+ | s, v_ref, rt => (((interp_Ref_ok_iio (s) (v_ref)).flatMap fun ⟨o_361, h_4467⟩ => (match o_361 with
+ | rt' => (((interp_Reftype_ok_ii ({ TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] }) (rt)).flatMap fun ⟨_, h_4468⟩ => (((interp_Reftype_sub_iii ({ TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] }) (rt') (rt)).flatMap fun ⟨_, h_4469⟩ => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4470⟩ => (((interp_wf_ref_i (v_ref)).flatMap fun ⟨_, h_4471⟩ => (((interp_wf_reftype_i (rt)).flatMap fun ⟨_, h_4472⟩ => (((interp_wf_reftype_i (rt')).flatMap fun ⟨_, h_4473⟩ => (((interp_wf_context_i ({ TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] })).flatMap fun ⟨_, h_4474⟩ => ([⟨(), by subst_vars; apply Ref_ok.sub <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))))))))))))))))
 
 partial def interp_Ref_ok_iii (a0 : store) (a1 : ref) (a2 : reftype) : List {o : Unit // (Ref_ok a0 a1 a2)} :=
   interp_Ref_ok_iii_null a0 a1 a2 ++
   interp_Ref_ok_iii_i31 a0 a1 a2 ++
+  interp_Ref_ok_iii_struct a0 a1 a2 ++
+  interp_Ref_ok_iii_array a0 a1 a2 ++
+  interp_Ref_ok_iii_func a0 a1 a2 ++
   interp_Ref_ok_iii_exn a0 a1 a2 ++
   interp_Ref_ok_iii_host a0 a1 a2 ++
   interp_Ref_ok_iii_extern a0 a1 a2 ++
@@ -7410,63 +7493,63 @@ partial def interp_Ref_ok_iii (a0 : store) (a1 : ref) (a2 : reftype) : List {o :
 
 partial def interp_Ref_ok_iio_null (a0 : store) (a1 : ref) : List {o : reftype // (Ref_ok a0 a1 o)} :=
   match a0, a1 with
- | s, .REF_NULL_ADDR => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4561⟩ => (((interp_wf_ref_i (.REF_NULL_ADDR)).flatMap fun ⟨_, h_4562⟩ => (((interp_wf_reftype_i ((.REF (some .NULL) .BOT))).flatMap fun ⟨_, h_4563⟩ => ([⟨(.REF (some .NULL) .BOT), by subst_vars; apply Ref_ok.null <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | s, .REF_NULL_ADDR => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4570⟩ => (((interp_wf_ref_i (.REF_NULL_ADDR)).flatMap fun ⟨_, h_4571⟩ => (((interp_wf_reftype_i ((.REF (some .NULL) .BOT))).flatMap fun ⟨_, h_4572⟩ => ([⟨(.REF (some .NULL) .BOT), by subst_vars; apply Ref_ok.null <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _, _ => []
 
 partial def interp_Ref_ok_iio_i31 (a0 : store) (a1 : ref) : List {o : reftype // (Ref_ok a0 a1 o)} :=
   match a0, a1 with
- | s, (.REF_I31_NUM i) => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4564⟩ => (((interp_wf_ref_i ((.REF_I31_NUM i))).flatMap fun ⟨_, h_4565⟩ => (((interp_wf_reftype_i ((.REF none .I31))).flatMap fun ⟨_, h_4566⟩ => ([⟨(.REF none .I31), by subst_vars; apply Ref_ok.i31 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | s, (.REF_I31_NUM i) => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4573⟩ => (((interp_wf_ref_i ((.REF_I31_NUM i))).flatMap fun ⟨_, h_4574⟩ => (((interp_wf_reftype_i ((.REF none .I31))).flatMap fun ⟨_, h_4575⟩ => ([⟨(.REF none .I31), by subst_vars; apply Ref_ok.i31 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _, _ => []
 
 partial def interp_Ref_ok_iio_struct (a0 : store) (a1 : ref) : List {o : reftype // (Ref_ok a0 a1 o)} :=
   match a0, a1 with
- | s, (.REF_STRUCT_ADDR a) => ((if h_4567 : (a < (List.length (s.STRUCTS))) then
-((match h_4568 : ((((s.STRUCTS)[a]!).TYPE) : deftype) with
- | dt => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4569⟩ => (((interp_wf_ref_i ((.REF_STRUCT_ADDR a))).flatMap fun ⟨_, h_4570⟩ => (((interp_wf_reftype_i ((.REF none (heaptype_deftype dt)))).flatMap fun ⟨_, h_4571⟩ => ([⟨(.REF none (heaptype_deftype dt)), by subst_vars; apply Ref_ok.struct <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
+ | s, (.REF_STRUCT_ADDR a) => ((if h_4576 : (a < (List.length (s.STRUCTS))) then
+((match h_4577 : ((((s.STRUCTS)[a]!).TYPE) : deftype) with
+ | dt => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4578⟩ => (((interp_wf_ref_i ((.REF_STRUCT_ADDR a))).flatMap fun ⟨_, h_4579⟩ => (((interp_wf_reftype_i ((.REF none (heaptype_deftype dt)))).flatMap fun ⟨_, h_4580⟩ => ([⟨(.REF none (heaptype_deftype dt)), by subst_vars; apply Ref_ok.struct <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
 else []))
  | _, _ => []
 
 partial def interp_Ref_ok_iio_array (a0 : store) (a1 : ref) : List {o : reftype // (Ref_ok a0 a1 o)} :=
   match a0, a1 with
- | s, (.REF_ARRAY_ADDR a) => ((if h_4572 : (a < (List.length (s.ARRAYS))) then
-((match h_4573 : ((((s.ARRAYS)[a]!).TYPE) : deftype) with
- | dt => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4574⟩ => (((interp_wf_ref_i ((.REF_ARRAY_ADDR a))).flatMap fun ⟨_, h_4575⟩ => (((interp_wf_reftype_i ((.REF none (heaptype_deftype dt)))).flatMap fun ⟨_, h_4576⟩ => ([⟨(.REF none (heaptype_deftype dt)), by subst_vars; apply Ref_ok.array <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
+ | s, (.REF_ARRAY_ADDR a) => ((if h_4581 : (a < (List.length (s.ARRAYS))) then
+((match h_4582 : ((((s.ARRAYS)[a]!).TYPE) : deftype) with
+ | dt => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4583⟩ => (((interp_wf_ref_i ((.REF_ARRAY_ADDR a))).flatMap fun ⟨_, h_4584⟩ => (((interp_wf_reftype_i ((.REF none (heaptype_deftype dt)))).flatMap fun ⟨_, h_4585⟩ => ([⟨(.REF none (heaptype_deftype dt)), by subst_vars; apply Ref_ok.array <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
 else []))
  | _, _ => []
 
 partial def interp_Ref_ok_iio_func (a0 : store) (a1 : ref) : List {o : reftype // (Ref_ok a0 a1 o)} :=
   match a0, a1 with
- | s, (.REF_FUNC_ADDR a) => ((if h_4577 : (a < (List.length (s.FUNCS))) then
-((match h_4578 : ((((s.FUNCS)[a]!).TYPE) : deftype) with
- | dt => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4579⟩ => (((interp_wf_ref_i ((.REF_FUNC_ADDR a))).flatMap fun ⟨_, h_4580⟩ => (((interp_wf_reftype_i ((.REF none (heaptype_deftype dt)))).flatMap fun ⟨_, h_4581⟩ => ([⟨(.REF none (heaptype_deftype dt)), by subst_vars; apply Ref_ok.func <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
+ | s, (.REF_FUNC_ADDR a) => ((if h_4586 : (a < (List.length (s.FUNCS))) then
+((match h_4587 : ((((s.FUNCS)[a]!).TYPE) : deftype) with
+ | dt => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4588⟩ => (((interp_wf_ref_i ((.REF_FUNC_ADDR a))).flatMap fun ⟨_, h_4589⟩ => (((interp_wf_reftype_i ((.REF none (heaptype_deftype dt)))).flatMap fun ⟨_, h_4590⟩ => ([⟨(.REF none (heaptype_deftype dt)), by subst_vars; apply Ref_ok.func <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))
 else []))
  | _, _ => []
 
 partial def interp_Ref_ok_iio_exn (a0 : store) (a1 : ref) : List {o : reftype // (Ref_ok a0 a1 o)} :=
   match a0, a1 with
- | s, (.REF_EXN_ADDR a) => ((if h_4582 : (a < (List.length (s.EXNS))) then
-((match h_4583 : (((s.EXNS)[a]!) : exninst) with
- | exn => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4584⟩ => (((interp_wf_exninst_i (exn)).flatMap fun ⟨_, h_4585⟩ => (((interp_wf_ref_i ((.REF_EXN_ADDR a))).flatMap fun ⟨_, h_4586⟩ => (((interp_wf_reftype_i ((.REF none .EXN))).flatMap fun ⟨_, h_4587⟩ => ([⟨(.REF none .EXN), by subst_vars; apply Ref_ok.exn <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))
+ | s, (.REF_EXN_ADDR a) => ((if h_4591 : (a < (List.length (s.EXNS))) then
+((match h_4592 : (((s.EXNS)[a]!) : exninst) with
+ | exn => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4593⟩ => (((interp_wf_exninst_i (exn)).flatMap fun ⟨_, h_4594⟩ => (((interp_wf_ref_i ((.REF_EXN_ADDR a))).flatMap fun ⟨_, h_4595⟩ => (((interp_wf_reftype_i ((.REF none .EXN))).flatMap fun ⟨_, h_4596⟩ => ([⟨(.REF none .EXN), by subst_vars; apply Ref_ok.exn <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))
 else []))
  | _, _ => []
 
 partial def interp_Ref_ok_iio_host (a0 : store) (a1 : ref) : List {o : reftype // (Ref_ok a0 a1 o)} :=
   match a0, a1 with
- | s, (.REF_HOST_ADDR a) => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4588⟩ => (((interp_wf_ref_i ((.REF_HOST_ADDR a))).flatMap fun ⟨_, h_4589⟩ => (((interp_wf_reftype_i ((.REF none .ANY))).flatMap fun ⟨_, h_4590⟩ => ([⟨(.REF none .ANY), by subst_vars; apply Ref_ok.host <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
+ | s, (.REF_HOST_ADDR a) => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4597⟩ => (((interp_wf_ref_i ((.REF_HOST_ADDR a))).flatMap fun ⟨_, h_4598⟩ => (((interp_wf_reftype_i ((.REF none .ANY))).flatMap fun ⟨_, h_4599⟩ => ([⟨(.REF none .ANY), by subst_vars; apply Ref_ok.host <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _, _ => []
 
 partial def interp_Ref_ok_iio_extern (a0 : store) (a1 : ref) : List {o : reftype // (Ref_ok a0 a1 o)} :=
   match a0, a1 with
- | s, (.REF_EXTERN v_ref) => ((if h_4591 : (v_ref ≠ .REF_NULL_ADDR) then
-(((interp_Ref_ok_iii (s) (v_ref) ((.REF none .ANY))).flatMap fun ⟨_, h_4592⟩ => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4593⟩ => (((interp_wf_ref_i ((.REF_EXTERN v_ref))).flatMap fun ⟨_, h_4594⟩ => (((interp_wf_reftype_i ((.REF none .EXTERN))).flatMap fun ⟨_, h_4595⟩ => (((interp_wf_reftype_i ((.REF none .ANY))).flatMap fun ⟨_, h_4596⟩ => (((interp_wf_ref_i (.REF_NULL_ADDR)).flatMap fun ⟨_, h_4597⟩ => ([⟨(.REF none .EXTERN), by subst_vars; apply Ref_ok.extern <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))))
+ | s, (.REF_EXTERN v_ref) => ((if h_4600 : (v_ref ≠ .REF_NULL_ADDR) then
+(((interp_Ref_ok_iii (s) (v_ref) ((.REF none .ANY))).flatMap fun ⟨_, h_4601⟩ => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4602⟩ => (((interp_wf_ref_i ((.REF_EXTERN v_ref))).flatMap fun ⟨_, h_4603⟩ => (((interp_wf_reftype_i ((.REF none .EXTERN))).flatMap fun ⟨_, h_4604⟩ => (((interp_wf_reftype_i ((.REF none .ANY))).flatMap fun ⟨_, h_4605⟩ => (((interp_wf_ref_i (.REF_NULL_ADDR)).flatMap fun ⟨_, h_4606⟩ => ([⟨(.REF none .EXTERN), by subst_vars; apply Ref_ok.extern <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))))
 else []))
  | _, _ => []
 
 partial def interp_Ref_ok_iio_sub (a0 : store) (a1 : ref) : List {o : reftype // (Ref_ok a0 a1 o)} :=
   match a0, a1 with
- | s, v_ref => (((interp_Ref_ok_iio (s) (v_ref)).flatMap fun ⟨o_366, h_4598⟩ => (match o_366 with
- | rt' => (((interp_Reftype_ok_io ({ TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] })).flatMap fun ⟨o_367, h_4599⟩ => (match o_367 with
- | rt => (((interp_Reftype_sub_iii ({ TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] }) (rt') (rt)).flatMap fun ⟨_, h_4600⟩ => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4601⟩ => (((interp_wf_ref_i (v_ref)).flatMap fun ⟨_, h_4602⟩ => (((interp_wf_reftype_i (rt)).flatMap fun ⟨_, h_4603⟩ => (((interp_wf_reftype_i (rt')).flatMap fun ⟨_, h_4604⟩ => (((interp_wf_context_i ({ TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] })).flatMap fun ⟨_, h_4605⟩ => ([⟨rt, by subst_vars; apply Ref_ok.sub <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))))))))))
+ | s, v_ref => (((interp_Ref_ok_iio (s) (v_ref)).flatMap fun ⟨o_366, h_4607⟩ => (match o_366 with
+ | rt' => (((interp_Reftype_ok_io ({ TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] })).flatMap fun ⟨o_367, h_4608⟩ => (match o_367 with
+ | rt => (((interp_Reftype_sub_iii ({ TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] }) (rt') (rt)).flatMap fun ⟨_, h_4609⟩ => (((interp_wf_store_i (s)).flatMap fun ⟨_, h_4610⟩ => (((interp_wf_ref_i (v_ref)).flatMap fun ⟨_, h_4611⟩ => (((interp_wf_reftype_i (rt)).flatMap fun ⟨_, h_4612⟩ => (((interp_wf_reftype_i (rt')).flatMap fun ⟨_, h_4613⟩ => (((interp_wf_context_i ({ TYPES := [], TAGS := [], GLOBALS := [], MEMS := [], TABLES := [], FUNCS := [], DATAS := [], ELEMS := [], LOCALS := [], LABELS := [], RETURN := none, REFS := [], RECS := [] })).flatMap fun ⟨_, h_4614⟩ => ([⟨rt, by subst_vars; apply Ref_ok.sub <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))))))))))))))
 
 partial def interp_Ref_ok_iio (a0 : store) (a1 : ref) : List {o : reftype // (Ref_ok a0 a1 o)} :=
   interp_Ref_ok_iio_null a0 a1 ++
@@ -7490,7 +7573,7 @@ partial def interp_fun_subst_typevar_iiio_fun_subst_typevar_case_0 (a0 : typevar
 
 partial def interp_fun_subst_typevar_iiio_fun_subst_typevar_case_1 (a0 : typevar) (a1 : (List typevar)) (a2 : (List typeuse)) : List {o : (Option typeuse) // (fun_subst_typevar a0 a1 a2 o)} :=
   match a0, a1, a2 with
- | tv, (tv_1 :: tv'_lst), (tu_1 :: tu'_lst) => (((interp_fun_subst_typevar_iiio (tv) (tv'_lst) (tu'_lst)).flatMap fun ⟨o_392, h_4858⟩ => (match o_392 with
+ | tv, (tv_1 :: tv'_lst), (tu_1 :: tu'_lst) => (((interp_fun_subst_typevar_iiio (tv) (tv'_lst) (tu'_lst)).flatMap fun ⟨o_392, h_4894⟩ => (match o_392 with
  | var_0 => ([⟨(Option.map (fun (iter_val_2 : typeuse) => (if (tv == tv_1) then tu_1 else iter_val_2)) var_0), by subst_vars; apply fun_subst_typevar.fun_subst_typevar_case_1 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))
  | _, _, _ => []
 
@@ -7502,19 +7585,19 @@ end
 
 def interp_fun_subst_heaptype_iiio_fun_subst_heaptype_case_0 (a0 : heaptype) (a1 : (List typevar)) (a2 : (List typeuse)) : List {o : heaptype // (fun_subst_heaptype a0 a1 a2 o)} :=
   match a0, a1, a2 with
- | (.REC v_n), tv_lst, tu_lst => (((interp_fun_subst_typevar_iiio ((.REC v_n)) (tv_lst) (tu_lst)).flatMap fun ⟨o_384, h_4749⟩ => (match o_384 with
+ | (.REC v_n), tv_lst, tu_lst => (((interp_fun_subst_typevar_iiio ((.REC v_n)) (tv_lst) (tu_lst)).flatMap fun ⟨o_384, h_4784⟩ => (match o_384 with
  | var_0 => ([⟨(heaptype_typeuse (Option.get! var_0)), by subst_vars; apply fun_subst_heaptype.fun_subst_heaptype_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))
  | _, _, _ => []
 
 def interp_fun_subst_heaptype_iiio_fun_subst_heaptype_case_1 (a0 : heaptype) (a1 : (List typevar)) (a2 : (List typeuse)) : List {o : heaptype // (fun_subst_heaptype a0 a1 a2 o)} :=
   match a0, a1, a2 with
- | (._IDX v_typeidx), tv_lst, tu_lst => (((interp_fun_subst_typevar_iiio ((._IDX v_typeidx)) (tv_lst) (tu_lst)).flatMap fun ⟨o_385, h_4750⟩ => (match o_385 with
+ | (._IDX v_typeidx), tv_lst, tu_lst => (((interp_fun_subst_typevar_iiio ((._IDX v_typeidx)) (tv_lst) (tu_lst)).flatMap fun ⟨o_385, h_4785⟩ => (match o_385 with
  | var_0 => ([⟨(heaptype_typeuse (Option.get! var_0)), by subst_vars; apply fun_subst_heaptype.fun_subst_heaptype_case_1 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))
  | _, _, _ => []
 
 def interp_fun_subst_heaptype_iiio_fun_subst_heaptype_case_2 (a0 : heaptype) (a1 : (List typevar)) (a2 : (List typeuse)) : List {o : heaptype // (fun_subst_heaptype a0 a1 a2 o)} :=
   match a0, a1, a2 with
- | (._DEF v_rectype v_n), tv_lst, tu_lst => (((interp_fun_subst_deftype_iiio ((._DEF v_rectype v_n)) (tv_lst) (tu_lst)).flatMap fun ⟨o_386, h_4751⟩ => (match o_386 with
+ | (._DEF v_rectype v_n), tv_lst, tu_lst => (((interp_fun_subst_deftype_iiio ((._DEF v_rectype v_n)) (tv_lst) (tu_lst)).flatMap fun ⟨o_386, h_4786⟩ => (match o_386 with
  | var_0 => ([⟨(heaptype_deftype var_0), by subst_vars; apply fun_subst_heaptype.fun_subst_heaptype_case_2 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))
  | _, _, _ => []
 
@@ -7525,7 +7608,7 @@ def interp_fun_subst_heaptype_iiio (a0 : heaptype) (a1 : (List typevar)) (a2 : (
 
 def interp_fun_subst_reftype_iiio_fun_subst_reftype_case_0 (a0 : reftype) (a1 : (List typevar)) (a2 : (List typeuse)) : List {o : reftype // (fun_subst_reftype a0 a1 a2 o)} :=
   match a0, a1, a2 with
- | (.REF null_opt ht), tv_lst, tu_lst => (((interp_fun_subst_heaptype_iiio (ht) (tv_lst) (tu_lst)).flatMap fun ⟨o_368, h_4643⟩ => (match o_368 with
+ | (.REF null_opt ht), tv_lst, tu_lst => (((interp_fun_subst_heaptype_iiio (ht) (tv_lst) (tu_lst)).flatMap fun ⟨o_368, h_4652⟩ => (match o_368 with
  | var_0 => ([⟨(.REF null_opt var_0), by subst_vars; apply fun_subst_reftype.fun_subst_reftype_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))
 
 def interp_fun_subst_reftype_iiio (a0 : reftype) (a1 : (List typevar)) (a2 : (List typeuse)) : List {o : reftype // (fun_subst_reftype a0 a1 a2 o)} :=
@@ -7533,8 +7616,8 @@ def interp_fun_subst_reftype_iiio (a0 : reftype) (a1 : (List typevar)) (a2 : (Li
 
 def interp_fun_subst_all_reftype_iio_fun_subst_all_reftype_case_0 (a0 : reftype) (a1 : (List typeuse)) : List {o : reftype // (fun_subst_all_reftype a0 a1 o)} :=
   match a0, a1 with
- | rt, tu_lst => ((match h_4559 : ((List.length tu_lst) : Nat) with
- | v_n => (((interp_fun_subst_reftype_iiio (rt) (((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar)))) (tu_lst)).flatMap fun ⟨o_365, h_4560⟩ => (match o_365 with
+ | rt, tu_lst => ((match h_4568 : ((List.length tu_lst) : Nat) with
+ | v_n => (((interp_fun_subst_reftype_iiio (rt) (((List.range v_n).map (fun (i : Nat) => ((._IDX (.mk_uN i)) : typevar)))) (tu_lst)).flatMap fun ⟨o_365, h_4569⟩ => (match o_365 with
  | var_0 => ([⟨var_0, by subst_vars; apply fun_subst_all_reftype.fun_subst_all_reftype_case_0 <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩]))))))
 
 def interp_fun_subst_all_reftype_iio (a0 : reftype) (a1 : (List typeuse)) : List {o : reftype // (fun_subst_all_reftype a0 a1 o)} :=
@@ -7687,14 +7770,14 @@ def interp_Step_read_io_return_call_ref_handler (a0 : config) : List {o : (List 
 
 def interp_Step_read_io_return_call_ref_frame_null (a0 : config) : List {o : (List instr) // (Step_read a0 o)} :=
   match a0 with
- | (.mk_config z [(.FRAME_ k f y_216)]) => (((interp_splits y_216).flatMap fun ⟨(a_217, b_218), h_2767⟩ => (((interp_splits a_217).flatMap fun ⟨(a_219, b_220), h_2768⟩ => (((interp_splits a_219).flatMap fun ⟨(a_221, b_222), h_2769⟩ => ((match interp_invMap interp_inv_instr_val a_221 with
- | some ⟨val_lst, h_2770⟩ => ((match b_222 with
- | [.REF_NULL_ADDR] => ((match b_220 with
+ | (.mk_config z [(.FRAME_ k f y_216)]) => (((interp_splits y_216).flatMap fun ⟨(a_217, b_218), h_2767⟩ => (((interp_splits a_217).flatMap fun ⟨(a_219, b_220), h_2768⟩ => (((interp_splits a_219).flatMap fun ⟨(a_221, b_222), h_2769⟩ => ((if h_2770 : (b_222 = ([.REF_NULL_ADDR] : (List instr))) then
+((match interp_invMap interp_inv_instr_val a_221 with
+ | some ⟨val_lst, h_2771⟩ => ((match b_220 with
  | [(.RETURN_CALL_REF yy)] => ((match b_218 with
  | instr_lst => (((interp_wf_config_i ((.mk_config z ([(.FRAME_ k f ((((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ ([.REF_NULL_ADDR] : (List instr))) ++ ([(.RETURN_CALL_REF yy)] : (List instr))) ++ instr_lst))] : (List instr))))).flatMap fun ⟨_, h_2774⟩ => (((interp_wf_instr_i (.TRAP)).flatMap fun ⟨_, h_2775⟩ => ([⟨([.TRAP] : (List instr)), by subst_vars; apply Step_read.return_call_ref_frame_null <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
  | _ => []))
- | _ => []))
- | none => []))))))))
+ | none => []))
+else []))))))))
  | _ => []
 
 def interp_Step_read_io_return_call_ref_frame_addr (a0 : config) : List {o : (List instr) // (Step_read a0 o)} :=
@@ -7732,12 +7815,12 @@ def interp_Step_read_io_throw_ref_instrs (a0 : config) : List {o : (List instr) 
   match a0 with
  | (.mk_config z y_233) => (((interp_splits y_233).flatMap fun ⟨(a_234, b_235), h_2799⟩ => ((match interp_invMap interp_inv_instr_val a_234 with
  | some ⟨val_lst, h_2800⟩ => (((interp_splits b_235).flatMap fun ⟨(a_236, b_237), h_2801⟩ => ((match a_236 with
- | [(.REF_EXN_ADDR a)] => (((interp_splits b_237).flatMap fun ⟨(a_238, b_239), h_2803⟩ => ((match a_238 with
- | [.THROW_REF] => ((match b_239 with
+ | [(.REF_EXN_ADDR a)] => (((interp_splits b_237).flatMap fun ⟨(a_238, b_239), h_2803⟩ => ((if h_2804 : (a_238 = ([.THROW_REF] : (List instr))) then
+((match b_239 with
  | instr_lst => ((if h_2806 : ((val_lst ≠ []) ∨ (instr_lst ≠ [])) then
 (((interp_wf_config_i ((.mk_config z ((List.map (fun (v_val : val) => (instr_val v_val)) val_lst) ++ (([(.REF_EXN_ADDR a)] : (List instr)) ++ (([.THROW_REF] : (List instr)) ++ instr_lst)))))).flatMap fun ⟨_, h_2807⟩ => (((interp_wf_instr_i ((.REF_EXN_ADDR a))).flatMap fun ⟨_, h_2808⟩ => (((interp_wf_instr_i (.THROW_REF)).flatMap fun ⟨_, h_2809⟩ => ([⟨([(.REF_EXN_ADDR a), .THROW_REF] : (List instr)), by subst_vars; apply Step_read.throw_ref_instrs <;> first | assumption | rfl | (apply Eq.symm; assumption) | exact default | (and_intros <;> first | assumption | rfl | (apply Eq.symm; assumption))⟩])))))))
 else []))))
- | _ => []))))
+else []))))
  | _ => []))))
  | none => []))))
 
@@ -9202,7 +9285,7 @@ partial def interp_Step_io (a0 : config) : List {o : config // (Step a0 o)} :=
 
 end
 
-/- 1007 rules compiled, 104 left out:
+/- 1016 rules compiled, 95 left out:
 Step_pure (io) vtestop: no premise is ready: ((proj_num__0 c) ≠ none); ((proj_uN_0 (Option.get! (proj_num__0 c))) = var_0); (wf_instr (.CONST .I32 c))
 Step_pure (io) vsplat: no premise is ready: ((lpacknum_ v_Lnn c_1) ≠ none)
 Step (io) vstore_lane_val: no premise is ready: (v_N = (jsize v_Jnn)); ((Rat.ofInt (Int.ofNat v_M)) = ((Rat.ofInt (Int.ofNat 128)) / (Rat.ofInt (Int.ofNat v_N)))); ((proj_lane__0 ((lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c)[(proj_uN_0 j)]!)) ≠ none); ((proj_uN_0 j) < (List.length (lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c))); (b_lst = (ibytes_ v_N (.mk_uN (proj_uN_0 (Option.get! (proj_lane__0 ((lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c)[(proj_uN_0 j)]!))))))); Forall (fun (iter : byte) => (wf_byte iter)) (ibytes_ v_N (.mk_uN (proj_uN_0 (Option.get! (proj_lane__0 ((lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c)[(proj_uN_0 j)]!)))))); (wf_config (.mk_config (with_mem z x ((proj_uN_0 (Option.get! (proj_num__0 i))) + (proj_uN_0 (ao.OFFSET))) (Int.toNat (Rat.floor ((Rat.ofInt (Int.ofNat v_N)) / (Rat.ofInt (Int.ofNat 8))))) b_lst) [])); (wf_uN v_N (.mk_uN (proj_uN_0 (Option.get! (proj_lane__0 ((lanes_ (.X (lanetype_Jnn v_Jnn) (.mk_dim v_M)) c)[(proj_uN_0 j)]!))))))
@@ -9281,20 +9364,11 @@ fun_ivbitmaskop_ (iio) fun_ivbitmaskop__case_2: no premise is ready: ((ibits_ 32
 fun_ivbitmaskop_ (iio) fun_ivbitmaskop__case_3: no premise is ready: ((ibits_ 32 c) = ((List.map (fun (c_1_123 : lane_) => ((.mk_bit (proj_uN_0 (ilt_ (lsizenn (lanetype_Jnn .I16)) .S (Option.get! (proj_lane__0 c_1_123)) (.mk_uN 0)))) : bit)) c_1_lst) ++ (List.replicate (Int.toNat ((Int.ofNat 32) - (Int.ofNat v_M))) (.mk_bit 0))))
 fun_zeroop (iiio) fun_zeroop_case_40: negated premise
 fun_halfop (iiio) fun_halfop_case_40: negated premise
-Ref_ok (iii) struct: equality at deftype
-Ref_ok (iii) array: equality at deftype
-Ref_ok (iii) func: equality at deftype
 fun_default_ (io) fun_default__case_7: negated premise
 fun_unrollrt (io) fun_unrollrt_case_0: no premise is ready: Forall₂ (fun (var_0 : subtype) (v_subtype : subtype) => (fun_subst_subtype v_subtype ((List.range v_n).map (fun (i : Nat) => ((.REC i) : typevar))) ((List.range v_n).map (fun (i : Nat) => ((._DEF v_rectype i) : typeuse))) var_0)) var_0_lst subtype_lst
-Heaptype_sub (iii) refl: equality at heaptype
 Heaptype_sub (iii) rec_sub: no premise is ready: y_382 = (heaptype_typeuse (typeuse_lst[j]!)); (j < (List.length typeuse_lst))
-Heaptype_sub (iii) none: equality at heaptype
-Heaptype_sub (iii) nofunc: equality at heaptype
-Heaptype_sub (iii) noexn: equality at heaptype
-Heaptype_sub (iii) noextern: equality at heaptype
 fun_subst_heaptype (iiio) fun_subst_heaptype_case_3: negated premise
 Heaptype_ok (io) abs: output not determined
-Deftype_sub (iii) refl: equality at deftype
 Deftype_sub (iii) super: no premise is ready: (i < (List.length typeuse_lst)); (Heaptype_sub C (heaptype_typeuse (typeuse_lst[i]!)) (heaptype_deftype deftype_2))
 fun_utf8 (io) fun_utf8_case_0: no premise is ready: Forall₂ (fun (var_2 : (List byte)) (ch_3 : char) => (fun_utf8 ([ch_3] : (List char)) var_2)) var_2_lst ch_lst; Forall₂ (fun (var_1 : (List byte)) (ch_2 : char) => (fun_utf8 ([ch_2] : (List char)) var_1)) var_1_lst ch_lst; Forall₂ (fun (var_0 : (List byte)) (ch : char) => (fun_utf8 ([ch] : (List char)) var_0)) var_0_lst ch_lst; Forall (fun (iter_1 : byte) => (wf_byte iter_1)) (concat_ byte var_1_lst); Forall (fun (var_2 : (List byte)) => Forall (fun (iter_2 : byte) => (wf_byte iter_2)) var_2) var_2_lst
 fun_utf8 (io) fun_utf8_case_2: no premise is ready: (fun_cont b_2 var_0); ((proj_char_0 ch) = (((2 ^ 6) * (Int.toNat ((Int.ofNat (proj_byte_0 b_1)) - (Int.ofNat 192)))) + var_0)); (wf_byte b_1); (wf_byte b_2)

@@ -1198,29 +1198,292 @@ deriving Inhabited
 
 end
 
-noncomputable instance : DecidableEq (typeuse) :=
-  fun a b => Classical.propDecidable (a = b)
+set_option linter.unusedSimpArgs false in
+mutual
+def _beq_typeuse : typeuse → typeuse → Bool
+  | (._IDX x0), b => match b with | (._IDX y0) => (decide (x0 = y0)) | _ => false
+  | (._DEF x0 x1), b => match b with | (._DEF y0 y1) => (_beq_rectype x0 y0) && ((decide (x1 = y1))) | _ => false
+  | (.REC x0), b => match b with | (.REC y0) => (decide (x0 = y0)) | _ => false
+def _beq_heaptype : heaptype → heaptype → Bool
+  | .ANY, b => match b with | .ANY => true | _ => false
+  | .EQ, b => match b with | .EQ => true | _ => false
+  | .I31, b => match b with | .I31 => true | _ => false
+  | .STRUCT, b => match b with | .STRUCT => true | _ => false
+  | .ARRAY, b => match b with | .ARRAY => true | _ => false
+  | .NONE, b => match b with | .NONE => true | _ => false
+  | .FUNC, b => match b with | .FUNC => true | _ => false
+  | .NOFUNC, b => match b with | .NOFUNC => true | _ => false
+  | .EXN, b => match b with | .EXN => true | _ => false
+  | .NOEXN, b => match b with | .NOEXN => true | _ => false
+  | .EXTERN, b => match b with | .EXTERN => true | _ => false
+  | .NOEXTERN, b => match b with | .NOEXTERN => true | _ => false
+  | .BOT, b => match b with | .BOT => true | _ => false
+  | (._IDX x0), b => match b with | (._IDX y0) => (decide (x0 = y0)) | _ => false
+  | (._DEF x0 x1), b => match b with | (._DEF y0 y1) => (_beq_rectype x0 y0) && ((decide (x1 = y1))) | _ => false
+  | (.REC x0), b => match b with | (.REC y0) => (decide (x0 = y0)) | _ => false
+def _beq_valtype : valtype → valtype → Bool
+  | .I32, b => match b with | .I32 => true | _ => false
+  | .I64, b => match b with | .I64 => true | _ => false
+  | .F32, b => match b with | .F32 => true | _ => false
+  | .F64, b => match b with | .F64 => true | _ => false
+  | .V128, b => match b with | .V128 => true | _ => false
+  | (.REF x0 x1), b => match b with | (.REF y0 y1) => (decide (x0 = y0)) && ((_beq_heaptype x1 y1)) | _ => false
+  | .BOT, b => match b with | .BOT => true | _ => false
+def _beq_storagetype : storagetype → storagetype → Bool
+  | .I32, b => match b with | .I32 => true | _ => false
+  | .I64, b => match b with | .I64 => true | _ => false
+  | .F32, b => match b with | .F32 => true | _ => false
+  | .F64, b => match b with | .F64 => true | _ => false
+  | .V128, b => match b with | .V128 => true | _ => false
+  | (.REF x0 x1), b => match b with | (.REF y0 y1) => (decide (x0 = y0)) && ((_beq_heaptype x1 y1)) | _ => false
+  | .BOT, b => match b with | .BOT => true | _ => false
+  | .I8, b => match b with | .I8 => true | _ => false
+  | .I16, b => match b with | .I16 => true | _ => false
+def _beq_fieldtype : fieldtype → fieldtype → Bool
+  | (.mk_fieldtype x0 x1), b => match b with | (.mk_fieldtype y0 y1) => (decide (x0 = y0)) && ((_beq_storagetype x1 y1))
+def _beq_comptype : comptype → comptype → Bool
+  | (.STRUCT x0), b => match b with | (.STRUCT y0) => (_beq_typeuse_h0 x0 y0) | _ => false
+  | (.ARRAY x0), b => match b with | (.ARRAY y0) => (_beq_fieldtype x0 y0) | _ => false
+  | (.FUNC x0 x1), b => match b with | (.FUNC y0 y1) => (_beq_typeuse_h2 x0 y0) && ((_beq_typeuse_h2 x1 y1)) | _ => false
+def _beq_subtype : subtype → subtype → Bool
+  | (.SUB x0 x1 x2), b => match b with | (.SUB y0 y1 y2) => (decide (x0 = y0)) && ((_beq_typeuse_h4 x1 y1) && ((_beq_comptype x2 y2)))
+def _beq_rectype : rectype → rectype → Bool
+  | (.REC x0), b => match b with | (.REC y0) => (_beq_typeuse_h5 x0 y0)
+def _beq_typeuse_h0 : (list fieldtype) → (list fieldtype) → Bool
+  | (.mk_list x0), b => match b with | (.mk_list y0) => (_beq_typeuse_h1 x0 y0)
+def _beq_typeuse_h1 : (List fieldtype) → (List fieldtype) → Bool
+  | [], b => match b with | [] => true | _ => false
+  | x :: xs, b => match b with | y :: ys => (_beq_fieldtype x y) && _beq_typeuse_h1 xs ys | _ => false
+def _beq_typeuse_h2 : (list valtype) → (list valtype) → Bool
+  | (.mk_list x0), b => match b with | (.mk_list y0) => (_beq_typeuse_h3 x0 y0)
+def _beq_typeuse_h3 : (List valtype) → (List valtype) → Bool
+  | [], b => match b with | [] => true | _ => false
+  | x :: xs, b => match b with | y :: ys => (_beq_valtype x y) && _beq_typeuse_h3 xs ys | _ => false
+def _beq_typeuse_h4 : (List typeuse) → (List typeuse) → Bool
+  | [], b => match b with | [] => true | _ => false
+  | x :: xs, b => match b with | y :: ys => (_beq_typeuse x y) && _beq_typeuse_h4 xs ys | _ => false
+def _beq_typeuse_h5 : (list subtype) → (list subtype) → Bool
+  | (.mk_list x0), b => match b with | (.mk_list y0) => (_beq_typeuse_h6 x0 y0)
+def _beq_typeuse_h6 : (List subtype) → (List subtype) → Bool
+  | [], b => match b with | [] => true | _ => false
+  | x :: xs, b => match b with | y :: ys => (_beq_subtype x y) && _beq_typeuse_h6 xs ys | _ => false
+end
 
-noncomputable instance : DecidableEq (heaptype) :=
-  fun a b => Classical.propDecidable (a = b)
+theorem _beq_typeuse_iff : ∀ a b : typeuse, _beq_typeuse a b = true ↔ a = b := by
+  apply _beq_typeuse.induct
+  all_goals try first
+    | exact (fun (a b : typeuse) => _beq_typeuse a b = true ↔ a = b)
+    | exact (fun (a b : heaptype) => _beq_heaptype a b = true ↔ a = b)
+    | exact (fun (a b : valtype) => _beq_valtype a b = true ↔ a = b)
+    | exact (fun (a b : storagetype) => _beq_storagetype a b = true ↔ a = b)
+    | exact (fun (a b : fieldtype) => _beq_fieldtype a b = true ↔ a = b)
+    | exact (fun (a b : comptype) => _beq_comptype a b = true ↔ a = b)
+    | exact (fun (a b : subtype) => _beq_subtype a b = true ↔ a = b)
+    | exact (fun (a b : rectype) => _beq_rectype a b = true ↔ a = b)
+    | exact (fun (a b : (list fieldtype)) => _beq_typeuse_h0 a b = true ↔ a = b)
+    | exact (fun (a b : (List fieldtype)) => _beq_typeuse_h1 a b = true ↔ a = b)
+    | exact (fun (a b : (list valtype)) => _beq_typeuse_h2 a b = true ↔ a = b)
+    | exact (fun (a b : (List valtype)) => _beq_typeuse_h3 a b = true ↔ a = b)
+    | exact (fun (a b : (List typeuse)) => _beq_typeuse_h4 a b = true ↔ a = b)
+    | exact (fun (a b : (list subtype)) => _beq_typeuse_h5 a b = true ↔ a = b)
+    | exact (fun (a b : (List subtype)) => _beq_typeuse_h6 a b = true ↔ a = b)
+  all_goals intros
+  all_goals first
+    | (simp_all [_beq_typeuse, _beq_heaptype, _beq_valtype, _beq_storagetype, _beq_fieldtype, _beq_comptype, _beq_subtype, _beq_rectype, _beq_typeuse_h0, _beq_typeuse_h1, _beq_typeuse_h2, _beq_typeuse_h3, _beq_typeuse_h4, _beq_typeuse_h5, _beq_typeuse_h6]; done)
+    | (rename_i y h; constructor
+       · intro e; simp only [_beq_typeuse, _beq_heaptype, _beq_valtype, _beq_storagetype, _beq_fieldtype, _beq_comptype, _beq_subtype, _beq_rectype, _beq_typeuse_h0, _beq_typeuse_h1, _beq_typeuse_h2, _beq_typeuse_h3, _beq_typeuse_h4, _beq_typeuse_h5, _beq_typeuse_h6] at e; first | (simp at e; done) | (split at e <;> simp_all)
+       · rintro rfl; first | (simp_all; done) | (exfalso; apply h <;> rfl))
 
-noncomputable instance : DecidableEq (valtype) :=
-  fun a b => Classical.propDecidable (a = b)
+instance : DecidableEq typeuse := fun a b => decidable_of_iff _ (_beq_typeuse_iff a b)
 
-noncomputable instance : DecidableEq (storagetype) :=
-  fun a b => Classical.propDecidable (a = b)
+theorem _beq_heaptype_iff : ∀ a b : heaptype, _beq_heaptype a b = true ↔ a = b := by
+  apply _beq_heaptype.induct
+  all_goals try first
+    | exact (fun (a b : typeuse) => _beq_typeuse a b = true ↔ a = b)
+    | exact (fun (a b : heaptype) => _beq_heaptype a b = true ↔ a = b)
+    | exact (fun (a b : valtype) => _beq_valtype a b = true ↔ a = b)
+    | exact (fun (a b : storagetype) => _beq_storagetype a b = true ↔ a = b)
+    | exact (fun (a b : fieldtype) => _beq_fieldtype a b = true ↔ a = b)
+    | exact (fun (a b : comptype) => _beq_comptype a b = true ↔ a = b)
+    | exact (fun (a b : subtype) => _beq_subtype a b = true ↔ a = b)
+    | exact (fun (a b : rectype) => _beq_rectype a b = true ↔ a = b)
+    | exact (fun (a b : (list fieldtype)) => _beq_typeuse_h0 a b = true ↔ a = b)
+    | exact (fun (a b : (List fieldtype)) => _beq_typeuse_h1 a b = true ↔ a = b)
+    | exact (fun (a b : (list valtype)) => _beq_typeuse_h2 a b = true ↔ a = b)
+    | exact (fun (a b : (List valtype)) => _beq_typeuse_h3 a b = true ↔ a = b)
+    | exact (fun (a b : (List typeuse)) => _beq_typeuse_h4 a b = true ↔ a = b)
+    | exact (fun (a b : (list subtype)) => _beq_typeuse_h5 a b = true ↔ a = b)
+    | exact (fun (a b : (List subtype)) => _beq_typeuse_h6 a b = true ↔ a = b)
+  all_goals intros
+  all_goals first
+    | (simp_all [_beq_typeuse, _beq_heaptype, _beq_valtype, _beq_storagetype, _beq_fieldtype, _beq_comptype, _beq_subtype, _beq_rectype, _beq_typeuse_h0, _beq_typeuse_h1, _beq_typeuse_h2, _beq_typeuse_h3, _beq_typeuse_h4, _beq_typeuse_h5, _beq_typeuse_h6]; done)
+    | (rename_i y h; constructor
+       · intro e; simp only [_beq_typeuse, _beq_heaptype, _beq_valtype, _beq_storagetype, _beq_fieldtype, _beq_comptype, _beq_subtype, _beq_rectype, _beq_typeuse_h0, _beq_typeuse_h1, _beq_typeuse_h2, _beq_typeuse_h3, _beq_typeuse_h4, _beq_typeuse_h5, _beq_typeuse_h6] at e; first | (simp at e; done) | (split at e <;> simp_all)
+       · rintro rfl; first | (simp_all; done) | (exfalso; apply h <;> rfl))
 
-noncomputable instance : DecidableEq (fieldtype) :=
-  fun a b => Classical.propDecidable (a = b)
+instance : DecidableEq heaptype := fun a b => decidable_of_iff _ (_beq_heaptype_iff a b)
 
-noncomputable instance : DecidableEq (comptype) :=
-  fun a b => Classical.propDecidable (a = b)
+theorem _beq_valtype_iff : ∀ a b : valtype, _beq_valtype a b = true ↔ a = b := by
+  apply _beq_valtype.induct
+  all_goals try first
+    | exact (fun (a b : typeuse) => _beq_typeuse a b = true ↔ a = b)
+    | exact (fun (a b : heaptype) => _beq_heaptype a b = true ↔ a = b)
+    | exact (fun (a b : valtype) => _beq_valtype a b = true ↔ a = b)
+    | exact (fun (a b : storagetype) => _beq_storagetype a b = true ↔ a = b)
+    | exact (fun (a b : fieldtype) => _beq_fieldtype a b = true ↔ a = b)
+    | exact (fun (a b : comptype) => _beq_comptype a b = true ↔ a = b)
+    | exact (fun (a b : subtype) => _beq_subtype a b = true ↔ a = b)
+    | exact (fun (a b : rectype) => _beq_rectype a b = true ↔ a = b)
+    | exact (fun (a b : (list fieldtype)) => _beq_typeuse_h0 a b = true ↔ a = b)
+    | exact (fun (a b : (List fieldtype)) => _beq_typeuse_h1 a b = true ↔ a = b)
+    | exact (fun (a b : (list valtype)) => _beq_typeuse_h2 a b = true ↔ a = b)
+    | exact (fun (a b : (List valtype)) => _beq_typeuse_h3 a b = true ↔ a = b)
+    | exact (fun (a b : (List typeuse)) => _beq_typeuse_h4 a b = true ↔ a = b)
+    | exact (fun (a b : (list subtype)) => _beq_typeuse_h5 a b = true ↔ a = b)
+    | exact (fun (a b : (List subtype)) => _beq_typeuse_h6 a b = true ↔ a = b)
+  all_goals intros
+  all_goals first
+    | (simp_all [_beq_typeuse, _beq_heaptype, _beq_valtype, _beq_storagetype, _beq_fieldtype, _beq_comptype, _beq_subtype, _beq_rectype, _beq_typeuse_h0, _beq_typeuse_h1, _beq_typeuse_h2, _beq_typeuse_h3, _beq_typeuse_h4, _beq_typeuse_h5, _beq_typeuse_h6]; done)
+    | (rename_i y h; constructor
+       · intro e; simp only [_beq_typeuse, _beq_heaptype, _beq_valtype, _beq_storagetype, _beq_fieldtype, _beq_comptype, _beq_subtype, _beq_rectype, _beq_typeuse_h0, _beq_typeuse_h1, _beq_typeuse_h2, _beq_typeuse_h3, _beq_typeuse_h4, _beq_typeuse_h5, _beq_typeuse_h6] at e; first | (simp at e; done) | (split at e <;> simp_all)
+       · rintro rfl; first | (simp_all; done) | (exfalso; apply h <;> rfl))
 
-noncomputable instance : DecidableEq (subtype) :=
-  fun a b => Classical.propDecidable (a = b)
+instance : DecidableEq valtype := fun a b => decidable_of_iff _ (_beq_valtype_iff a b)
 
-noncomputable instance : DecidableEq (rectype) :=
-  fun a b => Classical.propDecidable (a = b)
+theorem _beq_storagetype_iff : ∀ a b : storagetype, _beq_storagetype a b = true ↔ a = b := by
+  apply _beq_storagetype.induct
+  all_goals try first
+    | exact (fun (a b : typeuse) => _beq_typeuse a b = true ↔ a = b)
+    | exact (fun (a b : heaptype) => _beq_heaptype a b = true ↔ a = b)
+    | exact (fun (a b : valtype) => _beq_valtype a b = true ↔ a = b)
+    | exact (fun (a b : storagetype) => _beq_storagetype a b = true ↔ a = b)
+    | exact (fun (a b : fieldtype) => _beq_fieldtype a b = true ↔ a = b)
+    | exact (fun (a b : comptype) => _beq_comptype a b = true ↔ a = b)
+    | exact (fun (a b : subtype) => _beq_subtype a b = true ↔ a = b)
+    | exact (fun (a b : rectype) => _beq_rectype a b = true ↔ a = b)
+    | exact (fun (a b : (list fieldtype)) => _beq_typeuse_h0 a b = true ↔ a = b)
+    | exact (fun (a b : (List fieldtype)) => _beq_typeuse_h1 a b = true ↔ a = b)
+    | exact (fun (a b : (list valtype)) => _beq_typeuse_h2 a b = true ↔ a = b)
+    | exact (fun (a b : (List valtype)) => _beq_typeuse_h3 a b = true ↔ a = b)
+    | exact (fun (a b : (List typeuse)) => _beq_typeuse_h4 a b = true ↔ a = b)
+    | exact (fun (a b : (list subtype)) => _beq_typeuse_h5 a b = true ↔ a = b)
+    | exact (fun (a b : (List subtype)) => _beq_typeuse_h6 a b = true ↔ a = b)
+  all_goals intros
+  all_goals first
+    | (simp_all [_beq_typeuse, _beq_heaptype, _beq_valtype, _beq_storagetype, _beq_fieldtype, _beq_comptype, _beq_subtype, _beq_rectype, _beq_typeuse_h0, _beq_typeuse_h1, _beq_typeuse_h2, _beq_typeuse_h3, _beq_typeuse_h4, _beq_typeuse_h5, _beq_typeuse_h6]; done)
+    | (rename_i y h; constructor
+       · intro e; simp only [_beq_typeuse, _beq_heaptype, _beq_valtype, _beq_storagetype, _beq_fieldtype, _beq_comptype, _beq_subtype, _beq_rectype, _beq_typeuse_h0, _beq_typeuse_h1, _beq_typeuse_h2, _beq_typeuse_h3, _beq_typeuse_h4, _beq_typeuse_h5, _beq_typeuse_h6] at e; first | (simp at e; done) | (split at e <;> simp_all)
+       · rintro rfl; first | (simp_all; done) | (exfalso; apply h <;> rfl))
+
+instance : DecidableEq storagetype := fun a b => decidable_of_iff _ (_beq_storagetype_iff a b)
+
+theorem _beq_fieldtype_iff : ∀ a b : fieldtype, _beq_fieldtype a b = true ↔ a = b := by
+  apply _beq_fieldtype.induct
+  all_goals try first
+    | exact (fun (a b : typeuse) => _beq_typeuse a b = true ↔ a = b)
+    | exact (fun (a b : heaptype) => _beq_heaptype a b = true ↔ a = b)
+    | exact (fun (a b : valtype) => _beq_valtype a b = true ↔ a = b)
+    | exact (fun (a b : storagetype) => _beq_storagetype a b = true ↔ a = b)
+    | exact (fun (a b : fieldtype) => _beq_fieldtype a b = true ↔ a = b)
+    | exact (fun (a b : comptype) => _beq_comptype a b = true ↔ a = b)
+    | exact (fun (a b : subtype) => _beq_subtype a b = true ↔ a = b)
+    | exact (fun (a b : rectype) => _beq_rectype a b = true ↔ a = b)
+    | exact (fun (a b : (list fieldtype)) => _beq_typeuse_h0 a b = true ↔ a = b)
+    | exact (fun (a b : (List fieldtype)) => _beq_typeuse_h1 a b = true ↔ a = b)
+    | exact (fun (a b : (list valtype)) => _beq_typeuse_h2 a b = true ↔ a = b)
+    | exact (fun (a b : (List valtype)) => _beq_typeuse_h3 a b = true ↔ a = b)
+    | exact (fun (a b : (List typeuse)) => _beq_typeuse_h4 a b = true ↔ a = b)
+    | exact (fun (a b : (list subtype)) => _beq_typeuse_h5 a b = true ↔ a = b)
+    | exact (fun (a b : (List subtype)) => _beq_typeuse_h6 a b = true ↔ a = b)
+  all_goals intros
+  all_goals first
+    | (simp_all [_beq_typeuse, _beq_heaptype, _beq_valtype, _beq_storagetype, _beq_fieldtype, _beq_comptype, _beq_subtype, _beq_rectype, _beq_typeuse_h0, _beq_typeuse_h1, _beq_typeuse_h2, _beq_typeuse_h3, _beq_typeuse_h4, _beq_typeuse_h5, _beq_typeuse_h6]; done)
+    | (rename_i y h; constructor
+       · intro e; simp only [_beq_typeuse, _beq_heaptype, _beq_valtype, _beq_storagetype, _beq_fieldtype, _beq_comptype, _beq_subtype, _beq_rectype, _beq_typeuse_h0, _beq_typeuse_h1, _beq_typeuse_h2, _beq_typeuse_h3, _beq_typeuse_h4, _beq_typeuse_h5, _beq_typeuse_h6] at e; first | (simp at e; done) | (split at e <;> simp_all)
+       · rintro rfl; first | (simp_all; done) | (exfalso; apply h <;> rfl))
+
+instance : DecidableEq fieldtype := fun a b => decidable_of_iff _ (_beq_fieldtype_iff a b)
+
+theorem _beq_comptype_iff : ∀ a b : comptype, _beq_comptype a b = true ↔ a = b := by
+  apply _beq_comptype.induct
+  all_goals try first
+    | exact (fun (a b : typeuse) => _beq_typeuse a b = true ↔ a = b)
+    | exact (fun (a b : heaptype) => _beq_heaptype a b = true ↔ a = b)
+    | exact (fun (a b : valtype) => _beq_valtype a b = true ↔ a = b)
+    | exact (fun (a b : storagetype) => _beq_storagetype a b = true ↔ a = b)
+    | exact (fun (a b : fieldtype) => _beq_fieldtype a b = true ↔ a = b)
+    | exact (fun (a b : comptype) => _beq_comptype a b = true ↔ a = b)
+    | exact (fun (a b : subtype) => _beq_subtype a b = true ↔ a = b)
+    | exact (fun (a b : rectype) => _beq_rectype a b = true ↔ a = b)
+    | exact (fun (a b : (list fieldtype)) => _beq_typeuse_h0 a b = true ↔ a = b)
+    | exact (fun (a b : (List fieldtype)) => _beq_typeuse_h1 a b = true ↔ a = b)
+    | exact (fun (a b : (list valtype)) => _beq_typeuse_h2 a b = true ↔ a = b)
+    | exact (fun (a b : (List valtype)) => _beq_typeuse_h3 a b = true ↔ a = b)
+    | exact (fun (a b : (List typeuse)) => _beq_typeuse_h4 a b = true ↔ a = b)
+    | exact (fun (a b : (list subtype)) => _beq_typeuse_h5 a b = true ↔ a = b)
+    | exact (fun (a b : (List subtype)) => _beq_typeuse_h6 a b = true ↔ a = b)
+  all_goals intros
+  all_goals first
+    | (simp_all [_beq_typeuse, _beq_heaptype, _beq_valtype, _beq_storagetype, _beq_fieldtype, _beq_comptype, _beq_subtype, _beq_rectype, _beq_typeuse_h0, _beq_typeuse_h1, _beq_typeuse_h2, _beq_typeuse_h3, _beq_typeuse_h4, _beq_typeuse_h5, _beq_typeuse_h6]; done)
+    | (rename_i y h; constructor
+       · intro e; simp only [_beq_typeuse, _beq_heaptype, _beq_valtype, _beq_storagetype, _beq_fieldtype, _beq_comptype, _beq_subtype, _beq_rectype, _beq_typeuse_h0, _beq_typeuse_h1, _beq_typeuse_h2, _beq_typeuse_h3, _beq_typeuse_h4, _beq_typeuse_h5, _beq_typeuse_h6] at e; first | (simp at e; done) | (split at e <;> simp_all)
+       · rintro rfl; first | (simp_all; done) | (exfalso; apply h <;> rfl))
+
+instance : DecidableEq comptype := fun a b => decidable_of_iff _ (_beq_comptype_iff a b)
+
+theorem _beq_subtype_iff : ∀ a b : subtype, _beq_subtype a b = true ↔ a = b := by
+  apply _beq_subtype.induct
+  all_goals try first
+    | exact (fun (a b : typeuse) => _beq_typeuse a b = true ↔ a = b)
+    | exact (fun (a b : heaptype) => _beq_heaptype a b = true ↔ a = b)
+    | exact (fun (a b : valtype) => _beq_valtype a b = true ↔ a = b)
+    | exact (fun (a b : storagetype) => _beq_storagetype a b = true ↔ a = b)
+    | exact (fun (a b : fieldtype) => _beq_fieldtype a b = true ↔ a = b)
+    | exact (fun (a b : comptype) => _beq_comptype a b = true ↔ a = b)
+    | exact (fun (a b : subtype) => _beq_subtype a b = true ↔ a = b)
+    | exact (fun (a b : rectype) => _beq_rectype a b = true ↔ a = b)
+    | exact (fun (a b : (list fieldtype)) => _beq_typeuse_h0 a b = true ↔ a = b)
+    | exact (fun (a b : (List fieldtype)) => _beq_typeuse_h1 a b = true ↔ a = b)
+    | exact (fun (a b : (list valtype)) => _beq_typeuse_h2 a b = true ↔ a = b)
+    | exact (fun (a b : (List valtype)) => _beq_typeuse_h3 a b = true ↔ a = b)
+    | exact (fun (a b : (List typeuse)) => _beq_typeuse_h4 a b = true ↔ a = b)
+    | exact (fun (a b : (list subtype)) => _beq_typeuse_h5 a b = true ↔ a = b)
+    | exact (fun (a b : (List subtype)) => _beq_typeuse_h6 a b = true ↔ a = b)
+  all_goals intros
+  all_goals first
+    | (simp_all [_beq_typeuse, _beq_heaptype, _beq_valtype, _beq_storagetype, _beq_fieldtype, _beq_comptype, _beq_subtype, _beq_rectype, _beq_typeuse_h0, _beq_typeuse_h1, _beq_typeuse_h2, _beq_typeuse_h3, _beq_typeuse_h4, _beq_typeuse_h5, _beq_typeuse_h6]; done)
+    | (rename_i y h; constructor
+       · intro e; simp only [_beq_typeuse, _beq_heaptype, _beq_valtype, _beq_storagetype, _beq_fieldtype, _beq_comptype, _beq_subtype, _beq_rectype, _beq_typeuse_h0, _beq_typeuse_h1, _beq_typeuse_h2, _beq_typeuse_h3, _beq_typeuse_h4, _beq_typeuse_h5, _beq_typeuse_h6] at e; first | (simp at e; done) | (split at e <;> simp_all)
+       · rintro rfl; first | (simp_all; done) | (exfalso; apply h <;> rfl))
+
+instance : DecidableEq subtype := fun a b => decidable_of_iff _ (_beq_subtype_iff a b)
+
+theorem _beq_rectype_iff : ∀ a b : rectype, _beq_rectype a b = true ↔ a = b := by
+  apply _beq_rectype.induct
+  all_goals try first
+    | exact (fun (a b : typeuse) => _beq_typeuse a b = true ↔ a = b)
+    | exact (fun (a b : heaptype) => _beq_heaptype a b = true ↔ a = b)
+    | exact (fun (a b : valtype) => _beq_valtype a b = true ↔ a = b)
+    | exact (fun (a b : storagetype) => _beq_storagetype a b = true ↔ a = b)
+    | exact (fun (a b : fieldtype) => _beq_fieldtype a b = true ↔ a = b)
+    | exact (fun (a b : comptype) => _beq_comptype a b = true ↔ a = b)
+    | exact (fun (a b : subtype) => _beq_subtype a b = true ↔ a = b)
+    | exact (fun (a b : rectype) => _beq_rectype a b = true ↔ a = b)
+    | exact (fun (a b : (list fieldtype)) => _beq_typeuse_h0 a b = true ↔ a = b)
+    | exact (fun (a b : (List fieldtype)) => _beq_typeuse_h1 a b = true ↔ a = b)
+    | exact (fun (a b : (list valtype)) => _beq_typeuse_h2 a b = true ↔ a = b)
+    | exact (fun (a b : (List valtype)) => _beq_typeuse_h3 a b = true ↔ a = b)
+    | exact (fun (a b : (List typeuse)) => _beq_typeuse_h4 a b = true ↔ a = b)
+    | exact (fun (a b : (list subtype)) => _beq_typeuse_h5 a b = true ↔ a = b)
+    | exact (fun (a b : (List subtype)) => _beq_typeuse_h6 a b = true ↔ a = b)
+  all_goals intros
+  all_goals first
+    | (simp_all [_beq_typeuse, _beq_heaptype, _beq_valtype, _beq_storagetype, _beq_fieldtype, _beq_comptype, _beq_subtype, _beq_rectype, _beq_typeuse_h0, _beq_typeuse_h1, _beq_typeuse_h2, _beq_typeuse_h3, _beq_typeuse_h4, _beq_typeuse_h5, _beq_typeuse_h6]; done)
+    | (rename_i y h; constructor
+       · intro e; simp only [_beq_typeuse, _beq_heaptype, _beq_valtype, _beq_storagetype, _beq_fieldtype, _beq_comptype, _beq_subtype, _beq_rectype, _beq_typeuse_h0, _beq_typeuse_h1, _beq_typeuse_h2, _beq_typeuse_h3, _beq_typeuse_h4, _beq_typeuse_h5, _beq_typeuse_h6] at e; first | (simp at e; done) | (split at e <;> simp_all)
+       · rintro rfl; first | (simp_all; done) | (exfalso; apply h <;> rfl))
+
+instance : DecidableEq rectype := fun a b => decidable_of_iff _ (_beq_rectype_iff a b)
 
 /- Type Alias Definition at: ../../specification/wasm-3.0/1.2-syntax.types.spectec:102.1-103.16 -/
 abbrev resulttype : Type := (list valtype)
@@ -5059,8 +5322,143 @@ inductive instr : Type where
 deriving Inhabited
 
 
-noncomputable instance : DecidableEq (instr) :=
-  fun a b => Classical.propDecidable (a = b)
+set_option linter.unusedSimpArgs false in
+mutual
+def _beq_instr : instr → instr → Bool
+  | .NOP, b => match b with | .NOP => true | _ => false
+  | .UNREACHABLE, b => match b with | .UNREACHABLE => true | _ => false
+  | .DROP, b => match b with | .DROP => true | _ => false
+  | (.SELECT x0), b => match b with | (.SELECT y0) => (decide (x0 = y0)) | _ => false
+  | (.BLOCK x0 x1), b => match b with | (.BLOCK y0 y1) => (decide (x0 = y0)) && ((_beq_instr_h0 x1 y1)) | _ => false
+  | (.LOOP x0 x1), b => match b with | (.LOOP y0 y1) => (decide (x0 = y0)) && ((_beq_instr_h0 x1 y1)) | _ => false
+  | (.IFELSE x0 x1 x2), b => match b with | (.IFELSE y0 y1 y2) => (decide (x0 = y0)) && ((_beq_instr_h0 x1 y1) && ((_beq_instr_h0 x2 y2))) | _ => false
+  | (.BR x0), b => match b with | (.BR y0) => (decide (x0 = y0)) | _ => false
+  | (.BR_IF x0), b => match b with | (.BR_IF y0) => (decide (x0 = y0)) | _ => false
+  | (.BR_TABLE x0 x1), b => match b with | (.BR_TABLE y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.BR_ON_NULL x0), b => match b with | (.BR_ON_NULL y0) => (decide (x0 = y0)) | _ => false
+  | (.BR_ON_NON_NULL x0), b => match b with | (.BR_ON_NON_NULL y0) => (decide (x0 = y0)) | _ => false
+  | (.BR_ON_CAST x0 x1 x2), b => match b with | (.BR_ON_CAST y0 y1 y2) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((decide (x2 = y2)))) | _ => false
+  | (.BR_ON_CAST_FAIL x0 x1 x2), b => match b with | (.BR_ON_CAST_FAIL y0 y1 y2) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((decide (x2 = y2)))) | _ => false
+  | (.CALL x0), b => match b with | (.CALL y0) => (decide (x0 = y0)) | _ => false
+  | (.CALL_REF x0), b => match b with | (.CALL_REF y0) => (decide (x0 = y0)) | _ => false
+  | (.CALL_INDIRECT x0 x1), b => match b with | (.CALL_INDIRECT y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | .RETURN, b => match b with | .RETURN => true | _ => false
+  | (.RETURN_CALL x0), b => match b with | (.RETURN_CALL y0) => (decide (x0 = y0)) | _ => false
+  | (.RETURN_CALL_REF x0), b => match b with | (.RETURN_CALL_REF y0) => (decide (x0 = y0)) | _ => false
+  | (.RETURN_CALL_INDIRECT x0 x1), b => match b with | (.RETURN_CALL_INDIRECT y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.THROW x0), b => match b with | (.THROW y0) => (decide (x0 = y0)) | _ => false
+  | .THROW_REF, b => match b with | .THROW_REF => true | _ => false
+  | (.TRY_TABLE x0 x1 x2), b => match b with | (.TRY_TABLE y0 y1 y2) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((_beq_instr_h0 x2 y2))) | _ => false
+  | (.LOCAL_GET x0), b => match b with | (.LOCAL_GET y0) => (decide (x0 = y0)) | _ => false
+  | (.LOCAL_SET x0), b => match b with | (.LOCAL_SET y0) => (decide (x0 = y0)) | _ => false
+  | (.LOCAL_TEE x0), b => match b with | (.LOCAL_TEE y0) => (decide (x0 = y0)) | _ => false
+  | (.GLOBAL_GET x0), b => match b with | (.GLOBAL_GET y0) => (decide (x0 = y0)) | _ => false
+  | (.GLOBAL_SET x0), b => match b with | (.GLOBAL_SET y0) => (decide (x0 = y0)) | _ => false
+  | (.TABLE_GET x0), b => match b with | (.TABLE_GET y0) => (decide (x0 = y0)) | _ => false
+  | (.TABLE_SET x0), b => match b with | (.TABLE_SET y0) => (decide (x0 = y0)) | _ => false
+  | (.TABLE_SIZE x0), b => match b with | (.TABLE_SIZE y0) => (decide (x0 = y0)) | _ => false
+  | (.TABLE_GROW x0), b => match b with | (.TABLE_GROW y0) => (decide (x0 = y0)) | _ => false
+  | (.TABLE_FILL x0), b => match b with | (.TABLE_FILL y0) => (decide (x0 = y0)) | _ => false
+  | (.TABLE_COPY x0 x1), b => match b with | (.TABLE_COPY y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.TABLE_INIT x0 x1), b => match b with | (.TABLE_INIT y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.ELEM_DROP x0), b => match b with | (.ELEM_DROP y0) => (decide (x0 = y0)) | _ => false
+  | (.LOAD x0 x1 x2 x3), b => match b with | (.LOAD y0 y1 y2 y3) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((decide (x2 = y2)) && ((decide (x3 = y3))))) | _ => false
+  | (.STORE x0 x1 x2 x3), b => match b with | (.STORE y0 y1 y2 y3) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((decide (x2 = y2)) && ((decide (x3 = y3))))) | _ => false
+  | (.VLOAD x0 x1 x2 x3), b => match b with | (.VLOAD y0 y1 y2 y3) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((decide (x2 = y2)) && ((decide (x3 = y3))))) | _ => false
+  | (.VLOAD_LANE x0 x1 x2 x3 x4), b => match b with | (.VLOAD_LANE y0 y1 y2 y3 y4) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((decide (x2 = y2)) && ((decide (x3 = y3)) && ((decide (x4 = y4)))))) | _ => false
+  | (.VSTORE x0 x1 x2), b => match b with | (.VSTORE y0 y1 y2) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((decide (x2 = y2)))) | _ => false
+  | (.VSTORE_LANE x0 x1 x2 x3 x4), b => match b with | (.VSTORE_LANE y0 y1 y2 y3 y4) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((decide (x2 = y2)) && ((decide (x3 = y3)) && ((decide (x4 = y4)))))) | _ => false
+  | (.MEMORY_SIZE x0), b => match b with | (.MEMORY_SIZE y0) => (decide (x0 = y0)) | _ => false
+  | (.MEMORY_GROW x0), b => match b with | (.MEMORY_GROW y0) => (decide (x0 = y0)) | _ => false
+  | (.MEMORY_FILL x0), b => match b with | (.MEMORY_FILL y0) => (decide (x0 = y0)) | _ => false
+  | (.MEMORY_COPY x0 x1), b => match b with | (.MEMORY_COPY y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.MEMORY_INIT x0 x1), b => match b with | (.MEMORY_INIT y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.DATA_DROP x0), b => match b with | (.DATA_DROP y0) => (decide (x0 = y0)) | _ => false
+  | (.REF_NULL x0), b => match b with | (.REF_NULL y0) => (decide (x0 = y0)) | _ => false
+  | .REF_IS_NULL, b => match b with | .REF_IS_NULL => true | _ => false
+  | .REF_AS_NON_NULL, b => match b with | .REF_AS_NON_NULL => true | _ => false
+  | .REF_EQ, b => match b with | .REF_EQ => true | _ => false
+  | (.REF_TEST x0), b => match b with | (.REF_TEST y0) => (decide (x0 = y0)) | _ => false
+  | (.REF_CAST x0), b => match b with | (.REF_CAST y0) => (decide (x0 = y0)) | _ => false
+  | (.REF_FUNC x0), b => match b with | (.REF_FUNC y0) => (decide (x0 = y0)) | _ => false
+  | .REF_I31, b => match b with | .REF_I31 => true | _ => false
+  | (.I31_GET x0), b => match b with | (.I31_GET y0) => (decide (x0 = y0)) | _ => false
+  | (.STRUCT_NEW x0), b => match b with | (.STRUCT_NEW y0) => (decide (x0 = y0)) | _ => false
+  | (.STRUCT_NEW_DEFAULT x0), b => match b with | (.STRUCT_NEW_DEFAULT y0) => (decide (x0 = y0)) | _ => false
+  | (.STRUCT_GET x0 x1 x2), b => match b with | (.STRUCT_GET y0 y1 y2) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((decide (x2 = y2)))) | _ => false
+  | (.STRUCT_SET x0 x1), b => match b with | (.STRUCT_SET y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.ARRAY_NEW x0), b => match b with | (.ARRAY_NEW y0) => (decide (x0 = y0)) | _ => false
+  | (.ARRAY_NEW_DEFAULT x0), b => match b with | (.ARRAY_NEW_DEFAULT y0) => (decide (x0 = y0)) | _ => false
+  | (.ARRAY_NEW_FIXED x0 x1), b => match b with | (.ARRAY_NEW_FIXED y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.ARRAY_NEW_DATA x0 x1), b => match b with | (.ARRAY_NEW_DATA y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.ARRAY_NEW_ELEM x0 x1), b => match b with | (.ARRAY_NEW_ELEM y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.ARRAY_GET x0 x1), b => match b with | (.ARRAY_GET y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.ARRAY_SET x0), b => match b with | (.ARRAY_SET y0) => (decide (x0 = y0)) | _ => false
+  | .ARRAY_LEN, b => match b with | .ARRAY_LEN => true | _ => false
+  | (.ARRAY_FILL x0), b => match b with | (.ARRAY_FILL y0) => (decide (x0 = y0)) | _ => false
+  | (.ARRAY_COPY x0 x1), b => match b with | (.ARRAY_COPY y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.ARRAY_INIT_DATA x0 x1), b => match b with | (.ARRAY_INIT_DATA y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.ARRAY_INIT_ELEM x0 x1), b => match b with | (.ARRAY_INIT_ELEM y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | .EXTERN_CONVERT_ANY, b => match b with | .EXTERN_CONVERT_ANY => true | _ => false
+  | .ANY_CONVERT_EXTERN, b => match b with | .ANY_CONVERT_EXTERN => true | _ => false
+  | (.CONST x0 x1), b => match b with | (.CONST y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.UNOP x0 x1), b => match b with | (.UNOP y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.BINOP x0 x1), b => match b with | (.BINOP y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.TESTOP x0 x1), b => match b with | (.TESTOP y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.RELOP x0 x1), b => match b with | (.RELOP y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.CVTOP x0 x1 x2), b => match b with | (.CVTOP y0 y1 y2) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((decide (x2 = y2)))) | _ => false
+  | (.VCONST x0 x1), b => match b with | (.VCONST y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.VVUNOP x0 x1), b => match b with | (.VVUNOP y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.VVBINOP x0 x1), b => match b with | (.VVBINOP y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.VVTERNOP x0 x1), b => match b with | (.VVTERNOP y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.VVTESTOP x0 x1), b => match b with | (.VVTESTOP y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.VUNOP x0 x1), b => match b with | (.VUNOP y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.VBINOP x0 x1), b => match b with | (.VBINOP y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.VTERNOP x0 x1), b => match b with | (.VTERNOP y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.VTESTOP x0 x1), b => match b with | (.VTESTOP y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.VRELOP x0 x1), b => match b with | (.VRELOP y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.VSHIFTOP x0 x1), b => match b with | (.VSHIFTOP y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.VBITMASK x0), b => match b with | (.VBITMASK y0) => (decide (x0 = y0)) | _ => false
+  | (.VSWIZZLOP x0 x1), b => match b with | (.VSWIZZLOP y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.VSHUFFLE x0 x1), b => match b with | (.VSHUFFLE y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.VEXTUNOP x0 x1 x2), b => match b with | (.VEXTUNOP y0 y1 y2) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((decide (x2 = y2)))) | _ => false
+  | (.VEXTBINOP x0 x1 x2), b => match b with | (.VEXTBINOP y0 y1 y2) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((decide (x2 = y2)))) | _ => false
+  | (.VEXTTERNOP x0 x1 x2), b => match b with | (.VEXTTERNOP y0 y1 y2) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((decide (x2 = y2)))) | _ => false
+  | (.VNARROW x0 x1 x2), b => match b with | (.VNARROW y0 y1 y2) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((decide (x2 = y2)))) | _ => false
+  | (.VCVTOP x0 x1 x2), b => match b with | (.VCVTOP y0 y1 y2) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((decide (x2 = y2)))) | _ => false
+  | (.VSPLAT x0), b => match b with | (.VSPLAT y0) => (decide (x0 = y0)) | _ => false
+  | (.VEXTRACT_LANE x0 x1 x2), b => match b with | (.VEXTRACT_LANE y0 y1 y2) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((decide (x2 = y2)))) | _ => false
+  | (.VREPLACE_LANE x0 x1), b => match b with | (.VREPLACE_LANE y0 y1) => (decide (x0 = y0)) && ((decide (x1 = y1))) | _ => false
+  | (.REF_I31_NUM x0), b => match b with | (.REF_I31_NUM y0) => (decide (x0 = y0)) | _ => false
+  | .REF_NULL_ADDR, b => match b with | .REF_NULL_ADDR => true | _ => false
+  | (.REF_STRUCT_ADDR x0), b => match b with | (.REF_STRUCT_ADDR y0) => (decide (x0 = y0)) | _ => false
+  | (.REF_ARRAY_ADDR x0), b => match b with | (.REF_ARRAY_ADDR y0) => (decide (x0 = y0)) | _ => false
+  | (.REF_FUNC_ADDR x0), b => match b with | (.REF_FUNC_ADDR y0) => (decide (x0 = y0)) | _ => false
+  | (.REF_EXN_ADDR x0), b => match b with | (.REF_EXN_ADDR y0) => (decide (x0 = y0)) | _ => false
+  | (.REF_HOST_ADDR x0), b => match b with | (.REF_HOST_ADDR y0) => (decide (x0 = y0)) | _ => false
+  | (.REF_EXTERN x0), b => match b with | (.REF_EXTERN y0) => (decide (x0 = y0)) | _ => false
+  | (.LABEL_ x0 x1 x2), b => match b with | (.LABEL_ y0 y1 y2) => (decide (x0 = y0)) && ((_beq_instr_h0 x1 y1) && ((_beq_instr_h0 x2 y2))) | _ => false
+  | (.FRAME_ x0 x1 x2), b => match b with | (.FRAME_ y0 y1 y2) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((_beq_instr_h0 x2 y2))) | _ => false
+  | (.HANDLER_ x0 x1 x2), b => match b with | (.HANDLER_ y0 y1 y2) => (decide (x0 = y0)) && ((decide (x1 = y1)) && ((_beq_instr_h0 x2 y2))) | _ => false
+  | .TRAP, b => match b with | .TRAP => true | _ => false
+def _beq_instr_h0 : (List instr) → (List instr) → Bool
+  | [], b => match b with | [] => true | _ => false
+  | x :: xs, b => match b with | y :: ys => (_beq_instr x y) && _beq_instr_h0 xs ys | _ => false
+end
+
+theorem _beq_instr_iff : ∀ a b : instr, _beq_instr a b = true ↔ a = b := by
+  apply _beq_instr.induct
+  all_goals try first
+    | exact (fun (a b : instr) => _beq_instr a b = true ↔ a = b)
+    | exact (fun (a b : (List instr)) => _beq_instr_h0 a b = true ↔ a = b)
+  all_goals intros
+  all_goals first
+    | (simp_all [_beq_instr, _beq_instr_h0]; done)
+    | (rename_i y h; constructor
+       · intro e; simp only [_beq_instr, _beq_instr_h0] at e; first | (simp at e; done) | (split at e <;> simp_all)
+       · rintro rfl; first | (simp_all; done) | (exfalso; apply h <;> rfl))
+
+instance : DecidableEq instr := fun a b => decidable_of_iff _ (_beq_instr_iff a b)
 
 /- Auxiliary Definition at:  -/
 def instr_ref : ∀  (var_0 : ref) , instr
