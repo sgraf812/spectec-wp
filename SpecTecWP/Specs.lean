@@ -183,11 +183,7 @@ theorem fun_binop_rem_u_uniq {x y : uN} (hy : proj_uN_0 y ≠ 0) (hwr : wf_uN 32
     rw [fun_irem_u_uniq hy hirem]
     rfl
   · rename_i hneg
-    exact absurd (.fun_binop__case_8 .U x y (some (irem_u x y)) (fun_irem_u hy)
-      (fun i hi => by simp only [Option.toList_some, List.mem_singleton] at hi; subst hi; exact hwr)
-      (fun i hi => by
-        simp only [Option.toList_some, List.mem_singleton] at hi; subst hi
-        exact wf_num_i32 hwr)) hneg
+    exact absurd (.fun_binop__case_8 .U x y none) hneg
 
 theorem proj_u_ne_zero {a : UInt32} (h : a ≠ 0) : proj_uN_0 (u a) ≠ 0 :=
   fun h0 => h (UInt32.toNat_inj.mp (h0 : a.toNat = 0))

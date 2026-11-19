@@ -455,7 +455,8 @@ theorem Step_read.loop_redex {z : state} {ws : List val} {B L : List instr}
     list_contra hL
 
 theorem wf_instrtype_nil : wf_instrtype (.mk_instrtype (.mk_list []) [] (.mk_list [])) :=
-  .instrtype_case_0 _ _ _ (fun _ hx => by cases hx)
+  .instrtype_case_0 _ _ _ (by simp [proj_list_0]) (fun _ hx => by cases hx) (fun _ hx => by cases hx)
+    (by simp [proj_list_0]) (fun _ hx => by cases hx)
 
 /-- `block` with the empty block type runs its body on the empty stack inside a label of
 arity `0` with the empty continuation. -/

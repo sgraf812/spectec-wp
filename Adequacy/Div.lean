@@ -74,11 +74,7 @@ theorem fun_binop_div_u_uniq {a b : UInt32} (hb : b ≠ 0) (r : Option (List num
     rfl
   · rename_i hneg
     have hw : wf_uN 32 (.mk_uN (a.toNat / b.toNat)) := by rw [← u_div]; exact wf_uN_u _
-    exact (hneg (.fun_binop__case_6 .U (u a) (u b) _ (fun_idiv_u (toNat_ne_zero hb) hw)
-      (fun i hi => by simp only [Option.toList_some, List.mem_singleton] at hi; subst hi; exact hw)
-      (fun i hi => by
-        simp only [Option.toList_some, List.mem_singleton] at hi; subst hi
-        exact .num__case_0 _ _ _ hw rfl))).elim
+    exact (hneg (.fun_binop__case_6 _ _ _ none)).elim
 
 theorem fun_binop_div_u_zero (a : UInt32) :
     fun_binop_ .I32 (.mk_binop__0 .I32 (.DIV .U)) (.mk_num__0 .I32 (u a)) (.mk_num__0 .I32 (u 0))
@@ -94,8 +90,7 @@ theorem fun_binop_div_u_zero_uniq (a : UInt32) (r : Option (List num_))
     rw [fun_idiv_u_zero_uniq hid]
     rfl
   · rename_i hneg
-    exact (hneg (.fun_binop__case_6 .U (u a) (u 0) none (.fun_idiv__case_0 _ _)
-      (fun _ h => by cases h) (fun _ h => by cases h))).elim
+    exact (hneg (.fun_binop__case_6 _ _ _ none)).elim
 
 /-! ## `rem_u` -/
 
@@ -119,11 +114,7 @@ theorem fun_binop_rem_u_uniq {a b : UInt32} (hb : b ≠ 0) (r : Option (List num
     rfl
   · rename_i hneg
     have hw : wf_uN 32 (irem_u (u a) (u b)) := by rw [irem_u_eq]; exact wf_uN_u _
-    exact (hneg (.fun_binop__case_8 .U (u a) (u b) _ (fun_irem_u (toNat_ne_zero hb))
-      (fun i hi => by simp only [Option.toList_some, List.mem_singleton] at hi; subst hi; exact hw)
-      (fun i hi => by
-        simp only [Option.toList_some, List.mem_singleton] at hi; subst hi
-        exact .num__case_0 _ _ _ hw rfl))).elim
+    exact (hneg (.fun_binop__case_8 _ _ _ none)).elim
 
 theorem fun_binop_rem_u_zero (a : UInt32) :
     fun_binop_ .I32 (.mk_binop__0 .I32 (.REM .U)) (.mk_num__0 .I32 (u a)) (.mk_num__0 .I32 (u 0))
@@ -139,8 +130,7 @@ theorem fun_binop_rem_u_zero_uniq (a : UInt32) (r : Option (List num_))
     rw [fun_irem_u_zero_uniq hir]
     rfl
   · rename_i hneg
-    exact (hneg (.fun_binop__case_8 .U (u a) (u 0) none (.fun_irem__case_0 _ _)
-      (fun _ h => by cases h) (fun _ h => by cases h))).elim
+    exact (hneg (.fun_binop__case_8 _ _ _ none)).elim
 
 /-! ## `div_s` -/
 
@@ -192,8 +182,7 @@ theorem fun_binop_div_s_uniq {a b : UInt32} (hb : b ≠ 0)
     rw [fun_idiv_s_uniq hb hov rfl rfl hid]
     rfl
   · rename_i hneg
-    exact (hneg (.fun_binop__case_6 .S (u a) (u b) _ (fun_idiv_s hb hov)
-      (forall_some (wf_uN_u _)) (forall_some (wf_num_u _)))).elim
+    exact (hneg (.fun_binop__case_6 _ _ _ none)).elim
 
 theorem fun_binop_div_s_zero (a : UInt32) :
     fun_binop_ .I32 (.mk_binop__0 .I32 (.DIV .S)) (.mk_num__0 .I32 (u a)) (.mk_num__0 .I32 (u 0))
@@ -208,8 +197,7 @@ theorem fun_binop_div_s_zero_uniq (a : UInt32) (r : Option (List num_))
     rw [fun_idiv_s_zero_uniq rfl hid]
     rfl
   · rename_i hneg
-    exact (hneg (.fun_binop__case_6 .S (u a) (u 0) none (.fun_idiv__case_2 _ _) forall_none
-      forall_none)).elim
+    exact (hneg (.fun_binop__case_6 _ _ _ none)).elim
 
 theorem fun_binop_div_s_ov :
     fun_binop_ .I32 (.mk_binop__0 .I32 (.DIV .S)) (.mk_num__0 .I32 (u 0x80000000))
@@ -224,7 +212,7 @@ theorem fun_binop_div_s_ov_uniq (r : Option (List num_))
     rw [fun_idiv_s_ov_uniq rfl rfl hid]
     rfl
   · rename_i hneg
-    exact (hneg (.fun_binop__case_6 .S _ _ none fun_idiv_s_ov forall_none forall_none)).elim
+    exact (hneg (.fun_binop__case_6 _ _ _ none)).elim
 
 /-! ## `rem_s` -/
 
@@ -242,8 +230,7 @@ theorem fun_binop_rem_s_uniq {a b : UInt32} (hb : b ≠ 0) (r : Option (List num
     rw [fun_irem_s_uniq hb rfl rfl hir]
     rfl
   · rename_i hneg
-    exact (hneg (.fun_binop__case_8 .S (u a) (u b) _ (fun_irem_s hb)
-      (forall_some (wf_uN_u _)) (forall_some (wf_num_u _)))).elim
+    exact (hneg (.fun_binop__case_8 _ _ _ none)).elim
 
 theorem fun_binop_rem_s_zero (a : UInt32) :
     fun_binop_ .I32 (.mk_binop__0 .I32 (.REM .S)) (.mk_num__0 .I32 (u a)) (.mk_num__0 .I32 (u 0))
@@ -258,7 +245,6 @@ theorem fun_binop_rem_s_zero_uniq (a : UInt32) (r : Option (List num_))
     rw [fun_irem_s_zero_uniq rfl hir]
     rfl
   · rename_i hneg
-    exact (hneg (.fun_binop__case_8 .S (u a) (u 0) none (.fun_irem__case_2 _ _) forall_none
-      forall_none)).elim
+    exact (hneg (.fun_binop__case_8 _ _ _ none)).elim
 
 end Adequacy

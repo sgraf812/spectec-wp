@@ -183,4 +183,25 @@ theorem oob_store_traps (c' : config)
 
 end Store
 
+/-! ## Well-formedness of `list(X)`
+
+`syntax list(syntax X) = X* -- if |X*| < 2^32` has a premise and well-formed elements. A
+`rectype` is a `list(subtype)`, so a `rectype` whose subtype refers to type index `2^32` is not
+well formed. Before the well-formedness predicates looked into `list(X)`, `rectype` had no
+predicate at all. -/
+
+theorem rectype_checks_elements :
+    ¬ wf_rectype (.REC (.mk_list [.SUB none [._IDX (.mk_uN (2 ^ 32))] (.STRUCT (.mk_list []))])) := by
+  intro h
+  cases h
+  rename_i hall
+  have hs := hall (.SUB none [._IDX (.mk_uN (2 ^ 32))] (.STRUCT (.mk_list []))) (by simp [proj_list_0])
+  cases hs
+  rename_i hts _
+  have ht := hts (._IDX (.mk_uN (2 ^ 32))) (by simp)
+  cases ht
+  rename_i hw
+  cases hw
+  simp_all
+
 end SpecTecWP.Regression
