@@ -34,7 +34,8 @@ the current IL and fixed after two reviews. Check it out as `spectec/` next to t
 ./regen.sh
 ```
 
-The script builds SpecTec, writes `SpecTecWP/Wasm.lean` and elaborates it.
+The script builds SpecTec, writes the model `SpecTecWP/Wasm.lean` and the interpreter
+`SpecTecWP/Interp.lean`, and elaborates both.
 
 ## Tour
 
@@ -56,9 +57,12 @@ The script builds SpecTec, writes `SpecTecWP/Wasm.lean` and elaborates it.
 | `SpecTecWP/Examples.lean` | Programs proved with `vcgen ... with finish`: `(a + b) - b = a` from two locals, and two programs that compute `(x + 1) * (x + 1)` in different ways. |
 | `SpecTecWP/Gcd.lean` | Euclid's gcd loop of the Talos examples, proved with `vcgen invariants ... with finish` and the Talos invariant: the result is `Nat.gcd a b`, the store does not change, and the loop terminates. `gcd_spectec` is the same statement about the SpecTec model. |
 | `SpecTecWP/Regression.lean` | Facts of the specification that earlier versions of the model contradicted. |
+| `SpecTecWP/Interp.lean` | Generated. `interp_Step_io c` lists successors `c'` of the configuration `c`, each with a proof of `Step c c'`; `interp_Step_pure_io` does the same for `Step_pure`. The comment at the end lists the rules the interpreter leaves out. |
+| `SpecTecWP/InterpTest.lean` | Evaluations of `interp_Step_pure_io` on single redexes. |
 | `Adequacy/Translate.lean` | The translation from Talos values, frames and instructions. |
 | `Adequacy/Div.lean` | The `$binop_` results of the four `i32` division and remainder operators, and their traps. |
 | `Adequacy/Straight.lean` | `adequacy_straight`. |
+| `Adequacy/Differential.lean` | The differential test of the interpreter against Talos. |
 
 ## Semantics of `wp`
 
@@ -90,3 +94,20 @@ SpecTec reduction of the translation `tp p` from the corresponding configuration
 satisfies the translated postconditions. The fragment is `i32`/`i64` constants, `add`, `sub`,
 `mul`, `div_u`, `div_s`, `rem_u`, `rem_s` (with their traps), `and`, `or`, `xor`, `eqz`, `eq`,
 `ne`, `lt_u`, `lt_s`, `local.get`, `local.set`, `local.tee`, `drop`, `nop` and `unreachable`.
+
+## Interpreter and differential test
+
+The Lean backend also generates an interpreter of the model (`--lean4 -o Wasm.lean Interp.lean`).
+For a relation `R` and a choice of input arguments, the function `interp_R_<mode>` takes the
+inputs and returns a list of outputs, each with a proof of `R`. For example,
+`interp_Step_io c : List {c' : config // Step c c'}`. Each rule becomes one function: the inputs
+are matched against the conclusion of the rule, and the premises are checked or enumerated in an
+order in which their inputs are known. The interpreter is sound by construction. A rule outside
+this scheme is left out, so the interpreter can miss a successor; a missed successor shows up as
+a stuck configuration in the test.
+
+`lake exe difftest <count> <length> <seed>` generates `count` random well-typed straight-line
+programs of `length` instructions over all `i32` and `i64` integer instructions, the locals,
+`drop`, `nop` and `unreachable`. It runs each program in Talos and in the interpreter, and
+compares the stack, the locals and traps. If a configuration has several successors, they must
+all lead to the same outcome.

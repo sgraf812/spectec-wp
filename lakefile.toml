@@ -14,3 +14,9 @@ name = "wasm-wp"
 git = "https://github.com/sgraf812/talos"
 rev = "9875d3b4f9a17f9e93211ba20062bd3f78f045aa"
 subDir = "wp"
+
+# Differential test of the generated SpecTec interpreter against Talos:
+# `lake exe difftest <count> <length> <seed>`.
+[[lean_exe]]
+name = "difftest"
+root = "Adequacy.DifferentialMain"
