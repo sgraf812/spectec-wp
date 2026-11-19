@@ -15,4 +15,5 @@ import SpecTecWP.Examples
 import SpecTecWP.Gcd
 import SpecTecWP.Regression
 import SpecTecWP.Interp
+import SpecTecWP.WasmWf
 import SpecTecWP.InterpTest

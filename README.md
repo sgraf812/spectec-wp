@@ -34,8 +34,10 @@ the current IL and fixed after two reviews. Check it out as `spectec/` next to t
 ./regen.sh
 ```
 
-The script builds SpecTec, writes the model `SpecTecWP/Wasm.lean` and the interpreter
-`SpecTecWP/Interp.lean`, and elaborates both.
+The script builds SpecTec, writes the model `SpecTecWP/Wasm.lean`, the interpreter
+`SpecTecWP/Interp.lean` and the well-formedness lemmas `SpecTecWP/WasmWf.lean`, and elaborates
+them. It adds each lemma whose generated proof fails to `SpecTecWP/WasmWf.skip` and
+regenerates, until `WasmWf.lean` elaborates.
 
 ## Tour
 
@@ -59,6 +61,7 @@ The script builds SpecTec, writes the model `SpecTecWP/Wasm.lean` and the interp
 | `SpecTecWP/Regression.lean` | Facts of the specification that earlier versions of the model contradicted. |
 | `SpecTecWP/Interp.lean` | Generated. `interp_Step_io c` lists successors `c'` of the configuration `c`, each with a proof of `Step c c'`; `interp_Step_pure_io` does the same for `Step_pure`. The comment at the end lists the rules the interpreter leaves out. |
 | `SpecTecWP/InterpTest.lean` | Evaluations of `interp_Step_pure_io` on single redexes. |
+| `SpecTecWP/WasmWf.lean` | Generated. The well-formedness lemmas of the functions: a well-formed input gives a well-formed result. A lemma with a generated proof is a `theorem`; a lemma about an opaque function, or one listed in `SpecTecWP/WasmWf.skip`, is a `def … : Prop` that states it. |
 | `Adequacy/Translate.lean` | The translation from Talos values, frames and instructions. |
 | `Adequacy/Div.lean` | The `$binop_` results of the four `i32` division and remainder operators, and their traps. |
 | `Adequacy/Straight.lean` | `adequacy_straight`. |
